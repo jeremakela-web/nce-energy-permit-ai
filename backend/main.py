@@ -13,10 +13,13 @@ import os
 import re
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel, ConfigDict
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from mml_api import (
     get_land_use, get_natura_areas, get_property_boundaries,
@@ -39,14 +42,19 @@ import sys as _sys
 _sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "permit_ai"))
 from generate_application import generate_application, ApplicationInput
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/hour"])
+
 app = FastAPI(
     title="BESS-kaavoituskartoitus API",
     description="Pöytyä 636-439-4-711 – akkuvarastohankkeen sijaintianalyysi",
     version="2.0.0",
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 MML_API_KEY = os.getenv("MML_API_KEY", "")
+PORT = int(os.environ.get("PORT", 8000))
 
 
 # ── Pydantic-mallit ───────────────────────────────────────────────────────────
@@ -286,7 +294,8 @@ async def generate_report(req: ReportRequest):
 # ── Permit AI ────────────────────────────────────────────────────────────────
 
 @app.post("/api/generate-application")
-async def generate_application_endpoint(req: ApplicationRequest):
+@limiter.limit("10/hour")
+async def generate_application_endpoint(request: Request, req: ApplicationRequest):
     """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude)."""
     allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR", "smr_bess", "vesivoima", "hybridi"}
     if req.hanketyyppi not in allowed:
@@ -316,7 +325,8 @@ async def generate_application_endpoint(req: ApplicationRequest):
 
 
 @app.post("/api/permit-ai")
-async def permit_ai(req: PermitAIRequest):
+@limiter.limit("50/hour")
+async def permit_ai(request: Request, req: PermitAIRequest):
     """RAG-pohjainen lupaprosessikysely. Hakee Fingrid/Pelastusopisto/Tukes-dokumenteista."""
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Kysymys ei voi olla tyhjä.")
@@ -896,3 +906,8 @@ def _render_static_map(
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return buf.getvalue()
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=PORT)

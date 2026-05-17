@@ -2,7 +2,7 @@ import chromadb, os, anthropic
 from sentence_transformers import SentenceTransformer
 
 DB_DIR = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
-model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+model = SentenceTransformer("all-MiniLM-L6-v2")
 client = chromadb.PersistentClient(path=DB_DIR)
 col = client.get_or_create_collection("permit_docs")
 claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))

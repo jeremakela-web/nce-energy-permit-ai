@@ -14,7 +14,7 @@ from sentence_transformers import SentenceTransformer
 _DB_DIR = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
 _COLLECTION = "permit_docs"
 _MODEL_ID = "claude-sonnet-4-6"
-_EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
+_EMBED_MODEL = "all-MiniLM-L6-v2"
 
 SYSTEM_PROMPT = (
     "Olet Nordic Clean Energy (NCE) Energy Permit AI -asiantuntija. "

@@ -39,7 +39,7 @@ _DB_DIR      = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
 _OUTPUT_DIR  = os.path.expanduser("~/bess_tool/permit_ai/output")
 _LOGO_PATH   = os.path.join(os.path.dirname(__file__), "..", "backend", "nce_energy_logo.png")
 _MODEL_ID    = "claude-sonnet-4-6"
-_EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
+_EMBED_MODEL = "all-MiniLM-L6-v2"
 
 C_NAVY   = colors.HexColor("#16213e")
 C_RED    = colors.HexColor("#e94560")
