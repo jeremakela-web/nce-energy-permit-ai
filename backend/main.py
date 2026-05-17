@@ -15,7 +15,8 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response
+from fastapi.responses import FileResponse, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -52,6 +53,7 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 MML_API_KEY = os.getenv("MML_API_KEY", "")
 PORT = int(os.environ.get("PORT", 8000))
@@ -96,7 +98,7 @@ class ReportRequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"service": "BESS-kaavoituskartoitus", "version": "2.0.0", "docs": "/docs"}
+    return FileResponse("static/index.html")
 
 
 @app.get("/api/health")
