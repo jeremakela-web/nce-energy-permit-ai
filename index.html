@@ -1520,6 +1520,17 @@ function selectProjectType(typeId) {
 // ─────────────────────────────────────────────
 // Generator: submit form → API → download PDF
 // ─────────────────────────────────────────────
+function _parseApiError(errText, httpStatus) {
+  try {
+    const parsed = JSON.parse(errText);
+    if (typeof parsed.detail === 'string') return parsed.detail;
+    if (Array.isArray(parsed.detail))
+      return parsed.detail.map(e => e.msg || JSON.stringify(e)).join(' | ');
+    if (parsed.detail) return JSON.stringify(parsed.detail);
+  } catch {}
+  return `HTTP ${httpStatus}`;
+}
+
 async function submitGeneratorForm() {
   if (!selectedProjectType) return;
 
@@ -1561,10 +1572,8 @@ async function submitGeneratorForm() {
 
     if (!resp.ok) {
       const errText = await resp.text().catch(() => '');
-      let detail = `HTTP ${resp.status}`;
-      try { detail = JSON.parse(errText).detail || detail; } catch {}
       console.error('[Generator] server error:', resp.status, errText);
-      throw new Error(detail);
+      throw new Error(_parseApiError(errText, resp.status));
     }
 
     const blob = await resp.blob();
@@ -2249,7 +2258,7 @@ function toggleGenForm() {
 async function generateApplication() {
   const hanketyyppi = document.getElementById('gen-hanketyyppi').value;
   const kt          = document.getElementById('gen-kt').value.trim();
-  const teho        = parseFloat(document.getElementById('gen-teho').value);
+  const teho        = parseFloat(document.getElementById('gen-teho').value) || 0;
   const kunta       = document.getElementById('gen-kunta').value.trim();
   const hakija      = document.getElementById('gen-hakija').value.trim();
 
@@ -2281,8 +2290,9 @@ async function generateApplication() {
     });
 
     if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.detail || `HTTP ${resp.status}`);
+      const errText = await resp.text().catch(() => '');
+      console.error('[genApplication] server error:', resp.status, errText);
+      throw new Error(_parseApiError(errText, resp.status));
     }
 
     const blob     = await resp.blob();
