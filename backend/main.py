@@ -296,7 +296,7 @@ async def generate_report(req: ReportRequest):
 # ── Permit AI ────────────────────────────────────────────────────────────────
 
 @app.post("/api/generate-application")
-@limiter.limit("10/hour")
+@limiter.limit("5/hour")
 async def generate_application_endpoint(request: Request, req: ApplicationRequest):
     """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude)."""
     allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR", "smr_bess", "vesivoima", "hybridi"}
