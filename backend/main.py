@@ -16,7 +16,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from mml_api import (
     get_land_use, get_natura_areas, get_property_boundaries,
@@ -65,6 +65,8 @@ class ApplicationRequest(BaseModel):
 
 
 class ReportRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     kiinteistotunnus: str
     title: Optional[str] = None
     map_image: Optional[str] = None          # base64 PNG (vanhentunut, käytetään vain fallbackina)
