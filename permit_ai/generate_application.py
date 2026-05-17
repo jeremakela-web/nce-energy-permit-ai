@@ -277,6 +277,40 @@ _HANKE_CFG = {
             "Lentoestekartoitus (Traficom/Finavia)",
         ],
     },
+    "smr_bess": {
+        "nimi_fi":    "SMR + BESS hybridienergijärjestelmä",
+        "lyhenne":    "SMR+BESS",
+        "rag_queries": [
+            "ydinvoima SMR lupa STUK pre-licensing YVL turvallisuusseloste",
+            "BESS akkuvarasto ympäristölupa paloturvallisuus litiumioniakku sammutusvedet",
+            "pienydinvoimala energiavarasto hybridijärjestelmä verkkoliityntä Fingrid",
+        ],
+        "luvat": [
+            ("Periaatepäätös (VN)",                "Valtioneuvosto",             "Ydinenergialaki 990/1987 § 11"),
+            ("YVA-menettely",                      "TEM / ELY-keskus",           "YVA-laki 252/2017"),
+            ("Rakentamislupa (ydinlaitos)",         "STUK",                       "YEL 990/1987 § 18"),
+            ("Käyttölupa (ydinlaitos)",             "STUK",                       "YEL 990/1987 § 20"),
+            ("Ympäristölupa (BESS-komponentti)",    "Luova",                      "YSL 527/2014"),
+            ("Toimenpideilmoitus pelast. (BESS)",   "Pelastuslaitos",             "Pelastuslaki 379/2011"),
+            ("Rakennuslupa",                        "Kunta",                      "MRL 132/1999"),
+            ("Vesilupa (jäähdytysvesi, tarvitt.)",  "Luova",                      "Vesilaki 587/2011"),
+            ("Verkkoliityntäsopimus",               "Fingrid Oyj",                "Sähkömarkkinalaki 588/2013"),
+        ],
+        "liitteet": [
+            "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)",
+            "BESS-paloturvallisuusselvitys (NFPA 855 / EN-standardit)",
+            "Integroitu energiavarastosuunnitelma (SMR + BESS-mitoitus)",
+            "YVA-ohjelma ja -selostus",
+            "Säteilyturvallisuusanalyysi (YVL C.1)",
+            "Turvallisuussuunnittelun periaatteet (YVL B.1)",
+            "Ydinmateriaalivalvontasuunnitelma (IAEA SQ-protokolla)",
+            "Sammutusvesien keräyssuunnitelma (BESS-komponentti)",
+            "Geotekninen perusselvitys (seismisyys, hydrogeologia)",
+            "Jäähdytysvesitarve- ja ympäristöarviointi",
+            "Verkkoliityntälaskelma (SMR + BESS yhdistetty)",
+            "Hätäjärjestelmien ja -menettelyjen kuvaus",
+        ],
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -18,6 +18,12 @@ venv/
 permit_ai/output/
 BESS_raportti_*.pdf
 
+# ChromaDB vektorivarasto (iso, ei kuulu repoon)
+permit_ai/embeddings/
+
+# Lokit
+*.log
+
 # macOS
 .DS_Store
 .AppleDouble

@@ -286,7 +286,7 @@ async def generate_report(req: ReportRequest):
 @app.post("/api/generate-application")
 async def generate_application_endpoint(req: ApplicationRequest):
     """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude)."""
-    allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR", "vesivoima", "hybridi"}
+    allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR", "smr_bess", "vesivoima", "hybridi"}
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
                             detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")

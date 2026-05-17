@@ -21,26 +21,28 @@
       overflow: hidden;
     }
 
+    /* ── Header ── */
     header {
       background: #16213e;
       border-bottom: 2px solid #0f3460;
-      padding: 10px 20px;
+      padding: 0 20px;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      flex-shrink: 0;
+      min-height: 52px;
+    }
+
+    .header-brand {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
+      padding: 8px 0;
       flex-shrink: 0;
     }
 
-    header h1 {
-      font-size: 1.1rem;
-      color: #e94560;
-      letter-spacing: 0.5px;
-    }
-
-    header .subtitle {
-      font-size: 0.8rem;
-      color: #8899aa;
-    }
+    header h1 { font-size: 1.05rem; color: #e94560; letter-spacing: 0.5px; }
+    header .subtitle { font-size: 0.76rem; color: #8899aa; }
 
     .badge {
       background: #0f3460;
@@ -49,16 +51,281 @@
       padding: 3px 10px;
       font-size: 0.75rem;
       color: #e94560;
-      margin-left: auto;
     }
 
+    /* ── Tab Navigation ── */
+    .tab-nav {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      margin-left: 20px;
+      align-self: stretch;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 8px 18px 10px;
+      color: #8899aa;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s;
+      white-space: nowrap;
+      font-family: inherit;
+      align-self: flex-end;
+    }
+    .tab-btn:hover { color: #c0d0e0; background: rgba(255,255,255,0.04); }
+    .tab-btn.active { color: #00C2A8; border-bottom-color: #00C2A8; font-weight: 600; }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Tab area ── */
+    .tab-area {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .tab-content {
+      display: none;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Generator tab ── */
+    #tab-generator.active {
+      overflow-y: auto;
+    }
+
+    .gen-layout {
+      padding: 26px 32px 40px;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .gen-page-title {
+      font-size: 1.18rem;
+      color: #00C2A8;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .gen-page-sub {
+      font-size: 0.82rem;
+      color: #8899aa;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .gen-section-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4a6a8a;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    /* ── Project type cards ── */
+    .gen-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+      margin-bottom: 26px;
+    }
+
+    .gen-card {
+      background: #16213e;
+      border: 1.5px solid #2a3a5e;
+      border-radius: 12px;
+      padding: 18px 13px 14px;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.12s;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+
+    .gen-card:hover {
+      border-color: #00C2A8;
+      background: #1a2a48;
+      box-shadow: 0 4px 24px rgba(0,194,168,0.14);
+      transform: translateY(-2px);
+    }
+
+    .gen-card.selected {
+      border-color: #00C2A8;
+      background: #0d1e30;
+      box-shadow: 0 0 0 2px rgba(0,194,168,0.3), 0 4px 20px rgba(0,194,168,0.18);
+    }
+
+    .gen-card-icon {
+      font-size: 2rem;
+      margin-bottom: 9px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 6px rgba(0,194,168,0.2));
+    }
+
+    .gen-card-name {
+      font-size: 0.83rem;
+      color: #e0e0e0;
+      font-weight: 600;
+      margin-bottom: 3px;
+      line-height: 1.3;
+    }
+
+    .gen-card-sub {
+      font-size: 0.66rem;
+      color: #6a8aaa;
+      line-height: 1.4;
+    }
+
+    .gen-card-badge {
+      display: inline-block;
+      background: rgba(0,194,168,0.18);
+      color: #00C2A8;
+      font-size: 0.58rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 8px;
+      margin-top: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    /* ── Generator form ── */
+    .gen-form-wrap {
+      background: #16213e;
+      border: 1.5px solid #00C2A8;
+      border-radius: 14px;
+      padding: 24px 28px 22px;
+      max-width: 800px;
+      animation: fadeSlideIn 0.22s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .gen-form-title {
+      font-size: 0.98rem;
+      color: #00C2A8;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .gen-form-sub {
+      font-size: 0.73rem;
+      color: #4a6a8a;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .gen-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .gen-form-grid.full { grid-template-columns: 1fr; }
+
+    .gen-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .gen-field label {
+      font-size: 0.69rem;
+      color: #4a7a9a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .gen-field input,
+    .gen-field select {
+      background: #0f2040;
+      border: 1px solid #2a4a7f;
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: #d8e8ff;
+      font-size: 0.83rem;
+      width: 100%;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+
+    .gen-field input:focus,
+    .gen-field select:focus { outline: none; border-color: #00C2A8; }
+    .gen-field select option { background: #0f1e3a; }
+    .gen-field input[type="number"] { font-family: monospace; }
+
+    .gen-submit-row {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #1a2a4a;
+    }
+
+    .gen-submit-btn {
+      background: #00C2A8;
+      color: #0a1020;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 24px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .gen-submit-btn:hover { background: #00a890; }
+    .gen-submit-btn:disabled { background: #1a3a4a; color: #3a6a7a; cursor: not-allowed; }
+
+    .gen-disclaimer {
+      font-size: 0.68rem;
+      color: #3a5a7a;
+      line-height: 1.55;
+      flex: 1;
+      padding-top: 2px;
+    }
+
+    /* ── BESS tab layout ── */
+    #tab-bess.active {
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
     .main-container {
       display: flex;
       flex: 1;
       overflow: hidden;
     }
 
-    /* ── Sidebar ── */
     .sidebar {
       width: 320px;
       background: #16213e;
@@ -268,7 +535,7 @@
     .proj-field select option { background: #16213e; }
     .proj-field input[type="number"] { font-family: monospace; }
 
-    /* ── Lokipalkki (alareuna) ── */
+    /* ── Lokipalkki ── */
     #logbar {
       flex-shrink: 0;
       background: #0d1117;
@@ -332,7 +599,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Generoi hakemus -lomake ─────────────────── */
+    /* ── Generoi hakemus -lomake (Permit AI panel) ── */
     .pai-gen-form {
       max-height: 0;
       overflow: hidden;
@@ -425,7 +692,7 @@
     }
     .btn-gen-hakemus:hover { background: #1a4a2a; border-color: #4caf50; color: #80e090; }
 
-    /* ── Permit AI Chat Panel ─────────────────────── */
+    /* ── Permit AI Chat Panel ── */
     .permit-ai-panel {
       position: fixed;
       top: 0; right: 0;
@@ -451,29 +718,13 @@
       gap: 9px;
       flex-shrink: 0;
     }
-    .pai-header-title {
-      flex: 1;
-    }
-    .pai-header-title h2 {
-      font-size: 0.88rem;
-      color: #64b5f6;
-      letter-spacing: 0.3px;
-    }
-    .pai-header-title p {
-      font-size: 0.68rem;
-      color: #4a6a9a;
-      margin-top: 1px;
-    }
+    .pai-header-title { flex: 1; }
+    .pai-header-title h2 { font-size: 0.88rem; color: #64b5f6; letter-spacing: 0.3px; }
+    .pai-header-title p { font-size: 0.68rem; color: #4a6a9a; margin-top: 1px; }
     .pai-close {
-      background: none;
-      border: none;
-      color: #4a6a9a;
-      cursor: pointer;
-      font-size: 1.1rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      line-height: 1;
-      transition: color 0.15s, background 0.15s;
+      background: none; border: none; color: #4a6a9a;
+      cursor: pointer; font-size: 1.1rem; padding: 2px 6px;
+      border-radius: 4px; line-height: 1; transition: color 0.15s, background 0.15s;
     }
     .pai-close:hover { color: #e94560; background: rgba(233,69,96,0.1); }
 
@@ -513,7 +764,6 @@
     .pai-messages::-webkit-scrollbar-thumb { background: #1e3a6a; border-radius: 2px; }
 
     .chat-msg { display: flex; flex-direction: column; gap: 3px; }
-
     .chat-msg.user { align-items: flex-end; }
     .chat-msg.user .bubble {
       background: #1a3460;
@@ -524,7 +774,6 @@
       color: #c8daff;
       max-width: 88%;
     }
-
     .chat-msg.ai .bubble {
       background: #0f1e3a;
       border: 1px solid #1e3a6a;
@@ -537,40 +786,24 @@
     }
     .chat-msg.ai .bubble strong { color: #90caff; }
     .chat-msg.ai .bubble .md-h2 {
-      font-size: 0.84rem;
-      color: #64b5f6;
-      display: block;
-      margin: 9px 0 3px;
-      font-weight: 700;
+      font-size: 0.84rem; color: #64b5f6;
+      display: block; margin: 9px 0 3px; font-weight: 700;
     }
     .chat-msg.ai .bubble .md-h3 {
-      color: #90caff;
-      display: block;
-      margin: 6px 0 2px;
-      font-weight: 600;
-      font-size: 0.8rem;
+      color: #90caff; display: block;
+      margin: 6px 0 2px; font-weight: 600; font-size: 0.8rem;
     }
     .chat-msg.ai .bubble hr { border: none; border-top: 1px solid #1e3a6a; margin: 7px 0; }
-
-    .chat-msg .sources {
-      font-size: 0.67rem;
-      color: #3a5a8a;
-      padding: 0 4px;
-    }
+    .chat-msg .sources { font-size: 0.67rem; color: #3a5a8a; padding: 0 4px; }
 
     .pai-typing {
-      display: flex;
-      gap: 5px;
-      padding: 8px 13px;
-      align-items: center;
-      background: #0f1e3a;
+      display: flex; gap: 5px; padding: 8px 13px;
+      align-items: center; background: #0f1e3a;
       border: 1px solid #1e3a6a;
-      border-radius: 2px 10px 10px 10px;
-      width: fit-content;
+      border-radius: 2px 10px 10px 10px; width: fit-content;
     }
     .pai-typing span {
-      width: 6px; height: 6px;
-      background: #3a7bd5;
+      width: 6px; height: 6px; background: #3a7bd5;
       border-radius: 50%;
       animation: paiTyping 1.1s infinite ease-in-out;
     }
@@ -607,16 +840,11 @@
     .pai-input-area textarea:focus { outline: none; border-color: #3a7bd5; }
     .pai-input-area textarea::placeholder { color: #3a5a7a; }
     .pai-send {
-      background: #3a7bd5;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 15px;
-      cursor: pointer;
-      font-size: 0.81rem;
-      font-weight: 600;
-      transition: background 0.2s;
-      white-space: nowrap;
+      background: #3a7bd5; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 10px 15px; cursor: pointer;
+      font-size: 0.81rem; font-weight: 600;
+      transition: background 0.2s; white-space: nowrap;
     }
     .pai-send:hover { background: #2a6bc5; }
     .pai-send:disabled { background: #1a2a4a; color: #3a5a7a; cursor: not-allowed; }
@@ -638,278 +866,313 @@
 </head>
 <body>
 
+<!-- ── Header ── -->
 <header>
-  <div style="display:flex;align-items:center;gap:16px;">
+  <div class="header-brand">
     <img src="nce_energy_logo.png" alt="NCE Energy"
-         style="width:160px;height:auto;display:block;flex-shrink:0;" />
+         style="width:150px;height:auto;display:block;flex-shrink:0;" />
     <div>
       <h1>NCE Energy Permit AI</h1>
       <div class="subtitle">Energiahankkeiden lupaprosessianalyysi</div>
     </div>
   </div>
-  <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
-    &#x1F4AC; Permit AI
-  </button>
-  <div class="badge" id="header-badge">Pöytyä · 636-439-4-711</div>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="generator" onclick="switchTab('generator')">
+      &#x1F4C4; Lupahakemusgeneraattori
+    </button>
+    <button class="tab-btn" data-tab="bess" onclick="switchTab('bess')">
+      &#x1F5FA;&#xFE0F; BESS Sijaintianalyysi
+    </button>
+  </nav>
+
+  <div class="header-right">
+    <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
+      &#x1F4AC; Permit AI
+    </button>
+    <div class="badge" id="header-badge" style="display:none;">Pöytyä · 636-439-4-711</div>
+  </div>
 </header>
 
-<div class="main-container">
+<!-- ── Tab area ── -->
+<div class="tab-area">
 
-  <!-- ── Sidebar ── -->
-  <aside class="sidebar">
+  <!-- ── Tab: Generator ── -->
+  <div id="tab-generator" class="tab-content active">
+    <div class="gen-layout">
+      <div class="gen-page-title">Lupahakemusgeneraattori</div>
+      <div class="gen-page-sub">
+        Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa (~60 s).
+        Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.
+      </div>
 
-    <div class="sidebar-section">
-      <h3>Hankkeen tiedot</h3>
+      <div class="gen-section-label">Hanketyyppi</div>
+      <div class="gen-cards" id="gen-cards-grid">
+        <!-- Cards rendered by JS -->
+      </div>
 
-      <div class="proj-field">
-        <label>Hankkeen omistaja</label>
-        <input type="text" id="proj-owner" value="Carbon Zero Finland" />
-      </div>
-      <div class="proj-field">
-        <label>Hankkeen nimi</label>
-        <input type="text" id="proj-name" value="Standalone BESS 1 MW" />
-      </div>
-      <div class="proj-field">
-        <label>Teho MW</label>
-        <input type="number" id="proj-power" value="1" min="0.1" step="0.1" />
-      </div>
-      <div class="proj-field">
-        <label>Verkkoliityntä</label>
-        <select id="proj-grid">
-          <option value="Jakeluverkko 20 kV (Caruna)">Caruna 20 kV (jakeluverkko)</option>
-          <option value="Jakeluverkko 20 kV (Elenia)">Elenia 20 kV (jakeluverkko)</option>
-          <option value="Jakeluverkko 20 kV (muu)">Muu jakeluverkko 20 kV</option>
-          <option value="Fingrid 110 kV (kantaverkko)">Fingrid 110 kV (kantaverkko)</option>
-          <option value="Fingrid 400 kV (kantaverkko)">Fingrid 400 kV (kantaverkko)</option>
-        </select>
-      </div>
-      <div class="proj-field">
-        <label>Tavoitemarkkinat</label>
-        <select id="proj-market">
-          <option value="FCR (Frequency Containment Reserve)">FCR</option>
-          <option value="mFRR (Manual Frequency Restoration Reserve)">mFRR</option>
-          <option value="aFRR (Automatic Frequency Restoration Reserve)">aFRR</option>
-          <option value="Arbitraasi">Arbitraasi</option>
-        </select>
-      </div>
+      <!-- Form section (hidden until card selected) -->
+      <div id="gen-form-section" style="display:none;"></div>
     </div>
+  </div>
 
-    <div class="sidebar-section">
-      <h3>Kiinteistö</h3>
-      <div class="kt-input-row" style="margin-bottom:8px;">
-        <input type="text" id="kt-input" value="636-439-4-711"
-               placeholder="KKK-VVV-RR-PPPP" spellcheck="false" />
-        <button class="btn" id="btn-fetch-property">Hae</button>
-      </div>
-    </div>
+  <!-- ── Tab: BESS Sijaintianalyysi ── -->
+  <div id="tab-bess" class="tab-content">
+    <div class="main-container">
 
-    <div class="sidebar-section">
-      <h3>Kiinteistötiedot</h3>
-      <div class="info-grid" id="property-info">
-        <div class="info-item">
-          <div class="label">Tunnus</div>
-          <div class="value na" id="info-kt">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Pinta-ala</div>
-          <div class="value na" id="info-area">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Kunta</div>
-          <div class="value na" id="info-muni">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Kylä</div>
-          <div class="value na" id="info-village">–</div>
-        </div>
-      </div>
-    </div>
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
 
-    <div class="sidebar-section" id="section-manual">
-      <h3>Manuaaliset tiedot</h3>
-      <div style="font-size:0.72rem;color:#8899aa;margin-bottom:8px;line-height:1.4;">
-        Täytä kentät joihin rajapinta ei palauta arvoa. Vaikuttavat pisteytykseen.
-      </div>
-
-      <div class="proj-field">
-        <label>Kaavoitustilanne</label>
-        <select id="manual-kaavoitus">
-          <option value="">– ei asetettu –</option>
-          <option value="asemakaava">Asemakaava</option>
-          <option value="yleiskaava">Yleiskaava</option>
-          <option value="ei_kaavaa">Ei kaavaa</option>
-          <option value="ei_tietoa">Ei tietoa</option>
-        </select>
-      </div>
-      <div class="proj-field">
-        <label>Tulvavaara</label>
-        <select id="manual-tulvavaara">
-          <option value="">– ei asetettu –</option>
-          <option value="ei">Ei</option>
-          <option value="kyllä">Kyllä</option>
-          <option value="ei_tietoa">Ei tietoa</option>
-        </select>
-      </div>
-      <div class="proj-field">
-        <label>Maaperä</label>
-        <select id="manual-maapera">
-          <option value="">– ei asetettu –</option>
-          <option value="kallio">Kallio</option>
-          <option value="moreeni">Moreeni</option>
-          <option value="hiekka">Hiekka</option>
-          <option value="savi">Savi</option>
-          <option value="turve">Turve</option>
-          <option value="ei_tietoa">Ei tietoa</option>
-        </select>
-      </div>
-      <div class="proj-field" id="manual-pinta-ala-wrap" style="display:none;">
-        <label>Rekisteripinta-ala (ha) <span style="color:#8899aa;font-size:0.7em;">MML ei palauttanut arvoa</span></label>
-        <input type="number" id="manual-pinta-ala" placeholder="esim. 4.50" min="0.01" step="0.01" />
-      </div>
-
-      <div style="margin-top:8px;">
-        <button class="btn secondary" id="btn-apply-manual" style="width:100%;">
-          Päivitä pisteet manuaalisilla tiedoilla
-        </button>
-      </div>
-    </div>
-
-    <div class="sidebar-section">
-      <h3>BESS-soveltuvuus</h3>
-      <div class="info-grid" style="margin-bottom:10px;">
-        <div class="info-item" style="grid-column:1/-1;">
-          <div class="label">Etäisyys verkko</div>
-          <div class="value na" id="info-grid-dist">–</div>
-          <div style="font-size:0.68rem;color:#8899aa;margin-top:2px;" id="info-grid-status"></div>
-          <div style="font-size:0.66rem;color:#6a7a8a;margin-top:4px;line-height:1.4;" id="grid-link-note">
-            OSM-data puutteellinen — <a id="grid-offer-link" href="https://www.caruna.fi/asiakaspalvelu/liittyminen/uusi-liittyman" target="_blank" rel="noopener" style="color:#4a9eff;text-decoration:none;font-weight:600;">Pyydä tarjous →</a>
+        <div class="sidebar-section">
+          <h3>Hankkeen tiedot</h3>
+          <div class="proj-field">
+            <label>Hankkeen omistaja</label>
+            <input type="text" id="proj-owner" value="Carbon Zero Finland" />
+          </div>
+          <div class="proj-field">
+            <label>Hankkeen nimi</label>
+            <input type="text" id="proj-name" value="Standalone BESS 1 MW" />
+          </div>
+          <div class="proj-field">
+            <label>Teho MW</label>
+            <input type="number" id="proj-power" value="1" min="0.1" step="0.1" />
+          </div>
+          <div class="proj-field">
+            <label>Verkkoliityntä</label>
+            <select id="proj-grid">
+              <option value="Jakeluverkko 20 kV (Caruna)">Caruna 20 kV (jakeluverkko)</option>
+              <option value="Jakeluverkko 20 kV (Elenia)">Elenia 20 kV (jakeluverkko)</option>
+              <option value="Jakeluverkko 20 kV (muu)">Muu jakeluverkko 20 kV</option>
+              <option value="Fingrid 110 kV (kantaverkko)">Fingrid 110 kV (kantaverkko)</option>
+              <option value="Fingrid 400 kV (kantaverkko)">Fingrid 400 kV (kantaverkko)</option>
+            </select>
+          </div>
+          <div class="proj-field">
+            <label>Tavoitemarkkinat</label>
+            <select id="proj-market">
+              <option value="FCR (Frequency Containment Reserve)">FCR</option>
+              <option value="mFRR (Manual Frequency Restoration Reserve)">mFRR</option>
+              <option value="aFRR (Automatic Frequency Restoration Reserve)">aFRR</option>
+              <option value="Arbitraasi">Arbitraasi</option>
+            </select>
           </div>
         </div>
-        <div class="info-item">
-          <div class="label">Kaavat. tilanne</div>
-          <div class="value na" id="info-zoning">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Natura / SuojeluA</div>
-          <div class="value na" id="info-nature">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Pohjavesialue</div>
-          <div class="value na" id="info-groundwater">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Lähin rakennus</div>
-          <div class="value na" id="info-building">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Maankäyttö</div>
-          <div class="value na" id="info-landuse">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Muinaismuistot</div>
-          <div class="value na" id="info-heritage">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Tiesuoja-alue</div>
-          <div class="value na" id="info-road">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Maaperä (GTK)</div>
-          <div class="value na" id="info-soil">–</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Tulvavaara (SYKE)</div>
-          <div class="value na" id="info-flood">–</div>
-        </div>
-        <div class="info-item" style="grid-column:1/-1;">
-          <div class="label">Lähin sähköasema</div>
-          <div class="value na" id="info-substation">–</div>
-        </div>
-      </div>
 
-      <div class="score-bar-wrap">
-        <div class="score-label">
-          <span>Soveltuvuusindeksi</span>
-          <span id="score-value">– / 100</span>
+        <div class="sidebar-section">
+          <h3>Kiinteistö</h3>
+          <div class="kt-input-row" style="margin-bottom:8px;">
+            <input type="text" id="kt-input" value="636-439-4-711"
+                   placeholder="KKK-VVV-RR-PPPP" spellcheck="false" />
+            <button class="btn" id="btn-fetch-property">Hae</button>
+          </div>
         </div>
-        <div class="score-bar">
-          <div class="score-bar-fill" id="score-fill" style="width:0%"></div>
+
+        <div class="sidebar-section">
+          <h3>Kiinteistötiedot</h3>
+          <div class="info-grid" id="property-info">
+            <div class="info-item">
+              <div class="label">Tunnus</div>
+              <div class="value na" id="info-kt">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Pinta-ala</div>
+              <div class="value na" id="info-area">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Kunta</div>
+              <div class="value na" id="info-muni">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Kylä</div>
+              <div class="value na" id="info-village">–</div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="sidebar-section">
-      <h3>Karttatasot</h3>
+        <div class="sidebar-section" id="section-manual">
+          <h3>Manuaaliset tiedot</h3>
+          <div style="font-size:0.72rem;color:#8899aa;margin-bottom:8px;line-height:1.4;">
+            Täytä kentät joihin rajapinta ei palauta arvoa. Vaikuttavat pisteytykseen.
+          </div>
+          <div class="proj-field">
+            <label>Kaavoitustilanne</label>
+            <select id="manual-kaavoitus">
+              <option value="">– ei asetettu –</option>
+              <option value="asemakaava">Asemakaava</option>
+              <option value="yleiskaava">Yleiskaava</option>
+              <option value="ei_kaavaa">Ei kaavaa</option>
+              <option value="ei_tietoa">Ei tietoa</option>
+            </select>
+          </div>
+          <div class="proj-field">
+            <label>Tulvavaara</label>
+            <select id="manual-tulvavaara">
+              <option value="">– ei asetettu –</option>
+              <option value="ei">Ei</option>
+              <option value="kyllä">Kyllä</option>
+              <option value="ei_tietoa">Ei tietoa</option>
+            </select>
+          </div>
+          <div class="proj-field">
+            <label>Maaperä</label>
+            <select id="manual-maapera">
+              <option value="">– ei asetettu –</option>
+              <option value="kallio">Kallio</option>
+              <option value="moreeni">Moreeni</option>
+              <option value="hiekka">Hiekka</option>
+              <option value="savi">Savi</option>
+              <option value="turve">Turve</option>
+              <option value="ei_tietoa">Ei tietoa</option>
+            </select>
+          </div>
+          <div class="proj-field" id="manual-pinta-ala-wrap" style="display:none;">
+            <label>Rekisteripinta-ala (ha) <span style="color:#8899aa;font-size:0.7em;">MML ei palauttanut arvoa</span></label>
+            <input type="number" id="manual-pinta-ala" placeholder="esim. 4.50" min="0.01" step="0.01" />
+          </div>
+          <div style="margin-top:8px;">
+            <button class="btn secondary" id="btn-apply-manual" style="width:100%;">
+              Päivitä pisteet manuaalisilla tiedoilla
+            </button>
+          </div>
+        </div>
 
-      <label class="layer-toggle">
-        <input type="checkbox" id="lyr-property" checked />
-        <span class="dot" style="background:#e94560;"></span>
-        <span>Kiinteistörajat</span>
-      </label>
-      <label class="layer-toggle">
-        <input type="checkbox" id="lyr-grid" />
-        <span class="dot" style="background:#f4a261;"></span>
-        <span>Voimajohdot (OSM/Fingrid)</span>
-      </label>
-      <label class="layer-toggle">
-        <input type="checkbox" id="lyr-groundwater" />
-        <span class="dot" style="background:#00bcd4;"></span>
-        <span>Pohjavesialueet (SYKE)</span>
-      </label>
-      <label class="layer-toggle">
-        <input type="checkbox" id="lyr-natura" />
-        <span class="dot" style="background:#9c27b0;"></span>
-        <span>Natura 2000 (SYKE)</span>
-      </label>
-      <label class="layer-toggle">
-        <input type="checkbox" id="lyr-buildings" />
-        <span class="dot" style="background:#ff7043;"></span>
-        <span>Rakennukset 1 km (OSM)</span>
-      </label>
-      <label class="layer-toggle">
-        <input type="checkbox" id="lyr-zoning" />
-        <span class="dot" style="background:#4caf50;"></span>
-        <span>Kaavat (MML WMS)</span>
-      </label>
-      <label class="layer-toggle">
-        <input type="checkbox" id="lyr-buffer" />
-        <span class="dot" style="background:#64b5f6;"></span>
-        <span>500 m puskurivyöhyke</span>
-      </label>
-    </div>
+        <div class="sidebar-section">
+          <h3>BESS-soveltuvuus</h3>
+          <div class="info-grid" style="margin-bottom:10px;">
+            <div class="info-item" style="grid-column:1/-1;">
+              <div class="label">Etäisyys verkko</div>
+              <div class="value na" id="info-grid-dist">–</div>
+              <div style="font-size:0.68rem;color:#8899aa;margin-top:2px;" id="info-grid-status"></div>
+              <div style="font-size:0.66rem;color:#6a7a8a;margin-top:4px;line-height:1.4;" id="grid-link-note">
+                OSM-data puutteellinen — <a id="grid-offer-link" href="https://www.caruna.fi/asiakaspalvelu/liittyminen/uusi-liittyman" target="_blank" rel="noopener" style="color:#4a9eff;text-decoration:none;font-weight:600;">Pyydä tarjous →</a>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="label">Kaavat. tilanne</div>
+              <div class="value na" id="info-zoning">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Natura / SuojeluA</div>
+              <div class="value na" id="info-nature">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Pohjavesialue</div>
+              <div class="value na" id="info-groundwater">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Lähin rakennus</div>
+              <div class="value na" id="info-building">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Maankäyttö</div>
+              <div class="value na" id="info-landuse">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Muinaismuistot</div>
+              <div class="value na" id="info-heritage">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Tiesuoja-alue</div>
+              <div class="value na" id="info-road">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Maaperä (GTK)</div>
+              <div class="value na" id="info-soil">–</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Tulvavaara (SYKE)</div>
+              <div class="value na" id="info-flood">–</div>
+            </div>
+            <div class="info-item" style="grid-column:1/-1;">
+              <div class="label">Lähin sähköasema</div>
+              <div class="value na" id="info-substation">–</div>
+            </div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-label">
+              <span>Soveltuvuusindeksi</span>
+              <span id="score-value">– / 100</span>
+            </div>
+            <div class="score-bar">
+              <div class="score-bar-fill" id="score-fill" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
 
-    <div class="sidebar-section">
-      <h3>Toiminnot</h3>
-      <div class="btn-row">
-        <button class="btn" id="btn-analyze">Analysoi BESS</button>
-        <button class="btn secondary" id="btn-report">PDF-raportti</button>
-      </div>
-      <div style="margin-top:10px;">
-        <button class="btn secondary" id="btn-zoom-property" style="width:100%;">
-          Kohdista kiinteistölle
-        </button>
-      </div>
-    </div>
+        <div class="sidebar-section">
+          <h3>Karttatasot</h3>
+          <label class="layer-toggle">
+            <input type="checkbox" id="lyr-property" checked />
+            <span class="dot" style="background:#e94560;"></span>
+            <span>Kiinteistörajat</span>
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" id="lyr-grid" />
+            <span class="dot" style="background:#f4a261;"></span>
+            <span>Voimajohdot (OSM/Fingrid)</span>
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" id="lyr-groundwater" />
+            <span class="dot" style="background:#00bcd4;"></span>
+            <span>Pohjavesialueet (SYKE)</span>
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" id="lyr-natura" />
+            <span class="dot" style="background:#9c27b0;"></span>
+            <span>Natura 2000 (SYKE)</span>
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" id="lyr-buildings" />
+            <span class="dot" style="background:#ff7043;"></span>
+            <span>Rakennukset 1 km (OSM)</span>
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" id="lyr-zoning" />
+            <span class="dot" style="background:#4caf50;"></span>
+            <span>Kaavat (MML WMS)</span>
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" id="lyr-buffer" />
+            <span class="dot" style="background:#64b5f6;"></span>
+            <span>500 m puskurivyöhyke</span>
+          </label>
+        </div>
 
-    <div class="sidebar-section" id="ai-strategy-section" style="display:none;">
-      <h3>AI-lupaprosessistrategia</h3>
-      <div style="font-size:0.72rem;color:#64b5f6;margin-bottom:6px;">
-        Claude AI — ei juridinen neuvo
-      </div>
-      <div id="ai-strategy-text" style="font-size:0.8rem;line-height:1.5;color:#e0e0e0;white-space:pre-wrap;"></div>
-    </div>
+        <div class="sidebar-section">
+          <h3>Toiminnot</h3>
+          <div class="btn-row">
+            <button class="btn" id="btn-analyze">Analysoi BESS</button>
+            <button class="btn secondary" id="btn-report">PDF-raportti</button>
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn secondary" id="btn-zoom-property" style="width:100%;">
+              Kohdista kiinteistölle
+            </button>
+          </div>
+        </div>
 
-    <div class="sidebar-section">
-      <h3>Loki</h3>
-      <div id="status-log">Odottaa toimintoa…</div>
-    </div>
+        <div class="sidebar-section" id="ai-strategy-section" style="display:none;">
+          <h3>AI-lupaprosessistrategia</h3>
+          <div style="font-size:0.72rem;color:#64b5f6;margin-bottom:6px;">
+            Claude AI — ei juridinen neuvo
+          </div>
+          <div id="ai-strategy-text" style="font-size:0.8rem;line-height:1.5;color:#e0e0e0;white-space:pre-wrap;"></div>
+        </div>
 
-  </aside>
+        <div class="sidebar-section">
+          <h3>Loki</h3>
+          <div id="status-log">Odottaa toimintoa…</div>
+        </div>
 
-  <!-- ── Map ── -->
-  <div id="map"></div>
+      </aside>
 
-</div>
+      <!-- ── Map ── -->
+      <div id="map"></div>
+
+    </div><!-- .main-container -->
+  </div><!-- #tab-bess -->
+
+</div><!-- .tab-area -->
 
 <!-- ── Lokipalkki ── -->
 <div id="logbar">
@@ -917,7 +1180,7 @@
     <div class="logbar-entry info newest">
       <span class="logbar-dot"></span>
       <span class="logbar-ts">--:--:--</span>
-      <span class="logbar-msg">Kartta alustetaan…</span>
+      <span class="logbar-msg">Valmis — valitse hanketyyppi tai vaihda BESS-analyysivälilehdelle</span>
     </div>
   </div>
 </div>
@@ -928,7 +1191,7 @@
   <div class="pai-header">
     <div class="pai-header-title">
       <h2>&#x1F4CB; Permit AI</h2>
-      <p>NCE Energy &mdash; Fingrid &middot; Pelastusopisto &middot; Tukes</p>
+      <p>NCE Energy &mdash; Fingrid &middot; Pelastusopisto &middot; Tukes &middot; STUK YVL</p>
     </div>
     <button class="pai-close" onclick="togglePermitAI()" title="Sulje">&#x2715;</button>
   </div>
@@ -938,7 +1201,7 @@
     <button class="pai-chip" onclick="askPermit('Mitä Fingrid vaatii verkkoliityntälaskelmilta BESS-hankkeelle?')">Fingrid-vaatimukset</button>
     <button class="pai-chip" onclick="askPermit('Milloin BESS-hankkeelle tarvitaan YVA-menettely?')">YVA-kynnys</button>
     <button class="pai-chip" onclick="askPermit('Mitkä ovat paloturvallisuusvaatimukset BESS-konttiasennukselle ulkona?')">Paloturvallisuus</button>
-    <button class="pai-chip" onclick="askPermit('Kuinka kauan ympäristölupaprosessi kestää BESS-hankkeelle?')">Aikataulu</button>
+    <button class="pai-chip" onclick="askPermit('Mitä STUK edellyttää SMR-laitoksen pre-licensing vaiheessa?')">SMR pre-licensing</button>
     <button class="pai-chip" onclick="askPermit('Mitä sammutusvedenkeräysvaatimuksia on litiumioniakkuvarastolle?')">Sammutusvesi</button>
     <button class="btn-gen-hakemus" onclick="toggleGenForm()">&#x1F4C4; Generoi hakemus</button>
   </div>
@@ -955,6 +1218,7 @@
           <option value="tuulivoima_meri">Tuulivoima (meri / offshore)</option>
           <option value="aurinkovoima">Aurinkovoima</option>
           <option value="SMR">SMR — Pienydinreaktori</option>
+          <option value="smr_bess">SMR + BESS — Hybridi</option>
           <option value="vesivoima">Vesivoima</option>
           <option value="hybridi">Hybridivoimala (BESS + tuuli/aurinko)</option>
         </select>
@@ -990,13 +1254,17 @@
 
   <div class="pai-messages" id="pai-messages">
     <div class="chat-msg ai">
-      <div class="bubble">Hei! Olen NCE Energy Permit AI.<br><br>Vastaan kysymyksiin BESS-akkuvarastojen lupaprosesseista perustuen Fingridin, Pelastuslaitoksen ja Tukesin viimeisimpiin julkaisuihin (2024–2025).<br><br>Kirjoita kysymys alla tai valitse pikavalinta.</div>
+      <div class="bubble">Hei! Olen NCE Energy Permit AI.<br><br>
+        Vastaan kysymyksiin energia-alan lupaprosesseista perustuen Fingridin, Pelastuslaitoksen, Tukesin
+        ja STUK:n YVL-ohjeisiin (2024–2025).<br><br>
+        Kirjoita kysymys tai valitse pikavalinta. Voit myös generoida lupahakemusluonnoksen PDF-muodossa.
+      </div>
     </div>
   </div>
 
   <div class="pai-input-area">
     <textarea id="pai-textarea"
-      placeholder="Kysy lupaprosessista, Fingrid-vaatimuksista, paloturvallisuudesta… (Ctrl+Enter lähettää)"></textarea>
+      placeholder="Kysy lupaprosessista, Fingrid-vaatimuksista, STUK YVL-ohjeista… (Ctrl+Enter lähettää)"></textarea>
     <button class="pai-send" id="pai-send" onclick="sendPermitMessage()">L&auml;het&auml;</button>
   </div>
 
@@ -1013,13 +1281,11 @@ const DEFAULT_KT = '636-439-4-711';
 const CENTER = [60.7, 22.7];
 const ZOOM = 13;
 
-// Viimeksi haettu kiinteistögeometria – käytetään sekä kartalla että PDF:ssä
 let propertyGeoJson = null;
-// Viimeksi ajettu analyysi – sama arvo näytetään UI:ssa ja PDF:ssä
 let lastAnalysis = null;
 
 // ─────────────────────────────────────────────
-// log() – määriteltävä ennen kaikkia kutsujia
+// log() — defined before all callers
 // ─────────────────────────────────────────────
 const _logHistory = [];
 
@@ -1046,6 +1312,284 @@ function log(msg, type = 'info') {
 }
 
 // ─────────────────────────────────────────────
+// Tab switching
+// ─────────────────────────────────────────────
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  });
+  document.querySelectorAll('.tab-content').forEach(content => {
+    content.classList.toggle('active', content.id === 'tab-' + tabId);
+  });
+  const badge = document.getElementById('header-badge');
+  if (badge) badge.style.display = tabId === 'bess' ? '' : 'none';
+  if (tabId === 'bess') {
+    setTimeout(() => { if (typeof map !== 'undefined') map.invalidateSize(); }, 80);
+  }
+}
+
+// ─────────────────────────────────────────────
+// Generator: project type definitions
+// ─────────────────────────────────────────────
+const PROJECT_TYPES = [
+  { id: 'BESS',           icon: '🔋', name: 'BESS',             sub: 'Akkuenergiavarastohanke',       badge: null },
+  { id: 'tuulivoima_maa', icon: '🌬️', name: 'Tuulivoima (maa)', sub: 'Maalle sijoitettava hanke',     badge: null },
+  { id: 'tuulivoima_meri',icon: '⛵', name: 'Tuulivoima (meri)',sub: 'Offshore-tuulivoimahanke',      badge: null },
+  { id: 'aurinkovoima',   icon: '☀️', name: 'Aurinkovoima',     sub: 'Aurinkopaneelihanke',           badge: null },
+  { id: 'SMR',            icon: '⚛️', name: 'SMR',              sub: 'Pienydinreaktorihanke',         badge: null },
+  { id: 'smr_bess',       icon: '⚛️', name: 'SMR + BESS',       sub: 'Hybridienergijärjestelmä',      badge: 'UUS' },
+  { id: 'vesivoima',      icon: '💧', name: 'Vesivoima',         sub: 'Vesivoimalahanke',              badge: null },
+  { id: 'hybridi',        icon: '⚡', name: 'Hybridivoimala',    sub: 'BESS + tuuli/aurinko',         badge: null },
+];
+
+// Form field definitions per project type
+// apiKey: maps to ApplicationRequest field; null = extra field, not sent to API
+const HANKE_FIELDS = {
+  BESS: {
+    title: 'BESS — Akkuenergiavarastohanke',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Carbon Zero Finland Oy',  required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: '636-439-4-711',           required: true },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', value: '1',    min: '0.1', step: '0.1', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Pöytyä',                  required: true },
+      { id: 'gf-verkko',      apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: ['Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
+      { id: 'gf-kap',         apiKey: null,               label: 'Kapasiteetti (MWh)',    type: 'number', value: '2',    min: '0.1', step: '0.1' },
+    ]
+  },
+  tuulivoima_maa: {
+    title: 'Tuulivoima (maa) — Maalle sijoitettava tuulivoimahanke',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Tuulivoima Finland Oy',    required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kalajoki',                required: true },
+      { id: 'gf-turbiinimi',  apiKey: null,               label: 'Turbiinimäärä (kpl)',   type: 'number', value: '5',    min: '1',   step: '1' },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',     type: 'number', value: '20',   min: '1',   step: '0.5', required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus (pää)',type: 'text',   placeholder: '636-439-4-711' },
+      { id: 'gf-yva',         apiKey: null,               label: 'YVA tarvitaan',         type: 'select', options: ['Kyllä (≥10 voimalaa tai ≥45 MW)', 'Ei', 'Ei tiedossa'] },
+    ]
+  },
+  tuulivoima_meri: {
+    title: 'Tuulivoima (meri) — Offshore-tuulivoimahanke',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Offshore Wind Finland Oy', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintialue (lähin kunta)', type: 'text', placeholder: 'Pori',               required: true },
+      { id: 'gf-etaisyys',    apiKey: null,               label: 'Etäisyys rannasta (km)', type: 'number', value: '10',  min: '1',   step: '0.5' },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',     type: 'number', value: '100',  min: '10',  step: '5',   required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Merialueen koordinaatit / viite', type: 'text', placeholder: '61°N 21°E', full: true },
+    ]
+  },
+  aurinkovoima: {
+    title: 'Aurinkovoima — Aurinkopaneelihanke',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Solar Finland Oy',        required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: '636-439-4-711',           required: true },
+      { id: 'gf-pintaala',    apiKey: null,               label: 'Pinta-ala (ha)',        type: 'number', value: '10',   min: '0.1', step: '0.1' },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MWp)',            type: 'number', value: '5',    min: '0.1', step: '0.1', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Lempäälä',                required: true },
+    ]
+  },
+  SMR: {
+    title: 'SMR — Pienydinreaktorihanke (pre-licensing)',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Nordic SMR Oy',           required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Eurajoki',                required: true },
+      { id: 'gf-reaktori',    apiKey: null,               label: 'Reaktorityyppi',        type: 'select', options: ['PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Lämpöteho (MW)',        type: 'number', value: '300',  min: '10',  step: '10',  required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: '000-000-0-000' },
+      { id: 'gf-kaytto',      apiKey: null,               label: 'Käyttötarkoitus',       type: 'select', options: ['Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
+    ]
+  },
+  smr_bess: {
+    title: 'SMR + BESS — Hybridienergijärjestelmä',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Nordic Clean Energy Oy',  required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Eurajoki',                required: true },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'SMR lämpöteho (MW)',    type: 'number', value: '300',  min: '10',  step: '10',  required: true },
+      { id: 'gf-bess-kap',    apiKey: null,               label: 'BESS kapasiteetti (MWh)', type: 'number', value: '100', min: '1',  step: '1' },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: '000-000-0-000', full: true },
+    ]
+  },
+  vesivoima: {
+    title: 'Vesivoima — Vesivoimalahanke',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Vesivoima Oy',            required: true },
+      { id: 'gf-vesisto',     apiKey: null,               label: 'Vesistö',               type: 'text',   placeholder: 'Kokemäenjoki' },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Tampere',                 required: true },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', value: '5',    min: '0.1', step: '0.1', required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: '636-439-4-711', full: true },
+    ]
+  },
+  hybridi: {
+    title: 'Hybridivoimala — BESS + tuuli/aurinko',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Hybrid Energy Finland Oy', required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: '636-439-4-711',           required: true },
+      { id: 'gf-komponentit', apiKey: null,               label: 'Komponentit',           type: 'select', options: ['BESS + tuulivoima', 'BESS + aurinkovoima', 'BESS + tuuli + aurinko'] },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',     type: 'number', value: '10',   min: '0.1', step: '0.1', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Pöytyä',                  required: true },
+    ]
+  },
+};
+
+// ─────────────────────────────────────────────
+// Render project type cards
+// ─────────────────────────────────────────────
+(function renderCards() {
+  const grid = document.getElementById('gen-cards-grid');
+  if (!grid) return;
+  grid.innerHTML = PROJECT_TYPES.map(pt => `
+    <div class="gen-card" data-type="${pt.id}" onclick="selectProjectType('${pt.id}')">
+      <div class="gen-card-icon">${pt.icon}</div>
+      <div class="gen-card-name">${pt.name}</div>
+      <div class="gen-card-sub">${pt.sub}</div>
+      ${pt.badge ? `<div class="gen-card-badge">${pt.badge}</div>` : ''}
+    </div>
+  `).join('');
+})();
+
+// ─────────────────────────────────────────────
+// Generator: project type selection + form render
+// ─────────────────────────────────────────────
+let selectedProjectType = null;
+
+function selectProjectType(typeId) {
+  selectedProjectType = typeId;
+
+  document.querySelectorAll('.gen-card').forEach(card => {
+    card.classList.toggle('selected', card.dataset.type === typeId);
+  });
+
+  const fieldDef = HANKE_FIELDS[typeId];
+  if (!fieldDef) return;
+
+  const formSection = document.getElementById('gen-form-section');
+
+  function _fieldHtml(f) {
+    if (f.type === 'select') {
+      const opts = f.options.map(o =>
+        `<option value="${o.replace(/"/g, '&quot;')}">${o}</option>`
+      ).join('');
+      return `<label>${f.label}</label><select id="${f.id}">${opts}</select>`;
+    }
+    let attrs = `type="${f.type}"`;
+    if (f.value !== undefined) attrs += ` value="${f.value}"`;
+    if (f.placeholder) attrs += ` placeholder="${f.placeholder}"`;
+    if (f.min !== undefined) attrs += ` min="${f.min}"`;
+    if (f.step !== undefined) attrs += ` step="${f.step}"`;
+    if (f.required) attrs += ' required';
+    return `<label>${f.label}</label><input ${attrs} />`;
+  }
+
+  // Build form HTML — pair non-full fields, full fields get own row
+  let rowsHtml = '';
+  const fields = fieldDef.fields;
+  let i = 0;
+  while (i < fields.length) {
+    const f = fields[i];
+    if (f.full) {
+      rowsHtml += `<div class="gen-form-grid full"><div class="gen-field">${_fieldHtml(f)}</div></div>`;
+      i++;
+    } else if (i + 1 < fields.length && !fields[i + 1].full) {
+      rowsHtml += `<div class="gen-form-grid"><div class="gen-field">${_fieldHtml(f)}</div><div class="gen-field">${_fieldHtml(fields[i + 1])}</div></div>`;
+      i += 2;
+    } else {
+      rowsHtml += `<div class="gen-form-grid"><div class="gen-field">${_fieldHtml(f)}</div><div class="gen-field"></div></div>`;
+      i++;
+    }
+  }
+
+  formSection.innerHTML = `
+    <div class="gen-form-wrap">
+      <div class="gen-form-title">${fieldDef.title}</div>
+      <div class="gen-form-sub">Täytä hankkeen perustiedot. AI generoi lupahakemusluonnoksen RAG-haun ja Claude-mallin avulla (~60 s).</div>
+      ${rowsHtml}
+      <div class="gen-submit-row">
+        <button class="gen-submit-btn" id="gen-main-submit" onclick="submitGeneratorForm()">
+          &#x1F4C4; Generoi lupahakemus PDF
+        </button>
+        <div class="gen-disclaimer">
+          AI-luonnos (RAG + Claude) — vaatii asiantuntijatarkistuksen ennen jättämistä. Ei juridinen neuvo.
+        </div>
+      </div>
+    </div>
+  `;
+  formSection.style.display = 'block';
+  formSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─────────────────────────────────────────────
+// Generator: submit form → API → download PDF
+// ─────────────────────────────────────────────
+async function submitGeneratorForm() {
+  if (!selectedProjectType) return;
+
+  const fieldDef = HANKE_FIELDS[selectedProjectType];
+  const payload = { hanketyyppi: selectedProjectType };
+
+  for (const f of fieldDef.fields) {
+    const el = document.getElementById(f.id);
+    if (!el || !f.apiKey) continue;
+    payload[f.apiKey] = f.type === 'number'
+      ? (parseFloat(el.value) || 0)
+      : el.value.trim();
+  }
+
+  // Defaults for required API fields not in this form type
+  if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
+  if (!payload.teho_mw)          payload.teho_mw = 1;
+  if (!payload.kunta)             payload.kunta = '–';
+  if (!payload.hakija)            payload.hakija = 'NCE Energy';
+
+  const btn = document.getElementById('gen-main-submit');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = '&#x23F3; Generoidaan… (n. 60s)';
+
+  log(`Generoidaan lupahakemusluonnos: ${selectedProjectType} / ${payload.kunta}…`, 'info');
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/generate-application`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.detail || `HTTP ${resp.status}`);
+    }
+
+    const blob = await resp.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `hakemus_${selectedProjectType}_${(payload.kunta || 'hanke').replace(/\s+/g, '_')}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    btn.innerHTML = '&#x2705; PDF ladattu!';
+    btn.style.background = '#2a7a4a';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = '&#x1F4C4; Generoi lupahakemus PDF';
+      btn.style.background = '';
+    }, 4000);
+
+    log(`Lupahakemusluonnos valmis: ${selectedProjectType} / ${payload.kunta}`, 'ok');
+
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerHTML = '&#x274C; Yritä uudelleen';
+    btn.style.background = '#7a1a2a';
+    setTimeout(() => {
+      btn.innerHTML = '&#x1F4C4; Generoi lupahakemus PDF';
+      btn.style.background = '';
+    }, 4000);
+    log(`Hakemusgeneraattori virhe: ${err.message}`, 'err');
+    alert(`Virhe: ${err.message}`);
+  }
+}
+
+// ─────────────────────────────────────────────
 // Map init
 // ─────────────────────────────────────────────
 const map = L.map('map', {
@@ -1055,14 +1599,12 @@ const map = L.map('map', {
   attributionControl: true,
 });
 
-// OSM on aina pohjalla – kartta ei koskaan häviä
 const osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   maxZoom: 19,
   zIndex: 1,
 }).addTo(map);
 
-// Kaavakerros WMS (MML)
 const zoningWms = L.tileLayer.wms(
   'https://avoin-paikkatieto.maanmittauslaitos.fi/maastotiedot/wms/v1',
   {
@@ -1074,9 +1616,6 @@ const zoningWms = L.tileLayer.wms(
   }
 );
 
-// ─────────────────────────────────────────────
-// Layer groups (lisätään groundwater + buildings)
-// ─────────────────────────────────────────────
 const layers = {
   property:    L.featureGroup().addTo(map),
   grid:        L.featureGroup(),
@@ -1140,9 +1679,6 @@ function setScore(score) {
   document.getElementById('score-fill').style.width = `${score}%`;
 }
 
-// ─────────────────────────────────────────────
-// Apufunktiot: URL-rakentaja ja virheen purku
-// ─────────────────────────────────────────────
 function buildUrl(path, extraParams = {}) {
   const url = new URL(`${API_BASE}${path}`);
   Object.entries(extraParams).forEach(([k, v]) => url.searchParams.set(k, v));
@@ -1162,12 +1698,9 @@ async function parseHttpError(resp) {
 }
 
 // ─────────────────────────────────────────────
-// Fetch property boundaries (via backend → MML WFS)
+// Fetch property boundaries
 // ─────────────────────────────────────────────
 async function fetchProperty() {
-  console.log('HAE PAINETTU');
-  log('HAE PAINETTU', 'info');
-
   const kt = document.getElementById('kt-input').value.trim();
   if (!kt) { log('Syötä kiinteistötunnus', 'err'); return; }
 
@@ -1180,7 +1713,6 @@ async function fetchProperty() {
 
   try {
     const url = buildUrl(`/api/property/${encodeURIComponent(kt)}`);
-    log(`→ ${url}`, 'info');
     const resp = await fetch(url);
     if (!resp.ok) {
       const msg = await parseHttpError(resp);
@@ -1193,16 +1725,12 @@ async function fetchProperty() {
       return;
     }
 
-    // Tallenna geometry – käytetään PDF:ssä ilman uutta hakua
     propertyGeoJson = geojson;
 
     const propLayer = L.geoJSON(geojson, {
       style: {
-        color: '#e94560',
-        weight: 3,
-        opacity: 1,
-        fillColor: '#e94560',
-        fillOpacity: 0.08,
+        color: '#e94560', weight: 3, opacity: 1,
+        fillColor: '#e94560', fillOpacity: 0.08,
       },
       onEachFeature(feat, lyr) {
         const p = feat.properties || {};
@@ -1217,7 +1745,6 @@ async function fetchProperty() {
 
     propLayer.addTo(layers.property);
 
-    // Metadata
     const feat = geojson.features[0];
     const p = feat?.properties || {};
     updateInfoField('info-kt', kt);
@@ -1225,19 +1752,14 @@ async function fetchProperty() {
     updateInfoField('info-village', p.kylanimi || 'Kyrö');
     const areaHa = p.pinta_ala ? (p.pinta_ala / 10000).toFixed(2) + ' ha' : '–';
     updateInfoField('info-area', areaHa);
-    // Näytä manuaalinen pinta-alakenttä jos MML ei palauttanut arvoa
     document.getElementById('manual-pinta-ala-wrap').style.display =
       p.pinta_ala ? 'none' : 'flex';
 
-    // Buffer 500 m
     const bounds = propLayer.getBounds();
     const center = bounds.getCenter();
     L.circle(center, {
       radius: 500,
-      color: '#64b5f6',
-      weight: 2,
-      dashArray: '6 4',
-      fillOpacity: 0.04,
+      color: '#64b5f6', weight: 2, dashArray: '6 4', fillOpacity: 0.04,
     }).addTo(layers.buffer);
 
     map.fitBounds(propLayer.getBounds(), { padding: [60, 60] });
@@ -1389,7 +1911,7 @@ async function runAnalysis() {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(await parseHttpError(resp));
     const d = await resp.json();
-    lastAnalysis = d;  // tallennetaan – PDF käyttää samaa arvoa
+    lastAnalysis = d;
 
     const gm = d.nearest_grid_m;
     const gs = d.grid_status || '';
@@ -1400,7 +1922,6 @@ async function runAnalysis() {
     if (statusEl) statusEl.textContent = gs;
 
     updateInfoField('info-zoning', d.zoning_status || '–', d.zoning_ok ? 'ok' : 'warn');
-
     updateInfoField('info-nature', d.natura_overlap ? 'Kyllä ⚠' : 'Ei ✓',
       d.natura_overlap ? 'warn' : 'ok');
 
@@ -1432,31 +1953,25 @@ async function runAnalysis() {
     updateInfoField('info-road', roadText,
       rm == null ? 'na' : d.road_protection_ok ? 'ok' : 'warn');
 
-    // Maaperä
     updateInfoField('info-soil', d.maaperalaaji || '–',
       !d.maaperalaaji || d.maaperalaaji === 'Ei tiedossa' ? 'na' :
       ['Kallio', 'Moreeni'].includes(d.maaperalaaji) ? 'ok' :
       d.maaperalaaji === 'Turve' ? 'warn' : '');
 
-    // Tulvavaara
     updateInfoField('info-flood',
       d.flood_unavailable ? 'Ei dataa (N/A)' : d.flood_overlap ? 'Kyllä ⚠' : 'Ei ✓',
       d.flood_unavailable ? 'na' : d.flood_overlap ? 'warn' : 'ok');
 
-    // Lähin sähköasema
     const ssm = d.nearest_substation_m;
     const ssn = d.nearest_substation_name;
     updateInfoField('info-substation',
       ssm != null ? `${ssm} m${ssn ? ' (' + ssn + ')' : ''}` : '–',
       ssm == null ? 'na' : ssm < 5000 ? 'ok' : '');
 
-    // Dynaaminen header-badge
     if (d.kuntanimi) {
-      document.getElementById('header-badge').textContent =
-        `${d.kuntanimi} · ${kt}`;
+      document.getElementById('header-badge').textContent = `${d.kuntanimi} · ${kt}`;
     }
 
-    // AI-lupaprosessistrategia
     const aiSection = document.getElementById('ai-strategy-section');
     const aiText    = document.getElementById('ai-strategy-text');
     if (d.ai_strategy) {
@@ -1470,7 +1985,6 @@ async function runAnalysis() {
     }
 
     setScore(d.bess_score || 0);
-
     log(`Analyysi valmis – soveltuvuusindeksi: ${d.bess_score}/100`, 'ok');
   } catch (err) {
     log(`Analyysivirhe: ${err.message}`, 'err');
@@ -1480,7 +1994,7 @@ async function runAnalysis() {
 }
 
 // ─────────────────────────────────────────────
-// Manuaalisten arvojen pisteytys (vastaa Pythonin _score())
+// Manuaalisten arvojen pisteytys
 // ─────────────────────────────────────────────
 const SOIL_PTS = { kallio: 5, moreeni: 4, hiekka: 3, savi: 1, turve: 0 };
 const MAAPERA_FI = { kallio: 'Kallio', moreeni: 'Moreeni', hiekka: 'Hiekka', savi: 'Savi', turve: 'Turve' };
@@ -1494,18 +2008,13 @@ function recalcScore(a) {
     : ['1', '1E'].includes(a.groundwater_class || '') ? 0 : 8;
 
   const natura = a.natura_overlap ? 0 : 15;
-
   const zoning = a.zoning_unavailable ? null : (a.zoning_ok ? 10 : 3);
 
   const bm = a.nearest_building_m;
   const settlement = bm == null ? 5 : bm > 300 ? 10 : bm > 150 ? 5 : 0;
-
   const heritage = a.heritage_unavailable ? null : (a.heritage_overlap ? 0 : 10);
-
   const road = a.road_protection_ok !== false ? 5 : 0;
-
   const flood = a.flood_unavailable ? null : (a.flood_overlap ? 0 : 5);
-
   const soil = (a.score_soil !== undefined && a.score_soil !== null) ? a.score_soil : null;
 
   const components = [
@@ -1583,7 +2092,7 @@ function applyManualOverrides() {
 }
 
 // ─────────────────────────────────────────────
-// PDF report – lähettää tallennetun geometrian backendille
+// PDF report
 // ─────────────────────────────────────────────
 async function generateReport() {
   const kt = document.getElementById('kt-input').value.trim();
@@ -1599,24 +2108,24 @@ async function generateReport() {
   log('Generoidaan PDF-raportti…', 'info');
 
   try {
-    const manualKaavoitus  = document.getElementById('manual-kaavoitus').value  || null;
-    const manualTulvavaara = document.getElementById('manual-tulvavaara').value || null;
-    const manualMaapera    = document.getElementById('manual-maapera').value    || null;
+    const manualKaavoitus   = document.getElementById('manual-kaavoitus').value  || null;
+    const manualTulvavaara  = document.getElementById('manual-tulvavaara').value || null;
+    const manualMaapera     = document.getElementById('manual-maapera').value    || null;
     const manualPintaAlaRaw = document.getElementById('manual-pinta-ala').value;
-    const manualPintaAla   = manualPintaAlaRaw ? parseFloat(manualPintaAlaRaw) || null : null;
+    const manualPintaAla    = manualPintaAlaRaw ? parseFloat(manualPintaAlaRaw) || null : null;
 
     const projPayload = {
       kiinteistotunnus: kt,
-      property_geojson: propertyGeoJson,  // karttakuva
-      analysis_result:  lastAnalysis,     // sama analyysi kuin UI:ssa
+      property_geojson: propertyGeoJson,
+      analysis_result:  lastAnalysis,
       project_owner:   document.getElementById('proj-owner').value.trim() || 'Carbon Zero Finland',
       project_name:    document.getElementById('proj-name').value.trim()  || 'Standalone BESS 1 MW',
       power_mw:        parseFloat(document.getElementById('proj-power').value) || 1,
       grid_connection: document.getElementById('proj-grid').value,
       market:          document.getElementById('proj-market').value,
-      manual_kaavoitus:  manualKaavoitus,
-      manual_tulvavaara: manualTulvavaara,
-      manual_maapera:    manualMaapera,
+      manual_kaavoitus:    manualKaavoitus,
+      manual_tulvavaara:   manualTulvavaara,
+      manual_maapera:      manualMaapera,
       manual_pinta_ala_ha: manualPintaAla,
     };
     const resp = await fetch(`${API_BASE}/api/report/generate`, {
@@ -1659,17 +2168,11 @@ document.getElementById('btn-fetch-property').addEventListener('click', fetchPro
 document.getElementById('btn-analyze').addEventListener('click', runAnalysis);
 document.getElementById('btn-report').addEventListener('click', generateReport);
 document.getElementById('btn-apply-manual').addEventListener('click', applyManualOverrides);
-console.log('Event listenerit rekisteröity: btn-fetch-property, btn-analyze, btn-report');
-log('Valmis – paina Hae hakeaksesi kiinteistörajat', 'ok');
 
-// Enter key on KT input
 document.getElementById('kt-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') fetchProperty();
 });
 
-// ─────────────────────────────────────────────
-// Auto-load default property
-// ─────────────────────────────────────────────
 // ─────────────────────────────────────────────
 // Dynaaminen verkkoliityntä-linkki
 // ─────────────────────────────────────────────
@@ -1697,14 +2200,15 @@ document.getElementById('proj-grid').addEventListener('change', updateGridLink);
 updateGridLink();
 
 window.addEventListener('load', () => {
-  log('Kartta alustettu. Haetaan oletuskiinteistö…', 'info');
-  setTimeout(fetchProperty, 800);
+  if (document.getElementById('tab-bess').classList.contains('active')) {
+    log('Kartta alustettu. Haetaan oletuskiinteistö…', 'info');
+    setTimeout(fetchProperty, 800);
+  }
 });
 
 // ─────────────────────────────────────────────
 // Permit AI Chat
 // ─────────────────────────────────────────────
-
 function togglePermitAI() {
   const panel = document.getElementById('permit-ai-panel');
   const btn   = document.getElementById('btn-permit-ai');
@@ -1718,7 +2222,6 @@ function toggleGenForm() {
   form.classList.toggle('open', opening);
 
   if (opening) {
-    // Esitäytä aktiivisesta analyysistä ja sivupalkin kentistä
     const kt    = document.getElementById('kt-input')?.value  || '';
     const teho  = document.getElementById('proj-power')?.value || '1';
     const hakija= document.getElementById('proj-owner')?.value || '';
@@ -1747,7 +2250,6 @@ async function generateApplication() {
   btn.disabled = true;
   btn.textContent = '⏳ Generoidaan… (n. 60s)';
 
-  // Näytä odotusviesti chatissa
   const msgs = document.getElementById('pai-messages');
   const waitDiv = document.createElement('div');
   waitDiv.className = 'chat-msg ai';
@@ -1771,7 +2273,6 @@ async function generateApplication() {
       throw new Error(err.detail || `HTTP ${resp.status}`);
     }
 
-    // Lataa PDF
     const blob     = await resp.blob();
     const url      = URL.createObjectURL(blob);
     const a        = document.createElement('a');
@@ -1780,7 +2281,6 @@ async function generateApplication() {
     a.click();
     URL.revokeObjectURL(url);
 
-    // Korvaa odotusviesti onnistumisella
     waitDiv.innerHTML = `<div class="bubble" style="border-color:#4caf50;">
       ✅ <strong>Lupahakemusluonnos valmis!</strong><br>
       <span style="font-size:0.77rem;color:#80e090;">${hanketyyppi} · ${kunta} · ${teho} MW</span><br>
@@ -1788,7 +2288,6 @@ async function generateApplication() {
       ⚠️ AI-luonnos — vaatii asiantuntijatarkistuksen ennen jättämistä</span>
     </div>`;
 
-    // Sulje lomake
     document.getElementById('pai-gen-form').classList.remove('open');
     log(`Lupahakemusluonnos generoitu: ${hanketyyppi} / ${kunta}`, 'ok');
 
@@ -1805,25 +2304,15 @@ async function generateApplication() {
 }
 
 function _renderMarkdown(raw) {
-  // Escape HTML first to prevent XSS, then apply safe patterns
   let s = raw
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-
-  // ## Heading 2
-  s = s.replace(/^#{2} (.+)$/gm,
-    '<span class="md-h2">$1</span>');
-  // ### Heading 3
-  s = s.replace(/^#{3} (.+)$/gm,
-    '<span class="md-h3">$1</span>');
-  // **bold**
+  s = s.replace(/^#{2} (.+)$/gm, '<span class="md-h2">$1</span>');
+  s = s.replace(/^#{3} (.+)$/gm, '<span class="md-h3">$1</span>');
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // --- separator
   s = s.replace(/^---$/gm, '<hr>');
-  // Newlines → <br>
   s = s.replace(/\n/g, '<br>');
-
   return s;
 }
 
@@ -1834,13 +2323,11 @@ async function askPermit(question) {
   const msgs    = document.getElementById('pai-messages');
   const sendBtn = document.getElementById('pai-send');
 
-  // User bubble
   const userDiv = document.createElement('div');
   userDiv.className = 'chat-msg user';
   userDiv.innerHTML = `<div class="bubble">${question.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
   msgs.appendChild(userDiv);
 
-  // Typing indicator
   const typing = document.createElement('div');
   typing.className = 'chat-msg ai';
   typing.innerHTML = '<div class="pai-typing"><span></span><span></span><span></span></div>';
@@ -1900,7 +2387,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const ta = document.getElementById('pai-textarea');
   if (!ta) return;
 
-  // Ctrl+Enter / Cmd+Enter lähettää
   ta.addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
@@ -1908,7 +2394,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Auto-resize textarea
   ta.addEventListener('input', () => {
     ta.style.height = '';
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
