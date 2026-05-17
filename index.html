@@ -1348,12 +1348,12 @@ const HANKE_FIELDS = {
   BESS: {
     title: 'BESS — Akkuenergiavarastohanke',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Carbon Zero Finland Oy',  required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: '636-439-4-711',           required: true },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', value: '1',    min: '0.1', step: '0.1', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Pöytyä',                  required: true },
-      { id: 'gf-verkko',      apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: ['Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
-      { id: 'gf-kap',         apiKey: null,               label: 'Kapasiteetti (MWh)',    type: 'number', value: '2',    min: '0.1', step: '0.1' },
+      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi',           required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001',  required: true },
+      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', placeholder: '',  min: '0.1', step: '0.1', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                   required: true },
+      { id: 'gf-verkko',      apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: ['— Valitse —', 'Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
+      { id: 'gf-kap',         apiKey: null,               label: 'Kapasiteetti (MWh)',    type: 'number', placeholder: '',  min: '0.1', step: '0.1' },
     ]
   },
   tuulivoima_maa: {
