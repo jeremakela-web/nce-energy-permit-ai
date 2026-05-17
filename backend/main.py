@@ -41,7 +41,16 @@ from permit_ai import query_permit_ai
 # permit_ai-moduuli on ~/bess_tool/permit_ai/ — lisätään polkuun
 import sys as _sys
 _sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "permit_ai"))
-from generate_application import generate_application, ApplicationInput
+from generate_application import generate_application, ApplicationInput, _get_embed_model, _get_chroma_col
+
+# Warmup: lataa embedding-malli ja ChromaDB heti käynnistyksen yhteydessä,
+# ei ensimmäisen requestin yhteydessä.
+try:
+    _get_embed_model()
+    _get_chroma_col()
+    print("[startup] Embedding-malli ja ChromaDB ladattu")
+except Exception as _e:
+    print(f"[startup] Varoitus: RAG-lataus epäonnistui: {_e}")
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/hour"])
 
