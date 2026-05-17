@@ -391,7 +391,7 @@ Listaa 5–7 konkreettista seuraavaa askelta aikatauluineen (kk tarkkuudella). A
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     resp   = claude.messages.create(
         model=_MODEL_ID,
-        max_tokens=2500,
+        max_tokens=4000,
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
@@ -513,7 +513,7 @@ def _liitteet_table(hanketyyppi: str) -> Table:
         rows.append([
             Paragraph(str(i), ParagraphStyle("tn", fontSize=8.5)),
             Paragraph(liite,  ParagraphStyle("tl", fontSize=8.5, leading=12)),
-            Paragraph("☐ Toimitettu",
+            Paragraph("[ ] Toimitettu",
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
 
