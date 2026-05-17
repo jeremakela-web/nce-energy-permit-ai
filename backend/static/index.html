@@ -1534,11 +1534,9 @@ async function submitGeneratorForm() {
       : el.value.trim();
   }
 
-  // Defaults for required API fields not in this form type
+  // Sentinel for API fields not applicable to this form type
   if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
-  if (!payload.teho_mw)          payload.teho_mw = 1;
-  if (!payload.kunta)             payload.kunta = '–';
-  if (!payload.hakija)            payload.hakija = 'NCE Energy';
+  if (!payload.kunta)            payload.kunta = '–';
 
   const btn = document.getElementById('gen-main-submit');
   if (!btn) return;
@@ -1749,8 +1747,8 @@ async function fetchProperty() {
     const feat = geojson.features[0];
     const p = feat?.properties || {};
     updateInfoField('info-kt', kt);
-    updateInfoField('info-muni', p.kuntanimi || 'Pöytyä');
-    updateInfoField('info-village', p.kylanimi || 'Kyrö');
+    updateInfoField('info-muni', p.kuntanimi || '–');
+    updateInfoField('info-village', p.kylanimi || '–');
     const areaHa = p.pinta_ala ? (p.pinta_ala / 10000).toFixed(2) + ' ha' : '–';
     updateInfoField('info-area', areaHa);
     document.getElementById('manual-pinta-ala-wrap').style.display =
@@ -2224,7 +2222,7 @@ function toggleGenForm() {
 
   if (opening) {
     const kt    = document.getElementById('kt-input')?.value  || '';
-    const teho  = document.getElementById('proj-power')?.value || '1';
+    const teho  = document.getElementById('proj-power')?.value || '';
     const hakija= document.getElementById('proj-owner')?.value || '';
     const kunta = lastAnalysis?.kuntanimi || '';
 
