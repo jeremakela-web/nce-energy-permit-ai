@@ -1477,7 +1477,7 @@ function selectProjectType(typeId) {
     if (f.min !== undefined) attrs += ` min="${f.min}"`;
     if (f.step !== undefined) attrs += ` step="${f.step}"`;
     if (f.required) attrs += ' required';
-    return `<label>${f.label}</label><input ${attrs} />`;
+    return `<label>${f.label}</label><input id="${f.id}" ${attrs} />`;
   }
 
   // Build form HTML — pair non-full fields, full fields get own row
