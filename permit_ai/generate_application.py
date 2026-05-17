@@ -13,6 +13,7 @@ import os
 import sys
 from datetime import datetime
 from dataclasses import dataclass
+from functools import lru_cache
 
 # ── ReportLab ────────────────────────────────────────────────────────────────
 from reportlab.lib import colors
@@ -35,11 +36,23 @@ from sentence_transformers import SentenceTransformer
 # Vakiot
 # ─────────────────────────────────────────────────────────────────────────────
 
-_DB_DIR      = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
-_OUTPUT_DIR  = os.path.expanduser("~/bess_tool/permit_ai/output")
-_LOGO_PATH   = os.path.join(os.path.dirname(__file__), "..", "backend", "nce_energy_logo.png")
+_HERE        = os.path.dirname(os.path.abspath(__file__))
+_DB_DIR      = os.path.join(_HERE, "embeddings")
+_OUTPUT_DIR  = os.path.join(_HERE, "output")
+_LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
 _MODEL_ID    = "claude-sonnet-4-6"
 _EMBED_MODEL = "all-MiniLM-L6-v2"
+
+
+@lru_cache(maxsize=1)
+def _get_embed_model() -> SentenceTransformer:
+    return SentenceTransformer(_EMBED_MODEL)
+
+
+@lru_cache(maxsize=1)
+def _get_chroma_col():
+    client = chromadb.PersistentClient(path=_DB_DIR)
+    return client.get_or_create_collection("permit_docs")
 
 C_NAVY   = colors.HexColor("#16213e")
 C_RED    = colors.HexColor("#e94560")
@@ -320,26 +333,28 @@ _HANKE_CFG = {
 def _rag_context(hanketyyppi: str, n_per_query: int = 4) -> tuple[str, list[str]]:
     """Hae relevantit dokumenttichunkit kaikilla hanketyyppikohtaisilla kyselyillä."""
     cfg = _HANKE_CFG[hanketyyppi]
-    embed_model = SentenceTransformer(_EMBED_MODEL)
-    client      = chromadb.PersistentClient(path=_DB_DIR)
-    col         = client.get_or_create_collection("permit_docs")
+    try:
+        embed_model = _get_embed_model()
+        col         = _get_chroma_col()
 
-    seen_ids:  set[str]  = set()
-    all_docs:  list[str] = []
-    all_sources: set[str] = set()
+        seen_ids:    set[str]  = set()
+        all_docs:    list[str] = []
+        all_sources: set[str]  = set()
 
-    for q in cfg["rag_queries"]:
-        emb     = embed_model.encode([q]).tolist()
-        results = col.query(query_embeddings=emb, n_results=n_per_query)
-        for doc, id_ in zip(results["documents"][0], results["ids"][0]):
-            if id_ not in seen_ids:
-                seen_ids.add(id_)
-                all_docs.append(doc)
-                source = "_".join(id_.split("_")[:-1])
-                all_sources.add(source)
+        for q in cfg["rag_queries"]:
+            emb     = embed_model.encode([q]).tolist()
+            results = col.query(query_embeddings=emb, n_results=n_per_query)
+            for doc, id_ in zip(results["documents"][0], results["ids"][0]):
+                if id_ not in seen_ids:
+                    seen_ids.add(id_)
+                    all_docs.append(doc)
+                    all_sources.add("_".join(id_.split("_")[:-1]))
 
-    context = "\n\n---\n\n".join(all_docs)
-    return context, sorted(all_sources)
+        context = "\n\n---\n\n".join(all_docs)
+        return context, sorted(all_sources)
+    except Exception as exc:
+        print(f"[RAG] Haku epäonnistui ({exc}) — jatketaan ilman kontekstia")
+        return "", []
 
 
 # ─────────────────────────────────────────────────────────────────────────────

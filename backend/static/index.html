@@ -1538,23 +1538,33 @@ async function submitGeneratorForm() {
   if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
   if (!payload.kunta)            payload.kunta = '–';
 
+  console.log('[Generator] payload:', JSON.stringify(payload));
+
   const btn = document.getElementById('gen-main-submit');
   if (!btn) return;
   btn.disabled = true;
-  btn.innerHTML = '&#x23F3; Generoidaan… (n. 60s)';
+  btn.innerHTML = '&#x23F3; Generoidaan… (n. 90s)';
 
   log(`Generoidaan lupahakemusluonnos: ${selectedProjectType} / ${payload.kunta}…`, 'info');
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 120_000);
 
   try {
     const resp = await fetch(`${API_BASE}/api/generate-application`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      signal: ctrl.signal,
     });
+    clearTimeout(timer);
 
     if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.detail || `HTTP ${resp.status}`);
+      const errText = await resp.text().catch(() => '');
+      let detail = `HTTP ${resp.status}`;
+      try { detail = JSON.parse(errText).detail || detail; } catch {}
+      console.error('[Generator] server error:', resp.status, errText);
+      throw new Error(detail);
     }
 
     const blob = await resp.blob();
@@ -1576,6 +1586,7 @@ async function submitGeneratorForm() {
     log(`Lupahakemusluonnos valmis: ${selectedProjectType} / ${payload.kunta}`, 'ok');
 
   } catch (err) {
+    clearTimeout(timer);
     btn.disabled = false;
     btn.innerHTML = '&#x274C; Yritä uudelleen';
     btn.style.background = '#7a1a2a';
@@ -1583,8 +1594,10 @@ async function submitGeneratorForm() {
       btn.innerHTML = '&#x1F4C4; Generoi lupahakemus PDF';
       btn.style.background = '';
     }, 4000);
-    log(`Hakemusgeneraattori virhe: ${err.message}`, 'err');
-    alert(`Virhe: ${err.message}`);
+    const msg = err.name === 'AbortError' ? 'Aikakatkaisu (>120s) — yritä uudelleen' : err.message;
+    console.error('[Generator] virhe:', err);
+    log(`Hakemusgeneraattori virhe: ${msg}`, 'err');
+    alert(`Virhe: ${msg}`);
   }
 }
 

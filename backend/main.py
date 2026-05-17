@@ -53,7 +53,9 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-app.mount("/static", StaticFiles(directory="static"), name="static")
+_BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+_STATIC_DIR  = os.path.join(_BACKEND_DIR, "static")
+app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
 
 MML_API_KEY = os.getenv("MML_API_KEY", "")
 PORT = int(os.environ.get("PORT", 8000))
@@ -98,7 +100,7 @@ class ReportRequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return FileResponse("static/index.html")
+    return FileResponse(os.path.join(_STATIC_DIR, "index.html"))
 
 
 @app.get("/api/health")
