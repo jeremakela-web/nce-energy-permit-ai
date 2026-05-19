@@ -962,6 +962,26 @@
       <aside class="sidebar">
 
         <div class="sidebar-section">
+          <h3>Hanketyyppi</h3>
+          <div class="proj-field">
+            <select id="map-hanketyyppi" onchange="switchMapType(this.value)">
+              <option value="">— Valitse hanketyyppi —</option>
+              <option value="bess">🔋 BESS — Akkuvarasto</option>
+              <option value="tuulivoima_maa">🌬️ Tuulivoima (maa)</option>
+              <option value="tuulivoima_meri">⛵ Tuulivoima (meri)</option>
+              <option value="aurinkovoima">☀️ Aurinkovoima</option>
+              <option value="smr">⚛️ SMR — Pienydinreaktori</option>
+              <option value="vesivoima">💧 Vesivoima</option>
+              <option value="asuinrakennus">🏠 Asuinrakennus</option>
+              <option value="teollisuus">🏭 Teollisuusrakennus</option>
+              <option value="maatalous">🌾 Maatalousrakennus</option>
+              <option value="liikerakennus">🏬 Liikerakennus</option>
+              <option value="muu">📋 Muu hanke</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
           <h3>Hankkeen tiedot</h3>
           <div class="proj-field">
             <label>Hankkeen omistaja</label>
@@ -971,11 +991,11 @@
             <label>Hankkeen nimi</label>
             <input type="text" id="proj-name" placeholder="Hankkeen nimi" />
           </div>
-          <div class="proj-field">
-            <label>Teho MW</label>
+          <div class="proj-field" id="proj-power-wrap">
+            <label id="proj-power-label">Teho (MW)</label>
             <input type="number" id="proj-power" min="0.1" step="0.1" />
           </div>
-          <div class="proj-field">
+          <div class="proj-field" id="proj-grid-wrap">
             <label>Verkkoliityntä</label>
             <select id="proj-grid">
               <option value="">— Valitse —</option>
@@ -986,7 +1006,7 @@
               <option value="Fingrid 400 kV (kantaverkko)">Fingrid 400 kV (kantaverkko)</option>
             </select>
           </div>
-          <div class="proj-field">
+          <div class="proj-field" id="proj-market-wrap">
             <label>Tavoitemarkkinat</label>
             <select id="proj-market">
               <option value="">— Valitse —</option>
@@ -1077,6 +1097,9 @@
 
         <div class="sidebar-section">
           <h3>Soveltuvuusanalyysi</h3>
+          <div id="analysis-type-label" style="font-size:0.68rem;color:#4a9a8a;background:rgba(0,194,168,0.07);border:1px solid rgba(0,194,168,0.2);border-radius:5px;padding:5px 8px;margin-bottom:8px;display:none;line-height:1.5;">
+            <span id="analysis-type-text"></span>
+          </div>
           <div class="info-grid" style="margin-bottom:10px;">
             <div class="info-item" style="grid-column:1/-1;">
               <div class="label">Etäisyys verkko</div>
@@ -1557,6 +1580,40 @@ const HANKETYYPIT = {
 const BACKEND_TYPE_MAP = {
   bess: 'BESS',
   smr:  'SMR',
+};
+
+// ─────────────────────────────────────────────
+// Maankäyttöselvitys — type-aware scoring configs
+// weights: { grid, groundwater, natura, zoning, settlement, heritage, road, flood, soil }
+// settlement_min: metres — threshold for "good" distance from buildings
+// ─────────────────────────────────────────────
+const MAANK_SCORE_CFG = {
+  bess:           { settlement_min: 300,  weights: { grid: 30, groundwater: 20, natura: 15, zoning: 10, settlement: 10, heritage: 10, road:  5, flood:  5, soil:  5 } },
+  tuulivoima_maa: { settlement_min: 500,  weights: { grid:  5, groundwater:  5, natura: 20, zoning: 20, settlement: 30, heritage: 10, road:  5, flood:  5, soil:  0 } },
+  tuulivoima_meri:{ settlement_min: 500,  weights: { grid: 10, groundwater:  0, natura: 25, zoning: 15, settlement: 25, heritage: 10, road:  5, flood: 10, soil:  0 } },
+  aurinkovoima:   { settlement_min: 200,  weights: { grid: 20, groundwater: 10, natura: 15, zoning: 20, settlement: 10, heritage: 10, road:  5, flood: 10, soil:  0 } },
+  smr:            { settlement_min: 1000, weights: { grid:  5, groundwater: 10, natura: 20, zoning: 15, settlement: 35, heritage:  5, road:  5, flood:  5, soil:  0 } },
+  vesivoima:      { settlement_min: 300,  weights: { grid:  5, groundwater: 10, natura: 30, zoning: 20, settlement: 15, heritage: 10, road:  0, flood: 10, soil:  0 } },
+  asuinrakennus:  { settlement_min:  50,  weights: { grid:  0, groundwater: 10, natura: 15, zoning: 35, settlement: 10, heritage: 10, road: 10, flood:  5, soil:  5 } },
+  teollisuus:     { settlement_min: 200,  weights: { grid: 15, groundwater:  5, natura: 15, zoning: 30, settlement: 20, heritage:  5, road: 10, flood:  0, soil:  0 } },
+  maatalous:      { settlement_min: 100,  weights: { grid:  0, groundwater: 15, natura: 20, zoning: 20, settlement: 10, heritage: 10, road: 10, flood: 15, soil:  0 } },
+  liikerakennus:  { settlement_min:  50,  weights: { grid:  0, groundwater:  5, natura: 10, zoning: 40, settlement: 15, heritage:  5, road: 15, flood: 10, soil:  0 } },
+  muu:            { settlement_min: 200,  weights: { grid: 10, groundwater: 10, natura: 15, zoning: 25, settlement: 15, heritage: 10, road:  5, flood: 10, soil:  0 } },
+};
+
+// UI metadata: which sidebar fields show for each type
+const MAP_TYPE_UI = {
+  bess:           { powerLabel: 'Teho (MW)',        showGrid: true,  showMarket: true,  criteria: 'Sähköliityntä · Pohjavesi · Kaavoitus · Pinta-ala' },
+  tuulivoima_maa: { powerLabel: 'Kokonaisteho (MW)',showGrid: true,  showMarket: false, criteria: 'Etäisyys asutukseen (min 500 m) · Kaavoitus · Natura · Maaperä' },
+  tuulivoima_meri:{ powerLabel: 'Kokonaisteho (MW)',showGrid: true,  showMarket: false, criteria: 'Natura/suojelualueet · Etäisyys asutukseen · Tulvavaara' },
+  aurinkovoima:   { powerLabel: 'Teho (MWp)',       showGrid: true,  showMarket: false, criteria: 'Sähköliityntä · Kaavoitus · Tulvavaara · Pohjavesi' },
+  smr:            { powerLabel: 'Lämpöteho (MW)',   showGrid: true,  showMarket: false, criteria: 'Suojavyöhyke asutuksesta (min 1 km) · Natura · Kaavoitus' },
+  vesivoima:      { powerLabel: 'Teho (MW)',        showGrid: false, showMarket: false, criteria: 'Natura · Kaavoitus · Tulvavaara · Tiesuoja-alue' },
+  asuinrakennus:  { powerLabel: '',                 showGrid: false, showMarket: false, criteria: 'Kaavoitus · Pohjavesi · Tulvavaara · Muinaismuistot · Tieliikenne' },
+  teollisuus:     { powerLabel: '',                 showGrid: true,  showMarket: false, criteria: 'Kaavoitus · Etäisyys asutukseen · Sähköliityntä · Tiesuoja-alue' },
+  maatalous:      { powerLabel: '',                 showGrid: false, showMarket: false, criteria: 'Pohjavesi · Natura · Kaavoitus · Tulvavaara · Tieyhteydet' },
+  liikerakennus:  { powerLabel: '',                 showGrid: false, showMarket: false, criteria: 'Kaavoitus · Tiesuoja-alue/liikenneyhteydet · Tulvavaara' },
+  muu:            { powerLabel: 'Teho (MW)',        showGrid: false, showMarket: false, criteria: 'Kaavoitus · Pohjavesi · Natura' },
 };
 
 // ─────────────────────────────────────────────
@@ -2071,7 +2128,9 @@ async function runAnalysis() {
 
   const btn = document.getElementById('btn-analyze');
   setLoading(btn, true);
-  log('Suoritetaan Soveltuvuusanalyysianalyysi (kaikki datalähteet)…', 'info');
+  const _mType = document.getElementById('map-hanketyyppi')?.value || '';
+  const _mLabel = _mType ? ((PROJECT_TYPES.find(pt => pt.id === _mType) || {}).name || _mType) + ' — ' : '';
+  log(`Suoritetaan ${_mLabel}maankäyttöselvitys (kaikki datalähteet)…`, 'info');
 
   try {
     const gc = document.getElementById('proj-grid').value;
@@ -2152,8 +2211,9 @@ async function runAnalysis() {
       aiSection.style.display = 'none';
     }
 
-    setScore(d.bess_score || 0);
-    log(`Analyysi valmis – soveltuvuusindeksi: ${d.bess_score}/100`, 'ok');
+    const frontendScore = recalcScore(d);
+    setScore(frontendScore);
+    log(`Maankäyttöselvitys valmis – soveltuvuusindeksi: ${frontendScore}/100`, 'ok');
   } catch (err) {
     log(`Analyysivirhe: ${err.message}`, 'err');
   } finally {
@@ -2168,30 +2228,95 @@ const SOIL_PTS = { kallio: 5, moreeni: 4, hiekka: 3, savi: 1, turve: 0 };
 const MAAPERA_FI = { kallio: 'Kallio', moreeni: 'Moreeni', hiekka: 'Hiekka', savi: 'Savi', turve: 'Turve' };
 
 function recalcScore(a) {
+  const typeId = document.getElementById('map-hanketyyppi')?.value || 'bess';
+  const cfg    = MAANK_SCORE_CFG[typeId] || MAANK_SCORE_CFG.bess;
+  const W      = cfg.weights;
+  const minSett = cfg.settlement_min;
+
   const gridM = a.nearest_grid_m;
-  const grid = gridM == null ? 15 : gridM < 1000 ? 30 : gridM < 2000 ? 20 : 5;
+  const grid  = W.grid > 0 ? (
+    gridM == null ? null :
+    gridM < 1000 ? W.grid :
+    gridM < 2000 ? Math.round(W.grid * 0.67) :
+    gridM < 5000 ? Math.round(W.grid * 0.17) : 0
+  ) : null;
 
-  const gw = a.groundwater_unavailable ? null
-    : !a.groundwater_overlap ? 20
-    : ['1', '1E'].includes(a.groundwater_class || '') ? 0 : 8;
+  const gw = W.groundwater > 0 ? (
+    a.groundwater_unavailable ? null :
+    !a.groundwater_overlap ? W.groundwater :
+    ['1', '1E'].includes(a.groundwater_class || '') ? 0 : Math.round(W.groundwater * 0.4)
+  ) : null;
 
-  const natura = a.natura_overlap ? 0 : 15;
-  const zoning = a.zoning_unavailable ? null : (a.zoning_ok ? 10 : 3);
+  const natura = W.natura > 0 ? (a.natura_overlap ? 0 : W.natura) : null;
+
+  const zoning = W.zoning > 0 ? (
+    a.zoning_unavailable ? null : (a.zoning_ok ? W.zoning : Math.round(W.zoning * 0.3))
+  ) : null;
 
   const bm = a.nearest_building_m;
-  const settlement = bm == null ? 5 : bm > 300 ? 10 : bm > 150 ? 5 : 0;
-  const heritage = a.heritage_unavailable ? null : (a.heritage_overlap ? 0 : 10);
-  const road = a.road_protection_ok !== false ? 5 : 0;
-  const flood = a.flood_unavailable ? null : (a.flood_overlap ? 0 : 5);
-  const soil = (a.score_soil !== undefined && a.score_soil !== null) ? a.score_soil : null;
+  const settlement = W.settlement > 0 ? (
+    bm == null ? null :
+    bm > minSett ? W.settlement :
+    bm > Math.round(minSett * 0.6) ? Math.round(W.settlement * 0.5) : 0
+  ) : null;
+
+  const heritage = W.heritage > 0 ? (
+    a.heritage_unavailable ? null : (a.heritage_overlap ? 0 : W.heritage)
+  ) : null;
+
+  const road  = W.road > 0  ? (a.road_protection_ok !== false ? W.road  : 0) : null;
+  const flood = W.flood > 0 ? (a.flood_unavailable ? null : (a.flood_overlap ? 0 : W.flood)) : null;
+  const soil  = W.soil > 0  ? (
+    (a.score_soil !== undefined && a.score_soil !== null) ? a.score_soil : null
+  ) : null;
 
   const components = [
-    [grid, 30], [gw, 20], [natura, 15], [zoning, 10],
-    [settlement, 10], [heritage, 10], [road, 5], [flood, 5], [soil, 5],
-  ];
+    [grid, W.grid], [gw, W.groundwater], [natura, W.natura], [zoning, W.zoning],
+    [settlement, W.settlement], [heritage, W.heritage],
+    [road, W.road], [flood, W.flood], [soil, W.soil],
+  ].filter(([, m]) => m > 0);
+
   const achieved = components.filter(([v]) => v !== null).reduce((s, [v]) => s + v, 0);
   const maxPts   = components.filter(([v]) => v !== null).reduce((s, [, m]) => s + m, 0);
   return maxPts ? Math.min(Math.round(achieved / maxPts * 100), 100) : 0;
+}
+
+// ─────────────────────────────────────────────
+// switchMapType — update sidebar UI for selected project type
+// ─────────────────────────────────────────────
+function switchMapType(type) {
+  const ui  = MAP_TYPE_UI[type] || MAP_TYPE_UI.bess;
+  const cfg = MAANK_SCORE_CFG[type] || MAANK_SCORE_CFG.bess;
+
+  const powerWrap  = document.getElementById('proj-power-wrap');
+  const powerLabel = document.getElementById('proj-power-label');
+  const gridWrap   = document.getElementById('proj-grid-wrap');
+  const marketWrap = document.getElementById('proj-market-wrap');
+
+  if (ui.powerLabel) {
+    powerWrap.style.display  = '';
+    powerLabel.textContent   = ui.powerLabel;
+  } else {
+    powerWrap.style.display  = 'none';
+  }
+  gridWrap.style.display   = ui.showGrid   ? '' : 'none';
+  marketWrap.style.display = ui.showMarket ? '' : 'none';
+
+  const labelEl = document.getElementById('analysis-type-label');
+  const textEl  = document.getElementById('analysis-type-text');
+  if (type) {
+    const typeName = (PROJECT_TYPES.find(pt => pt.id === type) || {}).name || type;
+    const minM = cfg.settlement_min >= 1000
+      ? `Asutus min ${cfg.settlement_min / 1000} km`
+      : cfg.settlement_min >= 200
+        ? `Asutus min ${cfg.settlement_min} m` : null;
+    textEl.textContent = `${typeName}: ${ui.criteria}`;
+    labelEl.style.display = '';
+  } else {
+    labelEl.style.display = 'none';
+  }
+
+  if (lastAnalysis) setScore(recalcScore(lastAnalysis));
 }
 
 function applyManualOverrides() {
@@ -2282,6 +2407,9 @@ async function generateReport() {
     const manualPintaAlaRaw = document.getElementById('manual-pinta-ala').value;
     const manualPintaAla    = manualPintaAlaRaw ? parseFloat(manualPintaAlaRaw) || null : null;
 
+    const mapType  = document.getElementById('map-hanketyyppi')?.value || 'hanke';
+    const typeName = (PROJECT_TYPES.find(pt => pt.id === mapType) || {}).name || mapType;
+
     const projPayload = {
       kiinteistotunnus: kt,
       property_geojson: propertyGeoJson,
@@ -2291,6 +2419,8 @@ async function generateReport() {
       power_mw:        parseFloat(document.getElementById('proj-power').value) || 0,
       grid_connection: document.getElementById('proj-grid').value,
       market:          document.getElementById('proj-market').value,
+      hanketyyppi:           mapType,
+      project_type_label:    typeName,
       manual_kaavoitus:    manualKaavoitus,
       manual_tulvavaara:   manualTulvavaara,
       manual_maapera:      manualMaapera,
@@ -2307,7 +2437,7 @@ async function generateReport() {
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href = url;
-    a.download = `BESS_raportti_${kt.replace(/-/g, '_')}.pdf`;
+    a.download = `${mapType}_maankäyttöselvitys_${kt.replace(/-/g, '_')}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
     log('PDF-raportti ladattu', 'ok');
