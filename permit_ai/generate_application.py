@@ -70,11 +70,13 @@ C_WHITE  = colors.white
 
 @dataclass
 class ApplicationInput:
-    hanketyyppi:      str    # ks. _HANKE_CFG avaimet
-    kiinteistotunnus: str
-    teho_mw:          float
-    kunta:            str
-    hakija:           str
+    hanketyyppi:                  str
+    kiinteistotunnus:             str
+    teho_mw:                      float
+    kunta:                        str
+    hakija:                       str
+    sijainti_ymparistovaikutukset: str = ""
+    hankkeen_vaihe:               str = ""
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -290,6 +292,25 @@ _HANKE_CFG = {
             "Lentoestekartoitus (Traficom/Finavia)",
         ],
     },
+    "business_finland": {
+        "nimi_fi":    "Business Finland Sprint — T&K-rahoitushakemus",
+        "lyhenne":    "BF-Sprint",
+        "rag_queries": [
+            "energia-alan tutkimus kehitys innovaatio rahoitus T&K",
+            "akkuenergia aurinkovoima tuulivoima teknologia kehitys innovaatio",
+            "energiavarasto tehoelektroniikka ohjausjärjestelmä tutkimus",
+        ],
+        "luvat": [],
+        "liitteet": [
+            "Hakijan taloudellinen tilanne (tilinpäätös, 2 viimeisintä vuotta)",
+            "Projektisuunnitelma (T&K-kuvaus, tavoitteet, metodologia)",
+            "Budjettilaskelmat ja rahoitussuunnitelma",
+            "Tiimikuvaus (ansioluettelot, osaamisprofiilit)",
+            "Riskiarviointi ja mitigaatiosuunnitelma",
+            "Referenssit ja aiempi T&K-toiminta",
+            "IPR-suunnitelma (immateriaalioikeuksien hallinta)",
+        ],
+    },
     "smr_bess": {
         "nimi_fi":    "SMR + BESS hybridienergijärjestelmä",
         "lyhenne":    "SMR+BESS",
@@ -369,6 +390,67 @@ _SYSTEM = (
     "Kaikki tuottamasi teksti on AI-luonnos joka vaatii asiantuntijatarkistuksen."
 )
 
+def _generate_bf_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str]:
+    """Business Finland Sprint -hakemusosioiden generointi."""
+    now = datetime.now().strftime("%d.%m.%Y")
+    vaihe = inp.hankkeen_vaihe or "esiselvitys"
+    tk_kuvaus = inp.sijainti_ymparistovaikutukset or ""
+
+    prompt = f"""Laadi Business Finland Sprint -rahoitushakemuksen luonnos:
+
+Hakija / yritys: {inp.hakija}
+Sijaintikunta: {inp.kunta}
+Hankkeen vaihe: {vaihe}
+T&K-haasteet / innovaatiokuvaus: {tk_kuvaus if tk_kuvaus else '(ei täydennetty)'}
+Päivämäärä: {now}
+
+Alla on relevanttia energia-alan T&K-dokumentaatiota:
+{rag_context}
+
+Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:
+
+## T&K-KUVAUS
+Kirjoita 3–5 kappaleen kuvaus tutkimus- ja kehitystyöstä: tutkimusongelma, innovaatio, teknologinen lähestymistapa, odotetut tulokset ja tieteellinen/teknologinen uutuusarvo. Ota huomioon hakijan toimiala ja T&K-haasteiden kuvaus.
+
+## BUDJETTI JA RAHOITUSRAKENNE
+Kirjoita 2–3 kappaletta budjettirakenteesta ja rahoitussuunnitelmasta: kokonaisbudjetti jakautuminen (henkilöstökulut, alihankinnat, laitteet, muut), oma rahoitusosuus ja haettava BF-tuki, kustannustehokkuus.
+
+## TIIMIKUVAUS
+Kirjoita 2–3 kappaletta tiimin osaamistaustasta: keskeiset henkilöt ja roolit, relevantit aiemmat projektit ja referenssit, yhteistyökumppanit ja alihankkijat.
+
+## PROJEKTIAIKATAULU
+Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali- tai kuukausitarkkuudella. Aloita hankkeen käynnistämisestä ja pääty loppuraporttiin."""
+
+    claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    resp   = claude.messages.create(
+        model=_MODEL_ID,
+        max_tokens=4000,
+        system=_SYSTEM,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    raw = resp.content[0].text
+
+    def _extract(text: str, header: str, next_headers: list[str]) -> str:
+        start = text.find(f"## {header}")
+        if start == -1:
+            return ""
+        start = text.find("\n", start) + 1
+        end   = len(text)
+        for nh in next_headers:
+            pos = text.find(f"## {nh}", start)
+            if pos != -1:
+                end = min(end, pos)
+        return text[start:end].strip()
+
+    headers = ["T&K-KUVAUS", "BUDJETTI JA RAHOITUSRAKENNE", "TIIMIKUVAUS", "PROJEKTIAIKATAULU"]
+    return {
+        "tk_kuvaus":    _extract(raw, "T&K-KUVAUS",               headers[1:]),
+        "budjetti":     _extract(raw, "BUDJETTI JA RAHOITUSRAKENNE", headers[2:]),
+        "tiimi":        _extract(raw, "TIIMIKUVAUS",               headers[3:]),
+        "aikataulu":    _extract(raw, "PROJEKTIAIKATAULU",          []),
+    }
+
+
 def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str]:
     """
     Kutsu Claude-API ja generoi kaikki hakemuksen osiot yhdellä kutsulla.
@@ -377,13 +459,20 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     cfg = _HANKE_CFG[inp.hanketyyppi]
     now = datetime.now().strftime("%d.%m.%Y")
 
+    sijainti_lisatieto = ""
+    if inp.sijainti_ymparistovaikutukset:
+        sijainti_lisatieto = f"\nSijainti / ympäristövaikutukset: {inp.sijainti_ymparistovaikutukset}"
+    vaihe_lisatieto = ""
+    if inp.hankkeen_vaihe:
+        vaihe_lisatieto = f"\nHankkeen vaihe: {inp.hankkeen_vaihe}"
+
     prompt = f"""Laadi lupahakemusluonnos seuraavalle hankkeelle:
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
 Kiinteistötunnus: {inp.kiinteistotunnus}
 Teho: {inp.teho_mw} MW
 Kunta: {inp.kunta}
-Hakija: {inp.hakija}
+Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}
 Päivämäärä: {now}
 
 Alla on relevanttia dokumentaatiota (Fingrid, Pelastusopisto, Tukes):
@@ -392,7 +481,7 @@ Alla on relevanttia dokumentaatiota (Fingrid, Pelastusopisto, Tukes):
 Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:
 
 ## HANKKEEN KUVAUS
-Kirjoita 3–5 kappaleen kuvaus hankkeesta: tarkoitus, tekniset tiedot, sijainti, liityntä verkkoon ja ympäristövaikutukset. Mainitse hanketyypille tyypilliset tekniset parametrit.
+Kirjoita 3–5 kappaleen kuvaus hankkeesta: tarkoitus, tekniset tiedot, sijainti, liityntä verkkoon ja ympäristövaikutukset. Mainitse hanketyypille tyypilliset tekniset parametrit.{' Ota huomioon annettu sijainti- ja ympäristövaikutustieto.' if inp.sijainti_ymparistovaikutukset else ''}
 
 ## PERUSTELUT JA TARVE
 Kirjoita 2–3 kappaleen perustelu miksi hanke on tarpeellinen (energiajärjestelmän näkökulma, Suomen ilmastotavoitteet, aluetaloudelliset vaikutukset).
@@ -401,7 +490,7 @@ Kirjoita 2–3 kappaleen perustelu miksi hanke on tarpeellinen (energiajärjeste
 Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa koskee ja miksi se vaaditaan tälle hankkeelle.
 
 ## SEURAAVAT TOIMENPITEET
-Listaa 5–7 konkreettista seuraavaa askelta aikatauluineen (kk tarkkuudella). Aloita kiireellisimmästä."""
+Listaa 5–7 konkreettista seuraavaa askelta aikatauluineen (kk tarkkuudella). Aloita kiireellisimmästä.{' Ota huomioon hankkeen nykyinen vaihe: ' + inp.hankkeen_vaihe + '.' if inp.hankkeen_vaihe else ''}"""
 
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     resp   = claude.messages.create(
@@ -593,6 +682,95 @@ def _page_footer(canv, doc, inp: ApplicationInput, now: str):
     canv.restoreState()
 
 
+def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> bytes:
+    """PDF-rakenne Business Finland Sprint -hakemukselle."""
+    buf    = io.BytesIO()
+    now    = datetime.now().strftime("%d.%m.%Y")
+    cfg    = _HANKE_CFG["business_finland"]
+    st     = _st()
+    margin = 2.2 * cm
+
+    footer_cb = lambda canv, doc: _page_footer(canv, doc, inp, now)
+
+    doc = SimpleDocTemplate(
+        buf, pagesize=A4,
+        leftMargin=margin, rightMargin=margin,
+        topMargin=2.0*cm, bottomMargin=2.2*cm,
+    )
+    story = []
+
+    story.append(Spacer(1, 6*mm))
+    story.append(Paragraph("Business Finland Sprint", st["sub"]))
+    story.append(Paragraph("T&K-rahoitushakemus — luonnos", st["title"]))
+    story.append(Paragraph(f"{inp.hakija}  ·  {inp.kunta}  ·  {now}", st["meta"]))
+    story.append(Spacer(1, 4*mm))
+    story.append(_hr(C_NAVY, 1.5))
+    story.append(Spacer(1, 3*mm))
+
+    meta_rows = [
+        ["Hakija",           inp.hakija],
+        ["Kotipaikka",       inp.kunta],
+        ["Vaihe",            inp.hankkeen_vaihe or "–"],
+        ["T&K-kuvaus",       (inp.sijainti_ymparistovaikutukset or "–")[:120]],
+        ["Laadittu",         now],
+        ["Laatinut",         "NCE Energy Permit AI (tekoälyavusteinen)"],
+    ]
+    meta_tbl = Table(
+        [[Paragraph(k, ParagraphStyle("mk", fontSize=8.5, textColor=C_GRAY,
+                                      fontName="Helvetica-Bold")),
+          Paragraph(v, ParagraphStyle("mv", fontSize=8.5, leading=12))]
+         for k, v in meta_rows],
+        colWidths=[4.5*cm, 12.0*cm],
+    )
+    meta_tbl.setStyle(TableStyle([
+        ("ROWBACKGROUNDS", (0, 0), (-1, -1), [C_LGRAY, C_WHITE]),
+        ("PADDING",        (0, 0), (-1, -1), 6),
+        ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
+        ("VALIGN",         (0, 0), (-1, -1), "TOP"),
+    ]))
+    story.append(meta_tbl)
+    story.append(Spacer(1, 6*mm))
+    story.append(_disclaimer_box(st))
+    story.append(Spacer(1, 8*mm))
+
+    story.append(KeepTogether([Paragraph("1. T&K-kuvaus", st["h2"]), _hr()]))
+    story.extend(_para_text(sections.get("tk_kuvaus", "–"), st))
+    story.append(Spacer(1, 4*mm))
+
+    story.append(KeepTogether([Paragraph("2. Budjetti ja rahoitusrakenne", st["h2"]), _hr()]))
+    story.extend(_para_text(sections.get("budjetti", "–"), st))
+    story.append(Spacer(1, 4*mm))
+
+    story.append(KeepTogether([Paragraph("3. Tiimikuvaus", st["h2"]), _hr()]))
+    story.extend(_para_text(sections.get("tiimi", "–"), st))
+    story.append(Spacer(1, 4*mm))
+
+    story.append(KeepTogether([Paragraph("4. Projektiaikataulu", st["h2"]), _hr()]))
+    story.extend(_para_text(sections.get("aikataulu", "–"), st))
+    story.append(Spacer(1, 4*mm))
+
+    story.append(KeepTogether([Paragraph("5. Liiteluettelo", st["h2"]), _hr()]))
+    story.append(_liitteet_table("business_finland"))
+    story.append(Spacer(1, 4*mm))
+
+    if sources:
+        story.append(KeepTogether([
+            Paragraph("Lähteet ja tietolähteet", st["h2"]), _hr(),
+            Paragraph("Luonnos laadittu hyödyntäen seuraavia dokumentteja:", st["body"]),
+        ]))
+        for s in sources:
+            story.append(Paragraph(f"• {s}", st["bullet"]))
+        story.append(Spacer(1, 3*mm))
+
+    story.append(_hr(C_NAVY, 1.0))
+    story.append(Paragraph(
+        "NCE Energy Permit AI  ·  ncenergy.fi  ·  AI-luonnos — vaatii asiantuntijatarkistuksen",
+        ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
+    ))
+    doc.build(story, onFirstPage=footer_cb, onLaterPages=footer_cb)
+    return buf.getvalue()
+
+
 def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> bytes:
     """Rakenna PDF ja palauta bytes."""
     buf    = io.BytesIO()
@@ -744,20 +922,28 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 
 def generate_application(inp: ApplicationInput) -> str:
     """
-    Generoi lupahakemus-PDF ja palauta tallennuspolku.
+    Generoi lupahakemus-PDF (tai BF-hakemus) ja palauta tallennuspolku.
     """
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
+
+    is_bf = inp.hanketyyppi == "business_finland"
 
     print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi})…")
     rag_ctx, sources = _rag_context(inp.hanketyyppi)
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {sources}")
 
     print("[2/3] Generoidaan hakemusteksti (Claude)…")
-    sections = _generate_sections(inp, rag_ctx)
+    if is_bf:
+        sections = _generate_bf_sections(inp, rag_ctx)
+    else:
+        sections = _generate_sections(inp, rag_ctx)
     print(f"      Osiot: {list(sections.keys())}")
 
     print("[3/3] Rakennetaan PDF…")
-    pdf_bytes = generate_pdf(inp, sections, sources)
+    if is_bf:
+        pdf_bytes = _generate_bf_pdf(inp, sections, sources)
+    else:
+        pdf_bytes = generate_pdf(inp, sections, sources)
 
     kt_safe  = inp.kiinteistotunnus.replace("/", "-")
     out_path = os.path.join(_OUTPUT_DIR, f"hakemus_{kt_safe}.pdf")

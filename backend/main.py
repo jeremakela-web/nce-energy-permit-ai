@@ -78,11 +78,13 @@ class PermitAIRequest(BaseModel):
 
 
 class ApplicationRequest(BaseModel):
-    hanketyyppi:      str    # "BESS" | "tuulivoima" | "SMR"
-    kiinteistotunnus: str
-    teho_mw:          float
-    kunta:            str
-    hakija:           str
+    hanketyyppi:                  str
+    kiinteistotunnus:             str
+    teho_mw:                      Optional[float] = 0.0
+    kunta:                        str
+    hakija:                       str
+    sijainti_ymparistovaikutukset: Optional[str]   = None
+    hankkeen_vaihe:               Optional[str]   = None
 
 
 class ReportRequest(BaseModel):
@@ -310,17 +312,19 @@ async def generate_report(req: ReportRequest):
 @limiter.limit("5/hour")
 async def generate_application_endpoint(request: Request, req: ApplicationRequest):
     """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude)."""
-    allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR", "smr_bess", "vesivoima", "hybridi"}
+    allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR", "smr_bess", "vesivoima", "hybridi", "business_finland"}
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
                             detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
     try:
         inp = ApplicationInput(
-            hanketyyppi      = req.hanketyyppi,
-            kiinteistotunnus = req.kiinteistotunnus,
-            teho_mw          = req.teho_mw,
-            kunta            = req.kunta,
-            hakija           = req.hakija,
+            hanketyyppi                   = req.hanketyyppi,
+            kiinteistotunnus              = req.kiinteistotunnus,
+            teho_mw                       = req.teho_mw or 0.0,
+            kunta                         = req.kunta,
+            hakija                        = req.hakija,
+            sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset or "",
+            hankkeen_vaihe                = req.hankkeen_vaihe or "",
         )
         out_path = await asyncio.to_thread(generate_application, inp)
         with open(out_path, "rb") as f:

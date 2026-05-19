@@ -882,7 +882,7 @@
       &#x1F4C4; Lupahakemusgeneraattori
     </button>
     <button class="tab-btn" data-tab="bess" onclick="switchTab('bess')">
-      &#x1F5FA;&#xFE0F; BESS Sijaintianalyysi
+      &#x1F5FA;&#xFE0F; Kaavoituskartoitus
     </button>
   </nav>
 
@@ -924,6 +924,21 @@
       <aside class="sidebar">
 
         <div class="sidebar-section">
+          <h3>Hanketyyppi</h3>
+          <div class="proj-field">
+            <select id="kaav-tyyppi" onchange="switchKaavoitusForm(this.value)">
+              <option value="">— Valitse —</option>
+              <option value="rakennuslupa">Rakennuslupa</option>
+              <option value="BESS">BESS</option>
+              <option value="tuulivoima">Tuulivoima</option>
+              <option value="aurinkovoima">Aurinkovoima</option>
+              <option value="SMR">SMR</option>
+              <option value="muu">Muu</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
           <h3>Hankkeen tiedot</h3>
           <div class="proj-field">
             <label>Hankkeen omistaja</label>
@@ -933,31 +948,44 @@
             <label>Hankkeen nimi</label>
             <input type="text" id="proj-name" placeholder="Hankkeen nimi" />
           </div>
-          <div class="proj-field">
-            <label>Teho MW</label>
-            <input type="number" id="proj-power" min="0.1" step="0.1" />
+          <div class="proj-field" id="kaav-power-wrap">
+            <label>Teho (MW)</label>
+            <input type="number" id="proj-power" min="0" step="0.1" />
+          </div>
+          <div id="bess-specific-fields" style="display:none;">
+            <div class="proj-field">
+              <label>Verkkoliityntä</label>
+              <select id="proj-grid">
+                <option value="">— Valitse —</option>
+                <option value="Jakeluverkko 20 kV (Caruna)">Caruna 20 kV (jakeluverkko)</option>
+                <option value="Jakeluverkko 20 kV (Elenia)">Elenia 20 kV (jakeluverkko)</option>
+                <option value="Jakeluverkko 20 kV (muu)">Muu jakeluverkko 20 kV</option>
+                <option value="Fingrid 110 kV (kantaverkko)">Fingrid 110 kV (kantaverkko)</option>
+                <option value="Fingrid 400 kV (kantaverkko)">Fingrid 400 kV (kantaverkko)</option>
+              </select>
+            </div>
+            <div class="proj-field">
+              <label>Tavoitemarkkinat</label>
+              <select id="proj-market">
+                <option value="">— Valitse —</option>
+                <option value="FCR (Frequency Containment Reserve)">FCR</option>
+                <option value="mFRR (Manual Frequency Restoration Reserve)">mFRR</option>
+                <option value="aFRR (Automatic Frequency Restoration Reserve)">aFRR</option>
+                <option value="Arbitraasi">Arbitraasi</option>
+              </select>
+            </div>
           </div>
           <div class="proj-field">
-            <label>Verkkoliityntä</label>
-            <select id="proj-grid">
+            <label>Hankkeen vaihe</label>
+            <select id="proj-vaihe">
               <option value="">— Valitse —</option>
-              <option value="Jakeluverkko 20 kV (Caruna)">Caruna 20 kV (jakeluverkko)</option>
-              <option value="Jakeluverkko 20 kV (Elenia)">Elenia 20 kV (jakeluverkko)</option>
-              <option value="Jakeluverkko 20 kV (muu)">Muu jakeluverkko 20 kV</option>
-              <option value="Fingrid 110 kV (kantaverkko)">Fingrid 110 kV (kantaverkko)</option>
-              <option value="Fingrid 400 kV (kantaverkko)">Fingrid 400 kV (kantaverkko)</option>
+              <option value="esiselvitys">Esiselvitys</option>
+              <option value="lupavaihe">Lupavaihe</option>
+              <option value="rakentaminen">Rakentaminen</option>
             </select>
           </div>
-          <div class="proj-field">
-            <label>Tavoitemarkkinat</label>
-            <select id="proj-market">
-              <option value="">— Valitse —</option>
-              <option value="FCR (Frequency Containment Reserve)">FCR</option>
-              <option value="mFRR (Manual Frequency Restoration Reserve)">mFRR</option>
-              <option value="aFRR (Automatic Frequency Restoration Reserve)">aFRR</option>
-              <option value="Arbitraasi">Arbitraasi</option>
-            </select>
-          </div>
+          <!-- Tyyppikohteinen lisäkenttä (JS renderöi) -->
+          <div id="kaav-extra-fields"></div>
         </div>
 
         <div class="sidebar-section">
@@ -1038,7 +1066,7 @@
         </div>
 
         <div class="sidebar-section">
-          <h3>BESS-soveltuvuus</h3>
+          <h3>Sijaintianalyysi</h3>
           <div class="info-grid" style="margin-bottom:10px;">
             <div class="info-item" style="grid-column:1/-1;">
               <div class="label">Etäisyys verkko</div>
@@ -1142,7 +1170,7 @@
         <div class="sidebar-section">
           <h3>Toiminnot</h3>
           <div class="btn-row">
-            <button class="btn" id="btn-analyze">Analysoi BESS</button>
+            <button class="btn" id="btn-analyze">Analysoi sijainti</button>
             <button class="btn secondary" id="btn-report">PDF-raportti</button>
           </div>
           <div style="margin-top:10px;">
@@ -1181,7 +1209,7 @@
     <div class="logbar-entry info newest">
       <span class="logbar-dot"></span>
       <span class="logbar-ts">--:--:--</span>
-      <span class="logbar-msg">Valmis — valitse hanketyyppi tai vaihda BESS-analyysivälilehdelle</span>
+      <span class="logbar-msg">Valmis — valitse hanketyyppi ja täytä perustiedot tai vaihda Kaavoituskartoitus-välilehdelle</span>
     </div>
   </div>
 </div>
@@ -1222,6 +1250,7 @@
           <option value="smr_bess">SMR + BESS — Hybridi</option>
           <option value="vesivoima">Vesivoima</option>
           <option value="hybridi">Hybridivoimala (BESS + tuuli/aurinko)</option>
+          <option value="business_finland">Business Finland Sprint (T&amp;K)</option>
         </select>
       </div>
       <div class="pai-gen-field">
@@ -1330,6 +1359,74 @@ function switchTab(tabId) {
 }
 
 // ─────────────────────────────────────────────
+// Kaavoituskartoitus: hanketyyppilomakkeet
+// ─────────────────────────────────────────────
+const KAAV_EXTRA_FIELDS = {
+  rakennuslupa: [
+    { id: 'kaav-kerrosala',  label: 'Kerrosala (m²)',   type: 'number', min: '1',   step: '1' },
+    { id: 'kaav-kerrosluku', label: 'Kerrosluku',       type: 'number', min: '1',   step: '1' },
+    { id: 'kaav-kaytt',      label: 'Käyttötarkoitus',  type: 'select',
+      options: ['— Valitse —', 'Asuinrakennus', 'Liikerakennus', 'Teollisuusrakennus', 'Varastorakennus', 'Muu'] },
+  ],
+  BESS: [],
+  tuulivoima: [
+    { id: 'kaav-turbiinimi', label: 'Turbiinimäärä (kpl)', type: 'number', min: '1',  step: '1' },
+    { id: 'kaav-napakork',   label: 'Napakorkeus (m)',     type: 'number', min: '50', step: '5' },
+    { id: 'kaav-roottorid',  label: 'Roottorin halk. (m)', type: 'number', min: '50', step: '5' },
+  ],
+  aurinkovoima: [
+    { id: 'kaav-pvala',      label: 'Paneelipinta-ala (ha)', type: 'number', min: '0.1', step: '0.1' },
+    { id: 'kaav-pvtyyppi',   label: 'Asennustapa',           type: 'select',
+      options: ['— Valitse —', 'Maastoasennus', 'Kattopaneelit', 'Kelluvat (floatovoltaics)'] },
+  ],
+  SMR: [
+    { id: 'kaav-reaktori',   label: 'Reaktorityyppi',   type: 'select',
+      options: ['— Valitse —', 'PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
+    { id: 'kaav-smrkaytt',   label: 'Käyttötarkoitus',  type: 'select',
+      options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
+  ],
+  muu: [
+    { id: 'kaav-kuvaus',     label: 'Hankkeen kuvaus',  type: 'text', placeholder: 'Lyhyt kuvaus hankkeesta' },
+  ],
+};
+
+function switchKaavoitusForm(type) {
+  const bessFields    = document.getElementById('bess-specific-fields');
+  const powerWrap     = document.getElementById('kaav-power-wrap');
+  const manualSection = document.getElementById('section-manual');
+  const analyzeBtn    = document.getElementById('btn-analyze');
+  const extraDiv      = document.getElementById('kaav-extra-fields');
+
+  const showBess = type === 'BESS';
+  if (bessFields)    bessFields.style.display    = showBess ? '' : 'none';
+  if (manualSection) manualSection.style.display = showBess ? '' : 'none';
+
+  const hidePower = type === 'rakennuslupa' || type === 'muu' || type === '';
+  if (powerWrap) powerWrap.style.display = hidePower ? 'none' : '';
+
+  if (analyzeBtn) {
+    const labels = { rakennuslupa: 'Rakennuslupa', BESS: 'BESS', tuulivoima: 'Tuulivoima',
+                     aurinkovoima: 'Aurinkovoima', SMR: 'SMR', muu: 'Hanke' };
+    analyzeBtn.textContent = 'Analysoi ' + (labels[type] || 'sijainti');
+  }
+
+  if (extraDiv) {
+    const fields = KAAV_EXTRA_FIELDS[type] || [];
+    extraDiv.innerHTML = fields.map(f => {
+      let inp;
+      if (f.type === 'select') {
+        const opts = f.options.map(o => `<option value="${o.replace(/"/g, '&quot;')}">${o}</option>`).join('');
+        inp = `<select id="${f.id}">${opts}</select>`;
+      } else {
+        inp = `<input type="${f.type}" id="${f.id}" min="${f.min || ''}" step="${f.step || ''}"
+          placeholder="${f.placeholder || ''}" />`;
+      }
+      return `<div class="proj-field"><label>${f.label}</label>${inp}</div>`;
+    }).join('');
+  }
+}
+
+// ─────────────────────────────────────────────
 // Generator: project type definitions
 // ─────────────────────────────────────────────
 const PROJECT_TYPES = [
@@ -1340,7 +1437,8 @@ const PROJECT_TYPES = [
   { id: 'SMR',            icon: '⚛️', name: 'SMR',              sub: 'Pienydinreaktorihanke',         badge: null },
   { id: 'smr_bess',       icon: '⚛️', name: 'SMR + BESS',       sub: 'Hybridienergijärjestelmä',      badge: null },
   { id: 'vesivoima',      icon: '💧', name: 'Vesivoima',         sub: 'Vesivoimalahanke',              badge: null },
-  { id: 'hybridi',        icon: '⚡', name: 'Hybridivoimala',    sub: 'BESS + tuuli/aurinko',         badge: null },
+  { id: 'hybridi',           icon: '⚡',  name: 'Hybridivoimala',    sub: 'BESS + tuuli/aurinko',         badge: null },
+  { id: 'business_finland',  icon: '🇫🇮', name: 'Business Finland',  sub: 'Sprint T&amp;K-rahoitushakemus', badge: 'BF' },
 ];
 
 // Form field definitions per project type
@@ -1349,84 +1447,114 @@ const HANKE_FIELDS = {
   BESS: {
     title: 'BESS — Akkuenergiavarastohanke',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi',           required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001',  required: true },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', placeholder: '',  min: '0.1', step: '0.1', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-verkko',      apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: ['— Valitse —', 'Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
-      { id: 'gf-kap',         apiKey: null,               label: 'Kapasiteetti (MWh)',    type: 'number', placeholder: '',  min: '0.1', step: '0.1' },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                    type: 'text',   placeholder: 'Yrityksen nimi',                           required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                   type: 'text',   placeholder: 'esim. 091-001-0001-0001',                  required: true },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Teho (MW)',                          type: 'number', min: '0.1', step: '0.1',                                required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                      type: 'text',   placeholder: 'Kunta',                                   required: true },
+      { id: 'gf-verkko',      apiKey: null,                            label: 'Verkkoliityntä',                     type: 'select', options: ['— Valitse —', 'Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
+      { id: 'gf-kap',         apiKey: null,                            label: 'Kapasiteetti (MWh)',                  type: 'number', min: '0.1', step: '0.1' },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset',    type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                     type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
   tuulivoima_maa: {
     title: 'Tuulivoima (maa) — Maalle sijoitettava tuulivoimahanke',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi',    required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                required: true },
-      { id: 'gf-turbiinimi',  apiKey: null,               label: 'Turbiinimäärä (kpl)',   type: 'number', min: '1',   step: '1' },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',     type: 'number', min: '1',   step: '0.5', required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus (pää)',type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
-      { id: 'gf-yva',         apiKey: null,               label: 'YVA tarvitaan',         type: 'select', options: ['— Valitse —', 'Kyllä (≥10 voimalaa tai ≥45 MW)', 'Ei', 'Ei tiedossa'] },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
+      { id: 'gf-turbiinimi',  apiKey: null,                            label: 'Turbiinimäärä (kpl)',             type: 'number', min: '1',   step: '1' },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Kokonaisteho (MW)',               type: 'number', min: '1',   step: '0.5', required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus (pää)',          type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
+      { id: 'gf-yva',         apiKey: null,                            label: 'YVA tarvitaan',                   type: 'select', options: ['— Valitse —', 'Kyllä (≥10 voimalaa tai ≥45 MW)', 'Ei', 'Ei tiedossa'] },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
   tuulivoima_meri: {
     title: 'Tuulivoima (meri) — Offshore-tuulivoimahanke',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintialue (lähin kunta)', type: 'text', placeholder: 'Kunta',               required: true },
-      { id: 'gf-etaisyys',    apiKey: null,               label: 'Etäisyys rannasta (km)', type: 'number', min: '1',   step: '0.5' },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',     type: 'number', min: '10',  step: '5',   required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Merialueen koordinaatit / viite', type: 'text', placeholder: '61°N 21°E', full: true },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                  type: 'text',   placeholder: 'Yrityksen nimi', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintialue (lähin kunta)',        type: 'text',   placeholder: 'Kunta',          required: true },
+      { id: 'gf-etaisyys',    apiKey: null,                            label: 'Etäisyys rannasta (km)',            type: 'number', min: '1',   step: '0.5' },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Kokonaisteho (MW)',                 type: 'number', min: '10',  step: '5',  required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Merialueen koordinaatit / viite',  type: 'text',   placeholder: '61°N 21°E', full: true },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset',  type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                   type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
   aurinkovoima: {
     title: 'Aurinkovoima — Aurinkopaneelihanke',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi',        required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001',  required: true },
-      { id: 'gf-pintaala',    apiKey: null,               label: 'Pinta-ala (ha)',        type: 'number', min: '0.1', step: '0.1' },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MWp)',            type: 'number', min: '0.1', step: '0.1', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                required: true },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
+      { id: 'gf-pintaala',    apiKey: null,                            label: 'Pinta-ala (ha)',                   type: 'number', min: '0.1', step: '0.1' },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Teho (MWp)',                      type: 'number', min: '0.1', step: '0.1', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
   SMR: {
     title: 'SMR — Pienydinreaktorihanke (pre-licensing)',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi',           required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-reaktori',    apiKey: null,               label: 'Reaktorityyppi',        type: 'select', options: ['— Valitse —', 'PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Lämpöteho (MW)',        type: 'number', min: '10',  step: '10',  required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
-      { id: 'gf-kaytto',      apiKey: null,               label: 'Käyttötarkoitus',       type: 'select', options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',           required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                    required: true },
+      { id: 'gf-reaktori',    apiKey: null,                            label: 'Reaktorityyppi',                  type: 'select', options: ['— Valitse —', 'PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Lämpöteho (MW)',                  type: 'number', min: '10', step: '10',                   required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
+      { id: 'gf-kaytto',      apiKey: null,                            label: 'Käyttötarkoitus',                 type: 'select', options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
   smr_bess: {
     title: 'SMR + BESS — Hybridienergijärjestelmä',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi',  required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'SMR lämpöteho (MW)',    type: 'number', min: '10',  step: '10',  required: true },
-      { id: 'gf-bess-kap',    apiKey: null,               label: 'BESS kapasiteetti (MWh)', type: 'number', min: '1',  step: '1' },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi', required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',          required: true },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'SMR lämpöteho (MW)',              type: 'number', min: '10', step: '10',          required: true },
+      { id: 'gf-bess-kap',    apiKey: null,                            label: 'BESS kapasiteetti (MWh)',          type: 'number', min: '1',  step: '1' },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
   vesivoima: {
     title: 'Vesivoima — Vesivoimalahanke',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi',            required: true },
-      { id: 'gf-vesisto',     apiKey: null,               label: 'Vesistö',               type: 'text',   placeholder: 'Vesistön nimi' },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                 required: true },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', min: '0.1', step: '0.1', required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
+      { id: 'gf-vesisto',     apiKey: null,                            label: 'Vesistö',                         type: 'text',   placeholder: 'Vesistön nimi' },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Teho (MW)',                       type: 'number', min: '0.1', step: '0.1',              required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
   hybridi: {
     title: 'Hybridivoimala — BESS + tuuli/aurinko',
     fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi', required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001',  required: true },
-      { id: 'gf-komponentit', apiKey: null,               label: 'Komponentit',           type: 'select', options: ['— Valitse —', 'BESS + tuulivoima', 'BESS + aurinkovoima', 'BESS + tuuli + aurinko'] },
-      { id: 'gf-teho',        apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',     type: 'number', min: '0.1', step: '0.1', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta',                   required: true },
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
+      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
+      { id: 'gf-komponentit', apiKey: null,                            label: 'Komponentit',                     type: 'select', options: ['— Valitse —', 'BESS + tuulivoima', 'BESS + aurinkovoima', 'BESS + tuuli + aurinko'] },
+      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Kokonaisteho (MW)',               type: 'number', min: '0.1', step: '0.1',              required: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
+    ]
+  },
+  business_finland: {
+    title: 'Business Finland Sprint — T&K-rahoitushakemus',
+    fields: [
+      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija / yritys',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
+      { id: 'gf-hnimi',       apiKey: null,                            label: 'Projektin nimi',                  type: 'text',   placeholder: 'T&K-projektin nimi',      full: true },
+      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Kotipaikka (kunta)',               type: 'text',   placeholder: 'Kunta',                   required: true },
+      { id: 'gf-budjetti',    apiKey: null,                            label: 'Hankebudjetti (€)',                type: 'number', min: '10000', step: '1000',             required: true },
+      { id: 'gf-omarah',      apiKey: null,                            label: 'Oma rahoitus (%)',                 type: 'number', min: '30',    step: '5' },
+      { id: 'gf-tiimi',       apiKey: null,                            label: 'Tiimikoko (henkilöä)',             type: 'number', min: '1',     step: '1' },
+      { id: 'gf-kesto',       apiKey: null,                            label: 'Kesto (kk)',                      type: 'number', min: '6',     step: '1' },
+      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'T&K-haasteet / innovaatiokuvaus',  type: 'text',   placeholder: 'Kuvaa tutkimushaaste ja innovaatio lyhyesti', full: true },
+      { id: 'gf-vaihe',       apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
     ]
   },
 };
