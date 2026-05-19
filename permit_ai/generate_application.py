@@ -77,6 +77,7 @@ class ApplicationInput:
     hakija:                       str
     sijainti_ymparistovaikutukset: str = ""
     hankkeen_vaihe:               str = ""
+    kohdeviranomainen:            str = ""
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -395,12 +396,14 @@ def _generate_bf_sections(inp: ApplicationInput, rag_context: str) -> dict[str, 
     now = datetime.now().strftime("%d.%m.%Y")
     vaihe = inp.hankkeen_vaihe or "esiselvitys"
     tk_kuvaus = inp.sijainti_ymparistovaikutukset or ""
+    viranomainen_bf = inp.kohdeviranomainen or "Business Finland (avustushakemus)"
 
     prompt = f"""Laadi Business Finland Sprint -rahoitushakemuksen luonnos:
 
 Hakija / yritys: {inp.hakija}
 Sijaintikunta: {inp.kunta}
 Hankkeen vaihe: {vaihe}
+Kohdeviranomainen / rahoittaja: {viranomainen_bf}
 T&K-haasteet / innovaatiokuvaus: {tk_kuvaus if tk_kuvaus else '(ei täydennetty)'}
 Päivämäärä: {now}
 
@@ -465,6 +468,17 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     vaihe_lisatieto = ""
     if inp.hankkeen_vaihe:
         vaihe_lisatieto = f"\nHankkeen vaihe: {inp.hankkeen_vaihe}"
+    viranomainen_lisatieto = ""
+    if inp.kohdeviranomainen:
+        viranomainen_lisatieto = f"\nKohdeviranomainen: {inp.kohdeviranomainen}"
+
+    viranomainen_ohje = ""
+    if inp.kohdeviranomainen:
+        viranomainen_ohje = (
+            f"\n\nTÄRKEÄÄ: Hakemus osoitetaan viranomaiselle '{inp.kohdeviranomainen}'. "
+            "Mukauta hakemuksen sisältö, rakenne ja kieli sen vaatimuksiin sopivaksi. "
+            "Viittaa kyseisen viranomaisen ohjeisiin, lomakkeisiin ja vaatimuksiin."
+        )
 
     prompt = f"""Laadi lupahakemusluonnos seuraavalle hankkeelle:
 
@@ -472,8 +486,8 @@ Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
 Kiinteistötunnus: {inp.kiinteistotunnus}
 Teho: {inp.teho_mw} MW
 Kunta: {inp.kunta}
-Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}
-Päivämäärä: {now}
+Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
+Päivämäärä: {now}{viranomainen_ohje}
 
 Alla on relevanttia dokumentaatiota (Fingrid, Pelastusopisto, Tukes):
 {rag_context}
@@ -487,7 +501,7 @@ Kirjoita 3–5 kappaleen kuvaus hankkeesta: tarkoitus, tekniset tiedot, sijainti
 Kirjoita 2–3 kappaleen perustelu miksi hanke on tarpeellinen (energiajärjestelmän näkökulma, Suomen ilmastotavoitteet, aluetaloudelliset vaikutukset).
 
 ## LUPAMENETTELYJEN KUVAUS
-Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa koskee ja miksi se vaaditaan tälle hankkeelle.
+Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa koskee ja miksi se vaaditaan tälle hankkeelle.{' Viittaa erityisesti kohdeviranomaisen ' + inp.kohdeviranomainen + ' prosesseihin ja vaatimuksiin.' if inp.kohdeviranomainen else ''}
 
 ## SEURAAVAT TOIMENPITEET
 Listaa 5–7 konkreettista seuraavaa askelta aikatauluineen (kk tarkkuudella). Aloita kiireellisimmästä.{' Ota huomioon hankkeen nykyinen vaihe: ' + inp.hankkeen_vaihe + '.' if inp.hankkeen_vaihe else ''}"""

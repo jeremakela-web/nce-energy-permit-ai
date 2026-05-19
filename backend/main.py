@@ -85,6 +85,7 @@ class ApplicationRequest(BaseModel):
     hakija:                       str
     sijainti_ymparistovaikutukset: Optional[str]   = None
     hankkeen_vaihe:               Optional[str]   = None
+    kohdeviranomainen:            Optional[str]   = None
 
 
 class ReportRequest(BaseModel):
@@ -325,6 +326,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             hakija                        = req.hakija,
             sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset or "",
             hankkeen_vaihe                = req.hankkeen_vaihe or "",
+            kohdeviranomainen             = req.kohdeviranomainen or "",
         )
         out_path = await asyncio.to_thread(generate_application, inp)
         with open(out_path, "rb") as f:
