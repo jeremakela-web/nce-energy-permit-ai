@@ -233,6 +233,41 @@
       letter-spacing: 0.6px;
     }
 
+    /* ── Mobiilikorjaukset ───────────────────────────── */
+    .tab-label-short { display: none; }
+
+    /* Tabletti (768–1024 px): 2 kortia per rivi */
+    @media (max-width: 1024px) {
+      .gen-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Mobiili (<768 px): 1 kortti per rivi, isompi ikoni ja teksti */
+    @media (max-width: 767px) {
+      .gen-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .gen-card {
+        flex-direction: row;
+        text-align: left;
+        padding: 14px 16px;
+        gap: 14px;
+        min-height: 120px;
+      }
+      .gen-card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+      .gen-card-name { font-size: 1rem; }
+      .gen-card-sub  { font-size: 0.74rem; }
+
+      /* Navigaatiovälilehdet: lyhyet nimet */
+      .tab-label-full  { display: none; }
+      .tab-label-short { display: inline; }
+      .tab-btn { font-size: 0.73rem; padding: 7px 11px 9px; }
+    }
+
     /* ── Generator form ── */
     .gen-form-wrap {
       background: #16213e;
@@ -997,10 +1032,14 @@
 
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="generator" onclick="switchTab('generator')">
-      &#x1F4C4; <span data-i18n="tab_generator">Lupahakemusgeneraattori</span>
+      &#x1F4C4;
+      <span class="tab-label-full"  data-i18n="tab_generator">Lupa-asiakirjapalvelu</span>
+      <span class="tab-label-short" data-i18n="tab_generator_short">Lupa-asiakirjat</span>
     </button>
     <button class="tab-btn" data-tab="bess" onclick="switchTab('bess')">
-      &#x1F5FA;&#xFE0F; <span data-i18n="tab_map">Maankäyttöselvitys</span>
+      &#x1F5FA;&#xFE0F;
+      <span class="tab-label-full"  data-i18n="tab_map">Maankäyttöselvitys</span>
+      <span class="tab-label-short" data-i18n="tab_map_short">Sijainti</span>
     </button>
   </nav>
 
@@ -1023,7 +1062,7 @@
   <!-- ── Tab: Generator ── -->
   <div id="tab-generator" class="tab-content active">
     <div class="gen-layout">
-      <div class="gen-page-title" data-i18n="tab_generator">Lupahakemusgeneraattori</div>
+      <div class="gen-page-title" data-i18n="tab_generator">Lupa-asiakirjapalvelu</div>
       <div class="gen-page-sub" data-i18n="gen_desc">
         Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa (~60 s).
         Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.
@@ -1438,8 +1477,10 @@ let activeLang = 'FI';
 
 const TRANSLATIONS = {
   FI: {
-    tab_generator:  'Lupa-asiakirjapalvelu',
-    tab_map:        'Maankäyttöselvitys',
+    tab_generator:        'Lupa-asiakirjapalvelu',
+    tab_generator_short:  'Lupa-asiakirjat',
+    tab_map:              'Maankäyttöselvitys',
+    tab_map_short:        'Sijainti',
     gen_desc:       'Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa. Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.',
     gen_form_title: 'Lupahakemusluonnos — PDF',
     lbl_hanketyyppi:'Hanketyyppi',
@@ -1472,8 +1513,10 @@ const TRANSLATIONS = {
     gen_timing_std: 'Odota n. 30–60 s.',
   },
   EN: {
-    tab_generator:  'Permit Document Service',
-    tab_map:        'Land Use Survey',
+    tab_generator:        'Permit Document Service',
+    tab_generator_short:  'Permits',
+    tab_map:              'Land Use Survey',
+    tab_map_short:        'Location',
     gen_desc:       'Select project type and fill in basic details — AI generates a RAG-based permit application draft in PDF format. The draft requires expert review before submission.',
     gen_form_title: 'Permit Application Draft — PDF',
     lbl_hanketyyppi:'Project Type',
@@ -1506,8 +1549,10 @@ const TRANSLATIONS = {
     gen_timing_std: 'Please wait approx. 30–60 s.',
   },
   SE: {
-    tab_generator:  'Tillståndsdokumentservice',
-    tab_map:        'Markanvändningsutredning',
+    tab_generator:        'Tillståndsdokumentservice',
+    tab_generator_short:  'Tillstånd',
+    tab_map:              'Markanvändningsutredning',
+    tab_map_short:        'Plats',
     gen_desc:       'Välj projekttyp och fyll i grunduppgifterna — AI genererar ett RAG-baserat tillståndsansökningsutkast i PDF-format (~60 s). Utkastet kräver expertgranskning innan inlämning.',
     gen_form_title: 'Tillståndsansökningsutkast — PDF',
     lbl_hanketyyppi:'Projekttyp',
