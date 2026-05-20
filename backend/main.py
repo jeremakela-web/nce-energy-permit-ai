@@ -74,6 +74,10 @@ app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
 MML_API_KEY = os.getenv("MML_API_KEY", "")
 PORT = int(os.environ.get("PORT", 8000))
 
+if not MML_API_KEY:
+    print("[startup] VAROITUS: MML_API_KEY ei asetettu — maankäyttöselvityksen WFS-haut eivät toimi. "
+          "Aseta ympäristömuuttuja tai lisää Render-palveluun. Ks. README.md.")
+
 
 # ── Pydantic-mallit ───────────────────────────────────────────────────────────
 
