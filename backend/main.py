@@ -11,6 +11,8 @@ import base64
 import io
 import os
 import re
+import uuid
+from threading import Thread
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -41,7 +43,10 @@ from permit_ai import query_permit_ai
 # permit_ai-moduuli on ~/bess_tool/permit_ai/ — lisätään polkuun
 import sys as _sys
 _sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "permit_ai"))
-from generate_application import generate_application, ApplicationInput, _get_embed_model, _get_chroma_col
+from generate_application import (
+    generate_application, generate_application_draft, apply_proofread_to_pdf,
+    ApplicationInput, _get_embed_model, _get_chroma_col,
+)
 
 # Warmup: lataa embedding-malli ja ChromaDB heti käynnistyksen yhteydessä,
 # ei ensimmäisen requestin yhteydessä.
@@ -86,6 +91,12 @@ class ApplicationRequest(BaseModel):
     sijainti_ymparistovaikutukset: Optional[str]   = None
     hankkeen_vaihe:               Optional[str]   = None
     kohdeviranomainen:            Optional[str]   = None
+    lang:                         Optional[str]   = "FI"
+
+
+# ── Oikolukutehtävien in-memory-varasto ──────────────────────────────────────
+# {job_id: {status: pending|running|done|error, pdf_bytes: bytes|None, error: str|None}}
+_proofread_store: dict = {}
 
 
 class ReportRequest(BaseModel):
@@ -312,8 +323,10 @@ async def generate_report(req: ReportRequest):
 @app.post("/api/generate-application")
 @limiter.limit("5/hour")
 async def generate_application_endpoint(request: Request, req: ApplicationRequest):
-    """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude)."""
-    allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR", "smr_bess", "vesivoima", "hybridi", "business_finland"}
+    """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude). Oikoluku taustalla."""
+    allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR",
+               "smr_bess", "vesivoima", "hybridi", "business_finland",
+               "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu"}
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
                             detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
@@ -327,20 +340,62 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset or "",
             hankkeen_vaihe                = req.hankkeen_vaihe or "",
             kohdeviranomainen             = req.kohdeviranomainen or "",
+            lang                          = req.lang or "FI",
         )
-        out_path = await asyncio.to_thread(generate_application, inp)
-        with open(out_path, "rb") as f:
-            pdf_bytes = f.read()
+        # Nopea luonnos ilman oikolukua (~30 s)
+        draft_bytes, sections, sources = await asyncio.to_thread(generate_application_draft, inp)
+
+        # Käynnistä oikoluku taustasäikeessä
+        job_id = uuid.uuid4().hex[:10]
+        _proofread_store[job_id] = {"status": "pending", "pdf_bytes": None, "error": None}
+
+        def _bg_proofread():
+            try:
+                _proofread_store[job_id]["status"] = "running"
+                pdf = apply_proofread_to_pdf(inp, sections, sources)
+                _proofread_store[job_id]["pdf_bytes"] = pdf
+                _proofread_store[job_id]["status"] = "done"
+            except Exception as exc2:
+                _proofread_store[job_id]["status"] = "error"
+                _proofread_store[job_id]["error"] = str(exc2)
+
+        Thread(target=_bg_proofread, daemon=True).start()
 
         kt_safe  = req.kiinteistotunnus.replace("/", "-")
         filename = f"hakemus_{kt_safe}.pdf"
         return Response(
-            content     = pdf_bytes,
-            media_type  = "application/pdf",
-            headers     = {"Content-Disposition": f'attachment; filename="{filename}"'},
+            content    = draft_bytes,
+            media_type = "application/pdf",
+            headers    = {
+                "Content-Disposition":         f'attachment; filename="{filename}"',
+                "X-Job-Id":                    job_id,
+                "Access-Control-Expose-Headers": "X-Job-Id",
+            },
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Hakemuksen generointi epäonnistui: {exc}")
+
+
+@app.get("/api/proofread/{job_id}")
+async def proofread_status(job_id: str):
+    """Oikolukutehtävän tila: pending | running | done | error."""
+    job = _proofread_store.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Tehtävää ei löydy")
+    return {"status": job["status"], "error": job.get("error")}
+
+
+@app.get("/api/proofread/{job_id}/download")
+async def proofread_download(job_id: str):
+    """Lataa oikoluvun jälkeinen PDF."""
+    job = _proofread_store.get(job_id)
+    if job is None or job["status"] != "done" or not job["pdf_bytes"]:
+        raise HTTPException(status_code=404, detail="PDF ei ole vielä valmis")
+    return Response(
+        content    = job["pdf_bytes"],
+        media_type = "application/pdf",
+        headers    = {"Content-Disposition": f'attachment; filename="hakemus_tarkistettu_{job_id}.pdf"'},
+    )
 
 
 @app.post("/api/permit-ai")

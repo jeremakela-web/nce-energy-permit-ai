@@ -78,6 +78,29 @@
     .tab-btn:hover { color: #c0d0e0; background: rgba(255,255,255,0.04); }
     .tab-btn.active { color: #00C2A8; border-bottom-color: #00C2A8; font-weight: 600; }
 
+    .lang-switcher {
+      display: flex;
+      gap: 2px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 2px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: #8899aa;
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.04em;
+    }
+    .lang-btn:hover { color: #c0d0e0; background: rgba(255,255,255,0.07); }
+    .lang-btn.active { background: #00C2A8; color: #0a1628; }
+
     .header-right {
       margin-left: auto;
       display: flex;
@@ -917,14 +940,19 @@
 
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="generator" onclick="switchTab('generator')">
-      &#x1F4C4; Lupahakemusgeneraattori
+      &#x1F4C4; <span data-i18n="tab_generator">Lupahakemusgeneraattori</span>
     </button>
     <button class="tab-btn" data-tab="bess" onclick="switchTab('bess')">
-      &#x1F5FA;&#xFE0F; Maankäyttöselvitys
+      &#x1F5FA;&#xFE0F; <span data-i18n="tab_map">Maankäyttöselvitys</span>
     </button>
   </nav>
 
   <div class="header-right">
+    <div class="lang-switcher" aria-label="Kielivalinta">
+      <button class="lang-btn active" id="lang-btn-FI" onclick="setLang('FI')">FI</button>
+      <button class="lang-btn" id="lang-btn-EN" onclick="setLang('EN')">EN</button>
+      <button class="lang-btn" id="lang-btn-SE" onclick="setLang('SE')">SE</button>
+    </div>
     <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
       &#x1F4AC; Permit AI
     </button>
@@ -938,8 +966,8 @@
   <!-- ── Tab: Generator ── -->
   <div id="tab-generator" class="tab-content active">
     <div class="gen-layout">
-      <div class="gen-page-title">Lupahakemusgeneraattori</div>
-      <div class="gen-page-sub">
+      <div class="gen-page-title" data-i18n="tab_generator">Lupahakemusgeneraattori</div>
+      <div class="gen-page-sub" data-i18n="gen_desc">
         Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa (~60 s).
         Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.
       </div>
@@ -1203,7 +1231,7 @@
         <div class="sidebar-section">
           <h3>Toiminnot</h3>
           <div class="btn-row">
-            <button class="btn" id="btn-analyze">Käynnistä analyysi</button>
+            <button class="btn" id="btn-analyze" data-i18n="btn_calculate">Laske soveltuvuus</button>
             <button class="btn secondary" id="btn-report">PDF-raportti</button>
           </div>
           <div style="margin-top:10px;">
@@ -1265,15 +1293,15 @@
     <button class="pai-chip" onclick="askPermit('Mitkä ovat paloturvallisuusvaatimukset BESS-konttiasennukselle ulkona?')">Paloturvallisuus</button>
     <button class="pai-chip" onclick="askPermit('Mitä STUK edellyttää SMR-laitoksen pre-licensing vaiheessa?')">SMR pre-licensing</button>
     <button class="pai-chip" onclick="askPermit('Mitä sammutusvedenkeräysvaatimuksia on litiumioniakkuvarastolle?')">Sammutusvesi</button>
-    <button class="btn-gen-hakemus" onclick="toggleGenForm()">&#x1F4C4; Generoi hakemus</button>
+    <button class="btn-gen-hakemus" onclick="toggleGenForm()">&#x1F4C4; <span data-i18n="btn_generate_hakemus">Generoi hakemus</span></button>
   </div>
 
   <!-- Generoi hakemus -lomake -->
   <div class="pai-gen-form" id="pai-gen-form">
-    <h4>&#x1F4C4; Lupahakemusluonnos — PDF</h4>
+    <h4>&#x1F4C4; <span data-i18n="gen_form_title">Lupahakemusluonnos — PDF</span></h4>
     <div class="pai-gen-row">
       <div class="pai-gen-field">
-        <label>Hanketyyppi</label>
+        <label data-i18n="lbl_hanketyyppi">Hanketyyppi</label>
         <select id="gen-hanketyyppi">
           <option value="BESS">BESS — Akkuvarasto</option>
           <option value="tuulivoima_maa">Tuulivoima (maa)</option>
@@ -1286,30 +1314,30 @@
         </select>
       </div>
       <div class="pai-gen-field">
-        <label>Teho (MW)</label>
+        <label data-i18n="lbl_teho_mw">Teho (MW)</label>
         <input type="number" id="gen-teho" min="0.1" step="0.1" />
       </div>
     </div>
     <div class="pai-gen-row">
       <div class="pai-gen-field">
-        <label>Kiinteistötunnus</label>
-        <input type="text" id="gen-kt" placeholder="esim. 091-001-0001-0001" />
+        <label data-i18n="lbl_kt">Kiinteistötunnus</label>
+        <input type="text" id="gen-kt" data-i18n-ph="ph_kt" placeholder="esim. 091-001-0001-0001" />
       </div>
       <div class="pai-gen-field">
-        <label>Kunta</label>
-        <input type="text" id="gen-kunta" placeholder="Kunta" />
+        <label data-i18n="lbl_kunta">Kunta</label>
+        <input type="text" id="gen-kunta" data-i18n-ph="ph_kunta" placeholder="Kunta" />
       </div>
     </div>
     <div class="pai-gen-row full">
       <div class="pai-gen-field">
-        <label>Hakija (yritys)</label>
-        <input type="text" id="gen-hakija" placeholder="Yrityksen nimi" />
+        <label data-i18n="lbl_hakija">Hakija (yritys)</label>
+        <input type="text" id="gen-hakija" data-i18n-ph="ph_hakija" placeholder="Yrityksen nimi" />
       </div>
     </div>
     <div class="pai-gen-actions">
-      <button class="pai-gen-cancel" onclick="toggleGenForm()">Peruuta</button>
+      <button class="pai-gen-cancel" onclick="toggleGenForm()" data-i18n="btn_cancel">Peruuta</button>
       <button class="pai-gen-submit" id="gen-submit" onclick="generateApplication()">
-        &#x23F3; Generoi PDF
+        &#x23F3; <span data-i18n="btn_generate_pdf">Generoi PDF</span>
       </button>
     </div>
   </div>
@@ -1345,6 +1373,144 @@ const ZOOM = 13;
 
 let propertyGeoJson = null;
 let lastAnalysis = null;
+
+// ─────────────────────────────────────────────
+// Kielivalinta
+// ─────────────────────────────────────────────
+let activeLang = 'FI';
+
+const TRANSLATIONS = {
+  FI: {
+    tab_generator:  'Lupahakemusgeneraattori',
+    tab_map:        'Maankäyttöselvitys',
+    gen_desc:       'Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa (~60 s). Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.',
+    gen_form_title: 'Lupahakemusluonnos — PDF',
+    lbl_hanketyyppi:'Hanketyyppi',
+    lbl_teho_mw:    'Teho (MW)',
+    lbl_kt:         'Kiinteistötunnus',
+    lbl_kunta:      'Kunta',
+    lbl_hakija:     'Hakija (yritys)',
+    ph_kt:          'esim. 091-001-0001-0001',
+    ph_kunta:       'Kunta',
+    ph_hakija:      'Yrityksen nimi',
+    btn_generate_pdf: 'Generoi PDF',
+    btn_cancel:     'Peruuta',
+    btn_generate_hakemus: 'Generoi hakemus',
+    btn_calculate:  'Laske soveltuvuus',
+    gen_wait_msg:   'Generoidaan lupahakemusluonnosta',
+    gen_wait_sub:   'RAG-haku + Claude AI + PDF-generointi',
+    gen_done_title: 'Lupahakemusluonnos valmis!',
+    gen_done_note:  'AI-luonnos — vaatii asiantuntijatarkistuksen ennen jättämistä',
+    gen_proofread_pending: 'Tarkistettu versio valmisteilla',
+    gen_proofread_sub:     'AI-oikoluku käynnissä taustalla (60–90 s)',
+    gen_proofread_done:    'Tarkistettu versio valmis!',
+    gen_proofread_dl:      'Lataa tarkistettu versio',
+    gen_proofread_err:     'Oikoluku epäonnistui',
+    lbl_map_type:   'Hanketyyppi',
+    lbl_map_power:  'Teho (MW)',
+    lbl_grid:       'Verkkoliityntä',
+    lbl_market:     'Tavoitemarkkinat',
+    map_select_hint:'— Valitse hanketyyppi —',
+    gen_timing_smr: 'Tämä voi viedä 60–90 sekuntia SMR/offshore-hakemuksille.',
+    gen_timing_std: 'Odota n. 30–60 s.',
+  },
+  EN: {
+    tab_generator:  'Permit Application Generator',
+    tab_map:        'Land Use Survey',
+    gen_desc:       'Select project type and fill in basic details — AI generates a RAG-based permit application draft in PDF format (~60 s). The draft requires expert review before submission.',
+    gen_form_title: 'Permit Application Draft — PDF',
+    lbl_hanketyyppi:'Project Type',
+    lbl_teho_mw:    'Power (MW)',
+    lbl_kt:         'Property ID',
+    lbl_kunta:      'Municipality',
+    lbl_hakija:     'Applicant (company)',
+    ph_kt:          'e.g. 091-001-0001-0001',
+    ph_kunta:       'Municipality',
+    ph_hakija:      'Company name',
+    btn_generate_pdf: 'Generate PDF',
+    btn_cancel:     'Cancel',
+    btn_generate_hakemus: 'Generate application',
+    btn_calculate:  'Calculate suitability',
+    gen_wait_msg:   'Generating permit application draft',
+    gen_wait_sub:   'RAG search + Claude AI + PDF generation',
+    gen_done_title: 'Permit application draft ready!',
+    gen_done_note:  'AI draft — requires expert review before submission',
+    gen_proofread_pending: 'Proofread version in progress',
+    gen_proofread_sub:     'AI proofreading running in background (60–90 s)',
+    gen_proofread_done:    'Proofread version ready!',
+    gen_proofread_dl:      'Download proofread version',
+    gen_proofread_err:     'Proofreading failed',
+    lbl_map_type:   'Project Type',
+    lbl_map_power:  'Power (MW)',
+    lbl_grid:       'Grid connection',
+    lbl_market:     'Target market',
+    map_select_hint:'— Select project type —',
+    gen_timing_smr: 'This may take 60–90 seconds for SMR/offshore applications.',
+    gen_timing_std: 'Please wait approx. 30–60 s.',
+  },
+  SE: {
+    tab_generator:  'Tillståndsansökningsgenerator',
+    tab_map:        'Markanvändningsutredning',
+    gen_desc:       'Välj projekttyp och fyll i grunduppgifterna — AI genererar ett RAG-baserat tillståndsansökningsutkast i PDF-format (~60 s). Utkastet kräver expertgranskning innan inlämning.',
+    gen_form_title: 'Tillståndsansökningsutkast — PDF',
+    lbl_hanketyyppi:'Projekttyp',
+    lbl_teho_mw:    'Effekt (MW)',
+    lbl_kt:         'Fastighetsbeteckning',
+    lbl_kunta:      'Kommun',
+    lbl_hakija:     'Sökande (företag)',
+    ph_kt:          't.ex. 091-001-0001-0001',
+    ph_kunta:       'Kommun',
+    ph_hakija:      'Företagsnamn',
+    btn_generate_pdf: 'Generera PDF',
+    btn_cancel:     'Avbryt',
+    btn_generate_hakemus: 'Generera ansökan',
+    btn_calculate:  'Beräkna lämplighet',
+    gen_wait_msg:   'Genererar tillståndsansökningsutkast',
+    gen_wait_sub:   'RAG-sökning + Claude AI + PDF-generering',
+    gen_done_title: 'Tillståndsansökan är klar!',
+    gen_done_note:  'AI-utkast — kräver expertgranskning innan inlämning',
+    gen_proofread_pending: 'Korrekturläst version under förberedelse',
+    gen_proofread_sub:     'AI-korrekturläsning körs i bakgrunden (60–90 s)',
+    gen_proofread_done:    'Korrekturläst version klar!',
+    gen_proofread_dl:      'Ladda ned korrekturläst version',
+    gen_proofread_err:     'Korrekturläsningen misslyckades',
+    lbl_map_type:   'Projekttyp',
+    lbl_map_power:  'Effekt (MW)',
+    lbl_grid:       'Nätanslutning',
+    lbl_market:     'Målmarknad',
+    map_select_hint:'— Välj projekttyp —',
+    gen_timing_smr: 'Detta kan ta 60–90 sekunder för SMR/offshore-ansökningar.',
+    gen_timing_std: 'Vänta ca 30–60 s.',
+  },
+};
+
+function t(key) {
+  const lang = TRANSLATIONS[activeLang] || TRANSLATIONS.FI;
+  return lang[key] ?? (TRANSLATIONS.FI[key] ?? key);
+}
+
+function setLang(lang) {
+  activeLang = lang;
+  // Update button states
+  ['FI', 'EN', 'SE'].forEach(l => {
+    const btn = document.getElementById('lang-btn-' + l);
+    if (btn) btn.classList.toggle('active', l === lang);
+  });
+  // Apply data-i18n text
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // Apply data-i18n-ph placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+  // Re-render project type grid so card texts update
+  const grid = document.getElementById('project-type-grid');
+  if (grid) renderProjectGrid();
+  // Update map tab selector hint
+  const mapSel = document.getElementById('map-hanketyyppi');
+  if (mapSel && mapSel.options[0]) mapSel.options[0].text = t('map_select_hint');
+}
 
 // ─────────────────────────────────────────────
 // log() — defined before all callers
@@ -2540,21 +2706,26 @@ async function generateApplication() {
   const hakija      = document.getElementById('gen-hakija').value.trim();
 
   if (!kt || !kunta || !hakija) {
-    alert('Täytä kiinteistötunnus, kunta ja hakija.');
+    alert(activeLang === 'EN' ? 'Fill in property ID, municipality and applicant.'
+        : activeLang === 'SE' ? 'Fyll i fastighetsbeteckning, kommun och sökande.'
+        : 'Täytä kiinteistötunnus, kunta ja hakija.');
     return;
   }
 
+  const isSlowType = ['SMR', 'tuulivoima_meri', 'smr_bess'].includes(hanketyyppi);
+  const timingMsg  = isSlowType ? t('gen_timing_smr') : t('gen_timing_std');
+
   const btn = document.getElementById('gen-submit');
   btn.disabled = true;
-  btn.textContent = '⏳ Generoidaan… (n. 60s)';
+  btn.innerHTML = `&#x23F3; ${t('btn_generate_pdf')}…`;
 
   const msgs = document.getElementById('pai-messages');
   const waitDiv = document.createElement('div');
   waitDiv.className = 'chat-msg ai';
   waitDiv.id = 'gen-wait-msg';
   waitDiv.innerHTML = `<div class="bubble" style="color:#64b5f6;">
-    ⏳ Generoidaan lupahakemusluonnosta (${hanketyyppi}, ${kunta}, ${teho} MW)…<br>
-    <span style="color:#4a6a9a;font-size:0.75rem;">RAG-haku + Claude AI + PDF-generointi — odota n. 60 s</span>
+    ⏳ ${t('gen_wait_msg')} (${hanketyyppi}, ${kunta}, ${teho} MW)…<br>
+    <span style="color:#4a6a9a;font-size:0.75rem;">${t('gen_wait_sub')} — ${timingMsg}</span>
   </div>`;
   msgs.appendChild(waitDiv);
   msgs.scrollTop = msgs.scrollHeight;
@@ -2563,7 +2734,10 @@ async function generateApplication() {
     const resp = await fetch(`${API_BASE}/api/generate-application`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hanketyyppi, kiinteistotunnus: kt, teho_mw: teho, kunta, hakija }),
+      body: JSON.stringify({
+        hanketyyppi, kiinteistotunnus: kt, teho_mw: teho, kunta, hakija,
+        lang: activeLang,
+      }),
     });
 
     if (!resp.ok) {
@@ -2572,20 +2746,55 @@ async function generateApplication() {
       throw new Error(_parseApiError(errText, resp.status));
     }
 
-    const blob     = await resp.blob();
-    const url      = URL.createObjectURL(blob);
-    const a        = document.createElement('a');
-    a.href         = url;
-    a.download     = `hakemus_${kt}.pdf`;
+    const jobId  = resp.headers.get('X-Job-Id');
+    const blob   = await resp.blob();
+    const url    = URL.createObjectURL(blob);
+    const a      = document.createElement('a');
+    a.href       = url;
+    a.download   = `hakemus_${kt}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
 
     waitDiv.innerHTML = `<div class="bubble" style="border-color:#4caf50;">
-      ✅ <strong>Lupahakemusluonnos valmis!</strong><br>
+      ✅ <strong>${t('gen_done_title')}</strong><br>
       <span style="font-size:0.77rem;color:#80e090;">${hanketyyppi} · ${kunta} · ${teho} MW</span><br>
       <span style="font-size:0.74rem;color:#4a6a9a;">PDF ladattu: hakemus_${kt}.pdf<br>
-      ⚠️ AI-luonnos — vaatii asiantuntijatarkistuksen ennen jättämistä</span>
+      ⚠️ ${t('gen_done_note')}</span>
     </div>`;
+
+    // Oikolukustatuksen pollaus
+    if (jobId) {
+      const proofDiv = document.createElement('div');
+      proofDiv.className = 'chat-msg ai';
+      proofDiv.innerHTML = `<div class="bubble" style="border-color:#ff9800;color:#ffa726;">
+        🔄 <strong>${t('gen_proofread_pending')}…</strong><br>
+        <span style="font-size:0.74rem;color:#b0b8c8;">${t('gen_proofread_sub')}</span>
+      </div>`;
+      msgs.appendChild(proofDiv);
+
+      const poll = setInterval(async () => {
+        try {
+          const sr = await fetch(`${API_BASE}/api/proofread/${jobId}`);
+          if (!sr.ok) { clearInterval(poll); return; }
+          const sd = await sr.json();
+          if (sd.status === 'done') {
+            clearInterval(poll);
+            proofDiv.innerHTML = `<div class="bubble" style="border-color:#4caf50;">
+              ✅ <strong>${t('gen_proofread_done')}</strong><br>
+              <a href="${API_BASE}/api/proofread/${jobId}/download"
+                 style="color:#64b5f6;font-weight:600;"
+                 download="hakemus_tarkistettu_${kt}.pdf">${t('gen_proofread_dl')} ↓</a>
+            </div>`;
+          } else if (sd.status === 'error') {
+            clearInterval(poll);
+            proofDiv.innerHTML = `<div class="bubble" style="color:#e94560;">
+              ⚠️ ${t('gen_proofread_err')}: ${sd.error || ''}
+            </div>`;
+          }
+        } catch (_e) { clearInterval(poll); }
+      }, 7000);
+      setTimeout(() => clearInterval(poll), 360000);
+    }
 
     document.getElementById('pai-gen-form').classList.remove('open');
     log(`Lupahakemusluonnos generoitu: ${hanketyyppi} / ${kunta}`, 'ok');
@@ -2598,7 +2807,7 @@ async function generateApplication() {
   }
 
   btn.disabled = false;
-  btn.innerHTML = '&#x23F3; Generoi PDF';
+  btn.innerHTML = `&#x23F3; ${t('btn_generate_pdf')}`;
   msgs.scrollTop = msgs.scrollHeight;
 }
 

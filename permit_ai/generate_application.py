@@ -167,6 +167,7 @@ class ApplicationInput:
     sijainti_ymparistovaikutukset: str = ""
     hankkeen_vaihe:               str = ""
     kohdeviranomainen:            str = ""
+    lang:                         str = "FI"  # FI | EN | SE
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -474,11 +475,25 @@ def _rag_context(hanketyyppi: str, n_per_query: int = 4) -> tuple[str, list[str]
 
 _SYSTEM = (
     "Olet NCE Energy Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
-    "laadinnassa Suomessa. Kirjoitat selkeää, virallista suomen kieltä konsulttiraporttityyliin. "
+    "laadinnassa Suomessa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
     "Viittaat aina voimassa olevaan lainsäädäntöön. Et koskaan anna harhaanjohtavaa tietoa — "
     "jos jokin asia on epävarma, merkitset sen selvästi. "
     "Kaikki tuottamasi teksti on AI-luonnos joka vaatii asiantuntijatarkistuksen."
 )
+
+_LANG_INSTRUCTIONS: dict[str, str] = {
+    "FI": "",
+    "EN": (
+        "IMPORTANT: Write this entire permit application draft in English. "
+        "All section titles, body text, and explanations must be in English. "
+        "Legal references may keep Finnish statute numbers but add an English explanation.\n\n"
+    ),
+    "SE": (
+        "VIKTIGT: Skriv hela detta tillståndsansökningsutkast på svenska. "
+        "Alla rubrikerna, brödtexten och förklaringarna ska vara på svenska. "
+        "Lagstiftningshänvisningar kan behålla de finska lagrummen men lägg till en svensk förklaring.\n\n"
+    ),
+}
 
 def _generate_bf_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str]:
     """Business Finland Sprint -hakemusosioiden generointi."""
@@ -487,7 +502,8 @@ def _generate_bf_sections(inp: ApplicationInput, rag_context: str) -> dict[str, 
     tk_kuvaus = inp.sijainti_ymparistovaikutukset or ""
     viranomainen_bf = inp.kohdeviranomainen or "Business Finland (avustushakemus)"
 
-    prompt = f"""Laadi Business Finland Sprint -rahoitushakemuksen luonnos:
+    lang_prefix = _LANG_INSTRUCTIONS.get(getattr(inp, "lang", "FI"), "")
+    prompt = f"""{lang_prefix}Laadi Business Finland Sprint -rahoitushakemuksen luonnos:
 
 Hakija / yritys: {inp.hakija}
 Sijaintikunta: {inp.kunta}
@@ -569,7 +585,8 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
             "Viittaa kyseisen viranomaisen ohjeisiin, lomakkeisiin ja vaatimuksiin."
         )
 
-    prompt = f"""Laadi lupahakemusluonnos seuraavalle hankkeelle:
+    lang_prefix = _LANG_INSTRUCTIONS.get(getattr(inp, "lang", "FI"), "")
+    prompt = f"""{lang_prefix}Laadi lupahakemusluonnos seuraavalle hankkeelle:
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
 Kiinteistötunnus: {inp.kiinteistotunnus}
@@ -1127,6 +1144,34 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 # ─────────────────────────────────────────────────────────────────────────────
 # Pääfunktio
 # ─────────────────────────────────────────────────────────────────────────────
+
+def generate_application_draft(inp: ApplicationInput) -> tuple:
+    """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
+    is_bf = inp.hanketyyppi == "business_finland"
+    rag_ctx, sources = _rag_context(inp.hanketyyppi)
+    if is_bf:
+        sections = _generate_bf_sections(inp, rag_ctx)
+    else:
+        sections = _generate_sections(inp, rag_ctx)
+    sections = {k: _postprocess_text(v) if isinstance(v, str) else v
+                for k, v in sections.items()}
+    if is_bf:
+        pdf_bytes = _generate_bf_pdf(inp, sections, sources)
+    else:
+        pdf_bytes = generate_pdf(inp, sections, sources)
+    return pdf_bytes, sections, sources
+
+
+def apply_proofread_to_pdf(inp: ApplicationInput, sections: dict, sources: list) -> bytes:
+    """Oikolue sections Claudella ja rakenna lopullinen PDF."""
+    sections = _proofread_sections(sections)
+    sections = {k: _postprocess_text(v) if isinstance(v, str) else v
+                for k, v in sections.items()}
+    is_bf = inp.hanketyyppi == "business_finland"
+    if is_bf:
+        return _generate_bf_pdf(inp, sections, sources)
+    return generate_pdf(inp, sections, sources)
+
 
 def generate_application(inp: ApplicationInput) -> str:
     """
