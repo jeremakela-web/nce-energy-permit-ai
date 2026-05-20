@@ -26,6 +26,35 @@ C_GREEN  = colors.HexColor("#4caf50")
 C_ORANGE = colors.HexColor("#ff9800")
 C_WHITE  = colors.white
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Tekstikorjaus — vanhat viranomaisnimet → 2026-nimet
+# ─────────────────────────────────────────────────────────────────────────────
+
+_POSTPROCESS_RULES: list[tuple[str, str]] = [
+    (r'\bAVI:sta\b',   'Lupa- ja valvontavirastosta'),
+    (r'\bAVI:ssa\b',   'Lupa- ja valvontavirastossa'),
+    (r'\bAVI:lta\b',   'Lupa- ja valvontavirastolta'),
+    (r'\bAVI:lle\b',   'Lupa- ja valvontavirastolle'),
+    (r'\bAVI:ksi\b',   'Lupa- ja valvontavirastoksi'),
+    (r'\bAVI:n\b',     'Lupa- ja valvontaviraston'),
+    (r'\bAVI\b',       'Lupa- ja valvontavirasto'),
+    (r'\b[Aa]luehallintovirastosta\b',  'Lupa- ja valvontavirastosta'),
+    (r'\b[Aa]luehallintovirastossa\b',  'Lupa- ja valvontavirastossa'),
+    (r'\b[Aa]luehallintovirastolta\b',  'Lupa- ja valvontavirastolta'),
+    (r'\b[Aa]luehallintovirastolle\b',  'Lupa- ja valvontavirastolle'),
+    (r'\b[Aa]luehallintoviraston\b',    'Lupa- ja valvontaviraston'),
+    (r'\b[Aa]luehallintovirasto\b',     'Lupa- ja valvontavirasto'),
+    (r'\bELY\b(?!-)',  'ELY-keskus'),
+    (r'(?<!/ )MRL\s+132/1999',  'Rakentamislaki (751/2023) / MRL 132/1999'),
+]
+
+
+def _postprocess_text(text: str) -> str:
+    """Korjaa vanhat viranomaisnimet ja lakiviitteet automaattisesti."""
+    for pattern, replacement in _POSTPROCESS_RULES:
+        text = re.sub(pattern, replacement, text)
+    return text
+
 
 def _styles() -> dict:
     base = getSampleStyleSheet()
@@ -1076,7 +1105,7 @@ def _build_analysis_narrative(a: dict, kuntanimi_gen: str) -> list[tuple[str, st
         "disclaimer",
     ))
 
-    return items
+    return [(_postprocess_text(t), kind) for t, kind in items]
 
 
 def _analysis_section(a: dict, kuntanimi_gen: str) -> list:

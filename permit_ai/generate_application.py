@@ -10,6 +10,7 @@ Käyttö:
 
 import io
 import os
+import re
 import sys
 from datetime import datetime
 from dataclasses import dataclass
@@ -25,6 +26,7 @@ from reportlab.platypus import (
     HRFlowable, KeepTogether, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
+from reportlab.pdfgen.canvas import Canvas as _CanvasBase
 
 # ── RAG / AI ─────────────────────────────────────────────────────────────────
 sys.path.insert(0, os.path.dirname(__file__))
@@ -63,6 +65,93 @@ C_DGRAY  = colors.HexColor("#cccccc")
 C_WARN   = colors.HexColor("#ff9800")
 C_GREEN  = colors.HexColor("#4caf50")
 C_WHITE  = colors.white
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TASO 1 — Automaattinen tekstikorjaus
+# ─────────────────────────────────────────────────────────────────────────────
+
+_POSTPROCESS_RULES: list[tuple[str, str]] = [
+    # AVI — suomen taivutusmuodot (pisin ensin)
+    (r'\bAVI:sta\b',   'Lupa- ja valvontavirastosta'),
+    (r'\bAVI:ssa\b',   'Lupa- ja valvontavirastossa'),
+    (r'\bAVI:lta\b',   'Lupa- ja valvontavirastolta'),
+    (r'\bAVI:lle\b',   'Lupa- ja valvontavirastolle'),
+    (r'\bAVI:ksi\b',   'Lupa- ja valvontavirastoksi'),
+    (r'\bAVI:n\b',     'Lupa- ja valvontaviraston'),
+    (r'\bAVI\b',       'Lupa- ja valvontavirasto'),
+    # aluehallintovirasto — kaikki muodot
+    (r'\b[Aa]luehallintovirastosta\b',  'Lupa- ja valvontavirastosta'),
+    (r'\b[Aa]luehallintovirastossa\b',  'Lupa- ja valvontavirastossa'),
+    (r'\b[Aa]luehallintovirastolta\b',  'Lupa- ja valvontavirastolta'),
+    (r'\b[Aa]luehallintovirastolle\b',  'Lupa- ja valvontavirastolle'),
+    (r'\b[Aa]luehallintoviraston\b',    'Lupa- ja valvontaviraston'),
+    (r'\b[Aa]luehallintovirasto\b',     'Lupa- ja valvontavirasto'),
+    # ELY yksinään (ei ELY-keskus jo ennestään)
+    (r'\bELY\b(?!-)',  'ELY-keskus'),
+    # MRL 132/1999 → Rakentamislaki (ei korvata jos jo korvattu)
+    (r'(?<!/ )MRL\s+132/1999',  'Rakentamislaki (751/2023) / MRL 132/1999'),
+]
+
+
+def _postprocess_text(text: str) -> str:
+    """Korjaa vanhat viranomaisnimet ja lakiviitteet automaattisesti."""
+    for pattern, replacement in _POSTPROCESS_RULES:
+        text = re.sub(pattern, replacement, text)
+    return text
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TASO 2 — AI-oikoluku
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _proofread_sections(sections: dict) -> dict:
+    """Tarkistuta osiot Claudella ennen PDF-rakennusta."""
+    client = anthropic.Anthropic()
+    combined = ""
+    for key, text in sections.items():
+        if text and isinstance(text, str) and text.strip():
+            combined += f"\n===OSIO:{key}===\n{text}\n"
+    if not combined.strip():
+        return sections
+
+    prompt = (
+        "Olet asiantunteva tekninen toimittaja. Tarkista ja korjaa seuraava suomalainen "
+        "lupahakemusluonnos.\n\n"
+        f"{combined}\n\n"
+        "TEHTÄVÄ:\n"
+        "1. Korjaa kirjoitusvirheet ja kielioppivirheet.\n"
+        "2. Varmista viranomaisten nimet vuodelle 2026: "
+        "käytä 'Lupa- ja valvontavirasto' (ei AVI), 'ELY-keskus'.\n"
+        "3. Tarkista lakiviitteet: Rakentamislaki (751/2023), ei pelkkä MRL 132/1999.\n"
+        "4. Varmista kappaleiden selkeä järjestys ja ammattimainen yleiskieli.\n"
+        "5. ÄLÄ lisää kommentteja tai selityksiä tekemistäsi muutoksista.\n\n"
+        "Palauta teksti TÄSMÄLLEEN samassa muodossa (===OSIO:key=== -jakajat mukaan lukien), "
+        "vain korjattuna."
+    )
+    try:
+        resp = anthropic.Anthropic().messages.create(
+            model=_MODEL_ID,
+            max_tokens=4096,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        corrected = resp.content[0].text
+        result = dict(sections)
+        for block in corrected.split("===OSIO:"):
+            block = block.strip()
+            if not block:
+                continue
+            eq = block.find("===")
+            if eq == -1:
+                continue
+            key = block[:eq].strip()
+            txt = block[eq + 3:].strip()
+            if key in result:
+                result[key] = txt
+        return result
+    except Exception as exc:
+        print(f"[oikoluku] Varoitus: {exc} — käytetään alkuperäistä tekstiä")
+        return sections
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Tietomalli
@@ -649,6 +738,40 @@ def _liitteet_table(hanketyyppi: str) -> Table:
     return tbl
 
 
+def _md_table_to_rl(lines: list, st: dict):
+    """Muunna markdown-taulukon rivit ReportLab Table -objektiksi."""
+    rows = []
+    for line in lines:
+        if re.match(r'^\|[-:| ]+\|$', line.strip()):
+            continue
+        cells = [c.strip() for c in line.strip().strip('|').split('|')]
+        if cells:
+            rows.append(cells)
+    if len(rows) < 2:
+        return None
+    col_count = max(len(r) for r in rows)
+    rows = [r + [''] * (col_count - len(r)) for r in rows]
+    page_w, _ = A4
+    avail_w = page_w - 2 * 2.2 * cm
+    col_w = avail_w / col_count
+    th_style = ParagraphStyle("md_th", fontSize=8, fontName="Helvetica-Bold",
+                               textColor=C_WHITE)
+    td_style = ParagraphStyle("md_td", fontSize=8, fontName="Helvetica", leading=11)
+    tbl_data = []
+    for i, row in enumerate(rows):
+        tbl_data.append([Paragraph(cell, th_style if i == 0 else td_style)
+                         for cell in row])
+    tbl = Table(tbl_data, colWidths=[col_w] * col_count)
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND",     (0, 0), (-1, 0), C_NAVY),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
+        ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
+        ("PADDING",        (0, 0), (-1, -1), 5),
+        ("VALIGN",         (0, 0), (-1, -1), "TOP"),
+    ]))
+    return tbl
+
+
 def _para_text(text: str, st: dict) -> list:
     """Muunna AI:n tuottama teksti Paragraph-listaksi (kappalejaot \\n\\n)."""
     items = []
@@ -656,6 +779,13 @@ def _para_text(text: str, st: dict) -> list:
         para = para.strip()
         if not para:
             continue
+        # Markdown-taulukko
+        lines = para.splitlines()
+        if len(lines) >= 2 and any(re.match(r'^\|[-:| ]+\|$', l.strip()) for l in lines):
+            tbl = _md_table_to_rl(lines, st)
+            if tbl is not None:
+                items.append(tbl)
+                continue
         # Alaotsikko (##)
         if para.startswith("## "):
             items.append(Paragraph(para[3:], ParagraphStyle(
@@ -674,26 +804,90 @@ def _para_text(text: str, st: dict) -> list:
                 if line:
                     items.append(Paragraph(line, st["bullet"]))
         else:
-            # Poista ** markdown
             clean = para.replace("**", "")
             items.append(Paragraph(clean, st["body"]))
     return items
 
 
-def _page_footer(canv, doc, inp: ApplicationInput, now: str):
-    canv.saveState()
-    page_w, _ = A4
-    m = 2 * cm
-    canv.setStrokeColor(C_DGRAY)
-    canv.setLineWidth(0.3)
-    canv.line(m, 1.45*cm, page_w - m, 1.45*cm)
-    canv.setFont("Helvetica", 6.5)
-    canv.setFillColor(C_GRAY)
-    canv.drawString(m, 0.9*cm,
-        f"{inp.hanketyyppi} lupahakemusluonnos  |  {inp.kiinteistotunnus}  |  {inp.kunta}")
-    canv.drawRightString(page_w - m, 0.9*cm,
-        f"{now}  |  AI-luonnos — vaatii tarkistuksen  |  Sivu {doc.page}")
-    canv.restoreState()
+def _toimenpiteet_elements(text: str, st: dict) -> list:
+    """Muunna toimenpide-teksti 4-sarakkeiseksi PDF-taulukoksi jos mahdollista."""
+    lines = [l.strip() for l in text.strip().splitlines() if l.strip()]
+    rows = []
+    for line in lines:
+        m = re.match(r'^(\d+)[.)]\s+(.+)', line)
+        if not m:
+            rows = []
+            break
+        nro = m.group(1)
+        rest = m.group(2)
+        parts = re.split(r'\s*[–—|]\s*', rest, maxsplit=2)
+        if len(parts) == 3:
+            rows.append([nro, parts[0], parts[1], parts[2]])
+        elif len(parts) == 2:
+            rows.append([nro, parts[0], parts[1], ''])
+        else:
+            rows.append([nro, rest, '', ''])
+    if len(rows) < 2:
+        return _para_text(text, st)
+    header = ['Nro', 'Toimenpide', 'Vastuutaho', 'Aikataulu']
+    th_s = ParagraphStyle("tp_th", fontSize=8, fontName="Helvetica-Bold", textColor=C_WHITE)
+    td_s = ParagraphStyle("tp_td", fontSize=8, fontName="Helvetica", leading=11)
+    tbl_data = [[Paragraph(h, th_s) for h in header]]
+    for row in rows:
+        tbl_data.append([Paragraph(str(c), td_s) for c in row])
+    tbl = Table(tbl_data, colWidths=[1.0*cm, 7.0*cm, 4.5*cm, 3.5*cm])
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND",     (0, 0), (-1, 0), C_NAVY),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
+        ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
+        ("PADDING",        (0, 0), (-1, -1), 5),
+        ("VALIGN",         (0, 0), (-1, -1), "TOP"),
+    ]))
+    return [tbl]
+
+
+def _make_canvas_cls(inp: ApplicationInput, now: str):
+    """Palauta NumberedCanvas-aliluokka ylä- ja alatunnisteella (Sivu X / Y)."""
+
+    class _NumberedCanvas(_CanvasBase):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self._saved_page_states: list[dict] = []
+
+        def showPage(self):
+            self._saved_page_states.append(dict(self.__dict__))
+            self._startPage()
+
+        def save(self):
+            total = len(self._saved_page_states)
+            for state in self._saved_page_states:
+                self.__dict__.update(state)
+                self._draw_decorations(self._pageNumber, total)
+                _CanvasBase.showPage(self)
+            _CanvasBase.save(self)
+
+        def _draw_decorations(self, page_num: int, total: int):
+            page_w, page_h = A4
+            m = 2 * cm
+            self.saveState()
+            self.setStrokeColor(C_DGRAY)
+            self.setLineWidth(0.3)
+            self.setFont("Helvetica", 6.5)
+            self.setFillColor(C_GRAY)
+            # Ylätunniste
+            self.line(m, page_h - 1.55*cm, page_w - m, page_h - 1.55*cm)
+            self.drawString(m, page_h - 1.2*cm,
+                f"{inp.hanketyyppi} lupahakemusluonnos  |  {inp.kunta}  |  {now}")
+            self.drawRightString(page_w - m, page_h - 1.2*cm, "ncenergy.fi  |  AI-luonnos")
+            # Alatunniste
+            self.line(m, 1.45*cm, page_w - m, 1.45*cm)
+            self.drawString(m, 0.9*cm,
+                f"{inp.hanketyyppi} lupahakemusluonnos  |  {inp.kiinteistotunnus}  |  {inp.kunta}")
+            self.drawRightString(page_w - m, 0.9*cm,
+                f"{now}  |  AI-luonnos — vaatii tarkistuksen  |  Sivu {page_num} / {total}")
+            self.restoreState()
+
+    return _NumberedCanvas
 
 
 def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> bytes:
@@ -704,12 +898,12 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
     st     = _st()
     margin = 2.2 * cm
 
-    footer_cb = lambda canv, doc: _page_footer(canv, doc, inp, now)
+    canvas_cls = _make_canvas_cls(inp, now)
 
     doc = SimpleDocTemplate(
         buf, pagesize=A4,
         leftMargin=margin, rightMargin=margin,
-        topMargin=2.0*cm, bottomMargin=2.2*cm,
+        topMargin=2.2*cm, bottomMargin=2.2*cm,
     )
     story = []
 
@@ -781,7 +975,7 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
         "NCE Energy Permit AI  ·  ncenergy.fi  ·  AI-luonnos — vaatii asiantuntijatarkistuksen",
         ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
     ))
-    doc.build(story, onFirstPage=footer_cb, onLaterPages=footer_cb)
+    doc.build(story, canvasmaker=canvas_cls)
     return buf.getvalue()
 
 
@@ -793,12 +987,12 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     st     = _st()
     margin = 2.2 * cm
 
-    footer_cb = lambda canv, doc: _page_footer(canv, doc, inp, now)
+    canvas_cls = _make_canvas_cls(inp, now)
 
     doc = SimpleDocTemplate(
         buf, pagesize=A4,
         leftMargin=margin, rightMargin=margin,
-        topMargin=2.0*cm, bottomMargin=2.2*cm,
+        topMargin=2.2*cm, bottomMargin=2.2*cm,
     )
 
     story = []
@@ -901,7 +1095,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         Paragraph("6. Seuraavat toimenpiteet", st["h2"]),
         _hr(),
     ]))
-    story.extend(_para_text(sections.get("toimenpiteet", "–"), st))
+    story.extend(_toimenpiteet_elements(sections.get("toimenpiteet", "–"), st))
     story.append(Spacer(1, 4*mm))
 
     # ── Lähteet ───────────────────────────────────────────────────────────────
@@ -926,7 +1120,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
     ))
 
-    doc.build(story, onFirstPage=footer_cb, onLaterPages=footer_cb)
+    doc.build(story, canvasmaker=canvas_cls)
     return buf.getvalue()
 
 
@@ -946,14 +1140,19 @@ def generate_application(inp: ApplicationInput) -> str:
     rag_ctx, sources = _rag_context(inp.hanketyyppi)
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {sources}")
 
-    print("[2/3] Generoidaan hakemusteksti (Claude)…")
+    print("[2/4] Generoidaan hakemusteksti (Claude)…")
     if is_bf:
         sections = _generate_bf_sections(inp, rag_ctx)
     else:
         sections = _generate_sections(inp, rag_ctx)
     print(f"      Osiot: {list(sections.keys())}")
 
-    print("[3/3] Rakennetaan PDF…")
+    print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
+    sections = _proofread_sections(sections)
+    sections = {k: _postprocess_text(v) if isinstance(v, str) else v
+                for k, v in sections.items()}
+
+    print("[4/4] Rakennetaan PDF…")
     if is_bf:
         pdf_bytes = _generate_bf_pdf(inp, sections, sources)
     else:
