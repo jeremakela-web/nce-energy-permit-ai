@@ -102,6 +102,35 @@
     .lang-btn:hover { color: #c0d0e0; background: rgba(255,255,255,0.07); }
     .lang-btn.active { background: #00C2A8; color: #0a1628; }
 
+    /* Language dropdown button */
+    .lang-dropdown { position: relative; }
+    .lang-dropdown-btn {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.05); border: none;
+      color: #c0d0e0; font-size: 0.75rem; font-weight: 600;
+      font-family: inherit; padding: 4px 10px; border-radius: 6px;
+      cursor: pointer; transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .lang-dropdown-btn:hover { background: rgba(255,255,255,0.1); }
+    .lang-dropdown-btn .lang-caret { font-size: 0.6rem; opacity: 0.7; }
+    .lang-dropdown-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 4px);
+      background: #162035; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px; overflow: hidden; min-width: 160px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45); z-index: 1000;
+    }
+    .lang-dropdown-menu.open { display: block; }
+    .lang-dropdown-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px; font-size: 0.78rem; color: #9fb0c0;
+      cursor: pointer; transition: background 0.12s;
+      border: none; background: transparent; width: 100%;
+      font-family: inherit; text-align: left;
+    }
+    .lang-dropdown-item:hover { background: rgba(255,255,255,0.06); color: #e0ecf8; }
+    .lang-dropdown-item.active { color: #00C2A8; font-weight: 600; }
+
     .header-right {
       margin-left: auto;
       display: flex;
@@ -1143,10 +1172,20 @@
     </nav>
 
     <div class="header-right">
-      <div class="lang-switcher" aria-label="Kielivalinta">
-        <button class="lang-btn active" id="lang-btn-FI" onclick="setLang('FI')">FI</button>
-        <button class="lang-btn" id="lang-btn-EN" onclick="setLang('EN')">EN</button>
-        <button class="lang-btn" id="lang-btn-SE" onclick="setLang('SE')">SE</button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <button class="lang-dropdown-btn" id="lang-dropdown-btn" onclick="toggleLangMenu(event)" aria-haspopup="true" aria-expanded="false">
+          <span id="lang-btn-flag">🌐</span>
+          <span id="lang-btn-code">FI</span>
+          <span class="lang-caret">▾</span>
+        </button>
+        <div class="lang-dropdown-menu" id="lang-dropdown-menu" role="menu">
+          <button class="lang-dropdown-item" id="lang-item-FI" onclick="setLang('FI');closeLangMenu();">🇫🇮 Suomi</button>
+          <button class="lang-dropdown-item" id="lang-item-EN" onclick="setLang('EN');closeLangMenu();">🇬🇧 English</button>
+          <button class="lang-dropdown-item" id="lang-item-SE" onclick="setLang('SE');closeLangMenu();">🇸🇪 Svenska</button>
+          <button class="lang-dropdown-item" id="lang-item-DA" onclick="setLang('DA');closeLangMenu();">🇩🇰 Dansk</button>
+          <button class="lang-dropdown-item" id="lang-item-NO" onclick="setLang('NO');closeLangMenu();">🇳🇴 Norsk</button>
+          <button class="lang-dropdown-item" id="lang-item-PL" onclick="setLang('PL');closeLangMenu();">🇵🇱 Polski</button>
+        </div>
       </div>
       <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
         &#x1F4AC;
@@ -2278,12 +2317,207 @@ const TRANSLATIONS = {
     country_detected: 'Land identifierat automatiskt:',
     country_hint:     'Välj målland först',
   },
+  DA: {
+    tab_generator:        'Tilladelsesdokumentservice',
+    tab_generator_short:  'Tilladelser',
+    tab_map:              'Arealanvendelsesundersøgelse',
+    tab_map_short:        'Placering',
+    subtitle:             'Energiprojekt tilladelsesanalyse',
+    gen_desc:       'Vælg projekttype og udfyld grundoplysninger — AI genererer et RAG-baseret tilladelses­ansøgningsudkast i PDF-format (~60 s). Udkastet kræver ekspertgennemgang inden indsendelse.',
+    gen_form_title: 'Tilladelses­ansøgningsudkast — PDF',
+    lbl_hanketyyppi:'Projekttype',
+    h3_hanketyyppi: 'Projekttype',
+    lbl_teho_mw:    'Effekt (MW)',
+    lbl_kt:         'Ejendomsnummer',
+    lbl_kunta:      'Kommune',
+    lbl_hakija:     'Ansøger (virksomhed)',
+    btn_generate_pdf: 'Generer PDF',
+    btn_cancel:     'Annuller',
+    btn_generate_hakemus: 'Generer ansøgning',
+    btn_calculate:  'Beregn egnethed',
+    gen_wait_msg:   'Genererer tilladelses­ansøgningsudkast',
+    gen_wait_sub:   'RAG-søgning + Claude AI + PDF-generering',
+    gen_done_title: 'Tilladelses­ansøgning klar!',
+    gen_done_note:  'AI-udkast — kræver ekspertgennemgang inden indsendelse',
+    map_select_hint:'— Vælg projekttype —',
+    gen_timing_smr: 'Dette kan tage 60–90 sekunder for SMR/offshore-ansøgninger.',
+    gen_timing_std: 'Vent ca. 30–60 s.',
+    btn_fetch:      'Søg',
+    gf_submit_btn:  'Generer dokument PDF',
+    gf_disclaimer:  'AI-udkast (RAG + Claude) — kræver ekspertgennemgang inden indsendelse. Ikke juridisk rådgivning.',
+    btn_gen_loading:'Genererer…',
+    btn_gen_done:   'PDF downloadet!',
+    btn_gen_retry:  'Prøv igen',
+    progress_rag:   'Henter RAG-kontekst…',
+    progress_claude:'Genererer tekst (Claude)…',
+    progress_pdf:   'Bygger PDF…',
+    progress_final: 'Afslutter…',
+    progress_done:  'PDF klar!',
+    proof_running:  '🔄 Korrekturlæsning kører i baggrunden…',
+    proof_done_title:'Korrekturlæsning fuldført',
+    proof_dl:       'Download korrekturlæst version',
+    proof_failed:   '⚠️ Korrekturlæsning mislykkedes',
+    err_timeout:    'Timeout (>300s) — prøv igen',
+    err_gen_failed: 'Generering mislykkedes',
+    opt_vaihe_valitse: '— Vælg —',
+    opt_vaihe_esiselvitys: 'Forundersøgelse',
+    opt_vaihe_lupavaihe:   'Tilladelsessfase',
+    opt_vaihe_rakentaminen:'Byggefase',
+    opt_vir_valitse: '— Vælg —',
+    phase_esiselvitys:    'Forundersøgelsesfase',
+    phase_lupavaihe:      'Tilladelsessfase',
+    phase_rakentaminen:   'Byggefase',
+    permits_viranomaiset: 'Myndigheder &amp; tilladelser',
+    permits_luvat:        'Krævede tilladelser:',
+    country_label:  'Land / reguleringsramme',
+    country_fi:     'Finland',
+    country_se:     'Sverige',
+    country_da:     'Danmark',
+    country_no:     'Norge',
+    country_pl:     'Polen',
+    country_detected: 'Land registreret automatisk:',
+    country_hint:   'Vælg dit målland først',
+    lbl_logbar_ready: 'Klar — vælg projekttype for at begynde',
+  },
+  NO: {
+    tab_generator:        'Tillatelsesdokumentservice',
+    tab_generator_short:  'Tillatelser',
+    tab_map:              'Arealbruksundersøkelse',
+    tab_map_short:        'Plassering',
+    subtitle:             'Energiprosjekt tilllatelsesanalyse',
+    gen_desc:       'Velg prosjekttype og fyll inn grunnleggende opplysninger — AI genererer et RAG-basert tilllatels­søknadsutkast i PDF-format (~60 s). Utkastet krever ekspertgjennomgang før innlevering.',
+    gen_form_title: 'Tillatelsessøknadsutkast — PDF',
+    lbl_hanketyyppi:'Prosjekttype',
+    h3_hanketyyppi: 'Prosjekttype',
+    lbl_teho_mw:    'Effekt (MW)',
+    lbl_kt:         'Eiendomsnummer',
+    lbl_kunta:      'Kommune',
+    lbl_hakija:     'Søker (selskap)',
+    btn_generate_pdf: 'Generer PDF',
+    btn_cancel:     'Avbryt',
+    btn_generate_hakemus: 'Generer søknad',
+    btn_calculate:  'Beregn egnethet',
+    gen_wait_msg:   'Genererer tillatelsessøknadsutkast',
+    gen_wait_sub:   'RAG-søk + Claude AI + PDF-generering',
+    gen_done_title: 'Tillatelsessøknad klar!',
+    gen_done_note:  'AI-utkast — krever ekspertgjennomgang før innlevering',
+    map_select_hint:'— Velg prosjekttype —',
+    gen_timing_smr: 'Dette kan ta 60–90 sekunder for SMR/offshore-søknader.',
+    gen_timing_std: 'Vent ca. 30–60 s.',
+    btn_fetch:      'Søk',
+    gf_submit_btn:  'Generer dokument PDF',
+    gf_disclaimer:  'AI-utkast (RAG + Claude) — krever ekspertgjennomgang før innlevering. Ikke juridisk råd.',
+    btn_gen_loading:'Genererer…',
+    btn_gen_done:   'PDF lastet ned!',
+    btn_gen_retry:  'Prøv igjen',
+    progress_rag:   'Henter RAG-kontekst…',
+    progress_claude:'Genererer tekst (Claude)…',
+    progress_pdf:   'Bygger PDF…',
+    progress_final: 'Ferdigstiller…',
+    progress_done:  'PDF klar!',
+    proof_running:  '🔄 Korrekturlesing kjører i bakgrunnen…',
+    proof_done_title:'Korrekturlesing fullført',
+    proof_dl:       'Last ned korrekturlest versjon',
+    proof_failed:   '⚠️ Korrekturlesing mislyktes',
+    err_timeout:    'Tidsavbrudd (>300s) — prøv igjen',
+    err_gen_failed: 'Generering mislyktes',
+    opt_vaihe_valitse: '— Velg —',
+    opt_vaihe_esiselvitys: 'Forstudie',
+    opt_vaihe_lupavaihe:   'Tillatelsefase',
+    opt_vaihe_rakentaminen:'Byggefase',
+    opt_vir_valitse: '— Velg —',
+    phase_esiselvitys:    'Forstudiefase',
+    phase_lupavaihe:      'Tillatelsefase',
+    phase_rakentaminen:   'Byggefase',
+    permits_viranomaiset: 'Myndigheter &amp; tillatelser',
+    permits_luvat:        'Nødvendige tillatelser:',
+    country_label:  'Land / reguleringsramme',
+    country_fi:     'Finland',
+    country_se:     'Sverige',
+    country_da:     'Danmark',
+    country_no:     'Norge',
+    country_pl:     'Polen',
+    country_detected: 'Land registrert automatisk:',
+    country_hint:   'Velg ditt målland først',
+    lbl_logbar_ready: 'Klar — velg prosjekttype for å starte',
+  },
+  PL: {
+    tab_generator:        'Serwis dokumentów zezwoleń',
+    tab_generator_short:  'Zezwolenia',
+    tab_map:              'Analiza zagospodarowania terenu',
+    tab_map_short:        'Lokalizacja',
+    subtitle:             'Analiza zezwoleń dla projektów energetycznych',
+    gen_desc:       'Wybierz typ projektu i wypełnij podstawowe dane — AI wygeneruje szkic wniosku o zezwolenie w oparciu o RAG w formacie PDF (~60 s). Szkic wymaga przeglądu eksperta przed złożeniem.',
+    gen_form_title: 'Szkic wniosku o zezwolenie — PDF',
+    lbl_hanketyyppi:'Typ projektu',
+    h3_hanketyyppi: 'Typ projektu',
+    lbl_teho_mw:    'Moc (MW)',
+    lbl_kt:         'Numer nieruchomości',
+    lbl_kunta:      'Gmina',
+    lbl_hakija:     'Wnioskodawca (firma)',
+    btn_generate_pdf: 'Generuj PDF',
+    btn_cancel:     'Anuluj',
+    btn_generate_hakemus: 'Generuj wniosek',
+    btn_calculate:  'Oblicz przydatność',
+    gen_wait_msg:   'Generowanie szkicu wniosku o zezwolenie',
+    gen_wait_sub:   'Wyszukiwanie RAG + Claude AI + generowanie PDF',
+    gen_done_title: 'Wniosek o zezwolenie gotowy!',
+    gen_done_note:  'Szkic AI — wymaga przeglądu eksperta przed złożeniem',
+    map_select_hint:'— Wybierz typ projektu —',
+    gen_timing_smr: 'Może to potrwać 60–90 sekund dla wniosków SMR/offshore.',
+    gen_timing_std: 'Poczekaj ok. 30–60 s.',
+    btn_fetch:      'Szukaj',
+    gf_submit_btn:  'Generuj dokument PDF',
+    gf_disclaimer:  'Szkic AI (RAG + Claude) — wymaga przeglądu eksperta przed złożeniem. Nie jest poradą prawną.',
+    btn_gen_loading:'Generowanie…',
+    btn_gen_done:   'PDF pobrany!',
+    btn_gen_retry:  'Spróbuj ponownie',
+    progress_rag:   'Pobieranie kontekstu RAG…',
+    progress_claude:'Generowanie tekstu (Claude)…',
+    progress_pdf:   'Budowanie PDF…',
+    progress_final: 'Finalizacja…',
+    progress_done:  'PDF gotowy!',
+    proof_running:  '🔄 Korekta w toku w tle…',
+    proof_done_title:'Korekta zakończona',
+    proof_dl:       'Pobierz wersję po korekcie',
+    proof_failed:   '⚠️ Korekta nie powiodła się',
+    err_timeout:    'Limit czasu (>300s) — spróbuj ponownie',
+    err_gen_failed: 'Generowanie nie powiodło się',
+    opt_vaihe_valitse: '— Wybierz —',
+    opt_vaihe_esiselvitys: 'Analiza wstępna',
+    opt_vaihe_lupavaihe:   'Faza zezwolenia',
+    opt_vaihe_rakentaminen:'Faza budowy',
+    opt_vir_valitse: '— Wybierz —',
+    phase_esiselvitys:    'Faza wstępna',
+    phase_lupavaihe:      'Faza zezwolenia',
+    phase_rakentaminen:   'Faza budowy',
+    permits_viranomaiset: 'Władze &amp; zezwolenia',
+    permits_luvat:        'Wymagane zezwolenia:',
+    country_label:  'Kraj / ramy regulacyjne',
+    country_fi:     'Finlandia',
+    country_se:     'Szwecja',
+    country_da:     'Dania',
+    country_no:     'Norwegia',
+    country_pl:     'Polska',
+    country_detected: 'Kraj wykryty automatycznie:',
+    country_hint:   'Najpierw wybierz kraj docelowy',
+    lbl_logbar_ready: 'Gotowy — wybierz typ projektu, aby rozpocząć',
+  },
 };
 
 function t(key) {
   const lang = TRANSLATIONS[activeLang] || TRANSLATIONS.FI;
   return lang[key] ?? (TRANSLATIONS.FI[key] ?? key);
 }
+
+const LANG_META = {
+  FI: { flag: '🇫🇮', label: 'FI' },
+  EN: { flag: '🇬🇧', label: 'EN' },
+  SE: { flag: '🇸🇪', label: 'SE' },
+  DA: { flag: '🇩🇰', label: 'DA' },
+  NO: { flag: '🇳🇴', label: 'NO' },
+  PL: { flag: '🇵🇱', label: 'PL' },
+};
 
 const LUPA_I18N = {
   'Rakennuslupa':                           { EN: 'Building permit',                    SE: 'Bygglov' },
@@ -2328,13 +2562,39 @@ function _restoreFormValues(vals) {
   });
 }
 
+function toggleLangMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('lang-dropdown-menu');
+  const btn  = document.getElementById('lang-dropdown-btn');
+  const open = menu.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function closeLangMenu() {
+  const menu = document.getElementById('lang-dropdown-menu');
+  const btn  = document.getElementById('lang-dropdown-btn');
+  if (menu) menu.classList.remove('open');
+  if (btn)  btn.setAttribute('aria-expanded', 'false');
+}
+
+document.addEventListener('click', e => {
+  const dd = document.getElementById('lang-dropdown');
+  if (dd && !dd.contains(e.target)) closeLangMenu();
+});
+
 function setLang(lang) {
   activeLang = lang;
   try { localStorage.setItem('nce_lang', lang); } catch (_) {}
-  // Update button states
-  ['FI', 'EN', 'SE'].forEach(l => {
-    const btn = document.getElementById('lang-btn-' + l);
-    if (btn) btn.classList.toggle('active', l === lang);
+  // Update dropdown button display
+  const meta = LANG_META[lang] || LANG_META.FI;
+  const flagEl = document.getElementById('lang-btn-flag');
+  const codeEl = document.getElementById('lang-btn-code');
+  if (flagEl) flagEl.textContent = meta.flag;
+  if (codeEl) codeEl.textContent = meta.label;
+  // Update active item in dropdown menu
+  Object.keys(LANG_META).forEach(l => {
+    const item = document.getElementById('lang-item-' + l);
+    if (item) item.classList.toggle('active', l === lang);
   });
   // Apply data-i18n text
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -3125,7 +3385,7 @@ async function submitGeneratorForm() {
   if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
   if (!payload.kunta)            payload.kunta = '–';
 
-  payload.lang    = activeLang;
+  payload.lang    = ['FI', 'EN', 'SE'].includes(activeLang) ? activeLang : 'EN';
   payload.country = selectedCountry;
 
   // Auto-detect country from kunta/sijainti if user hasn't changed it
@@ -4209,7 +4469,7 @@ async function sendPermitMessage() {
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const savedLang = localStorage.getItem('nce_lang');
-    if (savedLang && ['FI', 'EN', 'SE'].includes(savedLang)) setLang(savedLang);
+    if (savedLang && ['FI', 'EN', 'SE', 'DA', 'NO', 'PL'].includes(savedLang)) setLang(savedLang);
   } catch (_) {}
 
   try {
