@@ -1172,6 +1172,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sec1": "1. Hankkeen kuvaus",             "sec2": "2. Perustelut ja tarve",
         "sec3": "3. Tarvittavat luvat ja viranomaiset", "sec4": "4. Lakiviitteet",
         "sec5": "5. Liiteluettelo",               "sec6": "6. Seuraavat toimenpiteet",
+        "sec_standards": "Sovellettavat standardit (EU/kansainväliset)",
+        "th_std_code": "Standardi", "th_std_scope": "Soveltamisala",
+        "th_std_supervisor": "Valvova viranomainen",
+        "liite_standards": "Standardien vaatimustenmukaisuusselvitys",
         "liitteet_note":   ("Seuraavat liitteet on toimitettava hakemuksen yhteydessä. "
                             "Merkitse ☐-ruutuun kun liite on valmis."),
         "lahteet_h":       "Lähteet ja tietolähteet",
@@ -1240,6 +1244,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sec1": "1. Project Description",          "sec2": "2. Justification and Need",
         "sec3": "3. Required Permits and Authorities", "sec4": "4. Legal References",
         "sec5": "5. Appendix List",                "sec6": "6. Next Steps",
+        "sec_standards": "Applicable Standards (EU/International)",
+        "th_std_code": "Standard", "th_std_scope": "Scope",
+        "th_std_supervisor": "Supervisory Authority",
+        "liite_standards": "Standards Compliance Declaration",
         "liitteet_note":   ("The following appendices must be submitted with the application. "
                             "Mark the checkbox when the appendix is ready."),
         "lahteet_h":       "Sources and References",
@@ -1308,6 +1316,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sec1": "1. Projektbeskrivning",             "sec2": "2. Motivering och behov",
         "sec3": "3. Nödvändiga tillstånd och myndigheter", "sec4": "4. Laghänvisningar",
         "sec5": "5. Bilagor",                        "sec6": "6. Nästa steg",
+        "sec_standards": "Tillämpliga standarder (EU/internationella)",
+        "th_std_code": "Standard", "th_std_scope": "Tillämpningsområde",
+        "th_std_supervisor": "Tillsynsmyndighet",
+        "liite_standards": "Standarder efterlevnadsdeklaration",
         "liitteet_note":   ("Följande bilagor ska lämnas in tillsammans med ansökan. "
                             "Markera rutan när bilagan är klar."),
         "lahteet_h":       "Källor och referenser",
@@ -1378,6 +1390,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sec1": "1. Projektbeskrivelse",             "sec2": "2. Begrundelse og behov",
         "sec3": "3. Nødvendige tilladelser og myndigheder", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Bilagsliste",                    "sec6": "6. Næste skridt",
+        "sec_standards": "Gældende standarder (EU/internationale)",
+        "th_std_code": "Standard", "th_std_scope": "Anvendelsesområde",
+        "th_std_supervisor": "Tilsynsmyndighed",
+        "liite_standards": "Erklæring om standardoverholdelse",
         "liitteet_note":   ("Følgende bilag skal indsendes sammen med ansøgningen. "
                             "Sæt kryds i afkrydsningsfeltet, når bilaget er klar."),
         "lahteet_h":       "Kilder og referencer",
@@ -1450,6 +1466,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sec1": "1. Prosjektbeskrivelse",            "sec2": "2. Begrunnelse og behov",
         "sec3": "3. Nødvendige tillatelser og myndigheter", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Vedleggsliste",                  "sec6": "6. Neste steg",
+        "sec_standards": "Gjeldende standarder (EU/internasjonale)",
+        "th_std_code": "Standard", "th_std_scope": "Anvendelsesområde",
+        "th_std_supervisor": "Tilsynsmyndighet",
+        "liite_standards": "Erklæring om standardoverholdelse",
         "liitteet_note":   ("Følgende vedlegg må leveres sammen med søknaden. "
                             "Kryss av i boksen når vedlegget er klart."),
         "lahteet_h":       "Kilder og referanser",
@@ -1522,6 +1542,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sec1": "1. Opis projektu",                  "sec2": "2. Uzasadnienie i potrzeba",
         "sec3": "3. Wymagane zezwolenia i organy",   "sec4": "4. Podstawy prawne",
         "sec5": "5. Lista załączników",              "sec6": "6. Następne kroki",
+        "sec_standards": "Obowiązujące normy (UE/międzynarodowe)",
+        "th_std_code": "Norma", "th_std_scope": "Zakres stosowania",
+        "th_std_supervisor": "Organ nadzorczy",
+        "liite_standards": "Deklaracja zgodności z normami",
         "liitteet_note":   ("Następujące załączniki muszą zostać złożone wraz z wnioskiem. "
                             "Zaznacz pole wyboru, gdy załącznik jest gotowy."),
         "lahteet_h":       "Źródła i odniesienia",
@@ -1588,6 +1612,128 @@ _KAAVA_KEY: dict[str, str] = {
     "SMR":           "kaava_SMR",
     "smr_bess":      "kaava_SMR",
     "aurinkovoima":  "kaava_aurinkovoima",
+}
+
+
+_ISO_STANDARDS: dict[str, list[tuple[str, str]]] = {
+    "BESS": [
+        ("IEC 62933-1/2/5", "Battery energy storage systems — general, unit parameters, safety"),
+        ("IEC 62619",       "Secondary cells and batteries — safety requirements for use in industrial applications"),
+        ("IEC 61508",       "Functional safety of E/E/PE safety-related systems"),
+        ("NFPA 855",        "Standard for the Installation of Stationary Energy Storage Systems"),
+        ("ISO 14001",       "Environmental management systems — Requirements with guidance"),
+    ],
+    "tuulivoima_maa": [
+        ("IEC 61400-1",   "Wind turbines — Part 1: Design load requirements"),
+        ("IEC 61400-2",   "Wind turbines — Part 2: Small wind turbines"),
+        ("IEC 61400-21-1","Wind turbines — Part 21-1: Power quality measurements"),
+        ("ISO 9001",      "Quality management systems — Requirements"),
+        ("ISO 14001",     "Environmental management systems — Requirements with guidance"),
+    ],
+    "tuulivoima_meri": [
+        ("IEC 61400-3-1", "Wind turbines — Design requirements for fixed offshore wind turbines"),
+        ("IEC 61400-3-2", "Wind turbines — Design requirements for floating offshore wind turbines"),
+        ("IEC 61892-1",   "Mobile and fixed offshore units — Electrical installations"),
+        ("DNV-ST-0126",   "Support structures for wind turbines"),
+        ("ISO 9001",      "Quality management systems — Requirements"),
+        ("ISO 14001",     "Environmental management systems — Requirements with guidance"),
+    ],
+    "aurinkovoima": [
+        ("IEC 61215-1/2", "Terrestrial PV modules — Design qualification and type approval"),
+        ("IEC 61730-1/2", "Photovoltaic (PV) module safety qualification"),
+        ("IEC 62548",     "Photovoltaic (PV) arrays — Design requirements"),
+        ("IEC 62109-1/2", "Safety for power converters for use in PV power systems"),
+        ("ISO 14001",     "Environmental management systems — Requirements with guidance"),
+    ],
+    "SMR": [
+        ("IAEA SSR-2/1",  "Safety of Nuclear Power Plants: Design (Specific Safety Requirements)"),
+        ("IAEA SSG-52",   "Design of the Reactor Core for Nuclear Power Plants (SMR applicable)"),
+        ("ISO 19443",     "Quality management systems — Specific requirements for nuclear sector (ITNS)"),
+        ("IEC 61513",     "Nuclear power plants — I&C systems important to safety — general requirements"),
+        ("IEC 60880",     "Nuclear power plants — Software for computers performing safety functions"),
+    ],
+    "smr_bess": [
+        ("IAEA SSR-2/1",  "Safety of Nuclear Power Plants: Design"),
+        ("IEC 62933-1/2/5","Battery energy storage systems — general, parameters, safety"),
+        ("IEC 62619",     "Secondary cells and batteries — safety requirements"),
+        ("ISO 19443",     "Quality management systems — nuclear sector (ITNS)"),
+        ("IEC 61513",     "I&C systems important to safety — general requirements"),
+        ("NFPA 855",      "Standard for Installation of Stationary Energy Storage Systems"),
+    ],
+    "vesivoima": [
+        ("IEC 60041",  "Field acceptance tests to determine the hydraulic performance of turbines/pumps"),
+        ("IEC 61116",  "Electromechanical equipment guide for small hydroelectric installations"),
+        ("ISO 9001",   "Quality management systems — Requirements"),
+        ("ISO 14001",  "Environmental management systems — Requirements with guidance"),
+    ],
+    "_generic": [
+        ("ISO 9001",   "Quality management systems — Requirements"),
+        ("ISO 14001",  "Environmental management systems — Requirements with guidance"),
+        ("IEC 60364",  "Low-voltage electrical installations"),
+    ],
+}
+
+_HANKE_STD_KEY: dict[str, str] = {
+    "BESS":           "BESS",
+    "tuulivoima_maa": "tuulivoima_maa",
+    "tuulivoima_meri":"tuulivoima_meri",
+    "aurinkovoima":   "aurinkovoima",
+    "SMR":            "SMR",
+    "smr_bess":       "smr_bess",
+    "vesivoima":      "vesivoima",
+}
+
+_NATIONAL_SUPERVISORS: dict[str, dict[str, str]] = {
+    "FI": {
+        "BESS":           "Tukes (kemikaalit/sähkö), Pelastuslaitos (paloturvallisuus)",
+        "tuulivoima_maa": "ELY-keskus / Luova (YVA), Tukes (sähköturvallisuus)",
+        "tuulivoima_meri":"ELY-keskus / Luova (YVA), Traficom, Tukes",
+        "aurinkovoima":   "Tukes (sähköturvallisuus), Kunta (rakennusvalvonta)",
+        "SMR":            "STUK (ydinturvallisuus, YVL-ohjeet), TEM (periaatepäätös)",
+        "smr_bess":       "STUK (ydinturvallisuus), Tukes (BESS-komponentti)",
+        "vesivoima":      "AVI (vesilupa), ELY-keskus, Tukes",
+        "_generic":       "Tukes (turvallisuus), Kunta (rakennusvalvonta)",
+    },
+    "SE": {
+        "BESS":           "MSB (Myndigheten för samhällsskydd och beredskap), Ei",
+        "tuulivoima_maa": "Länsstyrelsen, Energimyndigheten, Naturvårdsverket",
+        "tuulivoima_meri":"Länsstyrelsen, Energimyndigheten, Transportstyrelsen",
+        "aurinkovoima":   "Ei (Energimarknadsinspektionen), Boverket",
+        "SMR":            "Strålsäkerhetsmyndigheten (SSM)",
+        "smr_bess":       "Strålsäkerhetsmyndigheten (SSM), MSB",
+        "vesivoima":      "Kammarkollegiet, Länsstyrelsen, Naturvårdsverket",
+        "_generic":       "Boverket, Länsstyrelsen",
+    },
+    "DA": {
+        "BESS":           "Sikkerhedsstyrelsen (Sik), Energistyrelsen",
+        "tuulivoima_maa": "Energistyrelsen, Miljøstyrelsen, Erhvervsstyrelsen",
+        "tuulivoima_meri":"Energistyrelsen, Søfartsstyrelsen, Miljøstyrelsen",
+        "aurinkovoima":   "Sikkerhedsstyrelsen, Energistyrelsen",
+        "SMR":            "Sundhedsstyrelsen (Statens Institut for Strålebeskyttelse)",
+        "smr_bess":       "Sundhedsstyrelsen, Sikkerhedsstyrelsen",
+        "vesivoima":      "Miljøstyrelsen, Energistyrelsen",
+        "_generic":       "Sikkerhedsstyrelsen, Erhvervsstyrelsen",
+    },
+    "NO": {
+        "BESS":           "DSB (Direktoratet for samfunnssikkerhet og beredskap), NVE",
+        "tuulivoima_maa": "NVE, Statsforvalteren, Miljødirektoratet",
+        "tuulivoima_meri":"NVE, Sjøfartsdirektoratet, Miljødirektoratet",
+        "aurinkovoima":   "NVE, DSB",
+        "SMR":            "DSA (Direktoratet for strålevern og atomsikkerhet), NVE",
+        "smr_bess":       "DSA (strålevern), DSB (BESS-komponentti), NVE",
+        "vesivoima":      "NVE (konsesjon), Miljødirektoratet",
+        "_generic":       "DSB, NVE, Statsforvalteren",
+    },
+    "PL": {
+        "BESS":           "UDT (Urząd Dozoru Technicznego), URE",
+        "tuulivoima_maa": "URE (koncesja), RDOŚ (OOŚ), GDOŚ",
+        "tuulivoima_meri":"URE, GDOŚ, Urząd Morski",
+        "aurinkovoima":   "URE, UDT, GUNB",
+        "SMR":            "PAA (Państwowa Agencja Atomistyki)",
+        "smr_bess":       "PAA (bezpieczeństwo jądrowe), UDT (komponent BESS)",
+        "vesivoima":      "PGW Wody Polskie, URE",
+        "_generic":       "UDT, URE, GUNB",
+    },
 }
 
 
@@ -1699,6 +1845,16 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     toim_inst     = (ph["toimenpiteet_inst"].format(first=first_action)
                      + (ph["toimenpiteet_vaihe"].format(vaihe=inp.hankkeen_vaihe) if inp.hankkeen_vaihe else ""))
 
+    _std_key   = _HANKE_STD_KEY.get(inp.hanketyyppi, "_generic")
+    _standards = _ISO_STANDARDS.get(_std_key, _ISO_STANDARDS["_generic"])
+    _sup_dict  = _NATIONAL_SUPERVISORS.get(country, _NATIONAL_SUPERVISORS["FI"])
+    _supervisor = _sup_dict.get(inp.hanketyyppi) or _sup_dict.get("_generic", "–")
+    _std_lines = "\n".join(f"  - {code}: {scope}" for code, scope in _standards)
+    standards_block = (
+        f"\nSovellettavat EU/kansainväliset standardit ({inp.hanketyyppi}):\n{_std_lines}"
+        f"\nKansallinen valvontaviranomainen ({country}): {_supervisor}"
+    )
+
     prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
@@ -1706,7 +1862,7 @@ Kiinteistötunnus: {inp.kiinteistotunnus}
 Teho: {inp.teho_mw} MW{kap_lisatieto}
 Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
-Päivämäärä: {now}{viranomainen_ohje}
+Päivämäärä: {now}{viranomainen_ohje}{standards_block}
 
 {ph["rag_intro"]}
 {rag_context}
@@ -1859,6 +2015,14 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI") -> Table:
             Paragraph(_s(lang, "liite_toimitettu"),
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
+    # Standardien vaatimustenmukaisuusselvitys (aina viimeisenä liitteenä)
+    std_nro = str(len(cfg["liitteet"]) - 1)
+    rows.append([
+        Paragraph(std_nro, ParagraphStyle("tn", fontSize=8.5)),
+        Paragraph(_s(lang, "liite_standards"), ParagraphStyle("tl", fontSize=8.5, leading=12)),
+        Paragraph(_s(lang, "liite_toimitettu"),
+                  ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
+    ])
 
     tbl = Table(rows, colWidths=[1.0*cm, 12.5*cm, 3.0*cm], repeatRows=1)
     tbl.setStyle(TableStyle([
@@ -1870,6 +2034,43 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI") -> Table:
         ("VALIGN",        (0, 0), (-1, -1), "TOP"),
         ("ALIGN",         (0, 0), (0, -1), "CENTER"),
         ("ALIGN",         (2, 0), (2, -1), "CENTER"),
+    ]))
+    return tbl
+
+
+def _standards_table(hanketyyppi: str, country: str, lang: str, st: dict) -> Table:
+    """ISO/IEC-standarditaulukko: Standardi | Soveltamisala | Valvova viranomainen."""
+    std_key    = _HANKE_STD_KEY.get(hanketyyppi, "_generic")
+    standards  = _ISO_STANDARDS.get(std_key, _ISO_STANDARDS["_generic"])
+    sup_country = _NATIONAL_SUPERVISORS.get(country, _NATIONAL_SUPERVISORS["FI"])
+    supervisor = sup_country.get(hanketyyppi) or sup_country.get("_generic", "–")
+
+    _th  = ParagraphStyle("stth",  fontSize=8.5, fontName="Helvetica-Bold")
+    _td  = ParagraphStyle("sttd",  fontSize=8.0, leading=11)
+    _tds = ParagraphStyle("sttds", fontSize=7.5, leading=11, textColor=C_GRAY)
+    rows = [[
+        Paragraph(_s(lang, "th_std_code"),       _th),
+        Paragraph(_s(lang, "th_std_scope"),      _th),
+        Paragraph(_s(lang, "th_std_supervisor"), _th),
+    ]]
+    for i, (code, scope) in enumerate(standards):
+        rows.append([
+            Paragraph(f"<b>{code}</b>", _td),
+            Paragraph(scope,            _tds),
+            Paragraph(supervisor if i == 0 else "", _tds),
+        ])
+
+    col_w = [3.5*cm, 10.5*cm, 5.0*cm]
+    tbl   = Table(rows, colWidths=col_w, repeatRows=1)
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND",    (0, 0), (-1, 0), C_NAVY),
+        ("TEXTCOLOR",     (0, 0), (-1, 0), C_WHITE),
+        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
+        ("GRID",          (0, 0), (-1, -1), 0.4, C_DGRAY),
+        ("PADDING",       (0, 0), (-1, -1), 6),
+        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+        ("SPAN",          (2, 1), (2, len(standards))),
+        ("VALIGN",        (2, 1), (2, len(standards)), "MIDDLE"),
     ]))
     return tbl
 
@@ -2223,6 +2424,15 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     luvat_txt = sections.get("luvat_teksti", "")
     if luvat_txt:
         story.extend(_para_text(luvat_txt, st))
+    story.append(Spacer(1, 4*mm))
+
+    # ── ISO/IEC-standardit ───────────────────────────────────────────────────
+    country = getattr(inp, "country", "FI") or "FI"
+    story.append(KeepTogether([
+        Paragraph(_s(lang, "sec_standards"), st["h2"]),
+        _hr(),
+    ]))
+    story.append(_standards_table(inp.hanketyyppi, country, lang, st))
     story.append(Spacer(1, 4*mm))
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
