@@ -91,6 +91,7 @@ class ApplicationRequest(BaseModel):
     kiinteistotunnus:             str
     teho_mw:                      Optional[float] = 0.0
     kapasiteetti_mwh:             Optional[float] = 0.0
+    y_tunnus:                     Optional[str]   = None
     kunta:                        str
     hakija:                       str
     sijainti_ymparistovaikutukset: Optional[str]   = None
@@ -341,6 +342,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             kiinteistotunnus              = req.kiinteistotunnus,
             teho_mw                       = req.teho_mw or 0.0,
             kapasiteetti_mwh              = req.kapasiteetti_mwh or 0.0,
+            y_tunnus                      = req.y_tunnus or "",
             kunta                         = req.kunta,
             hakija                        = req.hakija,
             sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset or "",

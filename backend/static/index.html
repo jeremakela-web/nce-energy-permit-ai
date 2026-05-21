@@ -2116,6 +2116,17 @@ const HANKETYYPIT = {
   muu:            { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa (mahdollinen)', 'Toimenpidelupa (mahdollinen)'] },
 };
 
+// Inject y_tunnus field after hakija in every HANKE_FIELDS entry
+Object.values(HANKE_FIELDS).forEach(cfg => {
+  const idx = cfg.fields.findIndex(f => f.id === 'gf-hakija');
+  if (idx >= 0 && !cfg.fields.find(f => f.id === 'gf-ytunnus')) {
+    cfg.fields.splice(idx + 1, 0, {
+      id: 'gf-ytunnus', apiKey: 'y_tunnus', label: 'Y-tunnus',
+      type: 'text', placeholder: ''
+    });
+  }
+});
+
 // Map frontend type IDs to backend-accepted hanketyyppi strings
 const BACKEND_TYPE_MAP = {
   bess: 'BESS',
@@ -3284,6 +3295,7 @@ async function generateApplication() {
       body: JSON.stringify({
         hanketyyppi, kiinteistotunnus: kt, teho_mw: teho,
         kapasiteetti_mwh: kapasiteetti || undefined,
+        y_tunnus: document.getElementById('gf-ytunnus')?.value?.trim() || undefined,
         kunta, hakija,
         lang: activeLang,
       }),
