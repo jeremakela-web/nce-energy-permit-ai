@@ -1072,6 +1072,22 @@
     }
 
     /* ── Generation progress bar ── */
+    @keyframes formFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .form-reveal { animation: formFadeIn 0.32s ease forwards; }
+
+    .gen-country-hint {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(0,194,168,0.08);
+      border: 1px solid rgba(0,194,168,0.25);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      color: #00C2A8;
+    }
+
     .gen-progress-wrap {
       display: none;
       margin: 12px 0 4px;
@@ -1170,6 +1186,7 @@
           <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
         </div>
         <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
+        <div id="gen-country-hint" class="gen-country-hint" style="display:none;" data-i18n="country_hint">Valitse ensin kohdemaasi</div>
       </div>
 
       <!-- Form section (hidden until card selected) -->
@@ -1807,6 +1824,7 @@ const TRANSLATIONS = {
     country_no:       'Norja',
     country_pl:       'Puola',
     country_detected: 'Maa tunnistettu automaattisesti:',
+    country_hint:     'Valitse ensin kohdemaasi',
   },
   EN: {
     tab_generator:        'Permit Document Service',
@@ -2032,6 +2050,7 @@ const TRANSLATIONS = {
     country_no:       'Norway',
     country_pl:       'Poland',
     country_detected: 'Country detected automatically:',
+    country_hint:     'Select your target country first',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
@@ -2257,6 +2276,7 @@ const TRANSLATIONS = {
     country_no:       'Norge',
     country_pl:       'Polen',
     country_detected: 'Land identifierat automatiskt:',
+    country_hint:     'Välj målland först',
   },
 };
 
@@ -2845,7 +2865,8 @@ renderCards();
 // ─────────────────────────────────────────────
 // Country selection
 // ─────────────────────────────────────────────
-let selectedCountry = 'FI';
+let selectedCountry   = 'FI';
+let countryConfirmed  = false;
 
 const COUNTRY_HINTS = {
   FI: ['pöytyä','espoo','tampere','turku','oulu','jyväskylä','lahti','kuopio',
@@ -2882,17 +2903,35 @@ function _rebuildMapGrid() {
 }
 
 function setCountry(code) {
-  selectedCountry = code;
+  const firstConfirm = !countryConfirmed;
+  selectedCountry  = code;
+  countryConfirmed = true;
+
   ['FI','SE','DA','NO','PL'].forEach(c => {
     const btn = document.getElementById('country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
-  // Re-render generator form to swap grid dropdown
+
+  // Hide hint
+  const hint = document.getElementById('gen-country-hint');
+  if (hint) hint.style.display = 'none';
+
+  // Render / re-render generator form
   if (selectedProjectType) {
     const savedVals = _saveFormValues();
     selectProjectType(selectedProjectType);
     _restoreFormValues(savedVals);
+    // Fade-in on first country confirmation
+    if (firstConfirm) {
+      const formSection = document.getElementById('gen-form-section');
+      if (formSection) {
+        formSection.classList.remove('form-reveal');
+        void formSection.offsetWidth; // force reflow
+        formSection.classList.add('form-reveal');
+      }
+    }
   }
+
   // Re-populate map-tab grid select
   _rebuildMapGrid();
 }
@@ -2911,6 +2950,15 @@ function selectProjectType(typeId) {
 
   const countryBar = document.getElementById('gen-country-bar');
   if (countryBar) countryBar.style.display = 'block';
+
+  // Gate: wait for explicit country selection before showing form
+  if (!countryConfirmed) {
+    const hint = document.getElementById('gen-country-hint');
+    if (hint) { hint.style.display = 'block'; hint.textContent = t('country_hint'); }
+    const fs = document.getElementById('gen-form-section');
+    if (fs) fs.style.display = 'none';
+    return;
+  }
 
   const fieldDef = HANKE_FIELDS[typeId];
   if (!fieldDef) return;
