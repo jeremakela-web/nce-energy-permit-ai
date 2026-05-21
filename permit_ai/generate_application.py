@@ -579,6 +579,232 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
     ),
 }
 
+# ─────────────────────────────────────────────────────────────────────────────
+# PDF-käännöstaulukko (UI-tekstit, ei AI-sisältö)
+# ─────────────────────────────────────────────────────────────────────────────
+
+_PDF_STRINGS: dict[str, dict[str, str]] = {
+    "FI": {
+        "sub_title":       "Rakennuslupahakemusluonnos",
+        "esiselvitys_sub": ("Esiselvitys- ja ennakkoneuvottelumateriaali — "
+                            "Valmisteltu rakennusvalvonnan ennakkoneuvottelua varten"),
+        "disclaimer_h":    "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN",
+        "disclaimer_b":    ("Tämä asiakirja on tekoälyavusteisesti laadittu luonnos. Se ei ole juridisesti "
+                            "sitova eikä korvaa pätevän lupa-asiantuntijan tai lakimiehen neuvoja. Ennen "
+                            "hakemuksen jättämistä asiakirja on tarkistutettava alan ammattilaisella."),
+        "m_hakija":        "Hakija",       "m_ytunnus":    "Y-tunnus",
+        "m_hanketyyppi":   "Hanketyyppi",  "m_teho":       "Teho / kapasiteetti",
+        "m_kunta":         "Sijaintikunta","m_kt":         "Kiinteistötunnus",
+        "m_laadittu":      "Laadittu",     "m_laatinut_lbl": "Laatinut",
+        "m_laatinut":      "NCE Energy Permit AI (tekoälyavusteinen)",
+        "sec1": "1. Hankkeen kuvaus",             "sec2": "2. Perustelut ja tarve",
+        "sec3": "3. Tarvittavat luvat ja viranomaiset", "sec4": "4. Lakiviitteet",
+        "sec5": "5. Liiteluettelo",               "sec6": "6. Seuraavat toimenpiteet",
+        "liitteet_note":   ("Seuraavat liitteet on toimitettava hakemuksen yhteydessä. "
+                            "Merkitse ☐-ruutuun kun liite on valmis."),
+        "lahteet_h":       "Lähteet ja tietolähteet",
+        "lahteet_b":       "Tämä luonnos on laadittu hyödyntäen seuraavia viranomaisdokumentteja:",
+        "yhteystiedot_h":  "Hakijan yhteystiedot",
+        "yht_hakija":      "Hakija",     "yht_ytunnus":   "Y-tunnus",
+        "yht_osoite":      "Osoite",     "yht_lisatietoja": "Lisätietoja",
+        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+                            "·  AI-luonnos — vaatii asiantuntijatarkistuksen"),
+        "th_lupa":  "Lupa / ilmoitus", "th_viran": "Viranomainen", "th_laki": "Lakiperuste",
+        "th_nro":   "Nro",  "th_liite": "Liite",  "th_tila": "Tila",
+        "liite_toimitettu": "[ ] Toimitettu",
+        "toim_nro": "Nro", "toim_toimenpide": "Toimenpide",
+        "toim_vastuutaho": "Vastuutaho", "toim_aikataulu": "Aikataulu",
+        "hdr_draft": "lupahakemusluonnos", "hdr_right": "ncenergy.fi  |  AI-luonnos",
+        "ftr_ai":    "AI-luonnos — vaatii tarkistuksen", "ftr_sivu": "Sivu",
+        "bf_title": "T&K-rahoitushakemus — luonnos",
+        "bf_kotipaikka": "Kotipaikka", "bf_vaihe": "Vaihe", "bf_tk_kuvaus": "T&K-kuvaus",
+        "esiselvitys_p":   ("Hanke on esiselvitysvaiheessa. Lopulliset tekniset mitoitukset, "
+                            "sijaintisuunnitelmat ja ympäristövaikutusten arvioinnit tarkentuvat "
+                            "jatkosuunnittelun myötä."),
+        "bess_pintaala":   "Laitosalueen arvioitu pinta-ala on 0,4–0,6 ha.",
+        "mks_viittaus":    ("Hankealueen maankäyttö on selvitetty NCE Energyn maankäyttöselvityksessä "
+                            "(ks. Liite 0b: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
+                            "kaavatilanteen, suojelualueet sekä pohjavesialuetiedot."),
+        "kaava_BESS":      ("<b>Kaavatilanne (kriittisin esiselvityskohta):</b> BESS-hankkeen sijoituspaikan "
+                            "kaavatilanne on selvitettävä ensimmäisenä. Useimmissa kunnissa akkuenergiavaraston "
+                            "sijoittaminen edellyttää asemakaavaa tai suunnittelutarveratkaisua. Kaavatilanne "
+                            "vaikuttaa eniten lupaprosessin kokonaiskestoon — rakennusvalvonnan "
+                            "ennakkoneuvottelu ensitoimenpiteenä."),
+        "kaava_tuuli":     ("<b>Kaavatilanne ja YVA-tarve:</b> Tuulivoimahanke edellyttää lähes aina "
+                            "osayleiskaavaa tai asemakaavaa (MRL 132/1999, 77a §). YVA-menettely "
+                            "(YVA-laki 252/2017) on pakollinen ≥10 MW tai ≥5 voimalan hankkeille — "
+                            "kaava- ja YVA-prosessit kulkevat usein rinnakkain ja kestävät yhteensä "
+                            "3–6 vuotta. Kaavatilanne selvitetään ensimmäisenä ennen muita lupia."),
+        "kaava_SMR":       ("<b>STUK pre-licensing (kriittisin ensimmäinen vaihe):</b> Ydinlaitoshankkeessa "
+                            "valtioneuvoston periaatepäätös (ydinenergialaki 990/1987, 11 §) ja STUK:n "
+                            "ennakkolupamenettely ovat pakollisia ennen kaikkia muita lupia. STUK:n "
+                            "YVL-ohjeiden mukainen turvallisuusseloste käynnistää prosessin. Kaavatilanne "
+                            "selvitetään rinnalla, mutta ydinturvallisuusmenettely on hallitseva tekijä."),
+        "kaava_aurinkovoima": ("<b>Toimenpidelupa vai rakennuslupa — ja kaavatilanne:</b> Pienimuotoiselle "
+                            "aurinkopuistolle (alle noin 1 ha) riittää usein toimenpidelupa rakennusluvan "
+                            "sijaan (Rakentamislaki 751/2023 / MRL 132/1999, 126 §). YVA-menettely ei koske "
+                            "alle 50 ha hankkeita. Kaavatilanne on silti tarkistettava — asemakaava-alueen "
+                            "ulkopuolella voidaan tarvita suunnittelutarveratkaisu."),
+        "kaava_generic":   ("<b>Kaavatilanne:</b> Hankkeen sijoituspaikan voimassa oleva kaavatilanne on "
+                            "tarkistettava rakennusvalvonnan ennakkoneuvottelussa ennen lupahakemuksen "
+                            "jättämistä. Kaavatilanne vaikuttaa suoraan lupaprosessin kestoon ja "
+                            "vaatimuksiin — rakentaminen edellyttää usein asemakaavaa tai sen muutosta "
+                            "taikka suunnittelutarveratkaisua."),
+    },
+    "EN": {
+        "sub_title":       "Building Permit Application Draft",
+        "esiselvitys_sub": ("Pre-study and Pre-consultation Material — "
+                            "Prepared for building permit pre-consultation"),
+        "disclaimer_h":    "AI DRAFT — REQUIRES EXPERT REVIEW",
+        "disclaimer_b":    ("This document is an AI-assisted draft. It is not legally binding and does not "
+                            "replace the advice of a qualified permit expert or lawyer. Before submitting "
+                            "the application, this document must be reviewed by a professional."),
+        "m_hakija":        "Applicant",      "m_ytunnus":    "Business ID",
+        "m_hanketyyppi":   "Project Type",   "m_teho":       "Capacity / Power",
+        "m_kunta":         "Municipality",   "m_kt":         "Property ID",
+        "m_laadittu":      "Prepared",       "m_laatinut_lbl": "Prepared by",
+        "m_laatinut":      "NCE Energy Permit AI (AI-assisted)",
+        "sec1": "1. Project Description",          "sec2": "2. Justification and Need",
+        "sec3": "3. Required Permits and Authorities", "sec4": "4. Legal References",
+        "sec5": "5. Appendix List",                "sec6": "6. Next Steps",
+        "liitteet_note":   ("The following appendices must be submitted with the application. "
+                            "Mark the checkbox when the appendix is ready."),
+        "lahteet_h":       "Sources and References",
+        "lahteet_b":       "This draft was prepared using the following official documents:",
+        "yhteystiedot_h":  "Applicant Contact Details",
+        "yht_hakija":      "Applicant",  "yht_ytunnus":    "Business ID",
+        "yht_osoite":      "Address",    "yht_lisatietoja": "Further information",
+        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+                            "·  AI draft — requires expert review"),
+        "th_lupa":  "Permit / Notification", "th_viran": "Authority", "th_laki": "Legal Basis",
+        "th_nro":   "No.", "th_liite": "Appendix", "th_tila": "Status",
+        "liite_toimitettu": "[ ] Submitted",
+        "toim_nro": "No.", "toim_toimenpide": "Action",
+        "toim_vastuutaho": "Responsible", "toim_aikataulu": "Timeline",
+        "hdr_draft": "permit application draft", "hdr_right": "ncenergy.fi  |  AI draft",
+        "ftr_ai":    "AI draft — requires review", "ftr_sivu": "Page",
+        "bf_title": "R&D Funding Application Draft",
+        "bf_kotipaikka": "Location", "bf_vaihe": "Phase", "bf_tk_kuvaus": "R&D Description",
+        "esiselvitys_p":   ("The project is in the pre-study phase. Final technical specifications, "
+                            "site plans and environmental impact assessments will be refined "
+                            "during further planning."),
+        "bess_pintaala":   "The estimated site area is 0.4–0.6 ha.",
+        "mks_viittaus":    ("The land use of the project area has been investigated in NCE Energy's "
+                            "land use report (see Appendix 0b: Land Use Report PDF). The report includes "
+                            "property information, zoning status, protected areas and groundwater area data."),
+        "kaava_BESS":      ("<b>Zoning status (most critical pre-study item):</b> The zoning status of the "
+                            "BESS project site must be determined first. In most municipalities, siting a "
+                            "battery energy storage system requires a detailed plan or a planning permit. "
+                            "Zoning status has the greatest impact on the total duration of the permit "
+                            "process — pre-consultation with the building authority is the first step."),
+        "kaava_tuuli":     ("<b>Zoning status and EIA requirement:</b> A wind power project almost always "
+                            "requires a local master plan or detailed plan (MRL 132/1999, 77a §). The EIA "
+                            "procedure (YVA-laki 252/2017) is mandatory for projects ≥10 MW or ≥5 turbines "
+                            "— zoning and EIA processes often run in parallel, taking 3–6 years combined. "
+                            "Zoning is resolved first before other permits."),
+        "kaava_SMR":       ("<b>STUK pre-licensing (most critical first step):</b> For a nuclear facility "
+                            "project, the Council of State's decision-in-principle (Nuclear Energy Act "
+                            "990/1987, § 11) and STUK's pre-licensing procedure are mandatory before all "
+                            "other permits. STUK's YVL-guideline safety report initiates the process. "
+                            "Zoning is addressed in parallel but the nuclear safety procedure is dominant."),
+        "kaava_aurinkovoima": ("<b>Action permit vs. building permit — and zoning:</b> For a small-scale "
+                            "solar park (below approx. 1 ha), an action permit often suffices instead of a "
+                            "full building permit (Construction Act 751/2023 / MRL 132/1999, § 126). EIA is "
+                            "not required for projects under 50 ha. Zoning must still be checked — a "
+                            "planning permit may be needed outside detailed plan areas."),
+        "kaava_generic":   ("<b>Zoning status:</b> The current zoning status of the project site must be "
+                            "verified in a pre-consultation meeting with the building authority before the "
+                            "permit application is submitted. Zoning directly affects the duration and "
+                            "requirements of the permit process — construction often requires a detailed "
+                            "plan, an amendment to one, or a planning permit."),
+    },
+    "SE": {
+        "sub_title":       "Bygglovsansökan — utkast",
+        "esiselvitys_sub": ("Förundersökning och förkonsultationsmaterial — "
+                            "Utarbetat för förkonsultation med byggnadstillsyn"),
+        "disclaimer_h":    "AI-UTKAST — KRÄVER EXPERTGRANSKNING",
+        "disclaimer_b":    ("Detta dokument är ett AI-assisterat utkast. Det är inte juridiskt bindande och "
+                            "ersätter inte råd från en kvalificerad tillståndsexpert eller jurist. Innan "
+                            "ansökan lämnas in måste dokumentet granskas av en fackman."),
+        "m_hakija":        "Sökande",          "m_ytunnus":    "FO-nummer",
+        "m_hanketyyppi":   "Projekttyp",       "m_teho":       "Kapacitet / Effekt",
+        "m_kunta":         "Kommun",           "m_kt":         "Fastighetsbeteckning",
+        "m_laadittu":      "Upprättat",        "m_laatinut_lbl": "Upprättat av",
+        "m_laatinut":      "NCE Energy Permit AI (AI-assisterat)",
+        "sec1": "1. Projektbeskrivning",             "sec2": "2. Motivering och behov",
+        "sec3": "3. Nödvändiga tillstånd och myndigheter", "sec4": "4. Laghänvisningar",
+        "sec5": "5. Bilagor",                        "sec6": "6. Nästa steg",
+        "liitteet_note":   ("Följande bilagor ska lämnas in tillsammans med ansökan. "
+                            "Markera rutan när bilagan är klar."),
+        "lahteet_h":       "Källor och referenser",
+        "lahteet_b":       "Detta utkast har upprättats med hjälp av följande officiella dokument:",
+        "yhteystiedot_h":  "Sökandens kontaktuppgifter",
+        "yht_hakija":      "Sökande",   "yht_ytunnus":    "FO-nummer",
+        "yht_osoite":      "Adress",    "yht_lisatietoja": "Mer information",
+        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+                            "·  AI-utkast — kräver expertgranskning"),
+        "th_lupa":  "Tillstånd / anmälan", "th_viran": "Myndighet", "th_laki": "Rättslig grund",
+        "th_nro":   "Nr", "th_liite": "Bilaga", "th_tila": "Status",
+        "liite_toimitettu": "[ ] Inlämnad",
+        "toim_nro": "Nr", "toim_toimenpide": "Åtgärd",
+        "toim_vastuutaho": "Ansvarig", "toim_aikataulu": "Tidplan",
+        "hdr_draft": "bygglovsansökan — utkast", "hdr_right": "ncenergy.fi  |  AI-utkast",
+        "ftr_ai":    "AI-utkast — kräver granskning", "ftr_sivu": "Sida",
+        "bf_title": "FoU-finansieringsansökan — utkast",
+        "bf_kotipaikka": "Hemort", "bf_vaihe": "Fas", "bf_tk_kuvaus": "FoU-beskrivning",
+        "esiselvitys_p":   ("Projektet befinner sig i förundersökningsfasen. Slutliga tekniska "
+                            "specifikationer, platsplaner och miljökonsekvensbedömningar preciseras "
+                            "under den fortsatta planeringen."),
+        "bess_pintaala":   "Den uppskattade anläggningsytan är 0,4–0,6 ha.",
+        "mks_viittaus":    ("Markanvändningen i projektområdet har utretts i NCE Energys "
+                            "markanvändningsutredning (se Bilaga 0b: Markanvändningsutredning PDF). "
+                            "Utredningen innehåller fastighetsuppgifter, planläggningsstatus, "
+                            "skyddsområden och grundvattenuppgifter."),
+        "kaava_BESS":      ("<b>Planläggningsstatus (viktigaste förundersökningspunkten):</b> "
+                            "Planläggningsstatusen för BESS-projektplatsen måste utredas först. I de flesta "
+                            "kommuner kräver placering av ett batterienergilager en detaljplan eller "
+                            "planeringstillstånd. Planläggningsstatus påverkar mest den totala längden på "
+                            "tillståndsprocessen — förkonsultation med byggnadstillsynen är det första steget."),
+        "kaava_tuuli":     ("<b>Planläggningsstatus och MKB-krav:</b> Ett vindkraftsprojekt kräver nästan "
+                            "alltid en lokal översiktsplan eller detaljplan (MRL 132/1999, 77a §). "
+                            "MKB-förfarandet (YVA-laki 252/2017) är obligatoriskt för projekt ≥10 MW eller "
+                            "≥5 verk — plan- och MKB-processerna löper ofta parallellt och tar sammanlagt "
+                            "3–6 år. Planläggningsstatus klarläggs först."),
+        "kaava_SMR":       ("<b>STUK förlicensiering (viktigaste första steget):</b> För ett kärnkraftverk "
+                            "krävs statsrådets principbeslut (kärnenergilag 990/1987, 11 §) och STUK:s "
+                            "förlicensieringsförfarande innan alla andra tillstånd. STUK:s "
+                            "säkerhetsredogörelse enligt YVL-riktlinjerna inleder processen. "
+                            "Planläggning hanteras parallellt men kärnkraftssäkerhetsförfarandet är "
+                            "den dominerande faktorn."),
+        "kaava_aurinkovoima": ("<b>Åtgärdstillstånd eller bygglov — och planläggning:</b> För en liten "
+                            "solkraftspark (under ca 1 ha) räcker det ofta med åtgärdstillstånd istället "
+                            "för fullt bygglov (Bygglag 751/2023 / MRL 132/1999, 126 §). MKB krävs inte "
+                            "för projekt under 50 ha. Planläggningsstatus måste ändå kontrolleras — "
+                            "planeringstillstånd kan behövas utanför detaljplaneområden."),
+        "kaava_generic":   ("<b>Planläggningsstatus:</b> Gällande planläggningsstatus för projektplatsen "
+                            "måste verifieras i ett förkonsultationsmöte med byggnadstillsynen innan "
+                            "tillståndsansökan lämnas in. Planläggning påverkar direkt varaktigheten och "
+                            "kraven i tillståndsprocessen — byggande kräver ofta en detaljplan, en ändring "
+                            "av en sådan eller ett planeringstillstånd."),
+    },
+}
+
+_KAAVA_KEY: dict[str, str] = {
+    "BESS":          "kaava_BESS",
+    "tuulivoima_maa": "kaava_tuuli",
+    "tuulivoima_meri": "kaava_tuuli",
+    "SMR":           "kaava_SMR",
+    "smr_bess":      "kaava_SMR",
+    "aurinkovoima":  "kaava_aurinkovoima",
+}
+
+
+def _s(lang: str, key: str) -> str:
+    """Hae käännetty merkkijono PDF-layoutille. Fallback → FI."""
+    d = _PDF_STRINGS.get(lang) or _PDF_STRINGS["FI"]
+    return d.get(key) or _PDF_STRINGS["FI"].get(key, key)
+
+
 def _generate_bf_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str]:
     """Business Finland Sprint -hakemusosioiden generointi."""
     now = datetime.now().strftime("%d.%m.%Y")
@@ -763,15 +989,12 @@ def _hr(color=C_DGRAY, thickness=0.5):
     return HRFlowable(width="100%", thickness=thickness, color=color, spaceAfter=6, spaceBefore=2)
 
 
-def _disclaimer_box(st: dict) -> Table:
+def _disclaimer_box(st: dict, lang: str = "FI") -> Table:
     """Oranssi AI-varoituslaatikko."""
     C_WARN_BG = colors.HexColor("#fff3e0")
     C_WARN_BD = colors.HexColor("#ff9800")
     row = [[Paragraph(
-        "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN\n"
-        "Tämä asiakirja on tekoälyavusteisesti laadittu luonnos. Se ei ole juridisesti sitova eikä korvaa "
-        "pätevän lupa-asiantuntijan tai lakimiehen neuvoja. Ennen hakemuksen jättämistä asiakirja on "
-        "tarkistutettava alan ammattilaisella.",
+        f"{_s(lang, 'disclaimer_h')}\n{_s(lang, 'disclaimer_b')}",
         ParagraphStyle("disc", fontSize=8, textColor=colors.HexColor("#7a4400"),
                        fontName="Helvetica-Bold", alignment=TA_CENTER, leading=12)
     )]]
@@ -784,13 +1007,14 @@ def _disclaimer_box(st: dict) -> Table:
     return tbl
 
 
-def _luvat_table(hanketyyppi: str, st: dict) -> Table:
+def _luvat_table(hanketyyppi: str, st: dict, lang: str = "FI") -> Table:
     """Lupa-taulukko hanketyyppikohtaisesti."""
     cfg  = _HANKE_CFG[hanketyyppi]
+    _th  = ParagraphStyle("th", fontSize=8.5, fontName="Helvetica-Bold")
     rows = [[
-        Paragraph("Lupa / ilmoitus", ParagraphStyle("th", fontSize=8.5, fontName="Helvetica-Bold")),
-        Paragraph("Viranomainen",    ParagraphStyle("th", fontSize=8.5, fontName="Helvetica-Bold")),
-        Paragraph("Lakiperuste",     ParagraphStyle("th", fontSize=8.5, fontName="Helvetica-Bold")),
+        Paragraph(_s(lang, "th_lupa"),  _th),
+        Paragraph(_s(lang, "th_viran"), _th),
+        Paragraph(_s(lang, "th_laki"),  _th),
     ]]
     for lupa, viranomainen, laki in cfg["luvat"]:
         rows.append([
@@ -813,14 +1037,15 @@ def _luvat_table(hanketyyppi: str, st: dict) -> Table:
     return tbl
 
 
-def _liitteet_table(hanketyyppi: str) -> Table:
+def _liitteet_table(hanketyyppi: str, lang: str = "FI") -> Table:
     """Liiteluettelo checkboxeilla."""
     cfg  = _HANKE_CFG[hanketyyppi]
+    _th2 = ParagraphStyle("th2", fontSize=8.5, fontName="Helvetica-Bold")
     rows = [[
-        Paragraph("Nro", ParagraphStyle("th2", fontSize=8.5, fontName="Helvetica-Bold")),
-        Paragraph("Liite", ParagraphStyle("th2", fontSize=8.5, fontName="Helvetica-Bold")),
-        Paragraph("Tila", ParagraphStyle("th2", fontSize=8.5, fontName="Helvetica-Bold",
-                                         alignment=TA_CENTER)),
+        Paragraph(_s(lang, "th_nro"),   _th2),
+        Paragraph(_s(lang, "th_liite"), _th2),
+        Paragraph(_s(lang, "th_tila"),  ParagraphStyle("th2c", fontSize=8.5, fontName="Helvetica-Bold",
+                                                        alignment=TA_CENTER)),
     ]]
     for i, liite in enumerate(cfg["liitteet"]):
         if i == 0:
@@ -832,7 +1057,7 @@ def _liitteet_table(hanketyyppi: str) -> Table:
         rows.append([
             Paragraph(nro,   ParagraphStyle("tn", fontSize=8.5)),
             Paragraph(liite, ParagraphStyle("tl", fontSize=8.5, leading=12)),
-            Paragraph("[ ] Toimitettu",
+            Paragraph(_s(lang, "liite_toimitettu"),
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
 
@@ -921,7 +1146,7 @@ def _para_text(text: str, st: dict) -> list:
     return items
 
 
-def _toimenpiteet_elements(text: str, st: dict) -> list:
+def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
     """Muunna toimenpide-teksti 4-sarakkeiseksi PDF-taulukoksi jos mahdollista."""
     lines = [l.strip() for l in text.strip().splitlines() if l.strip()]
     rows = []
@@ -941,7 +1166,8 @@ def _toimenpiteet_elements(text: str, st: dict) -> list:
             rows.append([nro, rest, '', ''])
     if len(rows) < 2:
         return _para_text(text, st)
-    header = ['Nro', 'Toimenpide', 'Vastuutaho', 'Aikataulu']
+    header = [_s(lang, "toim_nro"), _s(lang, "toim_toimenpide"),
+              _s(lang, "toim_vastuutaho"), _s(lang, "toim_aikataulu")]
     th_s = ParagraphStyle("tp_th", fontSize=8, fontName="Helvetica-Bold", textColor=C_WHITE)
     td_s = ParagraphStyle("tp_td", fontSize=8, fontName="Helvetica", leading=11)
     tbl_data = [[Paragraph(h, th_s) for h in header]]
@@ -986,17 +1212,19 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
             self.setLineWidth(0.3)
             self.setFont("Helvetica", 6.5)
             self.setFillColor(C_GRAY)
+            _lang = getattr(inp, "lang", "FI")
+            _draft = _s(_lang, "hdr_draft")
             # Ylätunniste
             self.line(m, page_h - 1.55*cm, page_w - m, page_h - 1.55*cm)
             self.drawString(m, page_h - 1.2*cm,
-                f"{inp.hanketyyppi} lupahakemusluonnos  |  {inp.kunta}  |  {now}")
-            self.drawRightString(page_w - m, page_h - 1.2*cm, "ncenergy.fi  |  AI-luonnos")
+                f"{inp.hanketyyppi} {_draft}  |  {inp.kunta}  |  {now}")
+            self.drawRightString(page_w - m, page_h - 1.2*cm, _s(_lang, "hdr_right"))
             # Alatunniste
             self.line(m, 1.45*cm, page_w - m, 1.45*cm)
             self.drawString(m, 0.9*cm,
-                f"{inp.hanketyyppi} lupahakemusluonnos  |  {inp.kiinteistotunnus}  |  {inp.kunta}")
+                f"{inp.hanketyyppi} {_draft}  |  {inp.kiinteistotunnus}  |  {inp.kunta}")
             self.drawRightString(page_w - m, 0.9*cm,
-                f"{now}  |  AI-luonnos — vaatii tarkistuksen  |  Sivu {page_num} / {total}")
+                f"{now}  |  {_s(_lang, 'ftr_ai')}  |  {_s(_lang, 'ftr_sivu')} {page_num} / {total}")
             self.restoreState()
 
     return _NumberedCanvas
@@ -1021,19 +1249,19 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
 
     story.append(Spacer(1, 6*mm))
     story.append(Paragraph("Business Finland Sprint", st["sub"]))
-    story.append(Paragraph("T&K-rahoitushakemus — luonnos", st["title"]))
+    story.append(Paragraph(_s(_bf_lang, "bf_title"), st["title"]))
     story.append(Paragraph(f"{inp.hakija}  ·  {inp.kunta}  ·  {now}", st["meta"]))
     story.append(Spacer(1, 4*mm))
     story.append(_hr(C_NAVY, 1.5))
     story.append(Spacer(1, 3*mm))
 
     meta_rows = [
-        ["Hakija",           inp.hakija],
-        ["Kotipaikka",       inp.kunta],
-        ["Vaihe",            inp.hankkeen_vaihe or "–"],
-        ["T&K-kuvaus",       (inp.sijainti_ymparistovaikutukset or "–")[:120]],
-        ["Laadittu",         now],
-        ["Laatinut",         "NCE Energy Permit AI (tekoälyavusteinen)"],
+        [_s(_bf_lang, "m_hakija"),       inp.hakija],
+        [_s(_bf_lang, "bf_kotipaikka"),  inp.kunta],
+        [_s(_bf_lang, "bf_vaihe"),       inp.hankkeen_vaihe or "–"],
+        [_s(_bf_lang, "bf_tk_kuvaus"),   (inp.sijainti_ymparistovaikutukset or "–")[:120]],
+        [_s(_bf_lang, "m_laadittu"),     now],
+        [_s(_bf_lang, "m_laatinut_lbl"), _s(_bf_lang, "m_laatinut")],
     ]
     meta_tbl = Table(
         [[Paragraph(k, ParagraphStyle("mk", fontSize=8.5, textColor=C_GRAY,
@@ -1048,9 +1276,10 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
         ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
         ("VALIGN",         (0, 0), (-1, -1), "TOP"),
     ]))
+    _bf_lang = inp.lang or "FI"
     story.append(meta_tbl)
     story.append(Spacer(1, 6*mm))
-    story.append(_disclaimer_box(st))
+    story.append(_disclaimer_box(st, _bf_lang))
     story.append(Spacer(1, 8*mm))
 
     story.append(KeepTogether([Paragraph("1. T&K-kuvaus", st["h2"]), _hr()]))
@@ -1069,14 +1298,14 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
     story.extend(_para_text(sections.get("aikataulu", "–"), st))
     story.append(Spacer(1, 4*mm))
 
-    story.append(KeepTogether([Paragraph("5. Liiteluettelo", st["h2"]), _hr()]))
-    story.append(_liitteet_table("business_finland"))
+    story.append(KeepTogether([Paragraph(_s(_bf_lang, "sec5"), st["h2"]), _hr()]))
+    story.append(_liitteet_table("business_finland", _bf_lang))
     story.append(Spacer(1, 4*mm))
 
     if sources:
         story.append(KeepTogether([
-            Paragraph("Lähteet ja tietolähteet", st["h2"]), _hr(),
-            Paragraph("Luonnos laadittu hyödyntäen seuraavia dokumentteja:", st["body"]),
+            Paragraph(_s(_bf_lang, "lahteet_h"), st["h2"]), _hr(),
+            Paragraph(_s(_bf_lang, "lahteet_b"), st["body"]),
         ]))
         for s in sources:
             story.append(Paragraph(f"• {s}", st["bullet"]))
@@ -1084,7 +1313,7 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
 
     story.append(_hr(C_NAVY, 1.0))
     story.append(Paragraph(
-        "NCE Energy Permit AI  ·  ncenergy.fi  ·  AI-luonnos — vaatii asiantuntijatarkistuksen",
+        _s(_bf_lang, "footer"),
         ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
     ))
     doc.build(story, canvasmaker=canvas_cls)
@@ -1107,15 +1336,15 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         topMargin=2.2*cm, bottomMargin=2.2*cm,
     )
 
-    story = []
+    lang   = inp.lang or "FI"
+    story  = []
 
     # ── Kansilehti ────────────────────────────────────────────────────────────
     story.append(Spacer(1, 6*mm))
-    story.append(Paragraph("Rakennuslupahakemusluonnos", st["sub"]))
+    story.append(Paragraph(_s(lang, "sub_title"), st["sub"]))
     story.append(Paragraph(f"{cfg['nimi_fi']}", st["title"]))
     story.append(Paragraph(
-        "Esiselvitys- ja ennakkoneuvottelumateriaali — "
-        "Valmisteltu rakennusvalvonnan ennakkoneuvottelua varten",
+        _s(lang, "esiselvitys_sub"),
         ParagraphStyle("kan_sub2", fontSize=9, textColor=C_GRAY,
                        fontName="Helvetica", spaceAfter=4, leading=13),
     ))
@@ -1129,14 +1358,14 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     if inp.kapasiteetti_mwh and inp.kapasiteetti_mwh > 0:
         teho_val += f"  /  {inp.kapasiteetti_mwh} MWh"
     meta_rows = [
-        ["Hakija",              inp.hakija],
-        ["Y-tunnus",            inp.y_tunnus if inp.y_tunnus else ""],
-        ["Hanketyyppi",         f"{inp.hanketyyppi} — {cfg['nimi_fi']}"],
-        ["Teho / kapasiteetti", teho_val],
-        ["Sijaintikunta",       inp.kunta],
-        ["Kiinteistötunnus",    inp.kiinteistotunnus],
-        ["Laadittu",            now],
-        ["Laatinut",            "NCE Energy Permit AI (tekoälyavusteinen)"],
+        [_s(lang, "m_hakija"),      inp.hakija],
+        [_s(lang, "m_ytunnus"),     inp.y_tunnus if inp.y_tunnus else ""],
+        [_s(lang, "m_hanketyyppi"), f"{inp.hanketyyppi} — {cfg['nimi_fi']}"],
+        [_s(lang, "m_teho"),        teho_val],
+        [_s(lang, "m_kunta"),       inp.kunta],
+        [_s(lang, "m_kt"),          inp.kiinteistotunnus],
+        [_s(lang, "m_laadittu"),        now],
+        [_s(lang, "m_laatinut_lbl"),    _s(lang, "m_laatinut")],
     ]
     meta_tbl = Table(
         [[Paragraph(k, ParagraphStyle("mk", fontSize=8.5, textColor=C_GRAY,
@@ -1155,37 +1384,24 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     story.append(Spacer(1, 6*mm))
 
     # AI-varoituslaatikko
-    story.append(_disclaimer_box(st))
+    story.append(_disclaimer_box(st, lang))
     story.append(Spacer(1, 8*mm))
 
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
     story.append(KeepTogether([
-        Paragraph("1. Hankkeen kuvaus", st["h2"]),
+        Paragraph(_s(lang, "sec1"), st["h2"]),
         _hr(),
     ]))
     story.extend(_para_text(sections.get("kuvaus", "–"), st))
-    story.append(Paragraph(
-        "Hanke on esiselvitysvaiheessa. Lopulliset tekniset mitoitukset, "
-        "sijaintisuunnitelmat ja ympäristövaikutusten arvioinnit tarkentuvat "
-        "jatkosuunnittelun myötä.",
-        st["body"],
-    ))
+    story.append(Paragraph(_s(lang, "esiselvitys_p"), st["body"]))
     if inp.hanketyyppi == "BESS":
-        story.append(Paragraph(
-            "Laitosalueen arvioitu pinta-ala on 0,4–0,6 ha.",
-            st["body"],
-        ))
-    story.append(Paragraph(
-        "Hankealueen maankäyttö on selvitetty NCE Energyn maankäyttöselvityksessä "
-        "(ks. Liite 0b: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
-        "kaavatilanteen, suojelualueet sekä pohjavesialuetiedot.",
-        st["body"],
-    ))
+        story.append(Paragraph(_s(lang, "bess_pintaala"), st["body"]))
+    story.append(Paragraph(_s(lang, "mks_viittaus"), st["body"]))
     story.append(Spacer(1, 4*mm))
 
     # ── 2. Perustelut ja tarve ────────────────────────────────────────────────
     story.append(KeepTogether([
-        Paragraph("2. Perustelut ja tarve", st["h2"]),
+        Paragraph(_s(lang, "sec2"), st["h2"]),
         _hr(),
     ]))
     story.extend(_para_text(sections.get("perustelut", "–"), st))
@@ -1193,59 +1409,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
     story.append(KeepTogether([
-        Paragraph("3. Tarvittavat luvat ja viranomaiset", st["h2"]),
+        Paragraph(_s(lang, "sec3"), st["h2"]),
         _hr(),
     ]))
-    story.append(_luvat_table(inp.hanketyyppi, st))
+    story.append(_luvat_table(inp.hanketyyppi, st, lang))
     story.append(Spacer(1, 5*mm))
-    _ht = inp.hanketyyppi
-    if _ht == "BESS":
-        story.append(Paragraph(
-            "<b>Kaavatilanne (kriittisin esiselvityskohta):</b> BESS-hankkeen "
-            "sijoituspaikan kaavatilanne on selvitettävä ensimmäisenä. Useimmissa "
-            "kunnissa akkuenergiavaraston sijoittaminen edellyttää asemakaavaa tai "
-            "suunnittelutarveratkaisua. Kaavatilanne vaikuttaa eniten lupaprosessin "
-            "kokonaiskestoon — rakennusvalvonnan ennakkoneuvottelu ensitoimenpiteenä.",
-            st["body"],
-        ))
-    elif _ht in ("tuulivoima_maa", "tuulivoima_meri"):
-        story.append(Paragraph(
-            "<b>Kaavatilanne ja YVA-tarve:</b> Tuulivoimahanke edellyttää lähes aina "
-            "osayleiskaavaa tai asemakaavaa (MRL 132/1999, 77a §). YVA-menettely "
-            "(YVA-laki 252/2017) on pakollinen ≥10 MW tai ≥5 voimalan hankkeille — "
-            "kaava- ja YVA-prosessit kulkevat usein rinnakkain ja kestävät yhteensä "
-            "3–6 vuotta. Kaavatilanne selvitetään ensimmäisenä ennen muita lupia.",
-            st["body"],
-        ))
-    elif _ht in ("SMR", "smr_bess"):
-        story.append(Paragraph(
-            "<b>STUK pre-licensing (kriittisin ensimmäinen vaihe):</b> "
-            "Ydinlaitoshankkeessa valtioneuvoston periaatepäätös (ydinenergialaki "
-            "990/1987, 11 §) ja STUK:n ennakkolupamenettely ovat pakollisia ennen "
-            "kaikkia muita lupia. STUK:n YVL-ohjeiden mukainen turvallisuusseloste "
-            "käynnistää prosessin. Kaavatilanne selvitetään rinnalla, mutta "
-            "ydinturvallisuusmenettely on hallitseva tekijä hankkeen etenemisessä.",
-            st["body"],
-        ))
-    elif _ht == "aurinkovoima":
-        story.append(Paragraph(
-            "<b>Toimenpidelupa vai rakennuslupa — ja kaavatilanne:</b> "
-            "Pienimuotoiselle aurinkopuistolle (alle noin 1 ha) riittää usein "
-            "toimenpidelupa rakennusluvan sijaan (Rakentamislaki 751/2023 / "
-            "MRL 132/1999, 126 §). YVA-menettely ei koske alle 50 ha hankkeita. "
-            "Kaavatilanne on silti tarkistettava — asemakaava-alueen ulkopuolella "
-            "voidaan tarvita suunnittelutarveratkaisu.",
-            st["body"],
-        ))
-    else:
-        story.append(Paragraph(
-            "<b>Kaavatilanne:</b> Hankkeen sijoituspaikan voimassa oleva kaavatilanne "
-            "on tarkistettava rakennusvalvonnan ennakkoneuvottelussa ennen "
-            "lupahakemuksen jättämistä. Kaavatilanne vaikuttaa suoraan lupaprosessin "
-            "kestoon ja vaatimuksiin — rakentaminen edellyttää usein asemakaavaa tai "
-            "sen muutosta taikka suunnittelutarveratkaisua.",
-            st["body"],
-        ))
+    _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
+    story.append(Paragraph(_s(lang, _kaava_key), st["body"]))
 
     # AI:n lupakuvaukset
     luvat_txt = sections.get("luvat_teksti", "")
@@ -1255,7 +1425,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
     story.append(KeepTogether([
-        Paragraph("4. Lakiviitteet", st["h2"]),
+        Paragraph(_s(lang, "sec4"), st["h2"]),
         _hr(),
     ]))
     laki_rows = {laki for _, _, laki in cfg["luvat"]}
@@ -1266,35 +1436,28 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
     story.append(KeepTogether([
-        Paragraph("5. Liiteluettelo", st["h2"]),
+        Paragraph(_s(lang, "sec5"), st["h2"]),
         _hr(),
     ]))
-    story.append(Paragraph(
-        "Seuraavat liitteet on toimitettava hakemuksen yhteydessä. "
-        "Merkitse ☐-ruutuun kun liite on valmis.",
-        st["body"],
-    ))
+    story.append(Paragraph(_s(lang, "liitteet_note"), st["body"]))
     story.append(Spacer(1, 3*mm))
-    story.append(_liitteet_table(inp.hanketyyppi))
+    story.append(_liitteet_table(inp.hanketyyppi, lang))
     story.append(Spacer(1, 4*mm))
 
     # ── 6. Seuraavat toimenpiteet ─────────────────────────────────────────────
     story.append(KeepTogether([
-        Paragraph("6. Seuraavat toimenpiteet", st["h2"]),
+        Paragraph(_s(lang, "sec6"), st["h2"]),
         _hr(),
     ]))
-    story.extend(_toimenpiteet_elements(sections.get("toimenpiteet", "–"), st))
+    story.extend(_toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang))
     story.append(Spacer(1, 4*mm))
 
     # ── Lähteet ───────────────────────────────────────────────────────────────
     if sources:
         story.append(KeepTogether([
-            Paragraph("Lähteet ja tietolähteet", st["h2"]),
+            Paragraph(_s(lang, "lahteet_h"), st["h2"]),
             _hr(),
-            Paragraph(
-                "Tämä luonnos on laadittu hyödyntäen seuraavia viranomaisdokumentteja:",
-                st["body"],
-            ),
+            Paragraph(_s(lang, "lahteet_b"), st["body"]),
         ]))
         for s in sources:
             story.append(Paragraph(f"• {s}", st["bullet"]))
@@ -1302,14 +1465,14 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 
     # ── Hakijan yhteystiedot ──────────────────────────────────────────────────
     story.append(KeepTogether([
-        Paragraph("Hakijan yhteystiedot", st["h2"]),
+        Paragraph(_s(lang, "yhteystiedot_h"), st["h2"]),
         _hr(),
     ]))
     yhteystiedot_data = [
-        ["Hakija",    inp.hakija],
-        ["Y-tunnus",  inp.y_tunnus if inp.y_tunnus else "–"],
-        ["Osoite",    inp.osoite if inp.osoite else "–"],
-        ["Lisätietoja", "NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi"],
+        [_s(lang, "yht_hakija"),      inp.hakija],
+        [_s(lang, "yht_ytunnus"),     inp.y_tunnus if inp.y_tunnus else "–"],
+        [_s(lang, "yht_osoite"),      inp.osoite if inp.osoite else "–"],
+        [_s(lang, "yht_lisatietoja"), "NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi"],
     ]
     yht_tbl = Table(
         [[Paragraph(k, ParagraphStyle("yk", fontSize=8.5, textColor=C_GRAY, fontName="Helvetica-Bold")),
@@ -1329,8 +1492,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     # ── Loppumerkintä ─────────────────────────────────────────────────────────
     story.append(_hr(C_NAVY, 1.0))
     story.append(Paragraph(
-        "NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
-        "·  AI-luonnos — vaatii asiantuntijatarkistuksen",
+        _s(lang, "footer"),
         ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
     ))
 
