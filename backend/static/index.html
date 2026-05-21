@@ -237,6 +237,8 @@
     /* ── Mobiilikorjaukset ───────────────────────────── */
     .tab-label-short { display: none; }
     .pai-short-label { display: none; }
+    /* Transparent wrapper on desktop — children behave as direct header children */
+    .header-nav-row  { display: contents; }
 
     /* Tabletti (768–1024 px): 2 kortia per rivi */
     @media (max-width: 1024px) {
@@ -288,23 +290,52 @@
       .gen-card-sub  { grid-column: 2; grid-row: 2; font-size: 0.74rem; }
       .gen-card-badge { grid-column: 2; grid-row: 3; margin-top: 4px; }
 
-      /* 1. Header: piilota alaotsikko, pienennä napit */
+      /* 1. Kaksirivinen header */
+      header {
+        flex-wrap: wrap;
+        padding: 0 12px;
+        min-height: auto;
+      }
+      /* Rivi 1: brand vie koko leveyden */
+      .header-brand {
+        flex: 0 0 100%;
+        min-height: 48px;
+      }
+      /* Rivi 2: navigaatiorivi */
+      .header-nav-row {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 4px 0;
+        gap: 4px;
+      }
+      .tab-nav {
+        margin-left: 0;
+        align-self: center;
+        gap: 0;
+      }
+      .header-right {
+        margin-left: auto;
+        gap: 6px;
+      }
+
+      /* Alaotsikko piiloon — logo + nimi riittää */
       header .subtitle { display: none; }
+      /* Permit AI -nappi lyhenee */
       .pai-full-label  { display: none; }
       .pai-short-label { display: inline; }
+      /* Lang-napit kompaktit */
       .lang-btn { font-size: 0.62rem; padding: 2px 5px; }
 
-      /* Navigaatiovälilehdet: touch target 44 px + lyhyet nimet */
+      /* Välilehtien lyhyet nimet + riittävä touch-alue */
       .tab-label-full  { display: none; }
       .tab-label-short { display: inline; }
       .tab-btn {
-        font-size: 0.73rem;
-        padding: 12px 16px;
+        font-size: 0.75rem;
+        padding: 10px 14px;
         min-height: 44px;
         touch-action: manipulation;
-        display: flex;
-        align-items: center;
-        gap: 5px;
       }
     }
 
@@ -1070,31 +1101,33 @@
     </div>
   </div>
 
-  <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="generator" onclick="switchTab('generator')">
-      &#x1F4C4;
-      <span class="tab-label-full"  data-i18n="tab_generator">Lupa-asiakirjapalvelu</span>
-      <span class="tab-label-short" data-i18n="tab_generator_short">Lupa-asiakirjat</span>
-    </button>
-    <button class="tab-btn" data-tab="bess" onclick="switchTab('bess')">
-      &#x1F5FA;&#xFE0F;
-      <span class="tab-label-full"  data-i18n="tab_map">Maankäyttöselvitys</span>
-      <span class="tab-label-short" data-i18n="tab_map_short">Sijainti</span>
-    </button>
-  </nav>
+  <div class="header-nav-row">
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="generator" onclick="switchTab('generator')">
+        &#x1F4C4;
+        <span class="tab-label-full"  data-i18n="tab_generator">Lupa-asiakirjapalvelu</span>
+        <span class="tab-label-short" data-i18n="tab_generator_short">Lupa-asiakirjat</span>
+      </button>
+      <button class="tab-btn" data-tab="bess" onclick="switchTab('bess')">
+        &#x1F5FA;&#xFE0F;
+        <span class="tab-label-full"  data-i18n="tab_map">Maankäyttöselvitys</span>
+        <span class="tab-label-short" data-i18n="tab_map_short">Sijainti</span>
+      </button>
+    </nav>
 
-  <div class="header-right">
-    <div class="lang-switcher" aria-label="Kielivalinta">
-      <button class="lang-btn active" id="lang-btn-FI" onclick="setLang('FI')">FI</button>
-      <button class="lang-btn" id="lang-btn-EN" onclick="setLang('EN')">EN</button>
-      <button class="lang-btn" id="lang-btn-SE" onclick="setLang('SE')">SE</button>
+    <div class="header-right">
+      <div class="lang-switcher" aria-label="Kielivalinta">
+        <button class="lang-btn active" id="lang-btn-FI" onclick="setLang('FI')">FI</button>
+        <button class="lang-btn" id="lang-btn-EN" onclick="setLang('EN')">EN</button>
+        <button class="lang-btn" id="lang-btn-SE" onclick="setLang('SE')">SE</button>
+      </div>
+      <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
+        &#x1F4AC;
+        <span class="pai-full-label">Permit AI</span>
+        <span class="pai-short-label">AI</span>
+      </button>
+      <div class="badge" id="header-badge" style="display:none;">Pöytyä · 636-439-4-711</div>
     </div>
-    <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
-      &#x1F4AC;
-      <span class="pai-full-label">Permit AI</span>
-      <span class="pai-short-label">AI</span>
-    </button>
-    <div class="badge" id="header-badge" style="display:none;">Pöytyä · 636-439-4-711</div>
   </div>
 </header>
 
