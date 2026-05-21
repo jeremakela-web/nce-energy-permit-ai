@@ -90,6 +90,23 @@ _POSTPROCESS_RULES: list[tuple[str, str]] = [
     (r'\bELY\b(?!-)',  'ELY-keskus'),
     # MRL 132/1999 → Rakentamislaki (ei korvata jos jo korvattu)
     (r'(?<!/ )MRL\s+132/1999',  'Rakentamislaki (751/2023) / MRL 132/1999'),
+    # ■■ / ■ -merkit pois (PDF-fontit eivät tue) — poistetaan tai korvataan tekstillä
+    (r'■■\s*', ''),
+    (r'■\s*',  ''),
+    # ⚠️-emoji pois (ei toimi PDF-fonteissa) — säilytetään ⚠ (U+26A0) yksinään jos ok
+    (r'⚠️\s*', '[Huom] '),
+    # Pelastuslaki virheellinen §-viite: lain numero ≠ pykälänumero
+    (r'Pelastuslai[tn]\s*\(?379/2011\)?\s*,?\s*379\s*§[:\s]',
+     'Pelastuslaki 379/2011, 15 §: '),
+    (r'pelastuslai[tn]\s*\(?379/2011\)?\s*,?\s*379\s*§[:\s]',
+     'pelastuslaki 379/2011, 15 §: '),
+    # Pelastusopiston ohjeistus → Tukesin ohje
+    (r'Pelastusopiston\s+BESS-turvallisuusohjeistus(?:ta)?',
+     'Tukesin ohje akkuenergiavarastoille'),
+    (r'Pelastusopiston\s+(?:turvallisuus)?ohjeistus(?:ta)?',
+     'Tukesin ohje'),
+    (r'Pelastusopiston\s+ohje(?:istus)?(?:ta)?',
+     'Tukesin ohje'),
 ]
 
 
@@ -185,10 +202,15 @@ _HANKE_CFG = {
         ],
         "luvat": [
             ("Ympäristölupa",               "Lupa- ja valvontavirasto (Luova)",  "YSL 527/2014"),
-            ("Rakennuslupa",                "Kunta / rakennusvalvonta",          "MRL 132/1999"),
-            ("Toimenpideilmoitus pelast.",  "Paikallinen pelastuslaitos",        "Pelastuslaki 379/2011"),
+            ("Rakennuslupa",                "Kunta / rakennusvalvonta",          "Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Toimenpideilmoitus pelast.",  "Paikallinen pelastuslaitos",        "Pelastuslaki 379/2011, 15 §"),
             ("Verkkoliityntäsopimus",       "Jakeluverkkoyhtiö / Fingrid Oyj",   "Sähkömarkkinalaki 588/2013"),
             ("Maa-aineslupa (tarvitt.)",    "Kunta",                             "Maa-aineslaki 555/1981"),
+        ],
+        "laki_extra": [
+            "YVA-laki 252/2017 (kynnykset ylittyessä)",
+            "Kemikaaliturvallisuuslaki 390/2005",
+            "Luonnonsuojelulaki 9/2023",
         ],
         "liitteet": [
             "Asemapiirustus ja pohjakartta (M 1:500)",
@@ -214,11 +236,15 @@ _HANKE_CFG = {
         "luvat": [
             ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "ELY-keskus / Luova",       "YVA-laki 252/2017"),
             ("Osayleiskaava tai asemakaava",          "Kunta",                    "MRL 132/1999 § 77a"),
-            ("Rakennuslupa",                          "Kunta / rakennusvalvonta", "MRL 132/1999"),
+            ("Rakennuslupa",                          "Kunta / rakennusvalvonta", "Rakentamislaki 751/2023 / MRL 132/1999"),
             ("Ympäristölupa (tarvitt.)",              "Luova",                    "YSL 527/2014"),
             ("Verkkoliityntäsopimus",                 "Fingrid Oyj / jakelu",     "Sähkömarkkinalaki 588/2013"),
             ("Lentoestevalolupa",                     "Traficom",                 "Ilmailulaki 864/2014"),
             ("Maanvuokrasopimukset",                  "Maanomistajat",            "Maakaari 540/1995"),
+        ],
+        "laki_extra": [
+            "Luonnonsuojelulaki 9/2023",
+            "Maantielaki 503/2005 (tiealueet)",
         ],
         "liitteet": [
             "YVA-ohjelma ja YVA-selostus (ELY:n hyväksymä)",
@@ -245,11 +271,15 @@ _HANKE_CFG = {
             ("YVA-menettely",                    "ELY-keskus / Luova",       "YVA-laki 252/2017"),
             ("Vesilupa",                         "Luova",                    "Vesilaki 587/2011"),
             ("Ympäristölupa",                    "Luova",                    "YSL 527/2014"),
-            ("Rakennuslupa",                     "Kunta / rakennusvalvonta", "MRL 132/1999"),
+            ("Rakennuslupa",                     "Kunta / rakennusvalvonta", "Rakentamislaki 751/2023 / MRL 132/1999"),
             ("Alusliikenteen turvallisuuslupa",  "Traficom",                 "Merilaki 674/1994"),
             ("Puolustusvoimien lausunto",        "Puolustusvoimat / PLM",    "Laki alueiden käytöstä"),
             ("Verkkoliityntäsopimus",            "Fingrid Oyj",              "Sähkömarkkinalaki 588/2013"),
             ("Maanvuokra / merialueen käyttöoik.", "Valtio / Metsähallitus", "Vesilaki 587/2011"),
+        ],
+        "laki_extra": [
+            "Luonnonsuojelulaki 9/2023",
+            "Merenkulkulaki 1672/2009",
         ],
         "liitteet": [
             "YVA-ohjelma ja YVA-selostus",
@@ -273,11 +303,15 @@ _HANKE_CFG = {
             "aurinkovoimala maankäyttö kaava maisema",
         ],
         "luvat": [
-            ("Rakennuslupa tai toimenpidelupa", "Kunta / rakennusvalvonta",  "MRL 132/1999 § 125–126"),
+            ("Rakennuslupa tai toimenpidelupa", "Kunta / rakennusvalvonta",  "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126"),
             ("Suunnittelutarveratkaisu (tarvitt.)", "Kunta",                 "MRL 132/1999 § 137"),
             ("Ympäristölupa (tarvitt. ≥1 ha)",  "Luova / kunta",            "YSL 527/2014"),
             ("Verkkoliityntäsopimus",           "Jakeluverkkoyhtiö",         "Sähkömarkkinalaki 588/2013"),
             ("Maisema- tai kulttuuriympäristölausunto", "ELY-keskus",        "MRL 197 §"),
+        ],
+        "laki_extra": [
+            "YVA-laki 252/2017 (≥50 ha hankkeet)",
+            "Luonnonsuojelulaki 9/2023",
         ],
         "liitteet": [
             "Asemapiirustus ja pohjakartta (M 1:500 tai 1:1000)",
@@ -306,8 +340,12 @@ _HANKE_CFG = {
             ("Käyttölupa",                        "STUK",                       "YEL 990/1987 § 20"),
             ("Ympäristölupa",                     "Luova",                      "YSL 527/2014"),
             ("Vesilupa (jäähdytysvesi)",           "Luova",                     "Vesilaki 587/2011"),
-            ("Rakennuslupa",                      "Kunta",                      "MRL 132/1999"),
+            ("Rakennuslupa",                      "Kunta",                      "Rakentamislaki 751/2023 / MRL 132/1999"),
             ("Maankäyttösopimus / kaavoitus",     "Kunta",                      "MRL 132/1999 § 9"),
+        ],
+        "laki_extra": [
+            "Säteilylaki 859/2018",
+            "Luonnonsuojelulaki 9/2023",
         ],
         "liitteet": [
             "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)",
@@ -335,10 +373,14 @@ _HANKE_CFG = {
             ("Vesilupa (padotus, rakentaminen)", "Luova",                      "Vesilaki 587/2011 § 3:2"),
             ("Ympäristölupa",                    "Luova",                      "YSL 527/2014"),
             ("YVA-menettely (tarvitt.)",          "ELY-keskus / Luova",        "YVA-laki 252/2017"),
-            ("Rakennuslupa",                     "Kunta / rakennusvalvonta",   "MRL 132/1999"),
+            ("Rakennuslupa",                     "Kunta / rakennusvalvonta",   "Rakentamislaki 751/2023 / MRL 132/1999"),
             ("Verkkoliityntäsopimus",            "Jakeluverkkoyhtiö / Fingrid", "Sähkömarkkinalaki 588/2013"),
             ("Kalastuslaki-ilmoitus",            "ELY-keskus",                 "Kalastuslaki 379/2015"),
-            ("Maankäyttösopimus",                "Kunta / maanomistajat",      "MRL 132/1999"),
+            ("Maankäyttösopimus",                "Kunta / maanomistajat",      "MRL 132/1999 § 91a"),
+        ],
+        "laki_extra": [
+            "Luonnonsuojelulaki 9/2023",
+            "Patoturvallisuuslaki 494/2009",
         ],
         "liitteet": [
             "Hydraulinen mitoitusraportti (virtaama, putouskorkeus)",
@@ -364,12 +406,16 @@ _HANKE_CFG = {
         "luvat": [
             ("YVA-menettely (kynnyksen ylittyessä)", "ELY-keskus / Luova",      "YVA-laki 252/2017"),
             ("Osayleiskaava / asemakaava",           "Kunta",                   "MRL 132/1999"),
-            ("Rakennuslupa (tuulivoimala)",          "Kunta / rakennusvalvonta","MRL 132/1999"),
-            ("Rakennus-/toimenpidelupa (PV + BESS)", "Kunta",                   "MRL 132/1999 § 126"),
+            ("Rakennuslupa (tuulivoimala)",          "Kunta / rakennusvalvonta","Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakennus-/toimenpidelupa (PV + BESS)", "Kunta",                   "Rakentamislaki 751/2023 / MRL 132/1999 § 126"),
             ("Ympäristölupa (BESS-komponentti)",    "Luova",                    "YSL 527/2014"),
-            ("Toimenpideilmoitus pelast. (BESS)",   "Pelastuslaitos",           "Pelastuslaki 379/2011"),
+            ("Toimenpideilmoitus pelast. (BESS)",   "Pelastuslaitos",           "Pelastuslaki 379/2011, 15 §"),
             ("Verkkoliityntäsopimus",               "Fingrid Oyj / jakelu",     "Sähkömarkkinalaki 588/2013"),
             ("Lentoestevalolupa (tuulivoimala)",    "Traficom",                 "Ilmailulaki 864/2014"),
+        ],
+        "laki_extra": [
+            "Kemikaaliturvallisuuslaki 390/2005 (BESS)",
+            "Luonnonsuojelulaki 9/2023",
         ],
         "liitteet": [
             "YVA-ohjelma ja -selostus (tuulivoiman osalta)",
@@ -417,10 +463,15 @@ _HANKE_CFG = {
             ("Rakentamislupa (ydinlaitos)",         "STUK",                       "YEL 990/1987 § 18"),
             ("Käyttölupa (ydinlaitos)",             "STUK",                       "YEL 990/1987 § 20"),
             ("Ympäristölupa (BESS-komponentti)",    "Luova",                      "YSL 527/2014"),
-            ("Toimenpideilmoitus pelast. (BESS)",   "Pelastuslaitos",             "Pelastuslaki 379/2011"),
-            ("Rakennuslupa",                        "Kunta",                      "MRL 132/1999"),
+            ("Toimenpideilmoitus pelast. (BESS)",   "Pelastuslaitos",             "Pelastuslaki 379/2011, 15 §"),
+            ("Rakennuslupa",                        "Kunta",                      "Rakentamislaki 751/2023 / MRL 132/1999"),
             ("Vesilupa (jäähdytysvesi, tarvitt.)",  "Luova",                      "Vesilaki 587/2011"),
             ("Verkkoliityntäsopimus",               "Fingrid Oyj",                "Sähkömarkkinalaki 588/2013"),
+        ],
+        "laki_extra": [
+            "Säteilylaki 859/2018",
+            "Kemikaaliturvallisuuslaki 390/2005 (BESS)",
+            "Luonnonsuojelulaki 9/2023",
         ],
         "liitteet": [
             "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)",
@@ -600,7 +651,7 @@ Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
 Päivämäärä: {now}{viranomainen_ohje}
 
-Alla on relevanttia dokumentaatiota (Fingrid, Pelastusopisto, Tukes):
+Alla on relevanttia dokumentaatiota (Fingrid, Tukes, Ympäristöministeriö):
 {rag_context}
 
 Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:
@@ -684,7 +735,7 @@ def _disclaimer_box(st: dict) -> Table:
     C_WARN_BG = colors.HexColor("#fff3e0")
     C_WARN_BD = colors.HexColor("#ff9800")
     row = [[Paragraph(
-        "⚠️  AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN  ⚠️\n"
+        "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN\n"
         "Tämä asiakirja on tekoälyavusteisesti laadittu luonnos. Se ei ole juridisesti sitova eikä korvaa "
         "pätevän lupa-asiantuntijan tai lakimiehen neuvoja. Ennen hakemuksen jättämistä asiakirja on "
         "tarkistutettava alan ammattilaisella.",
@@ -1029,10 +1080,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     story.append(Spacer(1, 3*mm))
 
     # Metataulukko
+    teho_val = f"{inp.teho_mw} MW"
+    if inp.kapasiteetti_mwh and inp.kapasiteetti_mwh > 0:
+        teho_val += f"  /  {inp.kapasiteetti_mwh} MWh"
     meta_rows = [
         ["Hakija",           inp.hakija],
         ["Hanketyyppi",      f"{inp.hanketyyppi} — {cfg['nimi_fi']}"],
-        ["Teho",             f"{inp.teho_mw} MW"],
+        ["Teho / kapasiteetti", teho_val],
         ["Sijaintikunta",    inp.kunta],
         ["Kiinteistötunnus", inp.kiinteistotunnus],
         ["Laadittu",         now],
@@ -1093,7 +1147,8 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         Paragraph("4. Lakiviitteet", st["h2"]),
         _hr(),
     ]))
-    laki_rows = list({laki for _, _, laki in cfg["luvat"]})
+    laki_rows = {laki for _, _, laki in cfg["luvat"]}
+    laki_rows.update(cfg.get("laki_extra", []))
     for ref in sorted(laki_rows):
         story.append(Paragraph(f"• {ref}", st["bullet"]))
     story.append(Spacer(1, 4*mm))

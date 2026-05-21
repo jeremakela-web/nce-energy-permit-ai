@@ -341,8 +341,8 @@ def generate_bess_report(
         gw_eval = "– Ei dataa"
     elif gw:
         cls_label = f" — Luokka {gw_cls}" if gw_cls else ""
-        gw_str = f"Kyllä{cls_label} ■"
-        gw_eval = "■ Selvitä (kriittinen)" if gw_cls in ("1", "1E") else "⚠ Selvitä"
+        gw_str = f"Kyllä{cls_label} (!)"
+        gw_eval = "(!) Selvitä (kriittinen)" if gw_cls in ("1", "1E") else "⚠ Selvitä"
     else:
         gw_str = "Ei ✓"
         gw_eval = "✓ OK"
