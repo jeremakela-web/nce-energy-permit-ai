@@ -107,6 +107,11 @@ _POSTPROCESS_RULES: list[tuple[str, str]] = [
      'Tukesin ohje'),
     (r'Pelastusopiston\s+ohje(?:istus)?(?:ta)?',
      'Tukesin ohje'),
+    # BESS — C2-tyyppi → selkeä tekninen kuvaus
+    (r'\bC2-tyyppi(?:ä|ssä|llä|lta|lle|ksi|stä)?\b',
+     '2 tunnin purkautumisaika (C/2)'),
+    (r'\bC/2-tyyppi(?:ä|ssä|llä|lta|lle|ksi|stä)?\b',
+     '2 tunnin purkautumisaika (C/2)'),
 ]
 
 
@@ -1193,14 +1198,54 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     ]))
     story.append(_luvat_table(inp.hanketyyppi, st))
     story.append(Spacer(1, 5*mm))
-    story.append(Paragraph(
-        "<b>Kaavatilanne:</b> Hankkeen sijoituspaikan voimassa oleva kaavatilanne on "
-        "tarkistettava rakennusvalvonnan ennakkoneuvottelussa ennen lupahakemuksen "
-        "jättämistä. Kaavatilanne vaikuttaa suoraan lupaprosessin kestoon ja vaatimuksiin — "
-        "rakentaminen edellyttää usein asemakaavaa tai sen muutosta taikka "
-        "suunnittelutarveratkaisua.",
-        st["body"],
-    ))
+    _ht = inp.hanketyyppi
+    if _ht == "BESS":
+        story.append(Paragraph(
+            "<b>Kaavatilanne (kriittisin esiselvityskohta):</b> BESS-hankkeen "
+            "sijoituspaikan kaavatilanne on selvitettävä ensimmäisenä. Useimmissa "
+            "kunnissa akkuenergiavaraston sijoittaminen edellyttää asemakaavaa tai "
+            "suunnittelutarveratkaisua. Kaavatilanne vaikuttaa eniten lupaprosessin "
+            "kokonaiskestoon — rakennusvalvonnan ennakkoneuvottelu ensitoimenpiteenä.",
+            st["body"],
+        ))
+    elif _ht in ("tuulivoima_maa", "tuulivoima_meri"):
+        story.append(Paragraph(
+            "<b>Kaavatilanne ja YVA-tarve:</b> Tuulivoimahanke edellyttää lähes aina "
+            "osayleiskaavaa tai asemakaavaa (MRL 132/1999, 77a §). YVA-menettely "
+            "(YVA-laki 252/2017) on pakollinen ≥10 MW tai ≥5 voimalan hankkeille — "
+            "kaava- ja YVA-prosessit kulkevat usein rinnakkain ja kestävät yhteensä "
+            "3–6 vuotta. Kaavatilanne selvitetään ensimmäisenä ennen muita lupia.",
+            st["body"],
+        ))
+    elif _ht in ("SMR", "smr_bess"):
+        story.append(Paragraph(
+            "<b>STUK pre-licensing (kriittisin ensimmäinen vaihe):</b> "
+            "Ydinlaitoshankkeessa valtioneuvoston periaatepäätös (ydinenergialaki "
+            "990/1987, 11 §) ja STUK:n ennakkolupamenettely ovat pakollisia ennen "
+            "kaikkia muita lupia. STUK:n YVL-ohjeiden mukainen turvallisuusseloste "
+            "käynnistää prosessin. Kaavatilanne selvitetään rinnalla, mutta "
+            "ydinturvallisuusmenettely on hallitseva tekijä hankkeen etenemisessä.",
+            st["body"],
+        ))
+    elif _ht == "aurinkovoima":
+        story.append(Paragraph(
+            "<b>Toimenpidelupa vai rakennuslupa — ja kaavatilanne:</b> "
+            "Pienimuotoiselle aurinkopuistolle (alle noin 1 ha) riittää usein "
+            "toimenpidelupa rakennusluvan sijaan (Rakentamislaki 751/2023 / "
+            "MRL 132/1999, 126 §). YVA-menettely ei koske alle 50 ha hankkeita. "
+            "Kaavatilanne on silti tarkistettava — asemakaava-alueen ulkopuolella "
+            "voidaan tarvita suunnittelutarveratkaisu.",
+            st["body"],
+        ))
+    else:
+        story.append(Paragraph(
+            "<b>Kaavatilanne:</b> Hankkeen sijoituspaikan voimassa oleva kaavatilanne "
+            "on tarkistettava rakennusvalvonnan ennakkoneuvottelussa ennen "
+            "lupahakemuksen jättämistä. Kaavatilanne vaikuttaa suoraan lupaprosessin "
+            "kestoon ja vaatimuksiin — rakentaminen edellyttää usein asemakaavaa tai "
+            "sen muutosta taikka suunnittelutarveratkaisua.",
+            st["body"],
+        ))
 
     # AI:n lupakuvaukset
     luvat_txt = sections.get("luvat_teksti", "")
