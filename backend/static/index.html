@@ -1883,6 +1883,7 @@ function switchTab(tabId) {
   if (tabId === 'bess') {
     setTimeout(() => { if (typeof map !== 'undefined') map.invalidateSize(); }, 80);
   }
+  try { localStorage.setItem('nce_tool', tabId); } catch (_) {}
 }
 
 // ─────────────────────────────────────────────
@@ -3440,6 +3441,11 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     const savedLang = localStorage.getItem('nce_lang');
     if (savedLang && ['FI', 'EN', 'SE'].includes(savedLang)) setLang(savedLang);
+  } catch (_) {}
+
+  try {
+    const savedTool = localStorage.getItem('nce_tool');
+    if (savedTool && ['generator', 'bess'].includes(savedTool)) switchTab(savedTool);
   } catch (_) {}
 
   const ta = document.getElementById('pai-textarea');
