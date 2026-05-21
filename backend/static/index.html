@@ -1986,7 +1986,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
       { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta', required: true },
       { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', min: '0.1', step: '0.1', required: true },
-      { id: 'gf-kap',          apiKey: null,               label: 'Kapasiteetti (MWh)',    type: 'number', min: '0.1', step: '0.1' },
+      { id: 'gf-kap',          apiKey: 'kapasiteetti_mwh', label: 'Kapasiteetti (MWh)',    type: 'number', min: '0.1', step: '0.1' },
       { id: 'gf-verkko',       apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: ['— Valitse —', 'Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',        type: 'select', options: _VAIHE_OPTS },
@@ -3245,11 +3245,12 @@ function toggleGenForm() {
 }
 
 async function generateApplication() {
-  const hanketyyppi = document.getElementById('gen-hanketyyppi').value;
-  const kt          = document.getElementById('gen-kt').value.trim();
-  const teho        = parseFloat(document.getElementById('gen-teho').value) || 0;
-  const kunta       = document.getElementById('gen-kunta').value.trim();
-  const hakija      = document.getElementById('gen-hakija').value.trim();
+  const hanketyyppi    = document.getElementById('gen-hanketyyppi').value;
+  const kt             = document.getElementById('gen-kt').value.trim();
+  const teho           = parseFloat(document.getElementById('gen-teho').value) || 0;
+  const kapasiteetti   = parseFloat(document.getElementById('gf-kap')?.value) || 0;
+  const kunta          = document.getElementById('gen-kunta').value.trim();
+  const hakija         = document.getElementById('gen-hakija').value.trim();
 
   if (!kt || !kunta || !hakija) {
     alert(activeLang === 'EN' ? 'Fill in property ID, municipality and applicant.'
@@ -3281,7 +3282,9 @@ async function generateApplication() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        hanketyyppi, kiinteistotunnus: kt, teho_mw: teho, kunta, hakija,
+        hanketyyppi, kiinteistotunnus: kt, teho_mw: teho,
+        kapasiteetti_mwh: kapasiteetti || undefined,
+        kunta, hakija,
         lang: activeLang,
       }),
     });

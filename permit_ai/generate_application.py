@@ -168,6 +168,7 @@ class ApplicationInput:
     hankkeen_vaihe:               str = ""
     kohdeviranomainen:            str = ""
     lang:                         str = "FI"  # FI | EN | SE
+    kapasiteetti_mwh:             float = 0.0
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -585,12 +586,16 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
             "Viittaa kyseisen viranomaisen ohjeisiin, lomakkeisiin ja vaatimuksiin."
         )
 
+    kap_lisatieto = ""
+    if inp.kapasiteetti_mwh and inp.kapasiteetti_mwh > 0:
+        kap_lisatieto = f"\nKapasiteetti: {inp.kapasiteetti_mwh} MWh"
+
     lang_prefix = _LANG_INSTRUCTIONS.get(getattr(inp, "lang", "FI"), "")
     prompt = f"""{lang_prefix}Laadi lupahakemusluonnos seuraavalle hankkeelle:
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
 Kiinteistötunnus: {inp.kiinteistotunnus}
-Teho: {inp.teho_mw} MW
+Teho: {inp.teho_mw} MW{kap_lisatieto}
 Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
 Päivämäärä: {now}{viranomainen_ohje}
@@ -615,7 +620,7 @@ Listaa 5–7 konkreettista seuraavaa askelta aikatauluineen (kk tarkkuudella). A
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     resp   = claude.messages.create(
         model=_MODEL_ID,
-        max_tokens=4000,
+        max_tokens=8000,
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
