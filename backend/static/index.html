@@ -1159,6 +1159,19 @@
         <!-- Cards rendered by JS -->
       </div>
 
+      <!-- Country selector (shown after project type selected) -->
+      <div id="gen-country-bar" style="display:none;margin:10px 0 4px;">
+        <div style="font-size:0.72rem;color:#8899aa;margin-bottom:6px;" data-i18n="country_label">Maa / sääntelyjärjestelmä</div>
+        <div class="lang-switcher" style="display:inline-flex;gap:2px;">
+          <button class="lang-btn active" id="country-btn-FI" onclick="setCountry('FI')">🇫🇮 FI</button>
+          <button class="lang-btn" id="country-btn-SE" onclick="setCountry('SE')">🇸🇪 SE</button>
+          <button class="lang-btn" id="country-btn-DA" onclick="setCountry('DA')">🇩🇰 DA</button>
+          <button class="lang-btn" id="country-btn-NO" onclick="setCountry('NO')">🇳🇴 NO</button>
+          <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
+        </div>
+        <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
+      </div>
+
       <!-- Form section (hidden until card selected) -->
       <div id="gen-form-section" style="display:none;"></div>
     </div>
@@ -1208,22 +1221,22 @@
           <div class="proj-field" id="proj-grid-wrap">
             <label data-i18n="lbl_grid">Verkkoliityntä</label>
             <select id="proj-grid">
-              <option value="">— Valitse —</option>
-              <option value="Jakeluverkko 20 kV (Caruna)">Caruna 20 kV (jakeluverkko)</option>
-              <option value="Jakeluverkko 20 kV (Elenia)">Elenia 20 kV (jakeluverkko)</option>
-              <option value="Jakeluverkko 20 kV (muu)">Muu jakeluverkko 20 kV</option>
-              <option value="Fingrid 110 kV (kantaverkko)">Fingrid 110 kV (kantaverkko)</option>
-              <option value="Fingrid 400 kV (kantaverkko)">Fingrid 400 kV (kantaverkko)</option>
+              <option value="" data-i18n="opt_vaihe_valitse">— Valitse —</option>
+              <option value="Jakeluverkko 20 kV (Caruna)" data-i18n="opt_verkko_caruna">Jakeluverkko 20 kV (Caruna)</option>
+              <option value="Jakeluverkko 20 kV (Elenia)" data-i18n="opt_verkko_elenia">Jakeluverkko 20 kV (Elenia)</option>
+              <option value="Jakeluverkko 20 kV (muu)" data-i18n="opt_verkko_muu">Jakeluverkko 20 kV (muu)</option>
+              <option value="Fingrid 110 kV (kantaverkko)" data-i18n="opt_verkko_110">Fingrid 110 kV (kantaverkko)</option>
+              <option value="Fingrid 400 kV (kantaverkko)" data-i18n="opt_verkko_400">Fingrid 400 kV (kantaverkko)</option>
             </select>
           </div>
           <div class="proj-field" id="proj-market-wrap">
             <label data-i18n="lbl_market">Tavoitemarkkinat</label>
             <select id="proj-market">
-              <option value="">— Valitse —</option>
+              <option value="" data-i18n="opt_vaihe_valitse">— Valitse —</option>
               <option value="FCR (Frequency Containment Reserve)">FCR</option>
               <option value="mFRR (Manual Frequency Restoration Reserve)">mFRR</option>
               <option value="aFRR (Automatic Frequency Restoration Reserve)">aFRR</option>
-              <option value="Arbitraasi">Arbitraasi</option>
+              <option value="Arbitraasi" data-i18n="opt_mkt_arb">Arbitraasi</option>
             </select>
           </div>
         </div>
@@ -1266,32 +1279,32 @@
           <div class="proj-field">
             <label data-i18n="lbl_kaavoitus">Kaavoitustilanne</label>
             <select id="manual-kaavoitus">
-              <option value="">– ei asetettu –</option>
-              <option value="asemakaava">Asemakaava</option>
-              <option value="yleiskaava">Yleiskaava</option>
-              <option value="ei_kaavaa">Ei kaavaa</option>
-              <option value="ei_tietoa">Ei tietoa</option>
+              <option value="" data-i18n="opt_kaava_notset">– ei asetettu –</option>
+              <option value="asemakaava" data-i18n="opt_kaava_asema">Asemakaava</option>
+              <option value="yleiskaava" data-i18n="opt_kaava_yleis">Yleiskaava</option>
+              <option value="ei_kaavaa" data-i18n="opt_kaava_ei">Ei kaavaa</option>
+              <option value="ei_tietoa" data-i18n="opt_kaava_eiti">Ei tietoa</option>
             </select>
           </div>
           <div class="proj-field">
             <label data-i18n="lbl_tulvavaara">Tulvavaara</label>
             <select id="manual-tulvavaara">
-              <option value="">– ei asetettu –</option>
-              <option value="ei">Ei</option>
-              <option value="kyllä">Kyllä</option>
-              <option value="ei_tietoa">Ei tietoa</option>
+              <option value="" data-i18n="opt_tulva_notset">– ei asetettu –</option>
+              <option value="ei" data-i18n="opt_tulva_ei">Ei</option>
+              <option value="kyllä" data-i18n="opt_tulva_kylla">Kyllä</option>
+              <option value="ei_tietoa" data-i18n="opt_tulva_eiti">Ei tietoa</option>
             </select>
           </div>
           <div class="proj-field">
             <label data-i18n="lbl_maapera">Maaperä</label>
             <select id="manual-maapera">
-              <option value="">– ei asetettu –</option>
-              <option value="kallio">Kallio</option>
-              <option value="moreeni">Moreeni</option>
-              <option value="hiekka">Hiekka</option>
-              <option value="savi">Savi</option>
-              <option value="turve">Turve</option>
-              <option value="ei_tietoa">Ei tietoa</option>
+              <option value="" data-i18n="opt_maa_notset">– ei asetettu –</option>
+              <option value="kallio" data-i18n="opt_maa_kallio">Kallio</option>
+              <option value="moreeni" data-i18n="opt_maa_moreeni">Moreeni</option>
+              <option value="hiekka" data-i18n="opt_maa_hiekka">Hiekka</option>
+              <option value="savi" data-i18n="opt_maa_savi">Savi</option>
+              <option value="turve" data-i18n="opt_maa_turve">Turve</option>
+              <option value="ei_tietoa" data-i18n="opt_maa_eiti">Ei tietoa</option>
             </select>
           </div>
           <div class="proj-field" id="manual-pinta-ala-wrap" style="display:none;">
@@ -1738,6 +1751,62 @@ const TRANSLATIONS = {
     phase_rakentaminen:   'Rakentamisvaihe',
     permits_viranomaiset: 'Viranomaiset &amp; luvat',
     permits_luvat:        'Tarvittavat luvat:',
+    // Map/report loading
+    btn_map_loading:  'Ladataan…',
+    err_gen_failed:   'Generointi epäonnistui',
+    // Special form dropdowns — teollisuus käyttötarkoitus
+    opt_kt_kevyt:     'Kevyt teollisuus',
+    opt_kt_raskas:    'Raskas teollisuus',
+    opt_kt_varasto:   'Varasto / logistiikka',
+    opt_kt_konesali:  'Konesali / datacenter',
+    opt_kt_muu:       'Muu',
+    // BESS grid connection
+    opt_verkko_caruna:'Jakeluverkko 20 kV (Caruna)',
+    opt_verkko_elenia:'Jakeluverkko 20 kV (Elenia)',
+    opt_verkko_muu:   'Jakeluverkko 20 kV (muu)',
+    opt_verkko_110:   'Fingrid 110 kV (kantaverkko)',
+    opt_verkko_400:   'Fingrid 400 kV (kantaverkko)',
+    // YVA
+    opt_yva_kylla:    'Kyllä (≥10 voimalaa tai ≥45 MW)',
+    opt_yva_ei:       'Ei',
+    opt_yva_unknown:  'Ei tiedossa',
+    // SMR reaktorityyppi
+    opt_rx_pwr:       'PWR (painevesireaktori)',
+    opt_rx_bwr:       'BWR (kiehutusvesireaktori)',
+    opt_rx_htgr:      'HTGR (kaasujäähdytteinen)',
+    opt_rx_msr:       'MSR (suolasulareaktori)',
+    opt_rx_muu:       'Muu / ei määritelty',
+    // SMR käyttötarkoitus
+    opt_kaytto_sahko: 'Sähköntuotanto',
+    opt_kaytto_lampo: 'Kaukolämpö + sähkö',
+    opt_kaytto_teoll: 'Teollisuusprosessilämpö',
+    opt_kaytto_vety:  'Vetytuotanto',
+    // Map sidebar static selects
+    opt_mkt_arb:      'Arbitraasi',
+    opt_kaava_notset: '– ei asetettu –',
+    opt_kaava_asema:  'Asemakaava',
+    opt_kaava_yleis:  'Yleiskaava',
+    opt_kaava_ei:     'Ei kaavaa',
+    opt_kaava_eiti:   'Ei tietoa',
+    opt_tulva_notset: '– ei asetettu –',
+    opt_tulva_ei:     'Ei',
+    opt_tulva_kylla:  'Kyllä',
+    opt_tulva_eiti:   'Ei tietoa',
+    opt_maa_notset:   '– ei asetettu –',
+    opt_maa_kallio:   'Kallio',
+    opt_maa_moreeni:  'Moreeni',
+    opt_maa_hiekka:   'Hiekka',
+    opt_maa_savi:     'Savi',
+    opt_maa_turve:    'Turve',
+    opt_maa_eiti:     'Ei tietoa',
+    // Country selector
+    country_label:    'Maa / sääntelyjärjestelmä',
+    country_fi:       'Suomi',
+    country_se:       'Ruotsi',
+    country_da:       'Tanska',
+    country_no:       'Norja',
+    country_pl:       'Puola',
+    country_detected: 'Maa tunnistettu automaattisesti:',
   },
   EN: {
     tab_generator:        'Permit Document Service',
@@ -1915,6 +1984,54 @@ const TRANSLATIONS = {
     phase_rakentaminen:   'Construction phase',
     permits_viranomaiset: 'Authorities &amp; permits',
     permits_luvat:        'Required permits:',
+    btn_map_loading:  'Loading…',
+    err_gen_failed:   'Generation failed',
+    opt_kt_kevyt:     'Light industry',
+    opt_kt_raskas:    'Heavy industry',
+    opt_kt_varasto:   'Warehouse / logistics',
+    opt_kt_konesali:  'Data centre',
+    opt_kt_muu:       'Other',
+    opt_verkko_caruna:'Distribution grid 20 kV (Caruna)',
+    opt_verkko_elenia:'Distribution grid 20 kV (Elenia)',
+    opt_verkko_muu:   'Distribution grid 20 kV (other)',
+    opt_verkko_110:   'Fingrid 110 kV (transmission grid)',
+    opt_verkko_400:   'Fingrid 400 kV (transmission grid)',
+    opt_yva_kylla:    'Yes (≥10 turbines or ≥45 MW)',
+    opt_yva_ei:       'No',
+    opt_yva_unknown:  'Unknown',
+    opt_rx_pwr:       'PWR (pressurised water reactor)',
+    opt_rx_bwr:       'BWR (boiling water reactor)',
+    opt_rx_htgr:      'HTGR (gas-cooled)',
+    opt_rx_msr:       'MSR (molten salt reactor)',
+    opt_rx_muu:       'Other / not defined',
+    opt_kaytto_sahko: 'Electricity generation',
+    opt_kaytto_lampo: 'District heating + electricity',
+    opt_kaytto_teoll: 'Industrial process heat',
+    opt_kaytto_vety:  'Hydrogen production',
+    opt_mkt_arb:      'Arbitrage',
+    opt_kaava_notset: '– not set –',
+    opt_kaava_asema:  'Detailed plan',
+    opt_kaava_yleis:  'Master plan',
+    opt_kaava_ei:     'No zoning plan',
+    opt_kaava_eiti:   'Unknown',
+    opt_tulva_notset: '– not set –',
+    opt_tulva_ei:     'No',
+    opt_tulva_kylla:  'Yes',
+    opt_tulva_eiti:   'Unknown',
+    opt_maa_notset:   '– not set –',
+    opt_maa_kallio:   'Bedrock',
+    opt_maa_moreeni:  'Moraine',
+    opt_maa_hiekka:   'Sand',
+    opt_maa_savi:     'Clay',
+    opt_maa_turve:    'Peat',
+    opt_maa_eiti:     'Unknown',
+    country_label:    'Country / regulatory framework',
+    country_fi:       'Finland',
+    country_se:       'Sweden',
+    country_da:       'Denmark',
+    country_no:       'Norway',
+    country_pl:       'Poland',
+    country_detected: 'Country detected automatically:',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
@@ -2092,6 +2209,54 @@ const TRANSLATIONS = {
     phase_rakentaminen:   'Byggfas',
     permits_viranomaiset: 'Myndigheter &amp; tillstånd',
     permits_luvat:        'Nödvändiga tillstånd:',
+    btn_map_loading:  'Laddar…',
+    err_gen_failed:   'Generering misslyckades',
+    opt_kt_kevyt:     'Lätt industri',
+    opt_kt_raskas:    'Tung industri',
+    opt_kt_varasto:   'Lager / logistik',
+    opt_kt_konesali:  'Datacenter',
+    opt_kt_muu:       'Annat',
+    opt_verkko_caruna:'Distributionsnät 20 kV (Caruna)',
+    opt_verkko_elenia:'Distributionsnät 20 kV (Elenia)',
+    opt_verkko_muu:   'Distributionsnät 20 kV (övrigt)',
+    opt_verkko_110:   'Fingrid 110 kV (stamnät)',
+    opt_verkko_400:   'Fingrid 400 kV (stamnät)',
+    opt_yva_kylla:    'Ja (≥10 verk eller ≥45 MW)',
+    opt_yva_ei:       'Nej',
+    opt_yva_unknown:  'Okänt',
+    opt_rx_pwr:       'PWR (tryckvattensreaktor)',
+    opt_rx_bwr:       'BWR (kokvattenreaktor)',
+    opt_rx_htgr:      'HTGR (gaskylld)',
+    opt_rx_msr:       'MSR (smältsaltreaktor)',
+    opt_rx_muu:       'Annat / ej definierat',
+    opt_kaytto_sahko: 'Elproduktion',
+    opt_kaytto_lampo: 'Fjärrvärme + el',
+    opt_kaytto_teoll: 'Industriprocessvärme',
+    opt_kaytto_vety:  'Vätgasproduktion',
+    opt_mkt_arb:      'Arbitrage',
+    opt_kaava_notset: '– ej angivet –',
+    opt_kaava_asema:  'Detaljplan',
+    opt_kaava_yleis:  'Generalplan',
+    opt_kaava_ei:     'Ingen plan',
+    opt_kaava_eiti:   'Okänt',
+    opt_tulva_notset: '– ej angivet –',
+    opt_tulva_ei:     'Nej',
+    opt_tulva_kylla:  'Ja',
+    opt_tulva_eiti:   'Okänt',
+    opt_maa_notset:   '– ej angivet –',
+    opt_maa_kallio:   'Berggrund',
+    opt_maa_moreeni:  'Morän',
+    opt_maa_hiekka:   'Sand',
+    opt_maa_savi:     'Lera',
+    opt_maa_turve:    'Torv',
+    opt_maa_eiti:     'Okänt',
+    country_label:    'Land / regelverk',
+    country_fi:       'Finland',
+    country_se:       'Sverige',
+    country_da:       'Danmark',
+    country_no:       'Norge',
+    country_pl:       'Polen',
+    country_detected: 'Land identifierat automatiskt:',
   },
 };
 
@@ -2280,6 +2445,53 @@ function ptSub(pt) {
 
 // Form field definitions per project type
 // apiKey: maps to ApplicationRequest field; null = extra field, not sent to API
+function _KAYTTOTARKOITUS_OPTS() {
+  return [
+    { value: '— Valitse —',           label: t('opt_vaihe_valitse') },
+    { value: 'Kevyt teollisuus',       label: t('opt_kt_kevyt') },
+    { value: 'Raskas teollisuus',      label: t('opt_kt_raskas') },
+    { value: 'Varasto / logistiikka',  label: t('opt_kt_varasto') },
+    { value: 'Konesali / datacenter',  label: t('opt_kt_konesali') },
+    { value: 'Muu',                    label: t('opt_kt_muu') },
+  ];
+}
+function _VERKKO_OPTS() {
+  return [
+    { value: '— Valitse —',                    label: t('opt_vaihe_valitse') },
+    { value: 'Jakeluverkko 20 kV (Caruna)',    label: t('opt_verkko_caruna') },
+    { value: 'Jakeluverkko 20 kV (Elenia)',    label: t('opt_verkko_elenia') },
+    { value: 'Jakeluverkko 20 kV (muu)',       label: t('opt_verkko_muu') },
+    { value: 'Fingrid 110 kV (kantaverkko)',   label: t('opt_verkko_110') },
+    { value: 'Fingrid 400 kV (kantaverkko)',   label: t('opt_verkko_400') },
+  ];
+}
+function _YVA_OPTS() {
+  return [
+    { value: '— Valitse —',                      label: t('opt_vaihe_valitse') },
+    { value: 'Kyllä (≥10 voimalaa tai ≥45 MW)', label: t('opt_yva_kylla') },
+    { value: 'Ei',                               label: t('opt_yva_ei') },
+    { value: 'Ei tiedossa',                      label: t('opt_yva_unknown') },
+  ];
+}
+function _REAKTORI_OPTS() {
+  return [
+    { value: '— Valitse —',             label: t('opt_vaihe_valitse') },
+    { value: 'PWR (painevesireaktori)', label: t('opt_rx_pwr') },
+    { value: 'BWR (kiehutusvesireaktori)', label: t('opt_rx_bwr') },
+    { value: 'HTGR (kaasujäähdytteinen)', label: t('opt_rx_htgr') },
+    { value: 'MSR (suolasulareaktori)', label: t('opt_rx_msr') },
+    { value: 'Muu / ei määritelty',     label: t('opt_rx_muu') },
+  ];
+}
+function _KAYTTO_SMR_OPTS() {
+  return [
+    { value: '— Valitse —',            label: t('opt_vaihe_valitse') },
+    { value: 'Sähköntuotanto',         label: t('opt_kaytto_sahko') },
+    { value: 'Kaukolämpö + sähkö',    label: t('opt_kaytto_lampo') },
+    { value: 'Teollisuusprosessilämpö',label: t('opt_kaytto_teoll') },
+    { value: 'Vetytuotanto',           label: t('opt_kaytto_vety') },
+  ];
+}
 function _VAIHE_OPTS() {
   return [
     { value: '— Valitse —',  label: t('opt_vaihe_valitse') },
@@ -2322,7 +2534,7 @@ const HANKE_FIELDS = {
       { id: 'gf-hakija',          apiKey: 'hakija',           label: 'Hakija (yritys)',         type: 'text',   placeholder: 'Yrityksen nimi', required: true },
       { id: 'gf-kt',              apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',        type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
       { id: 'gf-kunta',           apiKey: 'kunta',            label: 'Sijaintikunta',           type: 'text',   placeholder: 'Kunta', required: true },
-      { id: 'gf-kayttotarkoitus', apiKey: null,               label: 'Käyttötarkoitus',         type: 'select', options: ['— Valitse —', 'Kevyt teollisuus', 'Raskas teollisuus', 'Varasto / logistiikka', 'Konesali / datacenter', 'Muu'] },
+      { id: 'gf-kayttotarkoitus', apiKey: null,               label: 'Käyttötarkoitus',         type: 'select', options: _KAYTTOTARKOITUS_OPTS },
       { id: 'gf-raktilavuus',     apiKey: null,               label: 'Rakennustilavuus (m³)',   type: 'number', min: '1', step: '1' },
       { id: 'gf-sijainti',        apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
       { id: 'gf-vaihe',           apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',          type: 'select', options: _VAIHE_OPTS },
@@ -2337,7 +2549,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta', required: true },
       { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', min: '0.1', step: '0.1', required: true },
       { id: 'gf-kap',          apiKey: 'kapasiteetti_mwh', label: 'Kapasiteetti (MWh)',    type: 'number', min: '0.1', step: '0.1' },
-      { id: 'gf-verkko',       apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: ['— Valitse —', 'Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
+      { id: 'gf-verkko',       apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: _VERKKO_OPTS },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',        type: 'select', options: _VAIHE_OPTS },
       { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',label: 'Kohdeviranomainen',     type: 'select', options: _VIRANOMAINEN_OPTS },
@@ -2351,7 +2563,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',           type: 'text',   placeholder: 'Kunta', required: true },
       { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',       labelKey: 'gf_lbl_teho_kokonais', type: 'number', min: '1', step: '0.5', required: true },
       { id: 'gf-turbiinimi',   apiKey: null,               label: 'Turbiinimäärä (kpl)',     type: 'number', min: '1', step: '1' },
-      { id: 'gf-yva',          apiKey: null,               label: 'YVA tarvitaan',           type: 'select', options: ['— Valitse —', 'Kyllä (≥10 voimalaa tai ≥45 MW)', 'Ei', 'Ei tiedossa'] },
+      { id: 'gf-yva',          apiKey: null,               label: 'YVA tarvitaan',           type: 'select', options: _YVA_OPTS },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',          type: 'select', options: _VAIHE_OPTS },
       { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',label: 'Kohdeviranomainen',       type: 'select', options: _VIRANOMAINEN_OPTS },
@@ -2390,8 +2602,8 @@ const HANKE_FIELDS = {
       { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
       { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta', required: true },
       { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Lämpöteho (MW)',        labelKey: 'gf_lbl_teho_lampoteho', type: 'number', min: '10', step: '10', required: true },
-      { id: 'gf-reaktori',     apiKey: null,               label: 'Reaktorityyppi',        type: 'select', options: ['— Valitse —', 'PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
-      { id: 'gf-kaytto',       apiKey: null,               label: 'Käyttötarkoitus',       type: 'select', options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
+      { id: 'gf-reaktori',     apiKey: null,               label: 'Reaktorityyppi',        type: 'select', options: _REAKTORI_OPTS },
+      { id: 'gf-kaytto',       apiKey: null,               label: 'Käyttötarkoitus',       type: 'select', options: _KAYTTO_SMR_OPTS },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',        type: 'select', options: _VAIHE_OPTS },
       { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',label: 'Kohdeviranomainen',     type: 'select', options: _VIRANOMAINEN_OPTS },
@@ -2603,6 +2815,41 @@ function renderCards() {
 renderCards();
 
 // ─────────────────────────────────────────────
+// Country selection
+// ─────────────────────────────────────────────
+let selectedCountry = 'FI';
+
+const COUNTRY_HINTS = {
+  FI: ['pöytyä','espoo','tampere','turku','oulu','jyväskylä','lahti','kuopio',
+       'vantaa','helsinki','joensuu','rovaniemi','kouvola','pori','hämeenlinna'],
+  SE: ['stockholm','göteborg','malmö','uppsala','västerås','örebro','linköping',
+       'helsingborg','norrköping','lund','umeå','gävle','sundsvall'],
+  DA: ['københavn','aarhus','odense','aalborg','esbjerg','randers','kolding',
+       'horsens','vejle','roskilde'],
+  NO: ['oslo','bergen','trondheim','stavanger','tromsø','kristiansand',
+       'fredrikstad','sandnes','drammen'],
+  PL: ['warsaw','warszawa','kraków','łódź','wrocław','poznań','gdańsk',
+       'szczecin','bydgoszcz','lublin'],
+};
+
+function detectCountry(text) {
+  if (!text) return null;
+  const lower = text.toLowerCase().trim();
+  for (const [country, hints] of Object.entries(COUNTRY_HINTS)) {
+    if (hints.some(h => lower.includes(h))) return country;
+  }
+  return null;
+}
+
+function setCountry(code) {
+  selectedCountry = code;
+  ['FI','SE','DA','NO','PL'].forEach(c => {
+    const btn = document.getElementById('country-btn-' + c);
+    if (btn) btn.classList.toggle('active', c === code);
+  });
+}
+
+// ─────────────────────────────────────────────
 // Generator: project type selection + form render
 // ─────────────────────────────────────────────
 let selectedProjectType = null;
@@ -2613,6 +2860,9 @@ function selectProjectType(typeId) {
   document.querySelectorAll('.gen-card').forEach(card => {
     card.classList.toggle('selected', card.dataset.type === typeId);
   });
+
+  const countryBar = document.getElementById('gen-country-bar');
+  if (countryBar) countryBar.style.display = 'block';
 
   const fieldDef = HANKE_FIELDS[typeId];
   if (!fieldDef) return;
@@ -2674,7 +2924,7 @@ function selectProjectType(typeId) {
       ${rowsHtml}
       <div id="gen-progress-wrap" class="gen-progress-wrap">
         <div class="gen-progress-label">
-          <span id="gen-progress-msg">Generoidaan…</span>
+          <span id="gen-progress-msg"></span>
           <span id="gen-progress-pct">0%</span>
         </div>
         <div class="gen-progress-track"><div class="gen-progress-fill" id="gen-progress-fill"></div></div>
@@ -2779,7 +3029,23 @@ async function submitGeneratorForm() {
   if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
   if (!payload.kunta)            payload.kunta = '–';
 
-  payload.lang = activeLang;
+  payload.lang    = activeLang;
+  payload.country = selectedCountry;
+
+  // Auto-detect country from kunta/sijainti if user hasn't changed it
+  if (selectedCountry === 'FI') {
+    const probe = (payload.kunta || '') + ' ' + (payload.sijainti_kuvaus || '');
+    const detected = detectCountry(probe);
+    if (detected && detected !== 'FI') {
+      setCountry(detected);
+      payload.country = detected;
+      const detEl = document.getElementById('gen-country-detected');
+      if (detEl) {
+        detEl.style.display = 'block';
+        detEl.textContent = `${t('country_detected')} ${t('country_' + detected.toLowerCase())}`;
+      }
+    }
+  }
 
   console.log('[Generator] payload:', JSON.stringify(payload));
 
@@ -2975,7 +3241,7 @@ function setLoading(btn, loading) {
   btn.disabled = loading;
   if (loading) {
     btn.dataset.orig = btn.textContent;
-    btn.innerHTML = '<span class="spinner"></span>Ladataan…';
+    btn.innerHTML = `<span class="spinner"></span>${t('btn_map_loading')}`;
   } else {
     btn.textContent = btn.dataset.orig || btn.textContent;
   }
@@ -3731,7 +3997,7 @@ async function generateApplication() {
 
   } catch (err) {
     waitDiv.innerHTML = `<div class="bubble" style="color:#e94560;">
-      ❌ Generointi epäonnistui: ${err.message}
+      ❌ ${t('err_gen_failed')}: ${err.message}
     </div>`;
     log(`Hakemusgeneraattori virhe: ${err.message}`, 'err');
   }

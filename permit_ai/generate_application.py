@@ -70,7 +70,8 @@ C_WHITE  = colors.white
 # TASO 1 — Automaattinen tekstikorjaus
 # ─────────────────────────────────────────────────────────────────────────────
 
-_POSTPROCESS_RULES: list[tuple[str, str]] = [
+# Rules that only apply to Finnish output (authority renames, FI law corrections)
+_POSTPROCESS_RULES_FI: list[tuple[str, str]] = [
     # AVI — suomen taivutusmuodot (pisin ensin)
     (r'\bAVI:sta\b',   'Lupa- ja valvontavirastosta'),
     (r'\bAVI:ssa\b',   'Lupa- ja valvontavirastossa'),
@@ -90,12 +91,7 @@ _POSTPROCESS_RULES: list[tuple[str, str]] = [
     (r'\bELY\b(?!-)',  'ELY-keskus'),
     # MRL 132/1999 → Rakentamislaki (ei korvata jos jo korvattu)
     (r'(?<!/ )MRL\s+132/1999',  'Rakentamislaki (751/2023) / MRL 132/1999'),
-    # ■■ / ■ -merkit pois (PDF-fontit eivät tue) — poistetaan tai korvataan tekstillä
-    (r'■■\s*', ''),
-    (r'■\s*',  ''),
-    # ⚠️-emoji pois (ei toimi PDF-fonteissa) — säilytetään ⚠ (U+26A0) yksinään jos ok
-    (r'⚠️\s*', '[Huom] '),
-    # Pelastuslaki virheellinen §-viite: lain numero ≠ pykälänumero
+    # Pelastuslaki virheellinen §-viite
     (r'Pelastuslai[tn]\s*\(?379/2011\)?\s*,?\s*379\s*§[:\s]',
      'Pelastuslaki 379/2011, 15 §: '),
     (r'pelastuslai[tn]\s*\(?379/2011\)?\s*,?\s*379\s*§[:\s]',
@@ -114,11 +110,32 @@ _POSTPROCESS_RULES: list[tuple[str, str]] = [
      '2 tunnin purkautumisaika (C/2)'),
 ]
 
+# Rules that apply to ALL languages (symbol/emoji cleanup)
+_POSTPROCESS_RULES_ALL: list[tuple[str, str]] = [
+    (r'■■\s*', ''),
+    (r'■\s*',  ''),
+]
 
-def _postprocess_text(text: str) -> str:
-    """Korjaa vanhat viranomaisnimet ja lakiviitteet automaattisesti."""
-    for pattern, replacement in _POSTPROCESS_RULES:
+# Language-specific label for ⚠️ replacement
+_HUOM_LABEL: dict[str, str] = {
+    "FI": "[Huom] ",
+    "EN": "[Note] ",
+    "SE": "[Obs] ",
+    "DA": "[Bem.] ",
+    "NO": "[Merk] ",
+    "PL": "[Uwaga] ",
+}
+
+
+def _postprocess_text(text: str, lang: str = "FI") -> str:
+    """Fix authority names, law refs, and symbols. Finnish-specific rules only run for FI."""
+    huom = _HUOM_LABEL.get(lang, "[Note] ")
+    text = re.sub(r'⚠️\s*', huom, text)
+    for pattern, replacement in _POSTPROCESS_RULES_ALL:
         text = re.sub(pattern, replacement, text)
+    if lang == "FI":
+        for pattern, replacement in _POSTPROCESS_RULES_FI:
+            text = re.sub(pattern, replacement, text)
     return text
 
 
@@ -190,6 +207,7 @@ class ApplicationInput:
     hankkeen_vaihe:               str = ""
     kohdeviranomainen:            str = ""
     lang:                         str = "FI"  # FI | EN | SE
+    country:                      str = "FI"  # FI | SE | DA | NO | PL
     kapasiteetti_mwh:             float = 0.0
     y_tunnus:                     str = ""
     osoite:                       str = ""
@@ -557,6 +575,105 @@ def _rag_context(hanketyyppi: str, n_per_query: int = 4) -> tuple[str, list[str]
 # Claude AI — hakemustekstin generointi
 # ─────────────────────────────────────────────────────────────────────────────
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Hanketyyppien nimet muilla kielillä (meta-taulukko PDF:ssä)
+# ─────────────────────────────────────────────────────────────────────────────
+_HANKE_NIMI_TRANS: dict[str, dict[str, str]] = {
+    "BESS":           {"EN": "Battery Energy Storage System (BESS)",     "SE": "Batterienergilagersystem (BESS)"},
+    "tuulivoima_maa": {"EN": "Onshore Wind Power Project",               "SE": "Landbaserat vindkraftsprojekt"},
+    "tuulivoima_meri":{"EN": "Offshore Wind Power Project",              "SE": "Offshorevindkraftsprojekt"},
+    "aurinkovoima":   {"EN": "Solar Power Plant Project",                "SE": "Solkraftsprojekt"},
+    "SMR":            {"EN": "Small Modular Reactor (SMR) — pre-licensing","SE": "Liten modulär reaktor (SMR) — förlicensiering"},
+    "vesivoima":      {"EN": "Hydroelectric Power Project",              "SE": "Vattenkraftsprojekt"},
+    "smr_bess":       {"EN": "SMR + BESS Hybrid Energy System",          "SE": "SMR + BESS hybridsystem"},
+    "business_finland":{"EN": "Business Finland R&D Grant Application",  "SE": "Business Finland FoU-bidragsansökan"},
+    "asuinrakennus":  {"EN": "Residential Building Permit Application",  "SE": "Bygglovsansökan för bostadsbyggnad"},
+    "teollisuus":     {"EN": "Industrial Building Permit Application",   "SE": "Bygglovsansökan för industribyggnad"},
+    "maatalous":      {"EN": "Agricultural Building Permit Application", "SE": "Bygglovsansökan för lantbruksbyggnad"},
+    "liikerakennus":  {"EN": "Commercial Building Permit Application",   "SE": "Bygglovsansökan för affärsbyggnad"},
+    "muu":            {"EN": "Other Project Permit Application",         "SE": "Tillståndsansökan för annat projekt"},
+}
+
+def _nimi(lang: str, hanketyyppi: str, nimi_fi: str) -> str:
+    if lang == "FI":
+        return nimi_fi
+    d = _HANKE_NIMI_TRANS.get(hanketyyppi, {})
+    return d.get(lang, nimi_fi)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Maakohtainen sääntelytieto
+# ─────────────────────────────────────────────────────────────────────────────
+_COUNTRY_CONFIG: dict[str, dict] = {
+    "FI": {
+        "name": "Finland",
+        "prompt_prefix": "",
+    },
+    "SE": {
+        "name": "Sweden / Sverige",
+        "authorities": ["Länsstyrelsen", "Energimyndigheten", "Boverket", "Mark- och miljödomstolen", "Naturvårdsverket"],
+        "key_laws": ["Plan- och bygglagen (PBL 2010:900)", "Miljöbalken (MB 1998:808)", "Ellagen (1997:857)", "Miljöprövningsförordningen (2013:251)"],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in SWEDEN. Apply Swedish regulatory framework:\n"
+            "Key authorities: Länsstyrelsen (county board), Energimyndigheten (energy agency), "
+            "Boverket (building standards), Mark- och miljödomstolen (environmental court), "
+            "Naturvårdsverket (environmental protection).\n"
+            "Key laws: Plan- och bygglagen PBL 2010:900 (building permits = Bygglov), "
+            "Miljöbalken MB 1998:808 (environmental permits = Miljötillstånd), "
+            "Ellagen 1997:857 (grid connection), Miljöprövningsförordningen 2013:251 (EIA = MKB).\n"
+            "Replace all Finnish law references (MRL, YSL, YVA-laki) with Swedish equivalents. "
+            "If a Swedish equivalent is uncertain, mark it: [Requires verification against Swedish regulations].\n\n"
+        ),
+    },
+    "DA": {
+        "name": "Denmark / Danmark",
+        "authorities": ["Energistyrelsen", "Miljøstyrelsen", "kommunalbestyrelse", "Planklagenævnet", "Kystdirektoratet"],
+        "key_laws": ["Planloven (LBK nr 1157/2022)", "Miljøvurderingsloven (LOV nr 973/2023)", "Elforsyningsloven (LBK nr 1255/2021)", "Naturbeskyttelsesloven"],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in DENMARK. Apply Danish regulatory framework:\n"
+            "Key authorities: Energistyrelsen (Danish Energy Agency), Miljøstyrelsen (EPA), "
+            "kommunalbestyrelse (municipal council), Planklagenævnet (planning appeals board), "
+            "Kystdirektoratet (coastal authority for offshore).\n"
+            "Key laws: Planloven for land use planning (building permit = Byggetilladelse), "
+            "Miljøvurderingsloven for EIA (= Miljøkonsekvensvurdering / MKV), "
+            "Elforsyningsloven for electricity supply, Naturbeskyttelsesloven for nature protection.\n"
+            "Replace Finnish law references with Danish equivalents. "
+            "Mark uncertain items: [Requires verification against Danish regulations].\n\n"
+        ),
+    },
+    "NO": {
+        "name": "Norway / Norge",
+        "authorities": ["NVE (Norges vassdrags- og energidirektorat)", "Statsforvalteren", "DSB", "Kommunen", "Miljødirektoratet"],
+        "key_laws": ["Plan- og bygningsloven (PBL 2008)", "Energiloven (1990)", "Forurensningsloven (1981)", "Naturmangfoldloven (2009)"],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in NORWAY. Apply Norwegian regulatory framework:\n"
+            "Key authorities: NVE (Norwegian Water Resources and Energy Directorate), "
+            "Statsforvalteren (county governor), DSB (civil protection), Kommunen (municipality), "
+            "Miljødirektoratet (Environment Agency).\n"
+            "Key laws: Plan- og bygningsloven PBL 2008 (building permit = Byggetillatelse), "
+            "Energiloven 1990 (energy facilities), Forurensningsloven 1981 (pollution/environmental), "
+            "Naturmangfoldloven 2009 (biodiversity). EIA = Konsekvensutredning (KU).\n"
+            "Replace Finnish law references with Norwegian equivalents. "
+            "Mark uncertain items: [Requires verification against Norwegian regulations].\n\n"
+        ),
+    },
+    "PL": {
+        "name": "Poland / Polska",
+        "authorities": ["PAA (Państwowa Agencja Atomistyki)", "URE (Urząd Regulacji Energetyki)", "RDOŚ", "Starosta (building authority)", "GDOŚ"],
+        "key_laws": ["Prawo atomowe (Ustawa z 29.11.2000)", "Prawo budowlane (Ustawa z 7.07.1994)", "Ustawa o OZE (20.02.2015)", "Ustawa o udostępnianiu informacji o środowisku"],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in POLAND. Apply Polish regulatory framework:\n"
+            "Key authorities: PAA (State Nuclear Agency, for nuclear projects), "
+            "URE (Energy Regulatory Office), RDOŚ (Regional Environmental Directorate), "
+            "Starosta (poviat/district authority for building permits = Pozwolenie na budowę), "
+            "GDOŚ (General Directorate for Environmental Protection).\n"
+            "Key laws: Prawo budowlane 1994 (building permits), Ustawa o OZE 2015 (renewables), "
+            "Prawo atomowe 2000 (nuclear), Ustawa o udostępnianiu informacji o środowisku (EIA = OOŚ).\n"
+            "Replace Finnish law references with Polish equivalents. "
+            "Mark uncertain items: [Requires verification against Polish regulations].\n\n"
+        ),
+    },
+}
+
 _SYSTEM = (
     "Olet NCE Energy Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
     "laadinnassa Suomessa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
@@ -907,6 +1024,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_hakija":        "Hakija",       "m_ytunnus":    "Y-tunnus",
         "m_hanketyyppi":   "Hanketyyppi",  "m_teho":       "Teho / kapasiteetti",
         "m_kunta":         "Sijaintikunta","m_kt":         "Kiinteistötunnus",
+        "m_maa":           "Maa",
         "m_laadittu":      "Laadittu",     "m_laatinut_lbl": "Laatinut",
         "m_laatinut":      "NCE Energy Permit AI (tekoälyavusteinen)",
         "sec1": "1. Hankkeen kuvaus",             "sec2": "2. Perustelut ja tarve",
@@ -974,6 +1092,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_hakija":        "Applicant",      "m_ytunnus":    "Business ID",
         "m_hanketyyppi":   "Project Type",   "m_teho":       "Capacity / Power",
         "m_kunta":         "Municipality",   "m_kt":         "Property ID",
+        "m_maa":           "Country",
         "m_laadittu":      "Prepared",       "m_laatinut_lbl": "Prepared by",
         "m_laatinut":      "NCE Energy Permit AI (AI-assisted)",
         "sec1": "1. Project Description",          "sec2": "2. Justification and Need",
@@ -1041,6 +1160,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_hakija":        "Sökande",          "m_ytunnus":    "FO-nummer",
         "m_hanketyyppi":   "Projekttyp",       "m_teho":       "Kapacitet / Effekt",
         "m_kunta":         "Kommun",           "m_kt":         "Fastighetsbeteckning",
+        "m_maa":           "Land",
         "m_laadittu":      "Upprättat",        "m_laatinut_lbl": "Upprättat av",
         "m_laatinut":      "NCE Energy Permit AI (AI-assisterat)",
         "sec1": "1. Projektbeskrivning",             "sec2": "2. Motivering och behov",
@@ -1189,9 +1309,11 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     cfg  = _HANKE_CFG[inp.hanketyyppi]
     now  = datetime.now().strftime("%d.%m.%Y")
     lang = getattr(inp, "lang", "FI")
+    country = getattr(inp, "country", "FI") or "FI"
     ph   = _PROMPT_HEADERS.get(lang, _PROMPT_HEADERS["FI"])
     lang_prefix  = _LANG_INSTRUCTIONS.get(lang, "")
     write_instr  = _WRITE_INSTRUCTION.get(lang, _WRITE_INSTRUCTION["FI"])
+    country_prefix = _COUNTRY_CONFIG.get(country, {}).get("prompt_prefix", "")
 
     sijainti_lisatieto = ""
     if inp.sijainti_ymparistovaikutukset:
@@ -1217,7 +1339,7 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     toim_inst     = (ph["toimenpiteet_inst"].format(first=first_action)
                      + (ph["toimenpiteet_vaihe"].format(vaihe=inp.hankkeen_vaihe) if inp.hankkeen_vaihe else ""))
 
-    prompt = f"""{lang_prefix}{ph["intro"]}
+    prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
 Kiinteistötunnus: {inp.kiinteistotunnus}
@@ -1653,13 +1775,14 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         topMargin=2.2*cm, bottomMargin=2.2*cm,
     )
 
-    lang   = inp.lang or "FI"
-    story  = []
+    lang    = inp.lang or "FI"
+    country = getattr(inp, "country", "FI") or "FI"
+    story   = []
 
     # ── Kansilehti ────────────────────────────────────────────────────────────
     story.append(Spacer(1, 6*mm))
     story.append(Paragraph(_s(lang, "sub_title"), st["sub"]))
-    story.append(Paragraph(f"{cfg['nimi_fi']}", st["title"]))
+    story.append(Paragraph(_nimi(lang, inp.hanketyyppi, cfg['nimi_fi']), st["title"]))
     story.append(Paragraph(
         _s(lang, "esiselvitys_sub"),
         ParagraphStyle("kan_sub2", fontSize=9, textColor=C_GRAY,
@@ -1677,10 +1800,12 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     meta_rows = [
         [_s(lang, "m_hakija"),      inp.hakija],
         [_s(lang, "m_ytunnus"),     inp.y_tunnus if inp.y_tunnus else ""],
-        [_s(lang, "m_hanketyyppi"), f"{inp.hanketyyppi} — {cfg['nimi_fi']}"],
+        [_s(lang, "m_hanketyyppi"), f"{inp.hanketyyppi} — {_nimi(lang, inp.hanketyyppi, cfg['nimi_fi'])}"],
         [_s(lang, "m_teho"),        teho_val],
         [_s(lang, "m_kunta"),       inp.kunta],
         [_s(lang, "m_kt"),          inp.kiinteistotunnus],
+        *([[_s(lang, "m_maa"),       _COUNTRY_CONFIG.get(country, {}).get("name", country)]]
+          if country != "FI" else []),
         [_s(lang, "m_laadittu"),        now],
         [_s(lang, "m_laatinut_lbl"),    _s(lang, "m_laatinut")],
     ]
@@ -1829,7 +1954,8 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
         sections = _generate_bf_sections(inp, rag_ctx)
     else:
         sections = _generate_sections(inp, rag_ctx)
-    sections = {k: _postprocess_text(v) if isinstance(v, str) else v
+    _lang = inp.lang or "FI"
+    sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
                 for k, v in sections.items()}
     if is_bf:
         pdf_bytes = _generate_bf_pdf(inp, sections, sources)
@@ -1840,8 +1966,9 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
 
 def apply_proofread_to_pdf(inp: ApplicationInput, sections: dict, sources: list) -> bytes:
     """Oikolue sections Claudella ja rakenna lopullinen PDF."""
+    _lang = inp.lang or "FI"
     sections = _proofread_sections(sections)
-    sections = {k: _postprocess_text(v) if isinstance(v, str) else v
+    sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
                 for k, v in sections.items()}
     is_bf = inp.hanketyyppi == "business_finland"
     if is_bf:
@@ -1870,7 +1997,8 @@ def generate_application(inp: ApplicationInput) -> str:
 
     print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
     sections = _proofread_sections(sections)
-    sections = {k: _postprocess_text(v) if isinstance(v, str) else v
+    _lang = inp.lang or "FI"
+    sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
                 for k, v in sections.items()}
 
     print("[4/4] Rakennetaan PDF…")
