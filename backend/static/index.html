@@ -3385,7 +3385,7 @@ async function submitGeneratorForm() {
   if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
   if (!payload.kunta)            payload.kunta = '–';
 
-  payload.lang    = ['FI', 'EN', 'SE'].includes(activeLang) ? activeLang : 'EN';
+  payload.lang    = activeLang;
   payload.country = selectedCountry;
 
   // Auto-detect country from kunta/sijainti if user hasn't changed it

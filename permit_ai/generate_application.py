@@ -702,12 +702,42 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
         "som stadsnamn, företagsnamn och myndighetsförkortningar (ELY, STUK, Luova, Fingrid, Traficom) "
         "är godtagbara enbart som egennamn.\n\n"
     ),
+    "DA": (
+        "KRITISK SPROGKRAV: Du SKAL skrive HVERT ord i denne tilladelsesansøgning på dansk. "
+        "ALLE overskrifter, afsnit, punktlister, fodnoter og noter skal være på dansk. "
+        "Medtag IKKE finske ord eller sætninger i outputtet. "
+        "Finske lovnumre (f.eks. YSL 527/2014, MRL 132/1999) må forekomme som juridiske "
+        "identifikatorer — tilføj altid det danske lovnavn ved siden af dem. Finske egennavne "
+        "som bynavne, virksomhedsnavne og myndighedsforkortelser (ELY, STUK, Luova, Fingrid, Traficom) "
+        "er acceptable udelukkende som egennavne.\n\n"
+    ),
+    "NO": (
+        "KRITISK SPRÅKKRAV: Du MÅ skrive HVERT ord i denne tillatelsessøknaden på norsk (bokmål). "
+        "ALLE overskrifter, avsnitt, punktlister, fotnoter og merknader skal være på norsk. "
+        "IKKE inkluder finske ord eller setninger i utdataene. "
+        "Finske lovnumre (f.eks. YSL 527/2014, MRL 132/1999) kan forekomme som juridiske "
+        "identifikatorer — legg alltid til det norske lovnavnet ved siden av dem. Finske egennavn "
+        "som bynavn, firmanavn og myndighetsforkortelser (ELY, STUK, Luova, Fingrid, Traficom) "
+        "er akseptable utelukkende som egennavn.\n\n"
+    ),
+    "PL": (
+        "KRYTYCZNY WYMÓG JĘZYKOWY: MUSISZ napisać KAŻDE słowo tego wniosku o zezwolenie po polsku. "
+        "WSZYSTKIE nagłówki, akapity, punkty, przypisy i uwagi muszą być po polsku. "
+        "NIE włączaj fińskich słów ani zdań do danych wyjściowych. "
+        "Fińskie numery aktów prawnych (np. YSL 527/2014, MRL 132/1999) mogą pojawiać się jako "
+        "identyfikatory prawne — zawsze dodawaj obok nich polską nazwę ustawy. Fińskie nazwy własne "
+        "takie jak nazwy miast, firm i skróty nazw organów (ELY, STUK, Luova, Fingrid, Traficom) "
+        "są dopuszczalne wyłącznie jako nazwy własne.\n\n"
+    ),
 }
 
 _WRITE_INSTRUCTION: dict[str, str] = {
     "FI": "Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:",
     "EN": "Write the following four sections in English, clearly separated by headings:",
     "SE": "Skriv följande fyra avsnitt på svenska, tydligt åtskilda med rubriker:",
+    "DA": "Skriv følgende fire afsnit på dansk, tydeligt adskilt med overskrifter:",
+    "NO": "Skriv følgende fire seksjoner på norsk, tydelig atskilt med overskrifter:",
+    "PL": "Napisz następujące cztery sekcje po polsku, wyraźnie oddzielone nagłówkami:",
 }
 
 _PROMPT_HEADERS: dict[str, dict[str, str]] = {
@@ -789,6 +819,82 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "viranomainen_ohje":  ("VIKTIGT: Ansökan riktas till myndigheten '{auth}'. "
                                "Anpassa innehåll, struktur och språk för att uppfylla dess krav. "
                                "Hänvisa till myndighetens riktlinjer, formulär och krav."),
+    },
+    "DA": {
+        "intro":        "Udarbejd et udkast til tilladelsesansøgning for følgende projekt:",
+        "rag_intro":    "Nedenfor er relevant dokumentation (Fingrid, Tukes, Miljøministeriet):",
+        "kuvaus":       "PROJEKTBESKRIVELSE",
+        "perustelut":   "BEGRUNDELSE OG BEHOV",
+        "luvat":        "BESKRIVELSE AF TILLADELSES­PROCEDURER",
+        "toimenpiteet": "NÆSTE SKRIDT",
+        "kuvaus_inst":  ("Skriv en beskrivelse på 3–5 afsnit af projektet: formål, tekniske detaljer, "
+                         "placering, nettilslutning og miljøpåvirkninger. Medtag typiske tekniske "
+                         "parametre for denne projekttype."),
+        "kuvaus_extra": " Tag hensyn til de angivne oplysninger om placering og miljøpåvirkning.",
+        "perustelut_inst": ("Skriv en begrundelse på 2–3 afsnit for, hvorfor projektet er nødvendigt "
+                            "(energisystemperspektiv, Finlands klimamål, regionale økonomiske virkninger)."),
+        "luvat_inst":   ("Forklar kort (1–2 sætninger pr. tilladelse), hvad hver nødvendig tilladelse "
+                         "dækker, og hvorfor den kræves for dette projekt."),
+        "luvat_extra":  " Henvis især til målmyndighedens {auth} processer og krav.",
+        "toimenpiteet_first": ("Forhåndskonsultation med kommunens byggesagsafdeling + planrevision — "
+                               "Ansøger / {kunta} byggesagsafdeling — inden for 1–2 uger"),
+        "toimenpiteet_inst": ("Det første trin er ALTID: \"{first}\".\n"
+                              "Angiv derefter 5 yderligere konkrete trin med tidslinjer (i måneder)."),
+        "toimenpiteet_vaihe": " Tag hensyn til projektets nuværende fase: {vaihe}.",
+        "viranomainen_ohje":  ("VIGTIGT: Ansøgningen er rettet til myndighed '{auth}'. "
+                               "Tilpas indhold, struktur og sprog til myndighedens krav. "
+                               "Henvis til myndighedens retningslinjer, formularer og krav."),
+    },
+    "NO": {
+        "intro":        "Utarbeid et utkast til tillatelsessøknad for følgende prosjekt:",
+        "rag_intro":    "Nedenfor er relevant dokumentasjon (Fingrid, Tukes, Miljøverndepartementet):",
+        "kuvaus":       "PROSJEKTBESKRIVELSE",
+        "perustelut":   "BEGRUNNELSE OG BEHOV",
+        "luvat":        "BESKRIVELSE AV TILLATELSESPROSEDYRER",
+        "toimenpiteet": "NESTE STEG",
+        "kuvaus_inst":  ("Skriv en beskrivelse på 3–5 avsnitt av prosjektet: formål, tekniske detaljer, "
+                         "plassering, nettilknytning og miljøpåvirkning. Inkluder typiske tekniske "
+                         "parametere for denne prosjekttypen."),
+        "kuvaus_extra": " Ta hensyn til oppgitt informasjon om plassering og miljøpåvirkning.",
+        "perustelut_inst": ("Skriv en begrunnelse på 2–3 avsnitt for hvorfor prosjektet er nødvendig "
+                            "(energisystemperspektiv, Finlands klimamål, regionale økonomiske virkninger)."),
+        "luvat_inst":   ("Forklar kortfattet (1–2 setninger per tillatelse) hva hver nødvendig tillatelse "
+                         "dekker og hvorfor den kreves for dette prosjektet."),
+        "luvat_extra":  " Henvis spesielt til målmyndighetens {auth} prosesser og krav.",
+        "toimenpiteet_first": ("Forhåndskonsultasjon med kommunens byggesaksavdeling + reguleringsgjennomgang — "
+                               "Søker / {kunta} byggesaksavdeling — innen 1–2 uker"),
+        "toimenpiteet_inst": ("Det første trinnet er ALLTID: \"{first}\".\n"
+                              "List deretter 5 andre konkrete trinn med tidslinjer (i måneder)."),
+        "toimenpiteet_vaihe": " Ta hensyn til prosjektets nåværende fase: {vaihe}.",
+        "viranomainen_ohje":  ("VIKTIG: Søknaden er adressert til myndighet '{auth}'. "
+                               "Tilpass innhold, struktur og språk til myndighetens krav. "
+                               "Henvis til myndighetens retningslinjer, skjemaer og krav."),
+    },
+    "PL": {
+        "intro":        "Sporządź projekt wniosku o zezwolenie dla następującego projektu:",
+        "rag_intro":    "Poniżej znajduje się odpowiednia dokumentacja (Fingrid, Tukes, Ministerstwo Środoąwiska):",
+        "kuvaus":       "OPIS PROJEKTU",
+        "perustelut":   "UZASADNIENIE I POTRZEBA",
+        "luvat":        "OPIS PROCEDUR ZEZWOLEŃ",
+        "toimenpiteet": "NASTĘPNE KROKI",
+        "kuvaus_inst":  ("Napisz opis projektu w 3–5 akapitach: cel, dane techniczne, "
+                         "lokalizacja, przyłączenie do sieci i wpływ na środowisko. Uwzględnij typowe "
+                         "parametry techniczne dla tego typu projektu."),
+        "kuvaus_extra": " Uwzględnij podane informacje o lokalizacji i oddziaływaniu na środowisko.",
+        "perustelut_inst": ("Napisz uzasadnienie w 2–3 akapitach, dlaczego projekt jest konieczny "
+                            "(perspektywa systemu energetycznego, fińskie cele klimatyczne, "
+                            "regionalne skutki gospodarcze)."),
+        "luvat_inst":   ("Krótko wyjaśnij (1–2 zdania na zezwolenie), czego dotyczy każde wymagane "
+                         "zezwolenie i dlaczego jest wymagane dla tego projektu."),
+        "luvat_extra":  " Odwołaj się szczególnie do procesów i wymagań organu docelowego {auth}.",
+        "toimenpiteet_first": ("Wstępna konsultacja z gminnym wydziałem budowlanym + przegląd planistyczny — "
+                               "Wnioskodawca / wydział budowlany {kunta} — w ciągu 1–2 tygodni"),
+        "toimenpiteet_inst": ("Pierwszym krokiem jest ZAWSZE: \"{first}\".\n"
+                              "Następnie wymiń 5 kolejnych konkretnych kroków z harmonogramem (w miesiącach)."),
+        "toimenpiteet_vaihe": " Uwzględnij aktualną fazę projektu: {vaihe}.",
+        "viranomainen_ohje":  ("WAŻNE: Wniosek jest skierowany do organu '{auth}'. "
+                               "Dostosuj treść, strukturę i język do jego wymagań. "
+                               "Odwołaj się do wytycznych, formularzy i wymagań tego organu."),
     },
 }
 
@@ -1218,6 +1324,224 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "tillståndsansökan lämnas in. Planläggning påverkar direkt varaktigheten och "
                             "kraven i tillståndsprocessen — byggande kräver ofta en detaljplan, en ändring "
                             "av en sådan eller ett planeringstillstånd."),
+    },
+    "DA": {
+        "sub_title":       "Byggetilladelsesansøgning — udkast",
+        "esiselvitys_sub": ("Forundersøgelses- og forhåndskonsultationsmateriale — "
+                            "Udarbejdet til forhåndskonsultation med byggesagsafdelingen"),
+        "disclaimer_h":    "AI-UDKAST — KRÆVER EKSPERTGENNEMGANG",
+        "disclaimer_b":    ("Dette dokument er et AI-assisteret udkast. Det er ikke juridisk bindende og "
+                            "erstatter ikke rådgivning fra en kvalificeret tilladelsesekspert eller advokat. "
+                            "Inden ansøgningen indsendes, skal dokumentet gennemgås af en fagmand."),
+        "m_hakija":        "Ansøger",          "m_ytunnus":    "CVR-nummer",
+        "m_hanketyyppi":   "Projekttype",      "m_teho":       "Kapacitet / Effekt",
+        "m_kunta":         "Kommune",          "m_kt":         "Ejendomsnummer",
+        "m_maa":           "Land",
+        "m_laadittu":      "Udarbejdet",       "m_laatinut_lbl": "Udarbejdet af",
+        "m_laatinut":      "NCE Energy Permit AI (AI-assisteret)",
+        "sec1": "1. Projektbeskrivelse",             "sec2": "2. Begrundelse og behov",
+        "sec3": "3. Nødvendige tilladelser og myndigheder", "sec4": "4. Lovhenvisninger",
+        "sec5": "5. Bilagsliste",                    "sec6": "6. Næste skridt",
+        "liitteet_note":   ("Følgende bilag skal indsendes sammen med ansøgningen. "
+                            "Sæt kryds i afkrydsningsfeltet, når bilaget er klar."),
+        "lahteet_h":       "Kilder og referencer",
+        "lahteet_b":       "Dette udkast er udarbejdet ved hjælp af følgende officielle dokumenter:",
+        "yhteystiedot_h":  "Ansøgerens kontaktoplysninger",
+        "yht_hakija":      "Ansøger",    "yht_ytunnus":    "CVR-nummer",
+        "yht_osoite":      "Adresse",    "yht_lisatietoja": "Yderligere oplysninger",
+        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+                            "·  AI-udkast — kræver ekspertgennemgang"),
+        "th_lupa":  "Tilladelse / anmeldelse", "th_viran": "Myndighed", "th_laki": "Retsgrundlag",
+        "th_nro":   "Nr.", "th_liite": "Bilag", "th_tila": "Status",
+        "liite_toimitettu": "[ ] Indsendt",
+        "toim_nro": "Nr.", "toim_toimenpide": "Handling",
+        "toim_vastuutaho": "Ansvarlig", "toim_aikataulu": "Tidsplan",
+        "hdr_draft": "tilladelsesansøgning — udkast", "hdr_right": "ncenergy.fi  |  AI-udkast",
+        "ftr_ai":    "AI-udkast — kræver gennemgang", "ftr_sivu": "Side",
+        "bf_title": "F&U-finansieringsansøgning — udkast",
+        "bf_kotipaikka": "Hjemsted", "bf_vaihe": "Fase", "bf_tk_kuvaus": "F&U-beskrivelse",
+        "esiselvitys_p":   ("Projektet befinder sig i forundersøgelsesfasen. Endelige tekniske "
+                            "specifikationer, lokalplaner og miljøkonsekvensvurderinger vil blive "
+                            "præciseret under den videre planlægning."),
+        "bess_pintaala":   "Det anslåede anlægsareal er 0,4–0,6 ha.",
+        "mks_viittaus":    ("Arealanvendelsen i projektområdet er undersøgt i NCE Energys "
+                            "arealanvendelsesrapport (se Bilag 0b: Arealanvendelsesrapport PDF). "
+                            "Rapporten indeholder ejendomsoplysninger, planlægningsstatus, "
+                            "beskyttede områder og grundvandsdata."),
+        "kaava_BESS":      ("<b>Planlægningsstatus (det vigtigste forundersøgelseselement):</b> "
+                            "Planlægningsstatusen for BESS-projektstedet skal fastlægges først. I de fleste "
+                            "kommuner kræver placering af et batterienergilagringssystem en lokalplan eller "
+                            "en planlægningstilladelse. Planlægningsstatus har størst indflydelse på den "
+                            "samlede varighed af tilladelsesprocessen — forhåndskonsultation med "
+                            "byggesagsafdelingen er det første trin."),
+        "kaava_tuuli":     ("<b>Planlægningsstatus og VVM-krav:</b> Et vindkraftprojekt kræver næsten altid "
+                            "en lokaloversigsplan eller lokalplan (MRL 132/1999, 77a §). VVM-proceduren "
+                            "(YVA-laki 252/2017) er obligatorisk for projekter ≥10 MW eller ≥5 møller — "
+                            "plan- og VVM-processerne forløber ofte parallelt og tager tilsammen 3–6 år. "
+                            "Planlægningsstatus afklares først."),
+        "kaava_SMR":       ("<b>STUK forlicensiering (det vigtigste første trin):</b> For et kernekraftanlæg "
+                            "er statsrådets principbeslutning (kernenergiloven 990/1987, § 11) og STUKs "
+                            "forlicensieringsprocedure obligatoriske inden alle andre tilladelser. STUKs "
+                            "sikkerhedsredegørelse i henhold til YVL-retningslinjerne indleder processen. "
+                            "Planlægning behandles parallelt, men kernesikkerhedsproceduren er den "
+                            "dominerende faktor."),
+        "kaava_aurinkovoima": ("<b>Handlingstilladelse eller byggetilladelse — og planlægning:</b> For en lille "
+                            "solcellepark (under ca. 1 ha) er en handlingstilladelse ofte tilstrækkelig i "
+                            "stedet for en fuld byggetilladelse (Bygglov 751/2023 / MRL 132/1999, § 126). "
+                            "VVM kræves ikke for projekter under 50 ha. Planlægningsstatus skal dog stadig "
+                            "kontrolleres — en planlægningstilladelse kan være nødvendig uden for "
+                            "lokalplanområder."),
+        "kaava_generic":   ("<b>Planlægningsstatus:</b> Den gældende planlægningsstatus for projektstedet "
+                            "skal verificeres på et forhåndskonsultationsmøde med byggesagsafdelingen, "
+                            "inden tilladelsesansøgningen indsendes. Planlægning påvirker direkte "
+                            "varigheden og kravene i tilladelsesprocessen — byggeri kræver ofte en "
+                            "lokalplan, en ændring heraf eller en planlægningstilladelse."),
+    },
+    "NO": {
+        "sub_title":       "Søknad om byggetillatelse — utkast",
+        "esiselvitys_sub": ("Forstudie- og forhåndskonsultasjonsmateriale — "
+                            "Utarbeidet til forhåndskonsultasjon med byggesaksavdelingen"),
+        "disclaimer_h":    "AI-UTKAST — KREVER EKSPERTGJENNOMGANG",
+        "disclaimer_b":    ("Dette dokumentet er et AI-assistert utkast. Det er ikke juridisk bindende og "
+                            "erstatter ikke råd fra en kvalifisert tillatelsesekspert eller advokat. "
+                            "Før søknaden sendes inn, må dokumentet gjennomgås av en fagperson."),
+        "m_hakija":        "Søker",             "m_ytunnus":    "Org.nummer",
+        "m_hanketyyppi":   "Prosjekttype",      "m_teho":       "Kapasitet / Effekt",
+        "m_kunta":         "Kommune",           "m_kt":         "Eiendomsnummer",
+        "m_maa":           "Land",
+        "m_laadittu":      "Utarbeidet",        "m_laatinut_lbl": "Utarbeidet av",
+        "m_laatinut":      "NCE Energy Permit AI (AI-assistert)",
+        "sec1": "1. Prosjektbeskrivelse",            "sec2": "2. Begrunnelse og behov",
+        "sec3": "3. Nødvendige tillatelser og myndigheter", "sec4": "4. Lovhenvisninger",
+        "sec5": "5. Vedleggsliste",                  "sec6": "6. Neste steg",
+        "liitteet_note":   ("Følgende vedlegg må leveres sammen med søknaden. "
+                            "Kryss av i boksen når vedlegget er klart."),
+        "lahteet_h":       "Kilder og referanser",
+        "lahteet_b":       "Dette utkastet er utarbeidet ved hjelp av følgende offisielle dokumenter:",
+        "yhteystiedot_h":  "Søkerens kontaktopplysninger",
+        "yht_hakija":      "Søker",      "yht_ytunnus":    "Org.nummer",
+        "yht_osoite":      "Adresse",    "yht_lisatietoja": "Ytterligere informasjon",
+        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+                            "·  AI-utkast — krever ekspertgjennomgang"),
+        "th_lupa":  "Tillatelse / melding", "th_viran": "Myndighet", "th_laki": "Rettsgrunnlag",
+        "th_nro":   "Nr.", "th_liite": "Vedlegg", "th_tila": "Status",
+        "liite_toimitettu": "[ ] Innlevert",
+        "toim_nro": "Nr.", "toim_toimenpide": "Tiltak",
+        "toim_vastuutaho": "Ansvarlig", "toim_aikataulu": "Tidsplan",
+        "hdr_draft": "tillatelsessøknad — utkast", "hdr_right": "ncenergy.fi  |  AI-utkast",
+        "ftr_ai":    "AI-utkast — krever gjennomgang", "ftr_sivu": "Side",
+        "bf_title": "FoU-finansieringssøknad — utkast",
+        "bf_kotipaikka": "Hjemsted", "bf_vaihe": "Fase", "bf_tk_kuvaus": "FoU-beskrivelse",
+        "esiselvitys_p":   ("Prosjektet er i forstudiefasen. Endelige tekniske spesifikasjoner, "
+                            "stedplaner og miljøkonsekvensutredninger vil bli presisert "
+                            "under videre planlegging."),
+        "bess_pintaala":   "Det anslåtte anleggsarealet er 0,4–0,6 ha.",
+        "mks_viittaus":    ("Arealbruken i prosjektområdet er undersøkt i NCE Energys "
+                            "arealbruksrapport (se Vedlegg 0b: Arealbruksrapport PDF). "
+                            "Rapporten inneholder eiendomsopplysninger, reguleringstatus, "
+                            "verneområder og grunnvannsdata."),
+        "kaava_BESS":      ("<b>Reguleringstatus (viktigste forstudieelement):</b> "
+                            "Reguleringsstatusen for BESS-prosjektstedet må fastlegges først. I de fleste "
+                            "kommuner krever plassering av et batterienergilagringssystem en reguleringsplan "
+                            "eller dispensasjon. Reguleringstatus har størst innvirkning på den totale "
+                            "varigheten av tillatelsprosessen — forhåndskonsultasjon med byggesaksavdelingen "
+                            "er det første trinnet."),
+        "kaava_tuuli":     ("<b>Reguleringstatus og KU-krav:</b> Et vindkraftprosjekt krever nesten alltid "
+                            "en kommunedelplan eller reguleringsplan (MRL 132/1999, 77a §). KU-prosedyren "
+                            "(YVA-laki 252/2017) er obligatorisk for prosjekter ≥10 MW eller ≥5 turbiner — "
+                            "plan- og KU-prosessene løper ofte parallelt og tar til sammen 3–6 år. "
+                            "Reguleringstatus avklares først."),
+        "kaava_SMR":       ("<b>STUK forhåndslisensering (viktigste første trinn):</b> For et kjernekraftanlegg "
+                            "er statsrådets prinsippbeslutning (atomenergisloven 990/1987, § 11) og STUKs "
+                            "forhåndslisensieringsprosedyre obligatoriske før alle andre tillatelser. STUKs "
+                            "sikkerhetsrapport i henhold til YVL-retningslinjene starter prosessen. "
+                            "Regulering håndteres parallelt, men kjernekraftsikkerhetsprosedyren er den "
+                            "dominerende faktoren."),
+        "kaava_aurinkovoima": ("<b>Tiltak- eller byggetillatelse — og regulering:</b> For en liten "
+                            "solkraftpark (under ca. 1 ha) er en tiltakstillatelse ofte tilstrekkelig i "
+                            "stedet for full byggetillatelse (Bygglov 751/2023 / MRL 132/1999, § 126). "
+                            "KU kreves ikke for prosjekter under 50 ha. Reguleringstatus må likevel "
+                            "sjekkes — dispensasjon kan være nødvendig utenfor reguleringsplanområder."),
+        "kaava_generic":   ("<b>Reguleringstatus:</b> Gjeldende reguleringstatus for prosjektstedet "
+                            "må verifiseres på et forhåndskonsultasjonsmøte med byggesaksavdelingen "
+                            "før tillatelssøknaden sendes inn. Regulering påvirker direkte varigheten "
+                            "og kravene i tillatelsprosessen — bygging krever ofte en reguleringsplan, "
+                            "en endring av denne eller dispensasjon."),
+    },
+    "PL": {
+        "sub_title":       "Wniosek o pozwolenie na budowę — szkic",
+        "esiselvitys_sub": ("Materiał z analizy wstępnej i konsultacji wstępnych — "
+                            "Przygotowany do wstępnej konsultacji z wydziałem budowlanym"),
+        "disclaimer_h":    "SZKIC AI — WYMAGA PRZEGLĄDU EKSPERTA",
+        "disclaimer_b":    ("Niniejszy dokument jest szkicem przygotowanym z pomocą AI. Nie jest prawnie "
+                            "wiążący i nie zastępuje porady wykwalifikowanego eksperta ds. zezwoleń ani "
+                            "prawnika. Przed złożeniem wniosku dokument musi zostać sprawdzony przez "
+                            "specjalistę."),
+        "m_hakija":        "Wnioskodawca",      "m_ytunnus":    "NIP/KRS",
+        "m_hanketyyppi":   "Typ projektu",      "m_teho":       "Moc / pojemność",
+        "m_kunta":         "Gmina",             "m_kt":         "Numer nieruchomości",
+        "m_maa":           "Kraj",
+        "m_laadittu":      "Sporządzono",       "m_laatinut_lbl": "Sporządzone przez",
+        "m_laatinut":      "NCE Energy Permit AI (wspomagane przez AI)",
+        "sec1": "1. Opis projektu",                  "sec2": "2. Uzasadnienie i potrzeba",
+        "sec3": "3. Wymagane zezwolenia i organy",   "sec4": "4. Podstawy prawne",
+        "sec5": "5. Lista załączników",              "sec6": "6. Następne kroki",
+        "liitteet_note":   ("Następujące załączniki muszą zostać złożone wraz z wnioskiem. "
+                            "Zaznacz pole wyboru, gdy załącznik jest gotowy."),
+        "lahteet_h":       "Źródła i odniesienia",
+        "lahteet_b":       "Niniejszy szkic został przygotowany przy użyciu następujących oficjalnych dokumentów:",
+        "yhteystiedot_h":  "Dane kontaktowe wnioskodawcy",
+        "yht_hakija":      "Wnioskodawca", "yht_ytunnus":    "NIP/KRS",
+        "yht_osoite":      "Adres",        "yht_lisatietoja": "Dodatkowe informacje",
+        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+                            "·  Szkic AI — wymaga przeglądu eksperta"),
+        "th_lupa":  "Zezwolenie / zgłoszenie", "th_viran": "Organ", "th_laki": "Podstawa prawna",
+        "th_nro":   "Nr", "th_liite": "Załącznik", "th_tila": "Status",
+        "liite_toimitettu": "[ ] Złożony",
+        "toim_nro": "Nr", "toim_toimenpide": "Działanie",
+        "toim_vastuutaho": "Odpowiedzialny", "toim_aikataulu": "Harmonogram",
+        "hdr_draft": "wniosek o zezwolenie — szkic", "hdr_right": "ncenergy.fi  |  Szkic AI",
+        "ftr_ai":    "Szkic AI — wymaga przeglądu", "ftr_sivu": "Strona",
+        "bf_title": "Wniosek o dofinansowanie B+R — szkic",
+        "bf_kotipaikka": "Siedziba", "bf_vaihe": "Faza", "bf_tk_kuvaus": "Opis B+R",
+        "esiselvitys_p":   ("Projekt jest w fazie analizy wstępnej. Ostateczne specyfikacje techniczne, "
+                            "plany lokalizacyjne i oceny oddziaływania na środowisko zostaną doprecyzowane "
+                            "w trakcie dalszego planowania."),
+        "bess_pintaala":   "Szacunkowa powierzchnia instalacji wynosi 0,4–0,6 ha.",
+        "mks_viittaus":    ("Zagospodarowanie terenu obszaru projektu zostało zbadane w raporcie NCE Energy "
+                            "dotyczącym zagospodarowania terenu (zob. Załącznik 0b: Raport PDF). Raport "
+                            "zawiera informacje o nieruchomości, status planistyczny, obszary chronione "
+                            "i dane o wodach gruntowych."),
+        "kaava_BESS":      ("<b>Status planistyczny (najważniejszy element analizy wstępnej):</b> "
+                            "Status planistyczny terenu projektu BESS musi zostać ustalony w pierwszej "
+                            "kolejności. W większości gmin umiejscowienie systemu magazynowania energii "
+                            "w akumulatorach wymaga miejscowego planu zagospodarowania lub decyzji "
+                            "o warunkach zabudowy. Status planistyczny ma największy wpływ na całkowity "
+                            "czas trwania procesu uzyskiwania zezwoleń — wstępna konsultacja z wydziałem "
+                            "budowlanym jest pierwszym krokiem."),
+        "kaava_tuuli":     ("<b>Status planistyczny i wymóg OOŚ:</b> Projekt farmy wiatrowej niemal zawsze "
+                            "wymaga planu miejscowego (MRL 132/1999, 77a §). Procedura OOŚ "
+                            "(YVA-laki 252/2017) jest obowiązkowa dla projektów ≥10 MW lub ≥5 turbin — "
+                            "procesy planistyczne i OOŚ przebiegają często równolegle i trwają łącznie "
+                            "3–6 lat. Status planistyczny ustala się w pierwszej kolejności."),
+        "kaava_SMR":       ("<b>Wstępne licencjonowanie STUK (najważniejszy pierwszy krok):</b> W przypadku "
+                            "obiektu jądrowego decyzja zasadnicza Rady Stanu (ustawa o energii jądrowej "
+                            "990/1987, § 11) i procedura wstępnego licencjonowania STUK są obowiązkowe "
+                            "przed wszystkimi innymi zezwoleniami. Raport bezpieczeństwa STUK zgodny "
+                            "z wytycznymi YVL inicjuje proces. Planowanie odbywa się równolegle, "
+                            "ale procedura bezpieczeństwa jądrowego jest czynnikiem dominującym."),
+        "kaava_aurinkovoima": ("<b>Pozwolenie na roboty budowlane lub pozwolenie na budowę — i planowanie:</b> "
+                            "Dla małej elektrowni słonecznej (poniżej ok. 1 ha) często wystarczy zgłoszenie "
+                            "robót budowlanych zamiast pełnego pozwolenia na budowę (Ustawa budowlana "
+                            "751/2023 / MRL 132/1999, § 126). OOŚ nie jest wymagana dla projektów poniżej "
+                            "50 ha. Status planistyczny musi jednak zostać sprawdzony — decyzja o warunkach "
+                            "zabudowy może być konieczna poza obszarami objętymi miejscowym planem."),
+        "kaava_generic":   ("<b>Status planistyczny:</b> Obowiązujący status planistyczny terenu projektu "
+                            "musi zostać zweryfikowany na spotkaniu konsultacyjnym z wydziałem budowlanym "
+                            "przed złożeniem wniosku o zezwolenie. Planowanie bezpośrednio wpływa na czas "
+                            "trwania i wymagania procesu uzyskiwania zezwoleń — budowa często wymaga "
+                            "miejscowego planu zagospodarowania, jego zmiany lub decyzji o warunkach "
+                            "zabudowy."),
     },
 }
 
