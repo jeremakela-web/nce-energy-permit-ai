@@ -21,6 +21,10 @@ BESS_raportti_*.pdf
 # ChromaDB vektorivarasto (iso, ei kuulu repoon)
 permit_ai/embeddings/
 
+# Kansainväliset RAG-PDF:t (lisätään manuaalisesti, ei repoon)
+# Kansiorakenne ja README:t ovat repossa (.gitkeep)
+rag_docs/**/*.pdf
+
 # Lokit
 *.log
 

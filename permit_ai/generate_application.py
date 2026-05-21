@@ -544,8 +544,17 @@ _HANKE_CFG = {
 # RAG-haku
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _rag_context(hanketyyppi: str, n_per_query: int = 4) -> tuple[str, list[str]]:
-    """Hae relevantit dokumenttichunkit kaikilla hanketyyppikohtaisilla kyselyillä."""
+def _rag_context(
+    hanketyyppi: str,
+    country: str = "FI",
+    n_per_query: int = 4,
+) -> tuple[str, list[str]]:
+    """Hae relevantit dokumenttichunkit.
+
+    Jos country != 'FI', haetaan ensin maakohtaiset dokumentit ja täydennetään
+    FI-dokumenteilla (suomalainen lainsäädäntö on aina relevanttia kontekstia).
+    Graceful fallback: jos metadata-suodatus epäonnistuu, haetaan ilman suodatinta.
+    """
     cfg = _HANKE_CFG[hanketyyppi]
     try:
         embed_model = _get_embed_model()
@@ -555,14 +564,41 @@ def _rag_context(hanketyyppi: str, n_per_query: int = 4) -> tuple[str, list[str]
         all_docs:    list[str] = []
         all_sources: set[str]  = set()
 
-        for q in cfg["rag_queries"]:
-            emb     = embed_model.encode([q]).tolist()
-            results = col.query(query_embeddings=emb, n_results=n_per_query)
+        def _collect(results: dict) -> None:
             for doc, id_ in zip(results["documents"][0], results["ids"][0]):
                 if id_ not in seen_ids:
                     seen_ids.add(id_)
                     all_docs.append(doc)
-                    all_sources.add("_".join(id_.split("_")[:-1]))
+                    # source = ID ilman viimeistä "__N" tai "_N" osaa
+                    all_sources.add(re.sub(r"[_-]\d+$", "", id_))
+
+        for q in cfg["rag_queries"]:
+            emb = embed_model.encode([q]).tolist()
+
+            # 1. Maakohtainen haku (vain kun country != FI ja metadata on olemassa)
+            if country != "FI":
+                try:
+                    _collect(col.query(
+                        query_embeddings=emb,
+                        n_results=n_per_query,
+                        where={"country": country},
+                    ))
+                except Exception:
+                    pass  # maakohtaisia dokumentteja ei vielä indeksoitu
+
+            # 2. FI-haku (tai koko indeksi jos metadata puuttuu)
+            try:
+                _collect(col.query(
+                    query_embeddings=emb,
+                    n_results=n_per_query,
+                    where={"country": "FI"},
+                ))
+            except Exception:
+                # Vanha indeksi ilman metadataa — hae ilman suodatinta
+                try:
+                    _collect(col.query(query_embeddings=emb, n_results=n_per_query))
+                except Exception:
+                    pass
 
         context = "\n\n---\n\n".join(all_docs)
         return context, sorted(all_sources)
@@ -2273,7 +2309,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 def generate_application_draft(inp: ApplicationInput) -> tuple:
     """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
     is_bf = inp.hanketyyppi == "business_finland"
-    rag_ctx, sources = _rag_context(inp.hanketyyppi)
+    rag_ctx, sources = _rag_context(inp.hanketyyppi, inp.country or "FI")
     if is_bf:
         sections = _generate_bf_sections(inp, rag_ctx)
     else:
@@ -2308,8 +2344,8 @@ def generate_application(inp: ApplicationInput) -> str:
 
     is_bf = inp.hanketyyppi == "business_finland"
 
-    print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi})…")
-    rag_ctx, sources = _rag_context(inp.hanketyyppi)
+    print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi}, maa={inp.country or 'FI'})…")
+    rag_ctx, sources = _rag_context(inp.hanketyyppi, inp.country or "FI")
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {sources}")
 
     print("[2/4] Generoidaan hakemusteksti (Claude)…")

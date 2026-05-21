@@ -1,0 +1,225 @@
+"""
+Indeksoi kansainväliset viranomaisohjeet ChromaDB-vektoritietokantaan.
+
+Odottaa PDF-tiedostoja kansioissa (projektin juuressa):
+    rag_docs/SE/   — Ruotsi   (sv)
+    rag_docs/DA/   — Tanska   (da)
+    rag_docs/NO/   — Norja    (no)
+    rag_docs/PL/   — Puola    (pl)
+
+Käyttö:
+    # Kaikki maat
+    python3 permit_ai/ingest_countries.py
+
+    # Vain yksi tai useampi maa
+    python3 permit_ai/ingest_countries.py --country SE NO
+
+    # Näytä mitä tehtäisiin ilman varsinaista kirjoitusta
+    python3 permit_ai/ingest_countries.py --dry-run
+
+    # Poista maan chunkit ja indeksoi uudelleen
+    python3 permit_ai/ingest_countries.py --country SE --reindex
+
+Metadata jokaisessa chunkissa:
+    country  : "SE" | "DA" | "NO" | "PL"
+    lang     : "sv" | "da" | "no" | "pl"
+    source   : tiedoston kantanimi (ilman .pdf)
+
+EI tyhjennä olemassaolevaa indeksiä — lisää ainoastaan uusia dokumentteja.
+"""
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).parent
+ROOT = HERE.parent          # bess_tool/
+DB_DIR   = HERE / "embeddings"
+RAG_ROOT = ROOT / "rag_docs"
+
+EMBED_MODEL = "all-MiniLM-L6-v2"
+COLLECTION  = "permit_docs"
+CHUNK_CHARS = 1500
+OVERLAP     = 200
+BATCH       = 64
+
+COUNTRY_LANG: dict[str, str] = {
+    "SE": "sv",
+    "DA": "da",
+    "NO": "no",
+    "PL": "pl",
+}
+
+ALL_COUNTRIES = list(COUNTRY_LANG.keys())
+
+
+# ── Apufunktiot ───────────────────────────────────────────────────────────────
+
+def _chunk(text: str) -> list[str]:
+    chunks, start = [], 0
+    while start < len(text):
+        end = start + CHUNK_CHARS
+        chunks.append(text[start:end].strip())
+        start += CHUNK_CHARS - OVERLAP
+    return [c for c in chunks if len(c) > 100]
+
+
+def _safe_id(country: str, stem: str, idx: int) -> str:
+    """ChromaDB-turvallinen ID: ei erikoismerkkejä, max 512 merkkiä."""
+    safe = re.sub(r"[^a-zA-Z0-9_-]", "_", stem)[:60]
+    return f"{country}__{safe}__{idx}"
+
+
+def _read_pdf(path: Path) -> str:
+    from pypdf import PdfReader
+    reader = PdfReader(str(path))
+    return "\n".join(page.extract_text() or "" for page in reader.pages)
+
+
+# ── Päälogiikka ───────────────────────────────────────────────────────────────
+
+def ingest(
+    countries: list[str],
+    dry_run: bool = False,
+    reindex: bool = False,
+) -> dict[str, int]:
+    from sentence_transformers import SentenceTransformer
+    import chromadb
+
+    if not DB_DIR.exists():
+        print(
+            f"[ingest] VIRHE: indeksihakemistoa {DB_DIR} ei ole.\n"
+            f"         Aja ensin: python3 permit_ai/build_index.py"
+        )
+        sys.exit(1)
+
+    print(f"[ingest] Yhdistetään ChromaDB:hen: {DB_DIR}")
+    model  = SentenceTransformer(EMBED_MODEL)
+    client = chromadb.PersistentClient(path=str(DB_DIR))
+    col    = client.get_or_create_collection(COLLECTION)
+
+    existing_ids: set[str] = set(col.get()["ids"])
+    print(f"[ingest] Olemassaolevia chunkkeja: {len(existing_ids)}")
+
+    totals: dict[str, int] = {}
+
+    for country in countries:
+        country_dir = RAG_ROOT / country
+        if not country_dir.exists():
+            print(f"\n[{country}] Kansio {country_dir} puuttuu — ohitetaan")
+            totals[country] = 0
+            continue
+
+        pdfs = sorted(country_dir.rglob("*.pdf"))
+        if not pdfs:
+            print(f"\n[{country}] Ei PDF-tiedostoja kansiossa {country_dir}")
+            totals[country] = 0
+            continue
+
+        print(f"\n[{country}] Löytyi {len(pdfs)} PDF:ää")
+        lang = COUNTRY_LANG[country]
+
+        # Poista vanhat chunkit jos --reindex
+        if reindex and not dry_run:
+            old = [id_ for id_ in existing_ids if id_.startswith(f"{country}__")]
+            if old:
+                col.delete(ids=old)
+                existing_ids -= set(old)
+                print(f"  [reindex] Poistettu {len(old)} vanhaa chunkkia")
+
+        new_docs:  list[str]  = []
+        new_ids:   list[str]  = []
+        new_metas: list[dict] = []
+
+        for pdf in pdfs:
+            try:
+                text   = _read_pdf(pdf)
+                chunks = _chunk(text)
+                added  = 0
+                for i, chunk in enumerate(chunks):
+                    id_ = _safe_id(country, pdf.stem, i)
+                    if id_ in existing_ids:
+                        continue
+                    new_docs.append(chunk)
+                    new_ids.append(id_)
+                    new_metas.append({
+                        "country": country,
+                        "lang":    lang,
+                        "source":  pdf.stem,
+                    })
+                    added += 1
+                print(f"  {pdf.name}: {len(chunks)} chunkkia, {added} uutta")
+            except Exception as exc:
+                print(f"  VIRHE {pdf.name}: {exc}")
+
+        if not new_docs:
+            print(f"  → Kaikki chunkit jo indeksoitu")
+            totals[country] = 0
+            continue
+
+        if dry_run:
+            print(f"  DRY-RUN: {len(new_docs)} chunkkia lisättäisiin")
+            totals[country] = len(new_docs)
+            continue
+
+        print(f"  Lisätään {len(new_docs)} chunkkia ChromaDB:hen...")
+        for i in range(0, len(new_docs), BATCH):
+            b_docs  = new_docs[i : i + BATCH]
+            b_ids   = new_ids[i : i + BATCH]
+            b_metas = new_metas[i : i + BATCH]
+            embs    = model.encode(b_docs, show_progress_bar=False).tolist()
+            col.add(documents=b_docs, embeddings=embs, ids=b_ids, metadatas=b_metas)
+            pct = min(100, (i + len(b_docs)) * 100 // len(new_docs))
+            print(f"  {i + len(b_docs)}/{len(new_docs)} ({pct}%)")
+
+        existing_ids.update(new_ids)
+        totals[country] = len(new_docs)
+        print(f"  ✅ {len(new_docs)} chunkkia lisätty ({country})")
+
+    # Yhteenveto
+    print(f"\n{'─'*50}")
+    print(f"Yhteenveto:")
+    grand = 0
+    for c in ALL_COUNTRIES:
+        n = totals.get(c, 0)
+        print(f"  {c}: {n} uutta chunkkia")
+        grand += n
+    print(f"  Yhteensä uutta: {grand}")
+    print(f"  Koko indeksi:   {col.count()} chunkkia")
+    print(f"{'─'*50}")
+
+    return totals
+
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Indeksoi kansainväliset RAG-dokumentit ChromaDB:hen",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__,
+    )
+    parser.add_argument(
+        "--country",
+        nargs="+",
+        choices=ALL_COUNTRIES + ["ALL"],
+        default=["ALL"],
+        metavar="CC",
+        help="Maa/maat (SE DA NO PL) tai ALL (oletus)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Näytä mitä tehtäisiin — ei kirjoita indeksiin",
+    )
+    parser.add_argument(
+        "--reindex",
+        action="store_true",
+        help="Poista maan vanhat chunkit ennen lisäystä",
+    )
+    args = parser.parse_args()
+
+    target = ALL_COUNTRIES if "ALL" in args.country else args.country
+    ingest(target, dry_run=args.dry_run, reindex=args.reindex)
