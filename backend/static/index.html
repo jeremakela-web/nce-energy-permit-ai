@@ -2456,14 +2456,42 @@ function _KAYTTOTARKOITUS_OPTS() {
   ];
 }
 function _VERKKO_OPTS() {
-  return [
-    { value: '— Valitse —',                    label: t('opt_vaihe_valitse') },
-    { value: 'Jakeluverkko 20 kV (Caruna)',    label: t('opt_verkko_caruna') },
-    { value: 'Jakeluverkko 20 kV (Elenia)',    label: t('opt_verkko_elenia') },
-    { value: 'Jakeluverkko 20 kV (muu)',       label: t('opt_verkko_muu') },
-    { value: 'Fingrid 110 kV (kantaverkko)',   label: t('opt_verkko_110') },
-    { value: 'Fingrid 400 kV (kantaverkko)',   label: t('opt_verkko_400') },
-  ];
+  const sel = { value: '— Valitse —', label: t('opt_vaihe_valitse') };
+  switch (selectedCountry) {
+    case 'SE': return [sel,
+      { value: 'Vattenfall Eldistribution 20 kV', label: 'Vattenfall Eldistribution 20 kV' },
+      { value: 'E.ON Elnät 20 kV',               label: 'E.ON Elnät 20 kV' },
+      { value: 'Ellevio 20 kV',                  label: 'Ellevio 20 kV' },
+      { value: 'Annan distributionsnät 20 kV',   label: 'Annan distributionsnät 20 kV' },
+      { value: 'Svenska kraftnät 130 kV',        label: 'Svenska kraftnät 130 kV' },
+      { value: 'Svenska kraftnät 400 kV',        label: 'Svenska kraftnät 400 kV' },
+    ];
+    case 'DA': return [sel,
+      { value: 'Radius Elnet',     label: 'Radius Elnet' },
+      { value: 'N1 (Eurodan)',     label: 'N1 (Eurodan)' },
+      { value: 'Cerius',           label: 'Cerius' },
+      { value: 'Norlys',           label: 'Norlys' },
+      { value: 'Energinet 150 kV', label: 'Energinet 150 kV' },
+    ];
+    case 'NO': return [sel,
+      { value: 'Tensio',          label: 'Tensio' },
+      { value: 'Elvia',           label: 'Elvia' },
+      { value: 'Lede',            label: 'Lede' },
+      { value: 'Statnett 132 kV', label: 'Statnett 132 kV' },
+    ];
+    case 'PL': return [sel,
+      { value: 'Tauron Dystrybucja',                     label: 'Tauron Dystrybucja' },
+      { value: 'Enea Operator',                           label: 'Enea Operator' },
+      { value: 'PSE (Polskie Sieci Elektroenergetyczne)', label: 'PSE (Polskie Sieci Elektroenergetyczne)' },
+    ];
+    default: return [sel,  // FI
+      { value: 'Jakeluverkko 20 kV (Caruna)', label: t('opt_verkko_caruna') },
+      { value: 'Jakeluverkko 20 kV (Elenia)', label: t('opt_verkko_elenia') },
+      { value: 'Jakeluverkko 20 kV (muu)',    label: t('opt_verkko_muu') },
+      { value: 'Fingrid 110 kV (kantaverkko)',label: t('opt_verkko_110') },
+      { value: 'Fingrid 400 kV (kantaverkko)',label: t('opt_verkko_400') },
+    ];
+  }
 }
 function _YVA_OPTS() {
   return [
@@ -2841,12 +2869,32 @@ function detectCountry(text) {
   return null;
 }
 
+function _rebuildMapGrid() {
+  const sel = document.getElementById('proj-grid');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = _VERKKO_OPTS().map(o => {
+    const v = o.value.replace(/"/g, '&quot;');
+    return `<option value="${v}">${o.label}</option>`;
+  }).join('');
+  if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+  updateGridLink();
+}
+
 function setCountry(code) {
   selectedCountry = code;
   ['FI','SE','DA','NO','PL'].forEach(c => {
     const btn = document.getElementById('country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
+  // Re-render generator form to swap grid dropdown
+  if (selectedProjectType) {
+    const savedVals = _saveFormValues();
+    selectProjectType(selectedProjectType);
+    _restoreFormValues(savedVals);
+  }
+  // Re-populate map-tab grid select
+  _rebuildMapGrid();
 }
 
 // ─────────────────────────────────────────────
@@ -3832,11 +3880,34 @@ document.getElementById('kt-input').addEventListener('keydown', e => {
 // Dynaaminen verkkoliityntä-linkki
 // ─────────────────────────────────────────────
 const GRID_URLS = {
+  // FI
   'Jakeluverkko 20 kV (Caruna)':   'https://www.caruna.fi/asiakaspalvelu/liittyminen/uusi-liittyman',
   'Jakeluverkko 20 kV (Elenia)':   'https://www.elenia.fi/sahko/liittyminen',
   'Jakeluverkko 20 kV (muu)':      '',
   'Fingrid 110 kV (kantaverkko)':  'https://www.fingrid.fi/kantaverkko/liittyminen-kantaverkkoon/',
   'Fingrid 400 kV (kantaverkko)':  'https://www.fingrid.fi/kantaverkko/liittyminen-kantaverkkoon/',
+  // SE
+  'Vattenfall Eldistribution 20 kV': 'https://www.vattenfalleldistribution.se/anslutning/',
+  'E.ON Elnät 20 kV':               'https://www.eon.se/elnät/anslutning',
+  'Ellevio 20 kV':                  'https://www.ellevio.se/privat/anslutning/',
+  'Annan distributionsnät 20 kV':   '',
+  'Svenska kraftnät 130 kV':        'https://www.svk.se/aktorsportalen/anslutning/',
+  'Svenska kraftnät 400 kV':        'https://www.svk.se/aktorsportalen/anslutning/',
+  // DA
+  'Radius Elnet':    'https://radiuselnet.dk/elinstallationer/tilslutning/',
+  'N1 (Eurodan)':    'https://n1.dk/erhverv/tilslutning/',
+  'Cerius':          'https://cerius.dk/erhverv/tilslutning/',
+  'Norlys':          'https://norlys.dk/erhverv/strom/tilslutning/',
+  'Energinet 150 kV':'https://energinet.dk/El/Markedsdata',
+  // NO
+  'Tensio':          'https://tensio.no/nettilknytning/',
+  'Elvia':           'https://www.elvia.no/nett/tilknytning/',
+  'Lede':            'https://lede.no/nettilknytning/',
+  'Statnett 132 kV': 'https://www.statnett.no/for-aktorer-i-kraftsystemet/tilknytning-til-nettet/',
+  // PL
+  'Tauron Dystrybucja':                     'https://www.tauron-dystrybucja.pl/przyłączenia',
+  'Enea Operator':                           'https://www.enea-operator.pl/przyłączenia',
+  'PSE (Polskie Sieci Elektroenergetyczne)': 'https://www.pse.pl/en/transmission-system-operator',
 };
 
 function updateGridLink() {
