@@ -3190,6 +3190,11 @@ function setCountry(code) {
         formSection.classList.add('form-reveal');
       }
     }
+    // Smooth scroll to form after animation settles
+    setTimeout(() => {
+      const formSection = document.getElementById('gen-form-section');
+      if (formSection) formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 350);
   }
 
   // Re-populate map-tab grid select
