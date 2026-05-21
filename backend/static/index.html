@@ -1820,6 +1820,7 @@ function t(key) {
 
 function setLang(lang) {
   activeLang = lang;
+  try { localStorage.setItem('nce_lang', lang); } catch (_) {}
   // Update button states
   ['FI', 'EN', 'SE'].forEach(l => {
     const btn = document.getElementById('lang-btn-' + l);
@@ -3436,6 +3437,11 @@ async function sendPermitMessage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const savedLang = localStorage.getItem('nce_lang');
+    if (savedLang && ['FI', 'EN', 'SE'].includes(savedLang)) setLang(savedLang);
+  } catch (_) {}
+
   const ta = document.getElementById('pai-textarea');
   if (!ta) return;
 
