@@ -257,6 +257,17 @@
       #tab-generator.active,
       #tab-bess.active    { overflow: visible; }
 
+      /* Maankäyttöselvitys: pino pystysuunnassa */
+      .main-container { flex-direction: column; overflow: visible; }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #0f3460;
+        overflow-y: visible;
+        max-height: none;
+      }
+      #map { flex: none; min-height: 300px; height: 40vh; }
+
       /* Korttiruudukko: 1 per rivi */
       .gen-cards { grid-template-columns: 1fr; gap: 10px; }
 
@@ -1822,9 +1833,8 @@ function setLang(lang) {
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
     el.placeholder = t(el.dataset.i18nPh);
   });
-  // Re-render project type grid so card texts update
-  const grid = document.getElementById('project-type-grid');
-  if (grid) renderProjectGrid();
+  // Re-render project type cards so names/subs update
+  renderCards();
   // Update map tab selector hint
   const mapSel = document.getElementById('map-hanketyyppi');
   if (mapSel && mapSel.options[0]) mapSel.options[0].text = t('map_select_hint');
@@ -1878,18 +1888,62 @@ function switchTab(tabId) {
 // Generator: project type definitions
 // ─────────────────────────────────────────────
 const PROJECT_TYPES = [
-  { id: 'asuinrakennus',  icon: '🏠', name: 'Asuinrakennus',      sub: 'Asuinrakennushanke' },
-  { id: 'teollisuus',     icon: '🏭', name: 'Teollisuusrakennus', sub: 'Teollisuusrakennushanke' },
-  { id: 'bess',           icon: '🔋', name: 'BESS',               sub: 'Akkuenergiavarastohanke' },
-  { id: 'tuulivoima_maa', icon: '🌬️', name: 'Tuulivoima (maa)',   sub: 'Maalle sijoitettava hanke' },
-  { id: 'tuulivoima_meri',icon: '⛵', name: 'Tuulivoima (meri)',  sub: 'Offshore-tuulivoimahanke' },
-  { id: 'aurinkovoima',   icon: '☀️', name: 'Aurinkovoima',       sub: 'Aurinkopaneelihanke' },
-  { id: 'smr',            icon: '⚛️', name: 'SMR',                sub: 'Pienydinreaktorihanke' },
-  { id: 'vesivoima',      icon: '💧', name: 'Vesivoima',          sub: 'Vesivoimalahanke' },
-  { id: 'maatalous',      icon: '🌾', name: 'Maatalousrakennus',  sub: 'Maatalousrakennushanke' },
-  { id: 'liikerakennus',  icon: '🏬', name: 'Liikerakennus',      sub: 'Liikerakennushanke' },
-  { id: 'muu',            icon: '📋', name: 'Muu hanke',          sub: 'Muut hanketyypit' },
+  { id: 'asuinrakennus',
+    icon: '🏠',
+    name: { FI: 'Asuinrakennus',      EN: 'Residential Building',    SE: 'Bostadsbyggnad'     },
+    sub:  { FI: 'Asuinrakennushanke', EN: 'Residential project',     SE: 'Bostadsprojekt'     } },
+  { id: 'teollisuus',
+    icon: '🏭',
+    name: { FI: 'Teollisuusrakennus',      EN: 'Industrial Building', SE: 'Industribyggnad'   },
+    sub:  { FI: 'Teollisuusrakennushanke', EN: 'Industrial project',  SE: 'Industriproject'   } },
+  { id: 'bess',
+    icon: '🔋',
+    name: { FI: 'BESS',                    EN: 'BESS',                       SE: 'BESS'                     },
+    sub:  { FI: 'Akkuenergiavarastohanke', EN: 'Battery storage project',    SE: 'Batterilagringsprojekt'   } },
+  { id: 'tuulivoima_maa',
+    icon: '🌬️',
+    name: { FI: 'Tuulivoima (maa)',        EN: 'Wind Power (onshore)',        SE: 'Vindkraft (land)'         },
+    sub:  { FI: 'Maalle sijoitettava hanke', EN: 'Onshore wind project',     SE: 'Landbaserat vindprojekt'  } },
+  { id: 'tuulivoima_meri',
+    icon: '⛵',
+    name: { FI: 'Tuulivoima (meri)',       EN: 'Wind Power (offshore)',       SE: 'Vindkraft (hav)'          },
+    sub:  { FI: 'Offshore-tuulivoimahanke',EN: 'Offshore wind project',       SE: 'Havsbaserat vindprojekt'  } },
+  { id: 'aurinkovoima',
+    icon: '☀️',
+    name: { FI: 'Aurinkovoima',        EN: 'Solar Power',          SE: 'Solenergi'          },
+    sub:  { FI: 'Aurinkopaneelihanke', EN: 'Solar panel project',  SE: 'Solpanelsprojekt'   } },
+  { id: 'smr',
+    icon: '⚛️',
+    name: { FI: 'SMR',                    EN: 'SMR',                              SE: 'SMR'                       },
+    sub:  { FI: 'Pienydinreaktorihanke',  EN: 'Small modular reactor project',    SE: 'Liten modulär reaktor'     } },
+  { id: 'vesivoima',
+    icon: '💧',
+    name: { FI: 'Vesivoima',         EN: 'Hydropower',          SE: 'Vattenkraft'          },
+    sub:  { FI: 'Vesivoimalahanke',  EN: 'Hydropower project',  SE: 'Vattenkraftsprojekt'  } },
+  { id: 'maatalous',
+    icon: '🌾',
+    name: { FI: 'Maatalousrakennus',     EN: 'Agricultural Building', SE: 'Jordbruksbyggnad' },
+    sub:  { FI: 'Maatalousrakennushanke',EN: 'Agricultural project',  SE: 'Jordbruksprojekt' } },
+  { id: 'liikerakennus',
+    icon: '🏬',
+    name: { FI: 'Liikerakennus',     EN: 'Commercial Building', SE: 'Affärsbyggnad' },
+    sub:  { FI: 'Liikerakennushanke',EN: 'Commercial project',  SE: 'Affärsprojekt'  } },
+  { id: 'muu',
+    icon: '📋',
+    name: { FI: 'Muu hanke',        EN: 'Other Project',       SE: 'Annat projekt'     },
+    sub:  { FI: 'Muut hanketyypit', EN: 'Other project types', SE: 'Andra projekttyper'} },
 ];
+
+function ptName(pt) {
+  const n = (pt || {}).name;
+  if (!n) return '';
+  return typeof n === 'object' ? (n[activeLang] || n.FI) : n;
+}
+function ptSub(pt) {
+  const s = (pt || {}).sub;
+  if (!s) return '';
+  return typeof s === 'object' ? (s[activeLang] || s.FI) : s;
+}
 
 // Form field definitions per project type
 // apiKey: maps to ApplicationRequest field; null = extra field, not sent to API
@@ -2164,18 +2218,19 @@ const MAP_TYPE_UI = {
 // ─────────────────────────────────────────────
 // Render project type cards
 // ─────────────────────────────────────────────
-(function renderCards() {
+function renderCards() {
   const grid = document.getElementById('gen-cards-grid');
   if (!grid) return;
   grid.innerHTML = PROJECT_TYPES.map(pt => `
     <div class="gen-card" data-type="${pt.id}" onclick="selectProjectType('${pt.id}')">
       <div class="gen-card-icon">${pt.icon}</div>
-      <div class="gen-card-name">${pt.name}</div>
-      <div class="gen-card-sub">${pt.sub}</div>
+      <div class="gen-card-name">${ptName(pt)}</div>
+      <div class="gen-card-sub">${ptSub(pt)}</div>
       ${pt.badge ? `<div class="gen-card-badge">${pt.badge}</div>` : ''}
     </div>
   `).join('');
-})();
+}
+renderCards();
 
 // ─────────────────────────────────────────────
 // Generator: project type selection + form render
@@ -2784,7 +2839,7 @@ async function runAnalysis() {
   const btn = document.getElementById('btn-analyze');
   setLoading(btn, true);
   const _mType = document.getElementById('map-hanketyyppi')?.value || '';
-  const _mLabel = _mType ? ((PROJECT_TYPES.find(pt => pt.id === _mType) || {}).name || _mType) + ' — ' : '';
+  const _mLabel = _mType ? (ptName(PROJECT_TYPES.find(pt => pt.id === _mType)) || _mType) + ' — ' : '';
   log(`Suoritetaan ${_mLabel}maankäyttöselvitys (kaikki datalähteet)…`, 'info');
 
   try {
@@ -2960,7 +3015,7 @@ function switchMapType(type) {
   const labelEl = document.getElementById('analysis-type-label');
   const textEl  = document.getElementById('analysis-type-text');
   if (type) {
-    const typeName = (PROJECT_TYPES.find(pt => pt.id === type) || {}).name || type;
+    const typeName = ptName(PROJECT_TYPES.find(pt => pt.id === type)) || type;
     const minM = cfg.settlement_min >= 1000
       ? `Asutus min ${cfg.settlement_min / 1000} km`
       : cfg.settlement_min >= 200
@@ -3063,7 +3118,7 @@ async function generateReport() {
     const manualPintaAla    = manualPintaAlaRaw ? parseFloat(manualPintaAlaRaw) || null : null;
 
     const mapType  = document.getElementById('map-hanketyyppi')?.value || 'hanke';
-    const typeName = (PROJECT_TYPES.find(pt => pt.id === mapType) || {}).name || mapType;
+    const typeName = ptName(PROJECT_TYPES.find(pt => pt.id === mapType)) || mapType;
 
     const projPayload = {
       kiinteistotunnus: kt,
