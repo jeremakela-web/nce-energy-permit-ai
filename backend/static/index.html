@@ -1701,6 +1701,43 @@ const TRANSLATIONS = {
     gf_ph_sijainti:   'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista',
     gf_ph_osoite:     'Hakijan postiosoite',
     gf_ph_vesisto:    'Vesistön nimi',
+    // Status/button messages
+    btn_gen_loading:  'Generoidaan…',
+    btn_gen_done:     'PDF ladattu!',
+    btn_gen_retry:    'Yritä uudelleen',
+    // Progress steps
+    progress_rag:     'Haetaan RAG-konteksti…',
+    progress_claude:  'Generoidaan tekstiä (Claude)…',
+    progress_pdf:     'Rakennetaan PDF…',
+    progress_final:   'Viimeistellään…',
+    progress_done:    'PDF valmis!',
+    // Proofread
+    proof_running:    '🔄 Oikoluku käynnissä taustalla…',
+    proof_running_sub:'Tarkistettu versio tarjotaan ladattavaksi muutaman minuutin kuluttua.',
+    proof_done_title: 'Oikoluku valmis',
+    proof_dl:         'Lataa tarkistettu versio',
+    proof_failed:     '⚠️ Oikoluku epäonnistui',
+    err_timeout:      'Aikakatkaisu (>300s) — yritä uudelleen',
+    // Dropdown option labels
+    opt_vaihe_valitse:     '— Valitse —',
+    opt_vaihe_esiselvitys: 'Esiselvitys',
+    opt_vaihe_lupavaihe:   'Lupavaihe',
+    opt_vaihe_rakentaminen:'Rakentaminen',
+    opt_vir_valitse:  '— Valitse —',
+    opt_vir_kunta:    'Kunta (rakennuslupa)',
+    opt_vir_ely:      'ELY-keskus (YVA)',
+    opt_vir_stuk:     'STUK (ydinlupa)',
+    opt_vir_bf:       'Business Finland (avustushakemus)',
+    opt_vir_fingrid:  'Fingrid (verkkoliityntä)',
+    opt_vir_avi:      'AVI (ympäristölupa/vesilupa)',
+    opt_vir_tem:      'TEM (periaatepäätös)',
+    opt_vir_muu:      'Muu',
+    // Permits box
+    phase_esiselvitys:    'Esiselvitysvaihe',
+    phase_lupavaihe:      'Lupavaihe',
+    phase_rakentaminen:   'Rakentamisvaihe',
+    permits_viranomaiset: 'Viranomaiset &amp; luvat',
+    permits_luvat:        'Tarvittavat luvat:',
   },
   EN: {
     tab_generator:        'Permit Document Service',
@@ -1841,6 +1878,43 @@ const TRANSLATIONS = {
     gf_ph_sijainti:   'Brief description of location and environmental impacts',
     gf_ph_osoite:     "Applicant's postal address",
     gf_ph_vesisto:    'Name of water body',
+    // Status/button messages
+    btn_gen_loading:  'Generating…',
+    btn_gen_done:     'PDF downloaded!',
+    btn_gen_retry:    'Try again',
+    // Progress steps
+    progress_rag:     'Fetching RAG context…',
+    progress_claude:  'Generating text (Claude)…',
+    progress_pdf:     'Building PDF…',
+    progress_final:   'Finalising…',
+    progress_done:    'PDF ready!',
+    // Proofread
+    proof_running:    '🔄 Proofreading running in background…',
+    proof_running_sub:'A proofread version will be offered for download in a few minutes.',
+    proof_done_title: 'Proofreading complete',
+    proof_dl:         'Download proofread version',
+    proof_failed:     '⚠️ Proofreading failed',
+    err_timeout:      'Timeout (>300s) — please try again',
+    // Dropdown option labels
+    opt_vaihe_valitse:     '— Select —',
+    opt_vaihe_esiselvitys: 'Pre-study',
+    opt_vaihe_lupavaihe:   'Permit phase',
+    opt_vaihe_rakentaminen:'Construction',
+    opt_vir_valitse:  '— Select —',
+    opt_vir_kunta:    'Municipality (building permit)',
+    opt_vir_ely:      'ELY Centre (EIA)',
+    opt_vir_stuk:     'STUK (nuclear permit)',
+    opt_vir_bf:       'Business Finland (grant application)',
+    opt_vir_fingrid:  'Fingrid (grid connection)',
+    opt_vir_avi:      'AVI (environmental/water permit)',
+    opt_vir_tem:      'TEM (principle decision)',
+    opt_vir_muu:      'Other',
+    // Permits box
+    phase_esiselvitys:    'Pre-study phase',
+    phase_lupavaihe:      'Permit phase',
+    phase_rakentaminen:   'Construction phase',
+    permits_viranomaiset: 'Authorities &amp; permits',
+    permits_luvat:        'Required permits:',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
@@ -1981,6 +2055,43 @@ const TRANSLATIONS = {
     gf_ph_sijainti:   'Kort beskrivning av plats och miljöpåverkan',
     gf_ph_osoite:     'Sökandens postadress',
     gf_ph_vesisto:    'Vattendragets namn',
+    // Status/button messages
+    btn_gen_loading:  'Genererar…',
+    btn_gen_done:     'PDF nedladdad!',
+    btn_gen_retry:    'Försök igen',
+    // Progress steps
+    progress_rag:     'Hämtar RAG-kontext…',
+    progress_claude:  'Genererar text (Claude)…',
+    progress_pdf:     'Bygger PDF…',
+    progress_final:   'Slutför…',
+    progress_done:    'PDF klar!',
+    // Proofread
+    proof_running:    '🔄 Korrekturläsning körs i bakgrunden…',
+    proof_running_sub:'En korrekturläst version erbjuds för nedladdning om några minuter.',
+    proof_done_title: 'Korrekturläsning klar',
+    proof_dl:         'Ladda ned korrekturläst version',
+    proof_failed:     '⚠️ Korrekturläsningen misslyckades',
+    err_timeout:      'Timeout (>300s) — försök igen',
+    // Dropdown option labels
+    opt_vaihe_valitse:     '— Välj —',
+    opt_vaihe_esiselvitys: 'Förstudie',
+    opt_vaihe_lupavaihe:   'Tillståndsfas',
+    opt_vaihe_rakentaminen:'Byggfas',
+    opt_vir_valitse:  '— Välj —',
+    opt_vir_kunta:    'Kommun (bygglov)',
+    opt_vir_ely:      'ELY-central (MKB)',
+    opt_vir_stuk:     'STUK (kärnkraftstillstånd)',
+    opt_vir_bf:       'Business Finland (bidragsansökan)',
+    opt_vir_fingrid:  'Fingrid (nätanslutning)',
+    opt_vir_avi:      'AVI (miljö-/vattentillstånd)',
+    opt_vir_tem:      'TEM (principbeslut)',
+    opt_vir_muu:      'Annat',
+    // Permits box
+    phase_esiselvitys:    'Förstudiesfas',
+    phase_lupavaihe:      'Tillståndsfas',
+    phase_rakentaminen:   'Byggfas',
+    permits_viranomaiset: 'Myndigheter &amp; tillstånd',
+    permits_luvat:        'Nödvändiga tillstånd:',
   },
 };
 
@@ -2017,6 +2128,21 @@ function tLupa(fi) {
   return (LUPA_I18N[fi] && LUPA_I18N[fi][activeLang]) || fi;
 }
 
+function _saveFormValues() {
+  const vals = {};
+  document.querySelectorAll('#gen-form-section input, #gen-form-section select, #gen-form-section textarea').forEach(el => {
+    if (el.id) vals[el.id] = el.value;
+  });
+  return vals;
+}
+
+function _restoreFormValues(vals) {
+  Object.entries(vals).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
 function setLang(lang) {
   activeLang = lang;
   try { localStorage.setItem('nce_lang', lang); } catch (_) {}
@@ -2038,10 +2164,12 @@ function setLang(lang) {
   // Update map tab selector hint
   const mapSel = document.getElementById('map-hanketyyppi');
   if (mapSel && mapSel.options[0]) mapSel.options[0].text = t('map_select_hint');
-  // Update permit tags in active form
-  document.querySelectorAll('[data-lupa-fi]').forEach(el => {
-    el.textContent = tLupa(el.dataset.lupaFi);
-  });
+  // Re-render form to translate dropdown options, then restore values
+  if (selectedProjectType) {
+    const savedVals = _saveFormValues();
+    selectProjectType(selectedProjectType);
+    _restoreFormValues(savedVals);
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -2152,8 +2280,27 @@ function ptSub(pt) {
 
 // Form field definitions per project type
 // apiKey: maps to ApplicationRequest field; null = extra field, not sent to API
-const _VIRANOMAINEN_OPTS = ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'];
-const _VAIHE_OPTS = ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'];
+function _VAIHE_OPTS() {
+  return [
+    { value: '— Valitse —',  label: t('opt_vaihe_valitse') },
+    { value: 'Esiselvitys',  label: t('opt_vaihe_esiselvitys') },
+    { value: 'Lupavaihe',    label: t('opt_vaihe_lupavaihe') },
+    { value: 'Rakentaminen', label: t('opt_vaihe_rakentaminen') },
+  ];
+}
+function _VIRANOMAINEN_OPTS() {
+  return [
+    { value: '— Valitse —',                      label: t('opt_vir_valitse') },
+    { value: 'Kunta (rakennuslupa)',              label: t('opt_vir_kunta') },
+    { value: 'ELY-keskus (YVA)',                  label: t('opt_vir_ely') },
+    { value: 'STUK (ydinlupa)',                   label: t('opt_vir_stuk') },
+    { value: 'Business Finland (avustushakemus)', label: t('opt_vir_bf') },
+    { value: 'Fingrid (verkkoliityntä)',          label: t('opt_vir_fingrid') },
+    { value: 'AVI (ympäristölupa/vesilupa)',      label: t('opt_vir_avi') },
+    { value: 'TEM (periaatepäätös)',              label: t('opt_vir_tem') },
+    { value: 'Muu',                               label: t('opt_vir_muu') },
+  ];
+}
 
 const HANKE_FIELDS = {
   asuinrakennus: {
@@ -2478,9 +2625,13 @@ function selectProjectType(typeId) {
     const phKey  = f.phKey   || ('gf_ph_'  + idSlug);
     const lblTxt = t(lblKey);
     if (f.type === 'select') {
-      const opts = f.options.map(o =>
-        `<option value="${o.replace(/"/g, '&quot;')}">${o}</option>`
-      ).join('');
+      const rawOpts = typeof f.options === 'function' ? f.options() : f.options;
+      const opts = rawOpts.map(o => {
+        if (typeof o === 'string') return `<option value="${o.replace(/"/g, '&quot;')}">${o}</option>`;
+        const v = o.value.replace(/"/g, '&quot;');
+        const l = (o.label || o.value).replace(/</g, '&lt;');
+        return `<option value="${v}">${l}</option>`;
+      }).join('');
       return `<label data-i18n="${lblKey}">${lblTxt}</label><select id="${f.id}">${opts}</select>`;
     }
     let attrs = `type="${f.type}"`;
@@ -2580,7 +2731,11 @@ function _hankePhaseChanged(typeId, phase) {
     const submitRow = document.querySelector('.gen-submit-row');
     if (submitRow) submitRow.parentNode.insertBefore(box, submitRow);
   }
-  const phaseLabel = { esiselvitys: 'Esiselvitysvaihe', lupavaihe: 'Lupavaihe', rakentaminen: 'Rakentamisvaihe' }[phase] || phase;
+  const phaseLabel = {
+    esiselvitys:  t('phase_esiselvitys'),
+    lupavaihe:    t('phase_lupavaihe'),
+    rakentaminen: t('phase_rakentaminen'),
+  }[phase] || phase;
   const virHtml  = cfg.viranomaiset.map(v =>
     `<span class="gf-permits-lupa-tag" style="background:rgba(0,194,168,0.18);color:#00C2A8;">${v}</span>`
   ).join('');
@@ -2588,9 +2743,9 @@ function _hankePhaseChanged(typeId, phase) {
     `<span class="gf-permits-lupa-tag">${l}</span>`
   ).join('');
   box.innerHTML = `
-    <div class="gf-permits-heading">Viranomaiset &amp; luvat — ${phaseLabel}</div>
+    <div class="gf-permits-heading">${t('permits_viranomaiset')} — ${phaseLabel}</div>
     <div class="gf-permits-luvat" style="margin-bottom:6px;">${virHtml}</div>
-    <div class="gf-permits-viranomaiset">Tarvittavat luvat:</div>
+    <div class="gf-permits-viranomaiset">${t('permits_luvat')}</div>
     <div class="gf-permits-luvat">${lupaHtml}</div>
   `;
 }
@@ -2631,7 +2786,7 @@ async function submitGeneratorForm() {
   const btn = document.getElementById('gen-main-submit');
   if (!btn) return;
   btn.disabled = true;
-  btn.innerHTML = '&#x23F3; Generoidaan…';
+  btn.innerHTML = `&#x23F3; ${t('btn_gen_loading')}`;
 
   log(`Generoidaan asiakirjaluonnos: ${selectedProjectType} / ${payload.kunta}…`, 'info');
 
@@ -2642,10 +2797,10 @@ async function submitGeneratorForm() {
   const progPct  = document.getElementById('gen-progress-pct');
   const proofBox = document.getElementById('gen-proofread-status');
   const _STEPS   = [
-    [5,  'Haetaan RAG-konteksti…'],
-    [25, 'Generoidaan tekstiä (Claude)…'],
-    [70, 'Rakennetaan PDF…'],
-    [90, 'Viimeistellään…'],
+    [5,  'progress_rag'],
+    [25, 'progress_claude'],
+    [70, 'progress_pdf'],
+    [90, 'progress_final'],
   ];
   let _stepIdx = 0;
   if (progWrap) progWrap.classList.add('visible');
@@ -2653,9 +2808,9 @@ async function submitGeneratorForm() {
   if (proofBox) proofBox.style.display = 'none';
   const _progTimer = setInterval(() => {
     if (_stepIdx < _STEPS.length) {
-      const [pct, msg] = _STEPS[_stepIdx++];
+      const [pct, key] = _STEPS[_stepIdx++];
       if (progFill) progFill.style.width = pct + '%';
-      if (progMsg)  progMsg.textContent  = msg;
+      if (progMsg)  progMsg.textContent  = t(key);
       if (progPct)  progPct.textContent  = pct + '%';
     }
   }, 4000);
@@ -2674,7 +2829,7 @@ async function submitGeneratorForm() {
     clearInterval(_progTimer);
     if (progFill) progFill.style.width = '100%';
     if (progPct)  progPct.textContent  = '100%';
-    if (progMsg)  progMsg.textContent  = 'PDF valmis!';
+    if (progMsg)  progMsg.textContent  = t('progress_done');
 
     if (!resp.ok) {
       const errText = await resp.text().catch(() => '');
@@ -2691,7 +2846,7 @@ async function submitGeneratorForm() {
     a.click();
     URL.revokeObjectURL(url);
 
-    btn.innerHTML = '&#x2705; PDF ladattu!';
+    btn.innerHTML = `&#x2705; ${t('btn_gen_done')}`;
     btn.style.background = '#2a7a4a';
     setTimeout(() => {
       btn.disabled = false;
@@ -2705,7 +2860,7 @@ async function submitGeneratorForm() {
     // Oikolukupolling
     if (jobId && proofBox) {
       proofBox.style.display = 'block';
-      proofBox.innerHTML = '🔄 <strong>Oikoluku käynnissä taustalla…</strong><br><span style="font-size:0.73rem;color:#b0b8c8;">Tarkistettu versio tarjotaan ladattavaksi muutaman minuutin kuluttua.</span>';
+      proofBox.innerHTML = `<strong>${t('proof_running')}</strong><br><span style="font-size:0.73rem;color:#b0b8c8;">${t('proof_running_sub')}</span>`;
       const poll = setInterval(async () => {
         try {
           const sr = await fetch(`${API_BASE}/api/proofread/${jobId}`);
@@ -2717,15 +2872,15 @@ async function submitGeneratorForm() {
             proofBox.style.borderColor = 'rgba(76,175,80,0.4)';
             proofBox.style.background  = 'rgba(76,175,80,0.08)';
             proofBox.style.color       = '#80e090';
-            proofBox.innerHTML = `✅ <strong>Oikoluku valmis</strong><br>
+            proofBox.innerHTML = `✅ <strong>${t('proof_done_title')}</strong><br>
               <a href="${API_BASE}/api/proofread/${jobId}/download"
                  style="color:#64b5f6;font-weight:600;"
-                 download="${fname}">&#x2B07; Lataa tarkistettu versio</a>`;
+                 download="${fname}">&#x2B07; ${t('proof_dl')}</a>`;
           } else if (sd.status === 'error') {
             clearInterval(poll);
             proofBox.style.borderColor = 'rgba(233,69,96,0.4)';
             proofBox.style.color       = '#e94560';
-            proofBox.innerHTML = `⚠️ Oikoluku epäonnistui: ${sd.error || ''}`;
+            proofBox.innerHTML = `${t('proof_failed')}: ${sd.error || ''}`;
           }
         } catch (_e) { clearInterval(poll); }
       }, 7000);
@@ -2737,13 +2892,13 @@ async function submitGeneratorForm() {
     clearInterval(_progTimer);
     if (progWrap) progWrap.classList.remove('visible');
     btn.disabled = false;
-    btn.innerHTML = '&#x274C; Yritä uudelleen';
+    btn.innerHTML = `&#x274C; ${t('btn_gen_retry')}`;
     btn.style.background = '#7a1a2a';
     setTimeout(() => {
       btn.innerHTML = `&#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>`;
       btn.style.background = '';
     }, 4000);
-    const msg = err.name === 'AbortError' ? 'Aikakatkaisu (>300s) — yritä uudelleen' : err.message;
+    const msg = err.name === 'AbortError' ? t('err_timeout') : err.message;
     console.error('[Generator] virhe:', err);
     log(`Generaattori virhe: ${msg}`, 'err');
     alert(`Virhe: ${msg}`);

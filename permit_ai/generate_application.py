@@ -568,16 +568,328 @@ _SYSTEM = (
 _LANG_INSTRUCTIONS: dict[str, str] = {
     "FI": "",
     "EN": (
-        "IMPORTANT: Write this entire permit application draft in English. "
-        "All section titles, body text, and explanations must be in English. "
-        "Legal references may keep Finnish statute numbers but add an English explanation.\n\n"
+        "CRITICAL LANGUAGE REQUIREMENT: You MUST write EVERY word of this permit application "
+        "in English. ALL headings, paragraphs, bullet points, footnotes, and notes must be in "
+        "English. Do NOT include any Finnish words or sentences in the output. "
+        "Finnish statute numbers (e.g. YSL 527/2014, MRL 132/1999) may appear as legal identifiers "
+        "only — always add the English act name next to them. Finnish proper nouns such as city names, "
+        "company names and authority acronyms (ELY, STUK, Luova, Fingrid, Traficom) are acceptable "
+        "as proper names only.\n\n"
     ),
     "SE": (
-        "VIKTIGT: Skriv hela detta tillståndsansökningsutkast på svenska. "
-        "Alla rubrikerna, brödtexten och förklaringarna ska vara på svenska. "
-        "Lagstiftningshänvisningar kan behålla de finska lagrummen men lägg till en svensk förklaring.\n\n"
+        "KRITISKT SPRÅKKRAV: Du MÅSTE skriva VARJE ord i denna tillståndsansökan på svenska. "
+        "ALLA rubriker, stycken, punktlistor, fotnoter och anmärkningar ska vara på svenska. "
+        "Inkludera INTE finska ord eller meningar i utdata. "
+        "Finska lagrumsnummer (t.ex. YSL 527/2014, MRL 132/1999) får förekomma som juridiska "
+        "identifierare — lägg alltid till det svenska lagnamnet bredvid dem. Finska egennamn "
+        "som stadsnamn, företagsnamn och myndighetsförkortningar (ELY, STUK, Luova, Fingrid, Traficom) "
+        "är godtagbara enbart som egennamn.\n\n"
     ),
 }
+
+_WRITE_INSTRUCTION: dict[str, str] = {
+    "FI": "Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:",
+    "EN": "Write the following four sections in English, clearly separated by headings:",
+    "SE": "Skriv följande fyra avsnitt på svenska, tydligt åtskilda med rubriker:",
+}
+
+_PROMPT_HEADERS: dict[str, dict[str, str]] = {
+    "FI": {
+        "intro":        "Laadi lupahakemusluonnos seuraavalle hankkeelle:",
+        "rag_intro":    "Alla on relevanttia dokumentaatiota (Fingrid, Tukes, Ympäristöministeriö):",
+        "kuvaus":       "HANKKEEN KUVAUS",
+        "perustelut":   "PERUSTELUT JA TARVE",
+        "luvat":        "LUPAMENETTELYJEN KUVAUS",
+        "toimenpiteet": "SEURAAVAT TOIMENPITEET",
+        "kuvaus_inst":  ("Kirjoita 3–5 kappaleen kuvaus hankkeesta: tarkoitus, tekniset tiedot, "
+                         "sijainti, liityntä verkkoon ja ympäristövaikutukset. Mainitse hanketyypille "
+                         "tyypilliset tekniset parametrit."),
+        "kuvaus_extra": " Ota huomioon annettu sijainti- ja ympäristövaikutustieto.",
+        "perustelut_inst": ("Kirjoita 2–3 kappaleen perustelu miksi hanke on tarpeellinen "
+                            "(energiajärjestelmän näkökulma, Suomen ilmastotavoitteet, "
+                            "aluetaloudelliset vaikutukset)."),
+        "luvat_inst":   ("Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa "
+                         "koskee ja miksi se vaaditaan tälle hankkeelle."),
+        "luvat_extra":  " Viittaa erityisesti kohdeviranomaisen {auth} prosesseihin ja vaatimuksiin.",
+        "toimenpiteet_first": ("Kunnan rakennusvalvonnan ennakkoneuvottelu + kaavatarkastus — "
+                               "Hakija / {kunta}n rakennusvalvonta — 1–2 viikon sisällä"),
+        "toimenpiteet_inst": ("Ensimmäinen toimenpide on AINA: \"{first}\".\n"
+                              "Listaa sen jälkeen 5 muuta konkreettista askelta aikatauluineen "
+                              "(kk tarkkuudella)."),
+        "toimenpiteet_vaihe": " Ota huomioon hankkeen nykyinen vaihe: {vaihe}.",
+        "viranomainen_ohje":  ("TÄRKEÄÄ: Hakemus osoitetaan viranomaiselle '{auth}'. "
+                               "Mukauta hakemuksen sisältö, rakenne ja kieli sen vaatimuksiin sopivaksi. "
+                               "Viittaa kyseisen viranomaisen ohjeisiin, lomakkeisiin ja vaatimuksiin."),
+    },
+    "EN": {
+        "intro":        "Write a permit application draft for the following project:",
+        "rag_intro":    "Below is relevant documentation (Fingrid, Tukes, Ministry of the Environment):",
+        "kuvaus":       "PROJECT DESCRIPTION",
+        "perustelut":   "JUSTIFICATION AND NEED",
+        "luvat":        "PERMIT PROCEDURE DESCRIPTION",
+        "toimenpiteet": "NEXT STEPS",
+        "kuvaus_inst":  ("Write a 3–5 paragraph description of the project: purpose, technical details, "
+                         "location, grid connection and environmental impacts. Include typical technical "
+                         "parameters for this project type."),
+        "kuvaus_extra": " Take into account the provided location and environmental impact information.",
+        "perustelut_inst": ("Write a 2–3 paragraph justification for why the project is necessary "
+                            "(energy system perspective, Finland's climate targets, "
+                            "regional economic impacts)."),
+        "luvat_inst":   ("Briefly explain (1–2 sentences per permit) what each required permit covers "
+                         "and why it is required for this project."),
+        "luvat_extra":  " Refer especially to the target authority {auth}'s processes and requirements.",
+        "toimenpiteet_first": ("Pre-consultation with municipality building control + zoning review — "
+                               "Applicant / {kunta} Building Control — within 1–2 weeks"),
+        "toimenpiteet_inst": ("The first step is ALWAYS: \"{first}\".\n"
+                              "Then list 5 more concrete steps with timelines (in months)."),
+        "toimenpiteet_vaihe": " Take into account the current project phase: {vaihe}.",
+        "viranomainen_ohje":  ("IMPORTANT: The application is addressed to authority '{auth}'. "
+                               "Adapt the content, structure and language to meet its requirements. "
+                               "Refer to that authority's guidelines, forms and requirements."),
+    },
+    "SE": {
+        "intro":        "Skriv ett tillståndsansökningsutkast för följande projekt:",
+        "rag_intro":    "Nedan finns relevant dokumentation (Fingrid, Tukes, Miljöministeriet):",
+        "kuvaus":       "PROJEKTBESKRIVNING",
+        "perustelut":   "MOTIVERING OCH BEHOV",
+        "luvat":        "TILLSTÅNDSFÖRFARANDEN BESKRIVNING",
+        "toimenpiteet": "NÄSTA STEG",
+        "kuvaus_inst":  ("Skriv en beskrivning på 3–5 stycken av projektet: syfte, tekniska detaljer, "
+                         "plats, nätanslutning och miljöpåverkan. Inkludera typiska tekniska parametrar "
+                         "för denna projekttyp."),
+        "kuvaus_extra": " Beakta den angivna plats- och miljöpåverkansinformationen.",
+        "perustelut_inst": ("Skriv en 2–3 stycken motivering till varför projektet är nödvändigt "
+                            "(energisystemets perspektiv, Finlands klimatmål, "
+                            "regionala ekonomiska effekter)."),
+        "luvat_inst":   ("Förklara kortfattat (1–2 meningar per tillstånd) vad varje nödvändigt "
+                         "tillstånd gäller och varför det krävs för detta projekt."),
+        "luvat_extra":  " Hänvisa särskilt till målmyndighetens {auth} processer och krav.",
+        "toimenpiteet_first": ("Förkonsultation med kommunens byggnadstillsyn + planläggningsöversyn — "
+                               "Sökande / {kunta}s byggnadstillsyn — inom 1–2 veckor"),
+        "toimenpiteet_inst": ("Det första steget är ALLTID: \"{first}\".\n"
+                              "Lista sedan 5 fler konkreta steg med tidslinjer (i månader)."),
+        "toimenpiteet_vaihe": " Beakta projektets nuvarande fas: {vaihe}.",
+        "viranomainen_ohje":  ("VIKTIGT: Ansökan riktas till myndigheten '{auth}'. "
+                               "Anpassa innehåll, struktur och språk för att uppfylla dess krav. "
+                               "Hänvisa till myndighetens riktlinjer, formulär och krav."),
+    },
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Käännöstaulukot viranomaisille, luvannimille, lakiviitteille ja liitteille
+# ─────────────────────────────────────────────────────────────────────────────
+
+_AUTHORITY_TRANS: dict[str, dict[str, str]] = {
+    "Lupa- ja valvontavirasto (Luova)":  {"EN": "Licensing and Supervisory Authority (Luova)", "SE": "Tillstånds- och tillsynsverket (Luova)"},
+    "Luova":                              {"EN": "Luova (Licensing Authority)",                  "SE": "Luova (tillståndsmyndighet)"},
+    "Kunta / rakennusvalvonta":           {"EN": "Municipality / Building Control",              "SE": "Kommun / byggnadstillsyn"},
+    "Kunta / hakija":                     {"EN": "Municipality / Applicant",                     "SE": "Kommun / sökande"},
+    "Paikallinen pelastuslaitos":         {"EN": "Local Fire and Rescue Service",                "SE": "Lokal räddningstjänst"},
+    "Jakeluverkkoyhtiö / Fingrid Oyj":    {"EN": "Distribution network operator / Fingrid Oyj", "SE": "Distributionsnätbolag / Fingrid Oyj"},
+    "Jakeluverkkoyhtiö / Fingrid":        {"EN": "Distribution network operator / Fingrid",      "SE": "Distributionsnätbolag / Fingrid"},
+    "Jakeluverkkoyhtiö":                  {"EN": "Distribution network operator",                "SE": "Distributionsnätbolag"},
+    "Kunta":                              {"EN": "Municipality",                                  "SE": "Kommun"},
+    "ELY-keskus / Luova":                 {"EN": "ELY Centre / Luova",                           "SE": "NTM-centralen / Luova"},
+    "ELY-keskus":                         {"EN": "ELY Centre",                                   "SE": "NTM-centralen"},
+    "Fingrid Oyj / jakelu":               {"EN": "Fingrid Oyj / distribution",                   "SE": "Fingrid Oyj / distribution"},
+    "Fingrid Oyj":                        {"EN": "Fingrid Oyj",                                   "SE": "Fingrid Oyj"},
+    "Traficom":                           {"EN": "Traficom (Transport and Communications Agency)", "SE": "Traficom"},
+    "Maanomistajat":                      {"EN": "Landowners",                                    "SE": "Markägare"},
+    "Valtioneuvosto":                     {"EN": "Council of State",                              "SE": "Statsrådet"},
+    "TEM / ELY-keskus":                   {"EN": "Ministry of Economic Affairs / ELY Centre",    "SE": "ANM / NTM-centralen"},
+    "STUK":                               {"EN": "STUK (Radiation and Nuclear Safety Authority)", "SE": "STUK (strålnings- och kärnsäkerhetsmyndigheten)"},
+    "Puolustusvoimat / PLM":              {"EN": "Finnish Defence Forces / Ministry of Defence",  "SE": "Försvarsmakten / försvarsministeriet"},
+    "Valtio / Metsähallitus":             {"EN": "State / Metsähallitus (Forests and Parks Service)", "SE": "Staten / Forststyrelsen"},
+    "Luova / kunta":                      {"EN": "Luova / Municipality",                         "SE": "Luova / Kommun"},
+    "Kunta / maanomistajat":              {"EN": "Municipality / Landowners",                    "SE": "Kommun / markägare"},
+    "Pelastuslaitos":                     {"EN": "Rescue Services / Fire Department",            "SE": "Räddningstjänsten"},
+    "AVI / Luova":                        {"EN": "AVI / Luova (Regional State Administrative Agency)", "SE": "RFV / Luova"},
+}
+
+_LUPA_TRANS: dict[str, dict[str, str]] = {
+    "Ympäristölupa":                                {"EN": "Environmental permit",                              "SE": "Miljötillstånd"},
+    "Ympäristölupa (tarvitt.)":                     {"EN": "Environmental permit (if required)",               "SE": "Miljötillstånd (vid behov)"},
+    "Ympäristölupa (tarvitt. ≥1 ha)":              {"EN": "Environmental permit (if required, ≥1 ha)",        "SE": "Miljötillstånd (vid behov, ≥1 ha)"},
+    "Ympäristölupa (BESS-komponentti)":             {"EN": "Environmental permit (BESS component)",            "SE": "Miljötillstånd (BESS-komponent)"},
+    "Rakennuslupa":                                  {"EN": "Building permit",                                  "SE": "Bygglov"},
+    "Rakennuslupa tai toimenpidelupa":               {"EN": "Building permit or action permit",                 "SE": "Bygglov eller åtgärdstillstånd"},
+    "Rakennuslupa (tuulivoimala)":                   {"EN": "Building permit (wind turbine)",                   "SE": "Bygglov (vindkraftverk)"},
+    "Rakennus-/toimenpidelupa (PV + BESS)":          {"EN": "Building/action permit (PV + BESS)",              "SE": "Bygglov/åtgärdstillstånd (PV + BESS)"},
+    "Naapurikuuleminen":                             {"EN": "Neighbour consultation",                           "SE": "Grannehörande"},
+    "Pelastussuunnitelma / lausunto":                {"EN": "Emergency plan / statement",                       "SE": "Räddningsplan / utlåtande"},
+    "Pelastussuunnitelma / lausunto (BESS)":         {"EN": "Emergency plan / statement (BESS)",                "SE": "Räddningsplan / utlåtande (BESS)"},
+    "Verkkoliityntäsopimus":                         {"EN": "Grid connection agreement",                        "SE": "Nätanslutningsavtal"},
+    "Maa-aineslupa (tarvitt.)":                      {"EN": "Soil extraction permit (if required)",            "SE": "Marktäktstillstånd (vid behov)"},
+    "YVA-menettely (≥10 MW / ≥5 voimalaa)":         {"EN": "EIA procedure (≥10 MW / ≥5 turbines)",            "SE": "MKB-förfarande (≥10 MW / ≥5 verk)"},
+    "YVA-menettely (kynnyksen ylittyessä)":          {"EN": "EIA procedure (when threshold exceeded)",         "SE": "MKB-förfarande (vid tröskelöverskridning)"},
+    "YVA-menettely (tarvitt.)":                      {"EN": "EIA procedure (if required)",                     "SE": "MKB-förfarande (vid behov)"},
+    "YVA-menettely":                                 {"EN": "EIA procedure",                                    "SE": "MKB-förfarande"},
+    "Osayleiskaava tai asemakaava":                  {"EN": "Local master plan or detailed plan",               "SE": "Delgeneralplan eller detaljplan"},
+    "Osayleiskaava / asemakaava":                    {"EN": "Local master plan / detailed plan",                "SE": "Delgeneralplan / detaljplan"},
+    "Lentoestevalolupa":                             {"EN": "Aviation obstacle lighting permit",                "SE": "Luftfartshinderlystillstånd"},
+    "Lentoestevalolupa (tuulivoimala)":              {"EN": "Aviation obstacle lighting permit (wind turbine)", "SE": "Luftfartshinderlystillstånd (vindkraftverk)"},
+    "Maanvuokrasopimukset":                          {"EN": "Land lease agreements",                            "SE": "Arrendeavtal"},
+    "Maanvuokra / merialueen käyttöoik.":            {"EN": "Land lease / sea area usage right",               "SE": "Arrendeavtal / havsområdesanvändningsrätt"},
+    "Vesilupa":                                      {"EN": "Water permit",                                     "SE": "Vattentillstånd"},
+    "Vesilupa (jäähdytysvesi)":                      {"EN": "Water permit (cooling water)",                    "SE": "Vattentillstånd (kylvatten)"},
+    "Vesilupa (jäähdytysvesi, tarvitt.)":            {"EN": "Water permit (cooling water, if required)",       "SE": "Vattentillstånd (kylvatten, vid behov)"},
+    "Vesilupa (padotus, rakentaminen)":              {"EN": "Water permit (damming, construction)",            "SE": "Vattentillstånd (dämning, byggande)"},
+    "Alusliikenteen turvallisuuslupa":               {"EN": "Vessel traffic safety permit",                    "SE": "Fartygsfartstillstånd"},
+    "Puolustusvoimien lausunto":                     {"EN": "Defence Forces statement",                        "SE": "Försvarsmaktens utlåtande"},
+    "Suunnittelutarveratkaisu (tarvitt.)":           {"EN": "Planning permit (if required)",                   "SE": "Planeringsbehovsbeslut (vid behov)"},
+    "Maisema- tai kulttuuriympäristölausunto":        {"EN": "Landscape or cultural environment statement",    "SE": "Landskap- eller kulturmiljöutlåtande"},
+    "Periaatepäätös (VN)":                           {"EN": "Decision-in-principle (Council of State)",       "SE": "Principbeslut (statsrådet)"},
+    "Rakentamislupa":                                {"EN": "Construction licence",                             "SE": "Byggnadstillstånd"},
+    "Rakentamislupa (ydinlaitos)":                   {"EN": "Construction licence (nuclear facility)",         "SE": "Byggnadstillstånd (kärnkraftverk)"},
+    "Käyttölupa":                                    {"EN": "Operating licence",                               "SE": "Drifttillstånd"},
+    "Käyttölupa (ydinlaitos)":                       {"EN": "Operating licence (nuclear facility)",            "SE": "Drifttillstånd (kärnkraftverk)"},
+    "Maankäyttösopimus / kaavoitus":                 {"EN": "Land use agreement / zoning",                    "SE": "Markanvändningsavtal / planläggning"},
+    "Maankäyttösopimus":                             {"EN": "Land use agreement",                              "SE": "Markanvändningsavtal"},
+    "Kalastuslaki-ilmoitus":                         {"EN": "Fisheries Act notification",                      "SE": "Fiskelagsanmälan"},
+}
+
+_LAW_TRANS: dict[str, dict[str, str]] = {
+    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöskyddslagen (YSL 527/2014)"},
+    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Bygglag / Plan- och bygglag (751/2023 / 132/1999)"},
+    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Bygglagen 751/2023, § 44"},
+    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Räddningslagen 379/2011, § 15"},
+    "Sähkömarkkinalaki 588/2013":                           {"EN": "Electricity Market Act (588/2013)",                                    "SE": "Elmarknadslagen (588/2013)"},
+    "Maa-aineslaki 555/1981":                               {"EN": "Extractable Land Resources Act (555/1981)",                            "SE": "Marktäktslagen (555/1981)"},
+    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "MKB-lagen (252/2017)"},
+    "YVA-laki 252/2017 (kynnykset ylittyessä)":            {"EN": "EIA Act 252/2017 (when thresholds exceeded)",                          "SE": "MKB-lagen 252/2017 (vid tröskelöverskridning)"},
+    "YVA-laki 252/2017 (≥50 ha hankkeet)":                 {"EN": "EIA Act 252/2017 (≥50 ha projects)",                                   "SE": "MKB-lagen 252/2017 (≥50 ha projekt)"},
+    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen 132/1999, § 77a"},
+    "MRL 132/1999 § 137":                                   {"EN": "Land Use and Building Act 132/1999, § 137",                            "SE": "Plan- och bygglagen 132/1999, § 137"},
+    "MRL 197 §":                                            {"EN": "Land Use and Building Act, § 197",                                     "SE": "Plan- och bygglagen, § 197"},
+    "MRL 132/1999 § 91a":                                   {"EN": "Land Use and Building Act 132/1999, § 91a",                            "SE": "Plan- och bygglagen 132/1999, § 91a"},
+    "MRL 132/1999 § 9":                                     {"EN": "Land Use and Building Act 132/1999, § 9",                              "SE": "Plan- och bygglagen 132/1999, § 9"},
+    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (132/1999)"},
+    "Ilmailulaki 864/2014":                                 {"EN": "Aviation Act (864/2014)",                                              "SE": "Luftfartslagen (864/2014)"},
+    "Maakaari 540/1995":                                    {"EN": "Code of Real Estate (540/1995)",                                       "SE": "Jordabalken (540/1995)"},
+    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Vattenlagen (587/2011)"},
+    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Vattenlagen 587/2011, § 3:2"},
+    "Merilaki 674/1994":                                    {"EN": "Maritime Act (674/1994)",                                              "SE": "Sjölagen (674/1994)"},
+    "Merenkulkulaki 1672/2009":                             {"EN": "Maritime Navigation Act (1672/2009)",                                  "SE": "Sjöfartslagen (1672/2009)"},
+    "Laki alueiden käytöstä":                               {"EN": "Act on Land Use",                                                      "SE": "Lagen om områdesanvändning"},
+    "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126":    {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999 §§ 125–126)", "SE": "Bygglag / Plan- och bygglag (751/2023 / 132/1999 §§ 125–126)"},
+    "Rakentamislaki 751/2023 / MRL 132/1999 § 126":         {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999, § 126)", "SE": "Bygglag / Plan- och bygglag (751/2023 / 132/1999, § 126)"},
+    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Kärnenergilagen 990/1987, § 11"},
+    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Kärnenergilagen 990/1987, § 18"},
+    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Kärnenergilagen 990/1987, § 20"},
+    "Kalastuslaki 379/2015":                                {"EN": "Fisheries Act (379/2015)",                                             "SE": "Fiskelagen (379/2015)"},
+    "Säteilylaki 859/2018":                                 {"EN": "Radiation Act (859/2018)",                                             "SE": "Strålningslagen (859/2018)"},
+    "Kemikaaliturvallisuuslaki 390/2005":                   {"EN": "Chemicals Safety Act (390/2005)",                                      "SE": "Kemikaliesäkerhetslagen (390/2005)"},
+    "Kemikaaliturvallisuuslaki 390/2005 (BESS)":           {"EN": "Chemicals Safety Act 390/2005 (BESS)",                                  "SE": "Kemikaliesäkerhetslagen 390/2005 (BESS)"},
+    "Luonnonsuojelulaki 9/2023":                            {"EN": "Nature Conservation Act (9/2023)",                                     "SE": "Naturvårdslagen (9/2023)"},
+    "Maantielaki 503/2005 (tiealueet)":                     {"EN": "Highways Act 503/2005 (road areas)",                                   "SE": "Väglagen 503/2005 (vägområden)"},
+    "Patoturvallisuuslaki 494/2009":                        {"EN": "Dam Safety Act (494/2009)",                                            "SE": "Damsäkerhetslagen (494/2009)"},
+}
+
+_LIITE_TRANS: dict[str, dict[str, str]] = {
+    "Sijaintikartta (M 1:20 000 tai laajempi)":             {"EN": "Location map (scale 1:20,000 or wider)",                        "SE": "Lägeskartta (skala 1:20 000 eller vidare)"},
+    "Sijaintikartta / projektikartta (M 1:20 000 tai laajempi)": {"EN": "Location map / project map (scale 1:20,000 or wider)",     "SE": "Lägeskartta / projektkarta (skala 1:20 000 eller vidare)"},
+    "Maankäyttöselvitys PDF (NCE Energy)":                  {"EN": "Land Use Survey PDF (NCE Energy)",                             "SE": "Markanvändningsutredning PDF (NCE Energy)"},
+    "Asemapiirustus ja pohjakartta (M 1:500)":              {"EN": "Site plan and base map (1:500)",                               "SE": "Situationsplan och baskarta (1:500)"},
+    "Asemapiirustus ja pohjakartta (M 1:500 tai 1:1000)":   {"EN": "Site plan and base map (1:500 or 1:1000)",                    "SE": "Situationsplan och baskarta (1:500 eller 1:1000)"},
+    "Rakennesuunnitelma (akkukontti + perustukset)":         {"EN": "Structural plan (battery container + foundations)",            "SE": "Konstruktionsplan (battericontainer + fundament)"},
+    "Paloturvallisuusselvitys (NFPA 855 / EN-standardit)":  {"EN": "Fire safety report (NFPA 855 / EN standards)",                 "SE": "Brandsäkerhetsutredning (NFPA 855 / EN-standarder)"},
+    "Sammutusvesien keräyssuunnitelma":                      {"EN": "Fire suppression water collection plan",                       "SE": "Plan för uppsamling av brandsläckningsvatten"},
+    "Sammutusvesien keräyssuunnitelma (BESS)":               {"EN": "Fire suppression water collection plan (BESS)",                "SE": "Plan för uppsamling av brandsläckningsvatten (BESS)"},
+    "Sammutusvesien keräyssuunnitelma (BESS-komponentti)":   {"EN": "Fire suppression water collection plan (BESS component)",     "SE": "Plan för uppsamling av brandsläckningsvatten (BESS-komponent)"},
+    "Ympäristöriskiarvio (pohjavesi, maaperä)":              {"EN": "Environmental risk assessment (groundwater, soil)",            "SE": "Miljöriskbedömning (grundvatten, mark)"},
+    "Sähköliityntäsuunnitelma (verkkoyhtiön hyväksymä)":     {"EN": "Electrical connection plan (approved by grid operator)",      "SE": "Elanslutningsplan (godkänd av nätbolaget)"},
+    "Meluselvitys (jos lähellä asutusta)":                   {"EN": "Noise study (if near residential areas)",                     "SE": "Bullerutredning (om nära bebyggelse)"},
+    "Liikenneyhteydet ja huoltotie":                         {"EN": "Traffic connections and maintenance road",                     "SE": "Trafikförbindelser och underhållsväg"},
+    "Hakijan oikeushenkilön rekisteriote":                   {"EN": "Applicant's legal entity registration extract",               "SE": "Sökandens juridiska enhets registerutdrag"},
+    "Hakijan rekisteriote":                                  {"EN": "Applicant's registration extract",                             "SE": "Sökandens registerutdrag"},
+    "Valtakirja (jos asiamies edustaa)":                     {"EN": "Power of attorney (if agent represents)",                     "SE": "Fullmakt (om ombud företräder)"},
+    "YVA-ohjelma ja YVA-selostus (ELY:n hyväksymä)":        {"EN": "EIA programme and EIA report (ELY Centre approved)",          "SE": "MKB-program och MKB-rapport (NTM-centralen godkänd)"},
+    "YVA-ohjelma ja YVA-selostus":                           {"EN": "EIA programme and EIA report",                                "SE": "MKB-program och MKB-rapport"},
+    "YVA-ohjelma ja -selostus":                              {"EN": "EIA programme and report",                                    "SE": "MKB-program och rapport"},
+    "YVA-ohjelma ja -selostus (tuulivoiman osalta)":         {"EN": "EIA programme and report (wind power component)",             "SE": "MKB-program och rapport (vindkraftsdelen)"},
+    "Meluselvitys (ETSU-R-97 tai IEC 61400-11)":             {"EN": "Noise study (ETSU-R-97 or IEC 61400-11)",                    "SE": "Bullerutredning (ETSU-R-97 eller IEC 61400-11)"},
+    "Meluselvitys (tuulivoimalakomponentti)":                {"EN": "Noise study (wind turbine component)",                        "SE": "Bullerutredning (vindkraftverkskomponent)"},
+    "Meluselvitys (ilma- ja vedenalainen melu)":             {"EN": "Noise study (airborne and underwater noise)",                 "SE": "Bullerutredning (luftburet och undervattensbuller)"},
+    "Varjostusmallinnusraportti":                            {"EN": "Shadow flicker modelling report",                             "SE": "Skuggningsmodelleringsrapport"},
+    "Varjostus- ja näkyvyysanalyysi":                        {"EN": "Shadow flicker and visibility analysis",                      "SE": "Skuggnings- och synlighetsanalys"},
+    "Varjostus- ja häikäisyanalyysi (naapurikiinteistöt)":   {"EN": "Shadow and glare analysis (neighbouring properties)",        "SE": "Skuggnings- och bländningsanalys (grannfastigheter)"},
+    "Linnustoselvitys (pesimä- ja muuttolinnut)":            {"EN": "Bird survey (breeding and migratory birds)",                  "SE": "Fågelinventering (häcknings- och sträckfåglar)"},
+    "Lepakoiden lentoaktiviteettiselvitys":                  {"EN": "Bat flight activity survey",                                  "SE": "Fladdermössens flygaktivitetsutredning"},
+    "Linnusto- ja lepakoiden aktiviteettiselvitys":          {"EN": "Bird and bat activity survey",                               "SE": "Fågel- och fladdermösaktivitetsinventering"},
+    "Linnusto- ja lepakkoselvitys merialueella":             {"EN": "Bird and bat survey in sea area",                            "SE": "Fågel- och fladdermusinventering i havsområdet"},
+    "Maisema- ja näkyvyysanalyysi (valokuvasovitteet)":      {"EN": "Landscape and visibility analysis (photomontages)",          "SE": "Landskap- och synlighetsanalys (fotomontage)"},
+    "Maisema- ja näkyvyysanalyysi":                          {"EN": "Landscape and visibility analysis",                          "SE": "Landskap- och synlighetsanalys"},
+    "Rakennussuunnitelmat (perustukset, tiet, kaapelointi)": {"EN": "Construction plans (foundations, roads, cabling)",           "SE": "Byggplaner (fundament, vägar, kablering)"},
+    "Rakennussuunnitelmat (pato, voimalaitosrakennus)":      {"EN": "Construction plans (dam, power plant building)",             "SE": "Byggplaner (damm, kraftverksbyggnad)"},
+    "Verkkoliityntälaskelma (tehonlaatuanalyysi)":           {"EN": "Grid connection calculation (power quality analysis)",       "SE": "Nätanslutningsberäkning (elkvalitetsanalys)"},
+    "Verkkoliityntälaskelma ja muuntajamitoitus":            {"EN": "Grid connection calculation and transformer sizing",         "SE": "Nätanslutningsberäkning och transformatordimensionering"},
+    "Verkkoliityntälaskelma (SMR + BESS yhdistetty)":        {"EN": "Grid connection calculation (SMR + BESS combined)",         "SE": "Nätanslutningsberäkning (SMR + BESS kombinerat)"},
+    "Verkkoliityntälaskelma":                                {"EN": "Grid connection calculation",                               "SE": "Nätanslutningsberäkning"},
+    "Maanomistaja- ja sopimustiedot":                        {"EN": "Landowner and agreement information",                       "SE": "Markägare- och avtalsuppgifter"},
+    "Maanomistaja- ja vesioikeusasiakirjat":                 {"EN": "Landowner and water rights documents",                      "SE": "Markägare- och vattendokument"},
+    "Lentoestekartoitus (Traficom/Finavia)":                 {"EN": "Aviation obstacle survey (Traficom/Finavia)",               "SE": "Luftfartshinderkartläggning (Traficom/Finavia)"},
+    "Meriekologinen vaikutusarviointi (Natura tarvittaessa)":{"EN": "Marine ecological impact assessment (Natura if required)",  "SE": "Marinekologisk konsekvensutredning (Natura vid behov)"},
+    "Merikaapelireittiselvitys":                             {"EN": "Submarine cable route survey",                              "SE": "Havskabelruttutredning"},
+    "Pohjasedimenttitutkimus (geotekninen)":                 {"EN": "Seabed sediment study (geotechnical)",                      "SE": "Bottensedimentundersökning (geoteknisk)"},
+    "Meriliikenteen turvallisuusarviointi":                  {"EN": "Maritime traffic safety assessment",                        "SE": "Säkerhetsbedömning av sjötrafik"},
+    "Puolustusvoimien tutkavaikutusarviointi":               {"EN": "Defence Forces radar impact assessment",                    "SE": "Försvarsmaktens radarpåverkansutredning"},
+    "Paneelijärjestely- ja rakennesuunnitelma":              {"EN": "Panel layout and structural plan",                          "SE": "Panellayout och konstruktionsplan"},
+    "Verkkoliityntäsuunnitelma (invertteri, muuntaja)":      {"EN": "Grid connection plan (inverter, transformer)",              "SE": "Nätanslutningsplan (växelriktare, transformator)"},
+    "Maaperä- ja hulevesiselvitys (suuri-alainen asennus)":  {"EN": "Soil and stormwater study (large-scale installation)",     "SE": "Mark- och dagvattenutredning (storskalig installation)"},
+    "Luontoselvitys (ekologiset yhteydet, mahdollinen Natura)":{"EN": "Nature survey (ecological corridors, possible Natura)",  "SE": "Naturinventering (ekologiska förbindelser, möjlig Natura)"},
+    "Asukasosallistumisen asiakirjat (suunnittelutarveratkaisussa)":{"EN": "Public participation documents (planning permit procedure)", "SE": "Medborgardeltagandedokument (planeringsbehovsbeslut)"},
+    "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)": {"EN": "Preliminary safety report (per STUK YVL A.1)",             "SE": "Preliminär säkerhetsredogörelse (enl. STUK YVL A.1)"},
+    "Ydinmateriaalivalvontasuunnitelma (IAEA SQ-protokolla)":{"EN": "Nuclear materials safeguards plan (IAEA SQ protocol)",     "SE": "Kärnmaterialövervakningsplan (IAEA SQ-protokoll)"},
+    "Säteilyturvallisuusanalyysi (YVL C.1)":                {"EN": "Radiation safety analysis (YVL C.1)",                      "SE": "Strålsäkerhetsanalys (YVL C.1)"},
+    "Turvallisuussuunnittelun periaatteet (YVL B.1)":        {"EN": "Safety design principles (YVL B.1)",                       "SE": "Säkerhetsdesignprinciper (YVL B.1)"},
+    "Hätäjärjestelmien ja -menettelyjen kuvaus":             {"EN": "Description of emergency systems and procedures",          "SE": "Beskrivning av nödsystem och -förfaranden"},
+    "Polttoainekierto- ja ydinjätehuoltosuunnitelma":        {"EN": "Fuel cycle and nuclear waste management plan",             "SE": "Bränslecykel- och kärnavfallshanteringsplan"},
+    "Geotekninen perusselvitys (seismisyys, hydrogeologia)": {"EN": "Geotechnical baseline study (seismicity, hydrogeology)",   "SE": "Geoteknisk grundutredning (seismicitet, hydrogeologi)"},
+    "Jäähdytysveden saatavuus- ja ympäristöarviointi":       {"EN": "Cooling water availability and environmental assessment",  "SE": "Kylvattentillgång och miljöbedömning"},
+    "Jäähdytysvesitarve- ja ympäristöarviointi":             {"EN": "Cooling water demand and environmental assessment",        "SE": "Kylvattenbehov och miljöbedömning"},
+    "Sosioekonominen vaikutusarviointi":                     {"EN": "Socioeconomic impact assessment",                          "SE": "Socioekonomisk konsekvensutredning"},
+    "Kansainväliset referensssilaitosvertailut (IAEA)":      {"EN": "International reference plant comparisons (IAEA)",         "SE": "Internationella referensanläggningsjämförelser (IAEA)"},
+    "Hydraulinen mitoitusraportti (virtaama, putouskorkeus)":{"EN": "Hydraulic design report (flow rate, head)",               "SE": "Hydraulisk dimensioneringsrapport (flöde, fallhöjd)"},
+    "Geotekninen pato- ja pohjarakenneselvitys":             {"EN": "Geotechnical dam and foundation study",                    "SE": "Geoteknisk dam- och grundläggningsutredning"},
+    "Vesistövaikutusten arviointi (tulva, kuivuus, vedenlaatu)":{"EN": "Watercourse impact assessment (flooding, drought, water quality)", "SE": "Vattendragspåverkansutredning (översvämning, torka, vattenkvalitet)"},
+    "Ekologinen virtaamaselvitys (kalat, pohjaeläimet)":     {"EN": "Ecological flow study (fish, benthic fauna)",              "SE": "Ekologisk flödesutredning (fisk, bottendjur)"},
+    "Kalaston vaellusesteiden ja kalateiden suunnitelma":    {"EN": "Fish migration barrier and fish pass plan",                "SE": "Plan för fiskvandringsbarriärer och fiskvägar"},
+    "Padon turvallisuussuunnitelma (PATL 494/2009)":         {"EN": "Dam safety plan (Dam Safety Act 494/2009)",                "SE": "Damsäkerhetsplan (Damsäkerhetslagen 494/2009)"},
+    "Hätätilannesuunnitelma (padotusriskit)":                {"EN": "Emergency plan (dam failure risks)",                       "SE": "Nödlägesplan (dammrasterrisker)"},
+    "BESS-paloturvallisuusselvitys (NFPA 855)":              {"EN": "BESS fire safety report (NFPA 855)",                       "SE": "BESS brandsäkerhetsrapport (NFPA 855)"},
+    "BESS-paloturvallisuusselvitys (NFPA 855 / EN-standardit)":{"EN": "BESS fire safety report (NFPA 855 / EN standards)",     "SE": "BESS brandsäkerhetsrapport (NFPA 855 / EN-standarder)"},
+    "Integroitu verkkoliityntäsuunnitelma (tuuli + PV + BESS)":{"EN": "Integrated grid connection plan (wind + PV + BESS)",   "SE": "Integrerad nätanslutningsplan (vind + PV + BESS)"},
+    "Integroitu energiavarastosuunnitelma (SMR + BESS-mitoitus)":{"EN": "Integrated energy storage plan (SMR + BESS sizing)",  "SE": "Integrerad energilagringsplan (SMR + BESS-dimensionering)"},
+    "Energiavarastomitoitusraportti (kapasiteetti, teho, kesto)":{"EN": "Energy storage sizing report (capacity, power, duration)", "SE": "Energilagringsrapport (kapacitet, effekt, varaktighet)"},
+    "Hakijan taloudellinen tilanne (tilinpäätös, 2 viimeisintä vuotta)":{"EN": "Applicant's financial status (financial statements, last 2 years)", "SE": "Sökandens ekonomiska ställning (bokslut, 2 senaste år)"},
+    "Projektisuunnitelma (T&K-kuvaus, tavoitteet, metodologia)":{"EN": "Project plan (R&D description, objectives, methodology)", "SE": "Projektplan (FoU-beskrivning, mål, metodologi)"},
+    "Budjettilaskelmat ja rahoitussuunnitelma":               {"EN": "Budget calculations and financing plan",                  "SE": "Budgetkalkyl och finansieringsplan"},
+    "Tiimikuvaus (ansioluettelot, osaamisprofiilit)":         {"EN": "Team description (CVs, competency profiles)",             "SE": "Teambeskrivning (meritförteckningar, kompetensprofiler)"},
+    "Riskiarviointi ja mitigaatiosuunnitelma":                {"EN": "Risk assessment and mitigation plan",                     "SE": "Riskbedömning och mitigeringsplan"},
+    "Referenssit ja aiempi T&K-toiminta":                    {"EN": "References and previous R&D activities",                  "SE": "Referenser och tidigare FoU-verksamhet"},
+    "IPR-suunnitelma (immateriaalioikeuksien hallinta)":      {"EN": "IPR plan (intellectual property rights management)",      "SE": "IPR-plan (immaterialrättshantering)"},
+}
+
+
+def _t_str(lang: str, fi: str, trans_dict: dict) -> str:
+    """Käännä merkkijono käyttäen annettua käännöstaulukkoa. Fallback → FI."""
+    if lang == "FI":
+        return fi
+    d = trans_dict.get(fi, {})
+    return d.get(lang, fi)
+
+def _t_auth(lang: str, fi: str) -> str:
+    return _t_str(lang, fi, _AUTHORITY_TRANS)
+
+def _t_lupa(lang: str, fi: str) -> str:
+    return _t_str(lang, fi, _LUPA_TRANS)
+
+def _t_law(lang: str, fi: str) -> str:
+    return _t_str(lang, fi, _LAW_TRANS)
+
+def _t_liite(lang: str, fi: str) -> str:
+    return _t_str(lang, fi, _LIITE_TRANS)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PDF-käännöstaulukko (UI-tekstit, ei AI-sisältö)
@@ -874,8 +1186,12 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     Kutsu Claude-API ja generoi kaikki hakemuksen osiot yhdellä kutsulla.
     Palauttaa dict: { "kuvaus": ..., "luvat_teksti": ..., "laki": ..., "toimenpiteet": ... }
     """
-    cfg = _HANKE_CFG[inp.hanketyyppi]
-    now = datetime.now().strftime("%d.%m.%Y")
+    cfg  = _HANKE_CFG[inp.hanketyyppi]
+    now  = datetime.now().strftime("%d.%m.%Y")
+    lang = getattr(inp, "lang", "FI")
+    ph   = _PROMPT_HEADERS.get(lang, _PROMPT_HEADERS["FI"])
+    lang_prefix  = _LANG_INSTRUCTIONS.get(lang, "")
+    write_instr  = _WRITE_INSTRUCTION.get(lang, _WRITE_INSTRUCTION["FI"])
 
     sijainti_lisatieto = ""
     if inp.sijainti_ymparistovaikutukset:
@@ -889,18 +1205,19 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
 
     viranomainen_ohje = ""
     if inp.kohdeviranomainen:
-        viranomainen_ohje = (
-            f"\n\nTÄRKEÄÄ: Hakemus osoitetaan viranomaiselle '{inp.kohdeviranomainen}'. "
-            "Mukauta hakemuksen sisältö, rakenne ja kieli sen vaatimuksiin sopivaksi. "
-            "Viittaa kyseisen viranomaisen ohjeisiin, lomakkeisiin ja vaatimuksiin."
-        )
+        viranomainen_ohje = "\n\n" + ph["viranomainen_ohje"].format(auth=inp.kohdeviranomainen)
 
     kap_lisatieto = ""
     if inp.kapasiteetti_mwh and inp.kapasiteetti_mwh > 0:
         kap_lisatieto = f"\nKapasiteetti: {inp.kapasiteetti_mwh} MWh"
 
-    lang_prefix = _LANG_INSTRUCTIONS.get(getattr(inp, "lang", "FI"), "")
-    prompt = f"""{lang_prefix}Laadi lupahakemusluonnos seuraavalle hankkeelle:
+    first_action  = ph["toimenpiteet_first"].format(kunta=inp.kunta)
+    kuvaus_inst   = ph["kuvaus_inst"] + (ph["kuvaus_extra"] if inp.sijainti_ymparistovaikutukset else "")
+    luvat_inst    = ph["luvat_inst"] + (ph["luvat_extra"].format(auth=inp.kohdeviranomainen) if inp.kohdeviranomainen else "")
+    toim_inst     = (ph["toimenpiteet_inst"].format(first=first_action)
+                     + (ph["toimenpiteet_vaihe"].format(vaihe=inp.hankkeen_vaihe) if inp.hankkeen_vaihe else ""))
+
+    prompt = f"""{lang_prefix}{ph["intro"]}
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
 Kiinteistötunnus: {inp.kiinteistotunnus}
@@ -909,23 +1226,22 @@ Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
 Päivämäärä: {now}{viranomainen_ohje}
 
-Alla on relevanttia dokumentaatiota (Fingrid, Tukes, Ympäristöministeriö):
+{ph["rag_intro"]}
 {rag_context}
 
-Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:
+{write_instr}
 
-## HANKKEEN KUVAUS
-Kirjoita 3–5 kappaleen kuvaus hankkeesta: tarkoitus, tekniset tiedot, sijainti, liityntä verkkoon ja ympäristövaikutukset. Mainitse hanketyypille tyypilliset tekniset parametrit.{' Ota huomioon annettu sijainti- ja ympäristövaikutustieto.' if inp.sijainti_ymparistovaikutukset else ''}
+## {ph["kuvaus"]}
+{kuvaus_inst}
 
-## PERUSTELUT JA TARVE
-Kirjoita 2–3 kappaleen perustelu miksi hanke on tarpeellinen (energiajärjestelmän näkökulma, Suomen ilmastotavoitteet, aluetaloudelliset vaikutukset).
+## {ph["perustelut"]}
+{ph["perustelut_inst"]}
 
-## LUPAMENETTELYJEN KUVAUS
-Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa koskee ja miksi se vaaditaan tälle hankkeelle.{' Viittaa erityisesti kohdeviranomaisen ' + inp.kohdeviranomainen + ' prosesseihin ja vaatimuksiin.' if inp.kohdeviranomainen else ''}
+## {ph["luvat"]}
+{luvat_inst}
 
-## SEURAAVAT TOIMENPITEET
-Ensimmäinen toimenpide on AINA: "Kunnan rakennusvalvonnan ennakkoneuvottelu + kaavatarkastus — Hakija / {inp.kunta}n rakennusvalvonta — 1–2 viikon sisällä".
-Listaa sen jälkeen 5 muuta konkreettista askelta aikatauluineen (kk tarkkuudella).{' Ota huomioon hankkeen nykyinen vaihe: ' + inp.hankkeen_vaihe + '.' if inp.hankkeen_vaihe else ''}"""
+## {ph["toimenpiteet"]}
+{toim_inst}"""
 
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     resp   = claude.messages.create(
@@ -936,7 +1252,9 @@ Listaa sen jälkeen 5 muuta konkreettista askelta aikatauluineen (kk tarkkuudell
     )
     raw = resp.content[0].text
 
-    # Parsitaan osiot
+    # Parsitaan osiot käyttämällä kielen mukaisia otsikoita
+    h = [ph["kuvaus"], ph["perustelut"], ph["luvat"], ph["toimenpiteet"]]
+
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
         start = text.find(f"## {header}")
         if start == -1:
@@ -949,12 +1267,11 @@ Listaa sen jälkeen 5 muuta konkreettista askelta aikatauluineen (kk tarkkuudell
                 end = min(end, pos)
         return text[start:end].strip()
 
-    headers = ["HANKKEEN KUVAUS", "PERUSTELUT JA TARVE", "LUPAMENETTELYJEN KUVAUS", "SEURAAVAT TOIMENPITEET"]
     return {
-        "kuvaus":        _extract(raw, "HANKKEEN KUVAUS",       headers[1:]),
-        "perustelut":    _extract(raw, "PERUSTELUT JA TARVE",   headers[2:]),
-        "luvat_teksti":  _extract(raw, "LUPAMENETTELYJEN KUVAUS", headers[3:]),
-        "toimenpiteet":  _extract(raw, "SEURAAVAT TOIMENPITEET",  []),
+        "kuvaus":        _extract(raw, h[0], h[1:]),
+        "perustelut":    _extract(raw, h[1], h[2:]),
+        "luvat_teksti":  _extract(raw, h[2], h[3:]),
+        "toimenpiteet":  _extract(raw, h[3], []),
     }
 
 
@@ -1018,9 +1335,9 @@ def _luvat_table(hanketyyppi: str, st: dict, lang: str = "FI") -> Table:
     ]]
     for lupa, viranomainen, laki in cfg["luvat"]:
         rows.append([
-            Paragraph(lupa,         ParagraphStyle("td", fontSize=8.5, leading=12)),
-            Paragraph(viranomainen, ParagraphStyle("td", fontSize=8.5, leading=12, textColor=C_BLUE)),
-            Paragraph(laki,         ParagraphStyle("td", fontSize=7.5, leading=11, textColor=C_GRAY)),
+            Paragraph(_t_lupa(lang, lupa),         ParagraphStyle("td", fontSize=8.5, leading=12)),
+            Paragraph(_t_auth(lang, viranomainen), ParagraphStyle("td", fontSize=8.5, leading=12, textColor=C_BLUE)),
+            Paragraph(_t_law(lang, laki),          ParagraphStyle("td", fontSize=7.5, leading=11, textColor=C_GRAY)),
         ])
 
     col_w = [6.5*cm, 5.5*cm, 4.5*cm]
@@ -1056,7 +1373,7 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI") -> Table:
             nro = str(i - 1)
         rows.append([
             Paragraph(nro,   ParagraphStyle("tn", fontSize=8.5)),
-            Paragraph(liite, ParagraphStyle("tl", fontSize=8.5, leading=12)),
+            Paragraph(_t_liite(lang, liite), ParagraphStyle("tl", fontSize=8.5, leading=12)),
             Paragraph(_s(lang, "liite_toimitettu"),
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
@@ -1428,10 +1745,10 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         Paragraph(_s(lang, "sec4"), st["h2"]),
         _hr(),
     ]))
-    laki_rows = {laki for _, _, laki in cfg["luvat"]}
-    laki_rows.update(cfg.get("laki_extra", []))
-    for ref in sorted(laki_rows):
-        story.append(Paragraph(f"• {ref}", st["bullet"]))
+    laki_rows_fi = {laki for _, _, laki in cfg["luvat"]}
+    laki_rows_fi.update(cfg.get("laki_extra", []))
+    for ref in sorted(laki_rows_fi):
+        story.append(Paragraph(f"• {_t_law(lang, ref)}", st["bullet"]))
     story.append(Spacer(1, 4*mm))
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
