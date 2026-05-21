@@ -236,6 +236,7 @@
 
     /* ── Mobiilikorjaukset ───────────────────────────── */
     .tab-label-short { display: none; }
+    .pai-short-label { display: none; }
 
     /* Tabletti (768–1024 px): 2 kortia per rivi */
     @media (max-width: 1024px) {
@@ -287,7 +288,13 @@
       .gen-card-sub  { grid-column: 2; grid-row: 2; font-size: 0.74rem; }
       .gen-card-badge { grid-column: 2; grid-row: 3; margin-top: 4px; }
 
-      /* 1. Navigaatiovälilehdet: touch target 44 px + lyhyet nimet */
+      /* 1. Header: piilota alaotsikko, pienennä napit */
+      header .subtitle { display: none; }
+      .pai-full-label  { display: none; }
+      .pai-short-label { display: inline; }
+      .lang-btn { font-size: 0.62rem; padding: 2px 5px; }
+
+      /* Navigaatiovälilehdet: touch target 44 px + lyhyet nimet */
       .tab-label-full  { display: none; }
       .tab-label-short { display: inline; }
       .tab-btn {
@@ -1059,7 +1066,7 @@
          style="width:150px;height:auto;display:block;flex-shrink:0;" />
     <div>
       <h1>NCE Energy Permit AI</h1>
-      <div class="subtitle">Energiahankkeiden lupaprosessianalyysi</div>
+      <div class="subtitle" data-i18n="subtitle">Energiahankkeiden lupaprosessianalyysi</div>
     </div>
   </div>
 
@@ -1083,7 +1090,9 @@
       <button class="lang-btn" id="lang-btn-SE" onclick="setLang('SE')">SE</button>
     </div>
     <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
-      &#x1F4AC; Permit AI
+      &#x1F4AC;
+      <span class="pai-full-label">Permit AI</span>
+      <span class="pai-short-label">AI</span>
     </button>
     <div class="badge" id="header-badge" style="display:none;">Pöytyä · 636-439-4-711</div>
   </div>
@@ -1101,7 +1110,7 @@
         Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.
       </div>
 
-      <div class="gen-section-label">Hanketyyppi</div>
+      <div class="gen-section-label" data-i18n="h3_hanketyyppi">Hanketyyppi</div>
       <div class="gen-cards" id="gen-cards-grid">
         <!-- Cards rendered by JS -->
       </div>
@@ -1119,7 +1128,7 @@
       <aside class="sidebar">
 
         <div class="sidebar-section">
-          <h3>Hanketyyppi</h3>
+          <h3 data-i18n="h3_hanketyyppi">Hanketyyppi</h3>
           <div class="proj-field">
             <select id="map-hanketyyppi" onchange="switchMapType(this.value)">
               <option value="">— Valitse hanketyyppi —</option>
@@ -1139,21 +1148,21 @@
         </div>
 
         <div class="sidebar-section">
-          <h3>Hankkeen tiedot</h3>
+          <h3 data-i18n="h3_hanke_tiedot">Hankkeen tiedot</h3>
           <div class="proj-field">
-            <label>Hankkeen omistaja</label>
-            <input type="text" id="proj-owner" placeholder="Yrityksen nimi" />
+            <label data-i18n="lbl_owner">Hankkeen omistaja</label>
+            <input type="text" id="proj-owner" placeholder="Yrityksen nimi" data-i18n-ph="ph_owner" />
           </div>
           <div class="proj-field">
-            <label>Hankkeen nimi</label>
-            <input type="text" id="proj-name" placeholder="Hankkeen nimi" />
+            <label data-i18n="lbl_proj_name">Hankkeen nimi</label>
+            <input type="text" id="proj-name" placeholder="Hankkeen nimi" data-i18n-ph="ph_proj_name" />
           </div>
           <div class="proj-field" id="proj-power-wrap">
             <label id="proj-power-label">Teho (MW)</label>
             <input type="number" id="proj-power" min="0.1" step="0.1" />
           </div>
           <div class="proj-field" id="proj-grid-wrap">
-            <label>Verkkoliityntä</label>
+            <label data-i18n="lbl_grid">Verkkoliityntä</label>
             <select id="proj-grid">
               <option value="">— Valitse —</option>
               <option value="Jakeluverkko 20 kV (Caruna)">Caruna 20 kV (jakeluverkko)</option>
@@ -1164,7 +1173,7 @@
             </select>
           </div>
           <div class="proj-field" id="proj-market-wrap">
-            <label>Tavoitemarkkinat</label>
+            <label data-i18n="lbl_market">Tavoitemarkkinat</label>
             <select id="proj-market">
               <option value="">— Valitse —</option>
               <option value="FCR (Frequency Containment Reserve)">FCR</option>
@@ -1176,42 +1185,42 @@
         </div>
 
         <div class="sidebar-section">
-          <h3>Kiinteistö</h3>
+          <h3 data-i18n="h3_kiinteisto">Kiinteistö</h3>
           <div class="kt-input-row" style="margin-bottom:8px;">
             <input type="text" id="kt-input" placeholder="KKK-VVV-RR-PPPP" spellcheck="false" />
-            <button class="btn" id="btn-fetch-property">Hae</button>
+            <button class="btn" id="btn-fetch-property" data-i18n="btn_fetch">Hae</button>
           </div>
         </div>
 
         <div class="sidebar-section">
-          <h3>Kiinteistötiedot</h3>
+          <h3 data-i18n="h3_kiinteistotiedot">Kiinteistötiedot</h3>
           <div class="info-grid" id="property-info">
             <div class="info-item">
-              <div class="label">Tunnus</div>
+              <div class="label" data-i18n="lbl_tunnus">Tunnus</div>
               <div class="value na" id="info-kt">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Pinta-ala</div>
+              <div class="label" data-i18n="lbl_pinta_ala">Pinta-ala</div>
               <div class="value na" id="info-area">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Kunta</div>
+              <div class="label" data-i18n="lbl_kunta_info">Kunta</div>
               <div class="value na" id="info-muni">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Kylä</div>
+              <div class="label" data-i18n="lbl_kyla">Kylä</div>
               <div class="value na" id="info-village">–</div>
             </div>
           </div>
         </div>
 
         <div class="sidebar-section" id="section-manual">
-          <h3>Manuaaliset tiedot</h3>
-          <div style="font-size:0.72rem;color:#8899aa;margin-bottom:8px;line-height:1.4;">
+          <h3 data-i18n="h3_manuaali">Manuaaliset tiedot</h3>
+          <div style="font-size:0.72rem;color:#8899aa;margin-bottom:8px;line-height:1.4;" data-i18n="manual_hint">
             Täytä kentät joihin rajapinta ei palauta arvoa. Vaikuttavat pisteytykseen.
           </div>
           <div class="proj-field">
-            <label>Kaavoitustilanne</label>
+            <label data-i18n="lbl_kaavoitus">Kaavoitustilanne</label>
             <select id="manual-kaavoitus">
               <option value="">– ei asetettu –</option>
               <option value="asemakaava">Asemakaava</option>
@@ -1221,7 +1230,7 @@
             </select>
           </div>
           <div class="proj-field">
-            <label>Tulvavaara</label>
+            <label data-i18n="lbl_tulvavaara">Tulvavaara</label>
             <select id="manual-tulvavaara">
               <option value="">– ei asetettu –</option>
               <option value="ei">Ei</option>
@@ -1230,7 +1239,7 @@
             </select>
           </div>
           <div class="proj-field">
-            <label>Maaperä</label>
+            <label data-i18n="lbl_maapera">Maaperä</label>
             <select id="manual-maapera">
               <option value="">– ei asetettu –</option>
               <option value="kallio">Kallio</option>
@@ -1247,19 +1256,19 @@
           </div>
           <div style="margin-top:8px;">
             <button class="btn secondary" id="btn-apply-manual" style="width:100%;">
-              Päivitä pisteet manuaalisilla tiedoilla
+              <span data-i18n="btn_apply_manual">Päivitä pisteet manuaalisilla tiedoilla</span>
             </button>
           </div>
         </div>
 
         <div class="sidebar-section">
-          <h3>Soveltuvuusanalyysi</h3>
+          <h3 data-i18n="h3_soveltuvuus">Soveltuvuusanalyysi</h3>
           <div id="analysis-type-label" style="font-size:0.68rem;color:#4a9a8a;background:rgba(0,194,168,0.07);border:1px solid rgba(0,194,168,0.2);border-radius:5px;padding:5px 8px;margin-bottom:8px;display:none;line-height:1.5;">
             <span id="analysis-type-text"></span>
           </div>
           <div class="info-grid" style="margin-bottom:10px;">
             <div class="info-item" style="grid-column:1/-1;">
-              <div class="label">Etäisyys verkko</div>
+              <div class="label" data-i18n="lbl_grid_dist">Etäisyys verkko</div>
               <div class="value na" id="info-grid-dist">–</div>
               <div style="font-size:0.68rem;color:#8899aa;margin-top:2px;" id="info-grid-status"></div>
               <div style="font-size:0.66rem;color:#6a7a8a;margin-top:4px;line-height:1.4;" id="grid-link-note">
@@ -1267,49 +1276,49 @@
               </div>
             </div>
             <div class="info-item">
-              <div class="label">Kaavat. tilanne</div>
+              <div class="label" data-i18n="lbl_zoning">Kaavat. tilanne</div>
               <div class="value na" id="info-zoning">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Natura / SuojeluA</div>
+              <div class="label" data-i18n="lbl_natura">Natura / SuojeluA</div>
               <div class="value na" id="info-nature">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Pohjavesialue</div>
+              <div class="label" data-i18n="lbl_groundwater">Pohjavesialue</div>
               <div class="value na" id="info-groundwater">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Lähin rakennus</div>
+              <div class="label" data-i18n="lbl_building">Lähin rakennus</div>
               <div class="value na" id="info-building">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Maankäyttö</div>
+              <div class="label" data-i18n="lbl_landuse">Maankäyttö</div>
               <div class="value na" id="info-landuse">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Muinaismuistot</div>
+              <div class="label" data-i18n="lbl_heritage">Muinaismuistot</div>
               <div class="value na" id="info-heritage">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Tiesuoja-alue</div>
+              <div class="label" data-i18n="lbl_road">Tiesuoja-alue</div>
               <div class="value na" id="info-road">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Maaperä (GTK)</div>
+              <div class="label" data-i18n="lbl_soil">Maaperä (GTK)</div>
               <div class="value na" id="info-soil">–</div>
             </div>
             <div class="info-item">
-              <div class="label">Tulvavaara (SYKE)</div>
+              <div class="label" data-i18n="lbl_flood">Tulvavaara (SYKE)</div>
               <div class="value na" id="info-flood">–</div>
             </div>
             <div class="info-item" style="grid-column:1/-1;">
-              <div class="label">Lähin sähköasema</div>
+              <div class="label" data-i18n="lbl_substation">Lähin sähköasema</div>
               <div class="value na" id="info-substation">–</div>
             </div>
           </div>
           <div class="score-bar-wrap">
             <div class="score-label">
-              <span>Soveltuvuusindeksi</span>
+              <span data-i18n="lbl_score">Soveltuvuusindeksi</span>
               <span id="score-value">– / 100</span>
             </div>
             <div class="score-bar">
@@ -1319,52 +1328,52 @@
         </div>
 
         <div class="sidebar-section">
-          <h3>Karttatasot</h3>
+          <h3 data-i18n="h3_karttatasot">Karttatasot</h3>
           <label class="layer-toggle">
             <input type="checkbox" id="lyr-property" checked />
             <span class="dot" style="background:#e94560;"></span>
-            <span>Kiinteistörajat</span>
+            <span data-i18n="lbl_lyr_property">Kiinteistörajat</span>
           </label>
           <label class="layer-toggle">
             <input type="checkbox" id="lyr-grid" />
             <span class="dot" style="background:#f4a261;"></span>
-            <span>Voimajohdot (OSM/Fingrid)</span>
+            <span data-i18n="lbl_lyr_grid">Voimajohdot (OSM/Fingrid)</span>
           </label>
           <label class="layer-toggle">
             <input type="checkbox" id="lyr-groundwater" />
             <span class="dot" style="background:#00bcd4;"></span>
-            <span>Pohjavesialueet (SYKE)</span>
+            <span data-i18n="lbl_lyr_gw">Pohjavesialueet (SYKE)</span>
           </label>
           <label class="layer-toggle">
             <input type="checkbox" id="lyr-natura" />
             <span class="dot" style="background:#9c27b0;"></span>
-            <span>Natura 2000 (SYKE)</span>
+            <span data-i18n="lbl_lyr_natura">Natura 2000 (SYKE)</span>
           </label>
           <label class="layer-toggle">
             <input type="checkbox" id="lyr-buildings" />
             <span class="dot" style="background:#ff7043;"></span>
-            <span>Rakennukset 1 km (OSM)</span>
+            <span data-i18n="lbl_lyr_bldg">Rakennukset 1 km (OSM)</span>
           </label>
           <label class="layer-toggle">
             <input type="checkbox" id="lyr-zoning" />
             <span class="dot" style="background:#4caf50;"></span>
-            <span>Kaavat (MML WMS)</span>
+            <span data-i18n="lbl_lyr_zoning">Kaavat (MML WMS)</span>
           </label>
           <label class="layer-toggle">
             <input type="checkbox" id="lyr-buffer" />
             <span class="dot" style="background:#64b5f6;"></span>
-            <span>500 m puskurivyöhyke</span>
+            <span data-i18n="lbl_lyr_buffer">500 m puskurivyöhyke</span>
           </label>
         </div>
 
         <div class="sidebar-section">
-          <h3>Toiminnot</h3>
+          <h3 data-i18n="h3_toiminnot">Toiminnot</h3>
           <div class="btn-row">
             <button class="btn" id="btn-analyze" data-i18n="btn_calculate">Laske soveltuvuus</button>
-            <button class="btn secondary" id="btn-report">PDF-raportti</button>
+            <button class="btn secondary" id="btn-report" data-i18n="btn_report">PDF-raportti</button>
           </div>
           <div style="margin-top:10px;">
-            <button class="btn secondary" id="btn-zoom-property" style="width:100%;">
+            <button class="btn secondary" id="btn-zoom-property" style="width:100%;" data-i18n="btn_zoom">
               Kohdista kiinteistölle
             </button>
           </div>
@@ -1379,8 +1388,8 @@
         </div>
 
         <div class="sidebar-section">
-          <h3>Loki</h3>
-          <div id="status-log">Odottaa toimintoa…</div>
+          <h3 data-i18n="h3_loki">Loki</h3>
+          <div id="status-log" data-i18n="lbl_status_idle">Odottaa toimintoa…</div>
         </div>
 
       </aside>
@@ -1399,7 +1408,7 @@
     <div class="logbar-entry info newest">
       <span class="logbar-dot"></span>
       <span class="logbar-ts">--:--:--</span>
-      <span class="logbar-msg">Valmis — valitse hanketyyppi aloittaaksesi</span>
+      <span class="logbar-msg" data-i18n="lbl_logbar_ready">Valmis — valitse hanketyyppi aloittaaksesi</span>
     </div>
   </div>
 </div>
@@ -1514,9 +1523,11 @@ const TRANSLATIONS = {
     tab_generator_short:  'Lupa-asiakirjat',
     tab_map:              'Maankäyttöselvitys',
     tab_map_short:        'Sijainti',
+    subtitle:             'Energiahankkeiden lupaprosessianalyysi',
     gen_desc:       'Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa. Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.',
     gen_form_title: 'Lupahakemusluonnos — PDF',
     lbl_hanketyyppi:'Hanketyyppi',
+    h3_hanketyyppi: 'Hanketyyppi',
     lbl_teho_mw:    'Teho (MW)',
     lbl_kt:         'Kiinteistötunnus',
     lbl_kunta:      'Kunta',
@@ -1544,15 +1555,62 @@ const TRANSLATIONS = {
     map_select_hint:'— Valitse hanketyyppi —',
     gen_timing_smr: 'Tämä voi viedä 60–90 sekuntia SMR/offshore-hakemuksille.',
     gen_timing_std: 'Odota n. 30–60 s.',
+    h3_hanke_tiedot:  'Hankkeen tiedot',
+    lbl_owner:        'Hankkeen omistaja',
+    lbl_proj_name:    'Hankkeen nimi',
+    ph_owner:         'Yrityksen nimi',
+    ph_proj_name:     'Hankkeen nimi',
+    h3_kiinteisto:       'Kiinteistö',
+    btn_fetch:           'Hae',
+    h3_kiinteistotiedot: 'Kiinteistötiedot',
+    lbl_tunnus:          'Tunnus',
+    lbl_pinta_ala:       'Pinta-ala',
+    lbl_kunta_info:      'Kunta',
+    lbl_kyla:            'Kylä',
+    h3_manuaali:      'Manuaaliset tiedot',
+    manual_hint:      'Täytä kentät joihin rajapinta ei palauta arvoa. Vaikuttavat pisteytykseen.',
+    lbl_kaavoitus:    'Kaavoitustilanne',
+    lbl_tulvavaara:   'Tulvavaara',
+    lbl_maapera:      'Maaperä',
+    btn_apply_manual: 'Päivitä pisteet manuaalisilla tiedoilla',
+    h3_soveltuvuus:   'Soveltuvuusanalyysi',
+    lbl_grid_dist:    'Etäisyys verkko',
+    lbl_zoning:       'Kaavat. tilanne',
+    lbl_natura:       'Natura / SuojeluA',
+    lbl_groundwater:  'Pohjavesialue',
+    lbl_building:     'Lähin rakennus',
+    lbl_landuse:      'Maankäyttö',
+    lbl_heritage:     'Muinaismuistot',
+    lbl_road:         'Tiesuoja-alue',
+    lbl_soil:         'Maaperä (GTK)',
+    lbl_flood:        'Tulvavaara (SYKE)',
+    lbl_substation:   'Lähin sähköasema',
+    lbl_score:        'Soveltuvuusindeksi',
+    h3_karttatasot:   'Karttatasot',
+    lbl_lyr_property: 'Kiinteistörajat',
+    lbl_lyr_grid:     'Voimajohdot (OSM/Fingrid)',
+    lbl_lyr_gw:       'Pohjavesialueet (SYKE)',
+    lbl_lyr_natura:   'Natura 2000 (SYKE)',
+    lbl_lyr_bldg:     'Rakennukset 1 km (OSM)',
+    lbl_lyr_zoning:   'Kaavat (MML WMS)',
+    lbl_lyr_buffer:   '500 m puskurivyöhyke',
+    h3_toiminnot:     'Toiminnot',
+    btn_report:       'PDF-raportti',
+    btn_zoom:         'Kohdista kiinteistölle',
+    h3_loki:          'Loki',
+    lbl_status_idle:  'Odottaa toimintoa…',
+    lbl_logbar_ready: 'Valmis — valitse hanketyyppi aloittaaksesi',
   },
   EN: {
     tab_generator:        'Permit Document Service',
     tab_generator_short:  'Permits',
     tab_map:              'Land Use Survey',
     tab_map_short:        'Location',
+    subtitle:             'Energy Project Permit Analysis',
     gen_desc:       'Select project type and fill in basic details — AI generates a RAG-based permit application draft in PDF format. The draft requires expert review before submission.',
     gen_form_title: 'Permit Application Draft — PDF',
     lbl_hanketyyppi:'Project Type',
+    h3_hanketyyppi: 'Project Type',
     lbl_teho_mw:    'Power (MW)',
     lbl_kt:         'Property ID',
     lbl_kunta:      'Municipality',
@@ -1580,15 +1638,62 @@ const TRANSLATIONS = {
     map_select_hint:'— Select project type —',
     gen_timing_smr: 'This may take 60–90 seconds for SMR/offshore applications.',
     gen_timing_std: 'Please wait approx. 30–60 s.',
+    h3_hanke_tiedot:  'Project Details',
+    lbl_owner:        'Project Owner',
+    lbl_proj_name:    'Project Name',
+    ph_owner:         'Company name',
+    ph_proj_name:     'Project name',
+    h3_kiinteisto:       'Property',
+    btn_fetch:           'Search',
+    h3_kiinteistotiedot: 'Property Details',
+    lbl_tunnus:          'ID',
+    lbl_pinta_ala:       'Area',
+    lbl_kunta_info:      'Municipality',
+    lbl_kyla:            'Village',
+    h3_manuaali:      'Manual Data',
+    manual_hint:      'Fill in fields the API did not return. These affect scoring.',
+    lbl_kaavoitus:    'Zoning status',
+    lbl_tulvavaara:   'Flood risk',
+    lbl_maapera:      'Soil type',
+    btn_apply_manual: 'Update scores with manual data',
+    h3_soveltuvuus:   'Suitability Analysis',
+    lbl_grid_dist:    'Grid distance',
+    lbl_zoning:       'Zoning',
+    lbl_natura:       'Natura / Protected',
+    lbl_groundwater:  'Groundwater zone',
+    lbl_building:     'Nearest building',
+    lbl_landuse:      'Land use',
+    lbl_heritage:     'Heritage sites',
+    lbl_road:         'Road protection zone',
+    lbl_soil:         'Soil (GTK)',
+    lbl_flood:        'Flood risk (SYKE)',
+    lbl_substation:   'Nearest substation',
+    lbl_score:        'Suitability index',
+    h3_karttatasot:   'Map Layers',
+    lbl_lyr_property: 'Property boundaries',
+    lbl_lyr_grid:     'Power lines (OSM/Fingrid)',
+    lbl_lyr_gw:       'Groundwater zones (SYKE)',
+    lbl_lyr_natura:   'Natura 2000 (SYKE)',
+    lbl_lyr_bldg:     'Buildings 1 km (OSM)',
+    lbl_lyr_zoning:   'Zoning (MML WMS)',
+    lbl_lyr_buffer:   '500 m buffer zone',
+    h3_toiminnot:     'Actions',
+    btn_report:       'PDF Report',
+    btn_zoom:         'Center on property',
+    h3_loki:          'Log',
+    lbl_status_idle:  'Waiting for action…',
+    lbl_logbar_ready: 'Ready — select project type to begin',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
     tab_generator_short:  'Tillstånd',
     tab_map:              'Markanvändningsutredning',
     tab_map_short:        'Plats',
+    subtitle:             'Energiprojekt tillståndsanalys',
     gen_desc:       'Välj projekttyp och fyll i grunduppgifterna — AI genererar ett RAG-baserat tillståndsansökningsutkast i PDF-format (~60 s). Utkastet kräver expertgranskning innan inlämning.',
     gen_form_title: 'Tillståndsansökningsutkast — PDF',
     lbl_hanketyyppi:'Projekttyp',
+    h3_hanketyyppi: 'Projekttyp',
     lbl_teho_mw:    'Effekt (MW)',
     lbl_kt:         'Fastighetsbeteckning',
     lbl_kunta:      'Kommun',
@@ -1616,6 +1721,51 @@ const TRANSLATIONS = {
     map_select_hint:'— Välj projekttyp —',
     gen_timing_smr: 'Detta kan ta 60–90 sekunder för SMR/offshore-ansökningar.',
     gen_timing_std: 'Vänta ca 30–60 s.',
+    h3_hanke_tiedot:  'Projektuppgifter',
+    lbl_owner:        'Projektägare',
+    lbl_proj_name:    'Projektnamn',
+    ph_owner:         'Företagsnamn',
+    ph_proj_name:     'Projektnamn',
+    h3_kiinteisto:       'Fastighet',
+    btn_fetch:           'Sök',
+    h3_kiinteistotiedot: 'Fastighetsuppgifter',
+    lbl_tunnus:          'Beteckning',
+    lbl_pinta_ala:       'Areal',
+    lbl_kunta_info:      'Kommun',
+    lbl_kyla:            'By',
+    h3_manuaali:      'Manuella uppgifter',
+    manual_hint:      'Fyll i fält som API:et inte returnerade. Påverkar poängsättningen.',
+    lbl_kaavoitus:    'Planläggningssituation',
+    lbl_tulvavaara:   'Översvämningsrisk',
+    lbl_maapera:      'Marktyp',
+    btn_apply_manual: 'Uppdatera poäng med manuella uppgifter',
+    h3_soveltuvuus:   'Lämplighetanalys',
+    lbl_grid_dist:    'Nätavstånd',
+    lbl_zoning:       'Planläggning',
+    lbl_natura:       'Natura / Skyddat',
+    lbl_groundwater:  'Grundvattenområde',
+    lbl_building:     'Närmaste byggnad',
+    lbl_landuse:      'Markanvändning',
+    lbl_heritage:     'Fornlämningar',
+    lbl_road:         'Vägskyddszon',
+    lbl_soil:         'Mark (GTK)',
+    lbl_flood:        'Översvämning (SYKE)',
+    lbl_substation:   'Närmaste transformatorstation',
+    lbl_score:        'Lämplighetindex',
+    h3_karttatasot:   'Kartlager',
+    lbl_lyr_property: 'Fastighetsgränser',
+    lbl_lyr_grid:     'Kraftledningar (OSM/Fingrid)',
+    lbl_lyr_gw:       'Grundvattenområden (SYKE)',
+    lbl_lyr_natura:   'Natura 2000 (SYKE)',
+    lbl_lyr_bldg:     'Byggnader 1 km (OSM)',
+    lbl_lyr_zoning:   'Planläggning (MML WMS)',
+    lbl_lyr_buffer:   '500 m buffertzon',
+    h3_toiminnot:     'Åtgärder',
+    btn_report:       'PDF-rapport',
+    btn_zoom:         'Centrera på fastighet',
+    h3_loki:          'Logg',
+    lbl_status_idle:  'Väntar på åtgärd…',
+    lbl_logbar_ready: 'Redo — välj projekttyp för att börja',
   },
 };
 
