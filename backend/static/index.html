@@ -1644,6 +1644,63 @@ const TRANSLATIONS = {
     h3_loki:          'Loki',
     lbl_status_idle:  'Odottaa toimintoa…',
     lbl_logbar_ready: 'Valmis — valitse hanketyyppi aloittaaksesi',
+    // Form UI
+    gf_form_sub:       'Täytä hankkeen tiedot. AI generoi asiakirjaluonnoksen RAG-haun ja Claude-mallin avulla (~60 s, SMR/offshore ~90 s).',
+    gf_luvat_heading:  'Luvat (yleisesti):',
+    gf_submit_btn:     'Generoi asiakirja PDF',
+    gf_disclaimer:     'AI-luonnos (RAG + Claude) — vaatii asiantuntijatarkistuksen ennen jättämistä. Ei juridinen neuvo.',
+    gf_auto_info:      'Automaattisesti tunnistettu valitun hanketyypin perusteella',
+    // Form titles
+    gf_title_asuinrakennus:   'Asuinrakennus — lupahakemus',
+    gf_title_teollisuus:      'Teollisuusrakennus — lupahakemus',
+    gf_title_bess:            'BESS — Akkuenergiavarastohanke',
+    gf_title_tuulivoima_maa:  'Tuulivoima (maa) — Maalle sijoitettava tuulivoimahanke',
+    gf_title_tuulivoima_meri: 'Tuulivoima (meri) — Offshore-tuulivoimahanke',
+    gf_title_aurinkovoima:    'Aurinkovoima — Aurinkopaneelihanke',
+    gf_title_smr:             'SMR — Pienydinreaktorihanke (pre-licensing)',
+    gf_title_vesivoima:       'Vesivoima — Vesivoimalahanke',
+    gf_title_maatalous:       'Maatalousrakennus — lupahakemus',
+    gf_title_liikerakennus:   'Liikerakennus — lupahakemus',
+    gf_title_muu:             'Muu hanke — lupahakemus',
+    // Field labels
+    gf_lbl_hakija:         'Hakija (yritys/henkilö)',
+    gf_lbl_ytunnus:        'Y-tunnus',
+    gf_lbl_osoite:         'Osoite',
+    gf_lbl_kt:             'Kiinteistötunnus',
+    gf_lbl_kt_meri:        'Merialueen viite',
+    gf_lbl_kunta:          'Sijaintikunta',
+    gf_lbl_kunta_meri:     'Sijaintialue (lähin kunta)',
+    gf_lbl_sijainti:       'Sijainti / ympäristövaikutukset',
+    gf_lbl_vaihe:          'Hankkeen vaihe',
+    gf_lbl_viranomainen:   'Kohdeviranomainen',
+    gf_lbl_teho:           'Teho (MW)',
+    gf_lbl_teho_kokonais:  'Kokonaisteho (MW)',
+    gf_lbl_teho_lampoteho: 'Lämpöteho (MW)',
+    gf_lbl_teho_mwp:       'Teho (MWp)',
+    gf_lbl_kap:            'Kapasiteetti (MWh)',
+    gf_lbl_verkko:         'Verkkoliityntä',
+    gf_lbl_kerrokset:      'Kerrokset (kpl)',
+    gf_lbl_huoneistoala:   'Huoneistoala (m²)',
+    gf_lbl_kayttotarkoitus:'Käyttötarkoitus',
+    gf_lbl_raktilavuus:    'Rakennustilavuus (m³)',
+    gf_lbl_turbiinimi:     'Turbiinimäärä (kpl)',
+    gf_lbl_yva:            'YVA tarvitaan',
+    gf_lbl_etaisyys:       'Etäisyys rannasta (km)',
+    gf_lbl_pintaala:       'Pinta-ala (ha)',
+    gf_lbl_reaktori:       'Reaktorityyppi',
+    gf_lbl_kaytto:         'Käyttötarkoitus',
+    gf_lbl_vesisto:        'Vesistö',
+    gf_lbl_elainpaikat:    'Eläinpaikat (kpl)',
+    gf_lbl_liiketilaala:   'Liiketilaala (m²)',
+    // Placeholders
+    gf_ph_hakija:     'Yrityksen tai henkilön nimi',
+    gf_ph_kt:         'esim. 091-001-0001-0001',
+    gf_ph_kt_meri:    '61°N 21°E',
+    gf_ph_kunta:      'Kunta',
+    gf_ph_kunta_meri: 'Kunta',
+    gf_ph_sijainti:   'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista',
+    gf_ph_osoite:     'Hakijan postiosoite',
+    gf_ph_vesisto:    'Vesistön nimi',
   },
   EN: {
     tab_generator:        'Permit Document Service',
@@ -1727,6 +1784,63 @@ const TRANSLATIONS = {
     h3_loki:          'Log',
     lbl_status_idle:  'Waiting for action…',
     lbl_logbar_ready: 'Ready — select project type to begin',
+    // Form UI
+    gf_form_sub:       'Fill in project details. AI generates a document draft using RAG search and Claude model (~60 s, SMR/offshore ~90 s).',
+    gf_luvat_heading:  'Permits (general):',
+    gf_submit_btn:     'Generate document PDF',
+    gf_disclaimer:     'AI draft (RAG + Claude) — requires expert review before submission. Not legal advice.',
+    gf_auto_info:      'Automatically identified based on selected project type',
+    // Form titles
+    gf_title_asuinrakennus:   'Residential Building — permit application',
+    gf_title_teollisuus:      'Industrial Building — permit application',
+    gf_title_bess:            'BESS — Battery Energy Storage Project',
+    gf_title_tuulivoima_maa:  'Wind Power (onshore) — Land-based wind power project',
+    gf_title_tuulivoima_meri: 'Wind Power (offshore) — Offshore wind power project',
+    gf_title_aurinkovoima:    'Solar Power — Solar panel project',
+    gf_title_smr:             'SMR — Small Modular Reactor project (pre-licensing)',
+    gf_title_vesivoima:       'Hydropower — Hydroelectric project',
+    gf_title_maatalous:       'Agricultural Building — permit application',
+    gf_title_liikerakennus:   'Commercial Building — permit application',
+    gf_title_muu:             'Other project — permit application',
+    // Field labels
+    gf_lbl_hakija:         'Applicant (company/person)',
+    gf_lbl_ytunnus:        'Business ID',
+    gf_lbl_osoite:         'Address',
+    gf_lbl_kt:             'Property ID',
+    gf_lbl_kt_meri:        'Marine area reference',
+    gf_lbl_kunta:          'Municipality',
+    gf_lbl_kunta_meri:     'Location area (nearest municipality)',
+    gf_lbl_sijainti:       'Location / environmental impacts',
+    gf_lbl_vaihe:          'Project phase',
+    gf_lbl_viranomainen:   'Target authority',
+    gf_lbl_teho:           'Power (MW)',
+    gf_lbl_teho_kokonais:  'Total power (MW)',
+    gf_lbl_teho_lampoteho: 'Thermal power (MW)',
+    gf_lbl_teho_mwp:       'Power (MWp)',
+    gf_lbl_kap:            'Capacity (MWh)',
+    gf_lbl_verkko:         'Grid connection',
+    gf_lbl_kerrokset:      'Floors',
+    gf_lbl_huoneistoala:   'Apartment area (m²)',
+    gf_lbl_kayttotarkoitus:'Intended use',
+    gf_lbl_raktilavuus:    'Building volume (m³)',
+    gf_lbl_turbiinimi:     'Number of turbines',
+    gf_lbl_yva:            'EIA required',
+    gf_lbl_etaisyys:       'Distance from shore (km)',
+    gf_lbl_pintaala:       'Area (ha)',
+    gf_lbl_reaktori:       'Reactor type',
+    gf_lbl_kaytto:         'Intended use',
+    gf_lbl_vesisto:        'Water body',
+    gf_lbl_elainpaikat:    'Animal places',
+    gf_lbl_liiketilaala:   'Commercial floor area (m²)',
+    // Placeholders
+    gf_ph_hakija:     'Company or person name',
+    gf_ph_kt:         'e.g. 091-001-0001-0001',
+    gf_ph_kt_meri:    '61°N 21°E',
+    gf_ph_kunta:      'Municipality',
+    gf_ph_kunta_meri: 'Municipality',
+    gf_ph_sijainti:   'Brief description of location and environmental impacts',
+    gf_ph_osoite:     "Applicant's postal address",
+    gf_ph_vesisto:    'Name of water body',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
@@ -1810,12 +1924,97 @@ const TRANSLATIONS = {
     h3_loki:          'Logg',
     lbl_status_idle:  'Väntar på åtgärd…',
     lbl_logbar_ready: 'Redo — välj projekttyp för att börja',
+    // Form UI
+    gf_form_sub:       'Fyll i projektuppgifterna. AI genererar ett dokumentutkast med RAG-sökning och Claude-modell (~60 s, SMR/offshore ~90 s).',
+    gf_luvat_heading:  'Tillstånd (allmänt):',
+    gf_submit_btn:     'Generera dokument PDF',
+    gf_disclaimer:     'AI-utkast (RAG + Claude) — kräver expertgranskning innan inlämning. Inte juridisk rådgivning.',
+    gf_auto_info:      'Automatiskt identifierat baserat på vald projekttyp',
+    // Form titles
+    gf_title_asuinrakennus:   'Bostadsbyggnad — tillståndsansökan',
+    gf_title_teollisuus:      'Industribyggnad — tillståndsansökan',
+    gf_title_bess:            'BESS — Batterienergilagerprojekt',
+    gf_title_tuulivoima_maa:  'Vindkraft (land) — Landbaserat vindkraftprojekt',
+    gf_title_tuulivoima_meri: 'Vindkraft (hav) — Offshorevindkraftprojekt',
+    gf_title_aurinkovoima:    'Solkraft — Solpanelsprojekt',
+    gf_title_smr:             'SMR — Liten modulär reaktorprojekt (pre-licensiering)',
+    gf_title_vesivoima:       'Vattenkraft — Vattenkraftprojekt',
+    gf_title_maatalous:       'Lantbruksbyggnad — tillståndsansökan',
+    gf_title_liikerakennus:   'Affärsbyggnad — tillståndsansökan',
+    gf_title_muu:             'Annat projekt — tillståndsansökan',
+    // Field labels
+    gf_lbl_hakija:         'Sökande (företag/person)',
+    gf_lbl_ytunnus:        'FO-nummer',
+    gf_lbl_osoite:         'Adress',
+    gf_lbl_kt:             'Fastighetsbeteckning',
+    gf_lbl_kt_meri:        'Havsområdesreferens',
+    gf_lbl_kunta:          'Belägenkommun',
+    gf_lbl_kunta_meri:     'Lägesområde (närmaste kommun)',
+    gf_lbl_sijainti:       'Plats / miljöpåverkan',
+    gf_lbl_vaihe:          'Projektfas',
+    gf_lbl_viranomainen:   'Målmyndighet',
+    gf_lbl_teho:           'Effekt (MW)',
+    gf_lbl_teho_kokonais:  'Totaleffekt (MW)',
+    gf_lbl_teho_lampoteho: 'Värmeeffekt (MW)',
+    gf_lbl_teho_mwp:       'Effekt (MWp)',
+    gf_lbl_kap:            'Kapacitet (MWh)',
+    gf_lbl_verkko:         'Nätanslutning',
+    gf_lbl_kerrokset:      'Våningar',
+    gf_lbl_huoneistoala:   'Lägenhetsyta (m²)',
+    gf_lbl_kayttotarkoitus:'Användningsändamål',
+    gf_lbl_raktilavuus:    'Byggnadsvolym (m³)',
+    gf_lbl_turbiinimi:     'Antal turbiner',
+    gf_lbl_yva:            'MKB krävs',
+    gf_lbl_etaisyys:       'Avstånd från land (km)',
+    gf_lbl_pintaala:       'Yta (ha)',
+    gf_lbl_reaktori:       'Reaktortyp',
+    gf_lbl_kaytto:         'Användningsändamål',
+    gf_lbl_vesisto:        'Vattendrag',
+    gf_lbl_elainpaikat:    'Djurplatser',
+    gf_lbl_liiketilaala:   'Affärslokalsyta (m²)',
+    // Placeholders
+    gf_ph_hakija:     'Företagets eller personens namn',
+    gf_ph_kt:         't.ex. 091-001-0001-0001',
+    gf_ph_kt_meri:    '61°N 21°E',
+    gf_ph_kunta:      'Kommun',
+    gf_ph_kunta_meri: 'Kommun',
+    gf_ph_sijainti:   'Kort beskrivning av plats och miljöpåverkan',
+    gf_ph_osoite:     'Sökandens postadress',
+    gf_ph_vesisto:    'Vattendragets namn',
   },
 };
 
 function t(key) {
   const lang = TRANSLATIONS[activeLang] || TRANSLATIONS.FI;
   return lang[key] ?? (TRANSLATIONS.FI[key] ?? key);
+}
+
+const LUPA_I18N = {
+  'Rakennuslupa':                           { EN: 'Building permit',                    SE: 'Bygglov' },
+  'Rakennuslupa (mahdollinen)':             { EN: 'Building permit (possible)',          SE: 'Bygglov (möjligt)' },
+  'Rakennuslupa (offshore)':               { EN: 'Building permit (offshore)',           SE: 'Bygglov (offshore)' },
+  'Toimenpidelupa':                         { EN: 'Action permit',                       SE: 'Åtgärdstillstånd' },
+  'Toimenpidelupa (mahdollinen)':           { EN: 'Action permit (possible)',             SE: 'Åtgärdstillstånd (möjligt)' },
+  'Toimenpidelupa (pienet)':               { EN: 'Action permit (small)',                SE: 'Åtgärdstillstånd (litet)' },
+  'Ympäristölupa':                         { EN: 'Environmental permit',                 SE: 'Miljötillstånd' },
+  'Ympäristölupa (mahdollinen)':           { EN: 'Environmental permit (possible)',      SE: 'Miljötillstånd (möjligt)' },
+  'Ympäristölupa (suuri hanke)':           { EN: 'Environmental permit (large project)', SE: 'Miljötillstånd (stort projekt)' },
+  'Ympäristölupa (suuri kotieläintalous)': { EN: 'Environmental permit (large livestock)',SE: 'Miljötillstånd (stor djurhållning)' },
+  'Kemikaalilupa (Tukes)':                 { EN: 'Chemical permit (Tukes)',              SE: 'Kemikalietillstånd (Tukes)' },
+  'Verkkoliityntä (Fingrid/jakelu)':       { EN: 'Grid connection (Fingrid/dist.)',      SE: 'Nätanslutning (Fingrid/dist.)' },
+  'YVA (≥10 voimalaa / ≥45MW)':           { EN: 'EIA (≥10 turbines / ≥45 MW)',          SE: 'MKB (≥10 turbiner / ≥45 MW)' },
+  'Kaavakohde':                            { EN: 'Zoning area',                         SE: 'Planområde' },
+  'Vesilupa (AVI)':                        { EN: 'Water permit (AVI)',                   SE: 'Vattentillstånd (AVI)' },
+  'YVA':                                   { EN: 'EIA',                                  SE: 'MKB' },
+  'Periaatepäätös (TEM)':                  { EN: 'Principle decision (TEM)',             SE: 'Principbeslut (TEM)' },
+  'Rakentamislupa (STUK)':                 { EN: 'Construction licence (STUK)',          SE: 'Byggnadstillstånd (STUK)' },
+  'Käyttölupa (STUK)':                     { EN: 'Operating licence (STUK)',             SE: 'Drifttillstånd (STUK)' },
+  'Pelastuslaitoksen hyväksyntä':          { EN: 'Fire authority approval',              SE: 'Räddningsverkets godkännande' },
+};
+
+function tLupa(fi) {
+  if (activeLang === 'FI') return fi;
+  return (LUPA_I18N[fi] && LUPA_I18N[fi][activeLang]) || fi;
 }
 
 function setLang(lang) {
@@ -1839,6 +2038,10 @@ function setLang(lang) {
   // Update map tab selector hint
   const mapSel = document.getElementById('map-hanketyyppi');
   if (mapSel && mapSel.options[0]) mapSel.options[0].text = t('map_select_hint');
+  // Update permit tags in active form
+  document.querySelectorAll('[data-lupa-fi]').forEach(el => {
+    el.textContent = tLupa(el.dataset.lupaFi);
+  });
 }
 
 // ─────────────────────────────────────────────
@@ -1999,7 +2202,7 @@ const HANKE_FIELDS = {
       { id: 'gf-hakija',       apiKey: 'hakija',           label: 'Hakija (yritys)',         type: 'text',   placeholder: 'Yrityksen nimi', required: true },
       { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus (pää)',  type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
       { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',           type: 'text',   placeholder: 'Kunta', required: true },
-      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',       type: 'number', min: '1', step: '0.5', required: true },
+      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',       labelKey: 'gf_lbl_teho_kokonais', type: 'number', min: '1', step: '0.5', required: true },
       { id: 'gf-turbiinimi',   apiKey: null,               label: 'Turbiinimäärä (kpl)',     type: 'number', min: '1', step: '1' },
       { id: 'gf-yva',          apiKey: null,               label: 'YVA tarvitaan',           type: 'select', options: ['— Valitse —', 'Kyllä (≥10 voimalaa tai ≥45 MW)', 'Ei', 'Ei tiedossa'] },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
@@ -2011,9 +2214,9 @@ const HANKE_FIELDS = {
     title: 'Tuulivoima (meri) — Offshore-tuulivoimahanke',
     fields: [
       { id: 'gf-hakija',       apiKey: 'hakija',           label: 'Hakija (yritys)',           type: 'text',   placeholder: 'Yrityksen nimi', required: true },
-      { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Merialueen viite',          type: 'text',   placeholder: '61°N 21°E' },
-      { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintialue (lähin kunta)', type: 'text',  placeholder: 'Kunta', required: true },
-      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',         type: 'number', min: '10', step: '5', required: true },
+      { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Merialueen viite',          labelKey: 'gf_lbl_kt_meri',    phKey: 'gf_ph_kt_meri',    type: 'text',   placeholder: '61°N 21°E' },
+      { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintialue (lähin kunta)', labelKey: 'gf_lbl_kunta_meri', phKey: 'gf_ph_kunta_meri', type: 'text',   placeholder: 'Kunta', required: true },
+      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Kokonaisteho (MW)',          labelKey: 'gf_lbl_teho_kokonais', type: 'number', min: '10', step: '5', required: true },
       { id: 'gf-etaisyys',     apiKey: null,               label: 'Etäisyys rannasta (km)',    type: 'number', min: '1', step: '0.5' },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',            type: 'select', options: _VAIHE_OPTS },
@@ -2026,7 +2229,7 @@ const HANKE_FIELDS = {
       { id: 'gf-hakija',       apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi', required: true },
       { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
       { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta', required: true },
-      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Teho (MWp)',            type: 'number', min: '0.1', step: '0.1', required: true },
+      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Teho (MWp)',            labelKey: 'gf_lbl_teho_mwp', type: 'number', min: '0.1', step: '0.1', required: true },
       { id: 'gf-pintaala',     apiKey: null,               label: 'Pinta-ala (ha)',        type: 'number', min: '0.1', step: '0.1' },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',        type: 'select', options: _VAIHE_OPTS },
@@ -2039,7 +2242,7 @@ const HANKE_FIELDS = {
       { id: 'gf-hakija',       apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi', required: true },
       { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
       { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta', required: true },
-      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Lämpöteho (MW)',        type: 'number', min: '10', step: '10', required: true },
+      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Lämpöteho (MW)',        labelKey: 'gf_lbl_teho_lampoteho', type: 'number', min: '10', step: '10', required: true },
       { id: 'gf-reaktori',     apiKey: null,               label: 'Reaktorityyppi',        type: 'select', options: ['— Valitse —', 'PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
       { id: 'gf-kaytto',       apiKey: null,               label: 'Käyttötarkoitus',       type: 'select', options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
       { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
@@ -2270,19 +2473,23 @@ function selectProjectType(typeId) {
   const formSection = document.getElementById('gen-form-section');
 
   function _fieldHtml(f) {
+    const idSlug = f.id.replace(/^gf-/, '').replace(/-/g, '_');
+    const lblKey = f.labelKey || ('gf_lbl_' + idSlug);
+    const phKey  = f.phKey   || ('gf_ph_'  + idSlug);
+    const lblTxt = t(lblKey);
     if (f.type === 'select') {
       const opts = f.options.map(o =>
         `<option value="${o.replace(/"/g, '&quot;')}">${o}</option>`
       ).join('');
-      return `<label>${f.label}</label><select id="${f.id}">${opts}</select>`;
+      return `<label data-i18n="${lblKey}">${lblTxt}</label><select id="${f.id}">${opts}</select>`;
     }
     let attrs = `type="${f.type}"`;
     if (f.value !== undefined) attrs += ` value="${f.value}"`;
-    if (f.placeholder) attrs += ` placeholder="${f.placeholder}"`;
+    if (f.placeholder) attrs += ` placeholder="${t(phKey)}" data-i18n-ph="${phKey}"`;
     if (f.min !== undefined) attrs += ` min="${f.min}"`;
     if (f.step !== undefined) attrs += ` step="${f.step}"`;
     if (f.required) attrs += ' required';
-    return `<label>${f.label}</label><input id="${f.id}" ${attrs} />`;
+    return `<label data-i18n="${lblKey}">${lblTxt}</label><input id="${f.id}" ${attrs} />`;
   }
 
   // Build form HTML — pair non-full fields, full fields get own row
@@ -2305,14 +2512,14 @@ function selectProjectType(typeId) {
 
   const hvInfo = HANKETYYPIT[typeId] || {};
   const lupaTagsHtml = (hvInfo.lupatyypit || []).map(l =>
-    `<span class="gf-lupa-tag">${l}</span>`
+    `<span class="gf-lupa-tag" data-lupa-fi="${l.replace(/"/g, '&quot;')}">${tLupa(l)}</span>`
   ).join('');
 
   formSection.innerHTML = `
     <div class="gen-form-wrap">
-      <div class="gen-form-title">${fieldDef.title}</div>
-      <div class="gen-form-sub">Täytä hankkeen tiedot. AI generoi asiakirjaluonnoksen RAG-haun ja Claude-mallin avulla (~60 s, SMR/offshore ~90 s).</div>
-      ${lupaTagsHtml ? `<div class="gf-lupatyypit-bar"><span class="gf-lupatyypit-label">Luvat (yleisesti):</span>${lupaTagsHtml}</div>` : ''}
+      <div class="gen-form-title" data-i18n="gf_title_${typeId}">${t('gf_title_' + typeId)}</div>
+      <div class="gen-form-sub" data-i18n="gf_form_sub">${t('gf_form_sub')}</div>
+      ${lupaTagsHtml ? `<div class="gf-lupatyypit-bar"><span class="gf-lupatyypit-label" data-i18n="gf_luvat_heading">${t('gf_luvat_heading')}</span>${lupaTagsHtml}</div>` : ''}
       ${rowsHtml}
       <div id="gen-progress-wrap" class="gen-progress-wrap">
         <div class="gen-progress-label">
@@ -2323,11 +2530,9 @@ function selectProjectType(typeId) {
       </div>
       <div class="gen-submit-row">
         <button class="gen-submit-btn" id="gen-main-submit" onclick="submitGeneratorForm()">
-          &#x1F4C4; Generoi asiakirja PDF
+          &#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>
         </button>
-        <div class="gen-disclaimer">
-          AI-luonnos (RAG + Claude) — vaatii asiantuntijatarkistuksen ennen jättämistä. Ei juridinen neuvo.
-        </div>
+        <div class="gen-disclaimer" data-i18n="gf_disclaimer">${t('gf_disclaimer')}</div>
       </div>
       <div id="gen-proofread-status" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.3);border-radius:8px;font-size:0.78rem;color:#ffa726;"></div>
     </div>
@@ -2341,7 +2546,8 @@ function selectProjectType(typeId) {
       sel.value = hvInfo.autoFields.kohdeviranomainen;
       const infoEl = document.createElement('div');
       infoEl.className = 'gf-auto-info';
-      infoEl.textContent = 'Automaattisesti tunnistettu valitun hanketyypin perusteella';
+      infoEl.dataset.i18n = 'gf_auto_info';
+      infoEl.textContent = t('gf_auto_info');
       sel.after(infoEl);
     }
   }
@@ -2489,7 +2695,7 @@ async function submitGeneratorForm() {
     btn.style.background = '#2a7a4a';
     setTimeout(() => {
       btn.disabled = false;
-      btn.innerHTML = '&#x1F4C4; Generoi asiakirja PDF';
+      btn.innerHTML = `&#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>`;
       btn.style.background = '';
       if (progWrap) progWrap.classList.remove('visible');
     }, 4000);
@@ -2534,7 +2740,7 @@ async function submitGeneratorForm() {
     btn.innerHTML = '&#x274C; Yritä uudelleen';
     btn.style.background = '#7a1a2a';
     setTimeout(() => {
-      btn.innerHTML = '&#x1F4C4; Generoi asiakirja PDF';
+      btn.innerHTML = `&#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>`;
       btn.style.background = '';
     }, 4000);
     const msg = err.name === 'AbortError' ? 'Aikakatkaisu (>300s) — yritä uudelleen' : err.message;
