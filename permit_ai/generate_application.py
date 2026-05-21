@@ -187,6 +187,7 @@ class ApplicationInput:
     lang:                         str = "FI"  # FI | EN | SE
     kapasiteetti_mwh:             float = 0.0
     y_tunnus:                     str = ""
+    osoite:                       str = ""
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -216,6 +217,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "Asemapiirustus ja pohjakartta (M 1:500)",
             "Rakennesuunnitelma (akkukontti + perustukset)",
             "Paloturvallisuusselvitys (NFPA 855 / EN-standardit)",
@@ -252,6 +254,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "YVA-ohjelma ja YVA-selostus (ELY:n hyväksymä)",
             "Meluselvitys (ETSU-R-97 tai IEC 61400-11)",
             "Varjostusmallinnusraportti",
@@ -289,6 +292,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "YVA-ohjelma ja YVA-selostus",
             "Meriekologinen vaikutusarviointi (Natura tarvittaessa)",
             "Meluselvitys (ilma- ja vedenalainen melu)",
@@ -359,6 +363,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)",
             "YVA-ohjelma ja -selostus",
             "Ydinmateriaalivalvontasuunnitelma (IAEA SQ-protokolla)",
@@ -396,6 +401,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "Hydraulinen mitoitusraportti (virtaama, putouskorkeus)",
             "Geotekninen pato- ja pohjarakenneselvitys",
             "Vesistövaikutusten arviointi (tulva, kuivuus, vedenlaatu)",
@@ -433,6 +439,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "YVA-ohjelma ja -selostus (tuulivoiman osalta)",
             "BESS-paloturvallisuusselvitys (NFPA 855)",
             "Sammutusvesien keräyssuunnitelma (BESS)",
@@ -456,6 +463,7 @@ _HANKE_CFG = {
         "luvat": [],
         "liitteet": [
             "Sijaintikartta / projektikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "Hakijan taloudellinen tilanne (tilinpäätös, 2 viimeisintä vuotta)",
             "Projektisuunnitelma (T&K-kuvaus, tavoitteet, metodologia)",
             "Budjettilaskelmat ja rahoitussuunnitelma",
@@ -492,6 +500,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
             "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)",
             "BESS-paloturvallisuusselvitys (NFPA 855 / EN-standardit)",
             "Integroitu energiavarastosuunnitelma (SMR + BESS-mitoitus)",
@@ -808,10 +817,16 @@ def _liitteet_table(hanketyyppi: str) -> Table:
         Paragraph("Tila", ParagraphStyle("th2", fontSize=8.5, fontName="Helvetica-Bold",
                                          alignment=TA_CENTER)),
     ]]
-    for i, liite in enumerate(cfg["liitteet"], 1):
+    for i, liite in enumerate(cfg["liitteet"]):
+        if i == 0:
+            nro = "0"
+        elif i == 1:
+            nro = "0b"
+        else:
+            nro = str(i - 1)
         rows.append([
-            Paragraph(str(i), ParagraphStyle("tn", fontSize=8.5)),
-            Paragraph(liite,  ParagraphStyle("tl", fontSize=8.5, leading=12)),
+            Paragraph(nro,   ParagraphStyle("tn", fontSize=8.5)),
+            Paragraph(liite, ParagraphStyle("tl", fontSize=8.5, leading=12)),
             Paragraph("[ ] Toimitettu",
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
@@ -1093,6 +1108,12 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     story.append(Spacer(1, 6*mm))
     story.append(Paragraph("Rakennuslupahakemusluonnos", st["sub"]))
     story.append(Paragraph(f"{cfg['nimi_fi']}", st["title"]))
+    story.append(Paragraph(
+        "Esiselvitys- ja ennakkoneuvottelumateriaali — "
+        "Valmisteltu rakennusvalvonnan ennakkoneuvottelua varten",
+        ParagraphStyle("kan_sub2", fontSize=9, textColor=C_GRAY,
+                       fontName="Helvetica", spaceAfter=4, leading=13),
+    ))
     story.append(Paragraph(f"{inp.teho_mw} MW  ·  {inp.kunta}  ·  {inp.kiinteistotunnus}", st["meta"]))
     story.append(Spacer(1, 4*mm))
     story.append(_hr(C_NAVY, 1.5))
@@ -1138,6 +1159,23 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         _hr(),
     ]))
     story.extend(_para_text(sections.get("kuvaus", "–"), st))
+    story.append(Paragraph(
+        "Hanke on esiselvitysvaiheessa. Lopulliset tekniset mitoitukset, "
+        "sijaintisuunnitelmat ja ympäristövaikutusten arvioinnit tarkentuvat "
+        "jatkosuunnittelun myötä.",
+        st["body"],
+    ))
+    if inp.hanketyyppi == "BESS":
+        story.append(Paragraph(
+            "Laitosalueen arvioitu pinta-ala on 0,4–0,6 ha.",
+            st["body"],
+        ))
+    story.append(Paragraph(
+        "Hankealueen maankäyttö on selvitetty NCE Energyn maankäyttöselvityksessä "
+        "(ks. Liite 0b: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
+        "kaavatilanteen, suojelualueet sekä pohjavesialuetiedot.",
+        st["body"],
+    ))
     story.append(Spacer(1, 4*mm))
 
     # ── 2. Perustelut ja tarve ────────────────────────────────────────────────
@@ -1155,6 +1193,14 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     ]))
     story.append(_luvat_table(inp.hanketyyppi, st))
     story.append(Spacer(1, 5*mm))
+    story.append(Paragraph(
+        "<b>Kaavatilanne:</b> Hankkeen sijoituspaikan voimassa oleva kaavatilanne on "
+        "tarkistettava rakennusvalvonnan ennakkoneuvottelussa ennen lupahakemuksen "
+        "jättämistä. Kaavatilanne vaikuttaa suoraan lupaprosessin kestoon ja vaatimuksiin — "
+        "rakentaminen edellyttää usein asemakaavaa tai sen muutosta taikka "
+        "suunnittelutarveratkaisua.",
+        st["body"],
+    ))
 
     # AI:n lupakuvaukset
     luvat_txt = sections.get("luvat_teksti", "")
@@ -1217,6 +1263,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     yhteystiedot_data = [
         ["Hakija",    inp.hakija],
         ["Y-tunnus",  inp.y_tunnus if inp.y_tunnus else "–"],
+        ["Osoite",    inp.osoite if inp.osoite else "–"],
         ["Lisätietoja", "NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi"],
     ]
     yht_tbl = Table(

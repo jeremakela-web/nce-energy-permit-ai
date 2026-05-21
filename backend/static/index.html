@@ -2116,13 +2116,20 @@ const HANKETYYPIT = {
   muu:            { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa (mahdollinen)', 'Toimenpidelupa (mahdollinen)'] },
 };
 
-// Inject y_tunnus field after hakija in every HANKE_FIELDS entry
+// Inject y_tunnus and osoite fields after hakija in every HANKE_FIELDS entry
 Object.values(HANKE_FIELDS).forEach(cfg => {
   const idx = cfg.fields.findIndex(f => f.id === 'gf-hakija');
   if (idx >= 0 && !cfg.fields.find(f => f.id === 'gf-ytunnus')) {
     cfg.fields.splice(idx + 1, 0, {
       id: 'gf-ytunnus', apiKey: 'y_tunnus', label: 'Y-tunnus',
       type: 'text', placeholder: ''
+    });
+  }
+  const idxYt = cfg.fields.findIndex(f => f.id === 'gf-ytunnus');
+  if (idxYt >= 0 && !cfg.fields.find(f => f.id === 'gf-osoite')) {
+    cfg.fields.splice(idxYt + 1, 0, {
+      id: 'gf-osoite', apiKey: 'osoite', label: 'Osoite',
+      type: 'text', placeholder: 'Hakijan postiosoite'
     });
   }
 });
@@ -3296,6 +3303,7 @@ async function generateApplication() {
         hanketyyppi, kiinteistotunnus: kt, teho_mw: teho,
         kapasiteetti_mwh: kapasiteetti || undefined,
         y_tunnus: document.getElementById('gf-ytunnus')?.value?.trim() || undefined,
+        osoite: document.getElementById('gf-osoite')?.value?.trim() || undefined,
         kunta, hakija,
         lang: activeLang,
       }),
