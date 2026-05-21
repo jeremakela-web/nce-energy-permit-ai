@@ -1737,6 +1737,15 @@ _NATIONAL_SUPERVISORS: dict[str, dict[str, str]] = {
 }
 
 
+_BESS_MARKET_DATA: dict[str, dict] = {
+    "FI": {"index": 110, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
+    "SE": {"index": 145, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
+    "DA": {"index": 160, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
+    "NO": {"index": 130, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
+    "PL": {"index": 775, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
+}
+
+
 def _s(lang: str, key: str) -> str:
     """Hae käännetty merkkijono PDF-layoutille. Fallback → FI."""
     d = _PDF_STRINGS.get(lang) or _PDF_STRINGS["FI"]
@@ -1855,6 +1864,16 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
         f"\nKansallinen valvontaviranomainen ({country}): {_supervisor}"
     )
 
+    bess_market_block = ""
+    if inp.hanketyyppi == "BESS":
+        _md = _BESS_MARKET_DATA.get(country, _BESS_MARKET_DATA["FI"])
+        bess_market_block = (
+            f"\nEuroopan BESS-reservimarkkinat {country}-indeksi: "
+            f"{_md['index']} {_md['unit']} 2h-akustolle "
+            f"({_md['date']}, lähde: {_md['source']}). "
+            f"Mainitse tämä perustelut-osiossa."
+        )
+
     prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
@@ -1862,7 +1881,7 @@ Kiinteistötunnus: {inp.kiinteistotunnus}
 Teho: {inp.teho_mw} MW{kap_lisatieto}
 Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
-Päivämäärä: {now}{viranomainen_ohje}{standards_block}
+Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}
 
 {ph["rag_intro"]}
 {rag_context}
