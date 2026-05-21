@@ -2,7 +2,7 @@
 Energy Permit AI — hakemustengeneraattori.
 
 Generoi lupahakemusluonnoksen PDF-muodossa RAG + Claude -pohjaisesti.
-Tukee hanketyypit: BESS | tuulivoima | SMR
+Tukee hanketyypit: BESS | tuulivoima | aurinkovoima | SMR | vesivoima | hybridit
 
 Käyttö:
     python3 generate_application.py  (interaktiivinen testiajo)
@@ -362,7 +362,7 @@ _HANKE_CFG = {
         ],
     },
     "SMR": {
-        "nimi_fi":    "Pienydinreaktori (SMR) — esilupalupahakemus",
+        "nimi_fi":    "Pienydinreaktori (SMR) — ennakkolupahakemus",
         "lyhenne":    "SMR",
         "rag_queries": [
             "ydinvoima lupa STUK ydinturvallisuus YVL-ohje regulatory oversight",
@@ -497,7 +497,7 @@ _HANKE_CFG = {
         ],
     },
     "smr_bess": {
-        "nimi_fi":    "SMR + BESS hybridienergijärjestelmä",
+        "nimi_fi":    "SMR + BESS -hybridienergiajärjestelmä",
         "lyhenne":    "SMR+BESS",
         "rag_queries": [
             "ydinvoima SMR lupa STUK pre-licensing YVL turvallisuusseloste",
@@ -615,7 +615,7 @@ def _rag_context(
 # Hanketyyppien nimet muilla kielillä (meta-taulukko PDF:ssä)
 # ─────────────────────────────────────────────────────────────────────────────
 _HANKE_NIMI_TRANS: dict[str, dict[str, str]] = {
-    "BESS":           {"EN": "Battery Energy Storage System (BESS)",     "SE": "Batterienergilagersystem (BESS)"},
+    "BESS":           {"EN": "Battery Energy Storage System (BESS)",     "SE": "Batterienergilagringssystem (BESS)"},
     "tuulivoima_maa": {"EN": "Onshore Wind Power Project",               "SE": "Landbaserat vindkraftsprojekt"},
     "tuulivoima_meri":{"EN": "Offshore Wind Power Project",              "SE": "Offshorevindkraftsprojekt"},
     "aurinkovoima":   {"EN": "Solar Power Plant Project",                "SE": "Solkraftsprojekt"},
@@ -883,7 +883,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
     },
     "NO": {
         "intro":        "Utarbeid et utkast til tillatelsessøknad for følgende prosjekt:",
-        "rag_intro":    "Nedenfor er relevant dokumentasjon (Fingrid, Tukes, Miljøverndepartementet):",
+        "rag_intro":    "Nedenfor er relevant dokumentasjon (Fingrid, Tukes, Klima- og miljødepartementet):",
         "kuvaus":       "PROSJEKTBESKRIVELSE",
         "perustelut":   "BEGRUNNELSE OG BEHOV",
         "luvat":        "BESKRIVELSE AV TILLATELSESPROSEDYRER",
@@ -908,7 +908,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
     },
     "PL": {
         "intro":        "Sporządź projekt wniosku o zezwolenie dla następującego projektu:",
-        "rag_intro":    "Poniżej znajduje się odpowiednia dokumentacja (Fingrid, Tukes, Ministerstwo Środoąwiska):",
+        "rag_intro":    "Poniżej znajduje się odpowiednia dokumentacja (Fingrid, Tukes, Ministerstwo Środowiska):",
         "kuvaus":       "OPIS PROJEKTU",
         "perustelut":   "UZASADNIENIE I POTRZEBA",
         "luvat":        "OPIS PROCEDUR ZEZWOLEŃ",
@@ -1107,14 +1107,14 @@ _LIITE_TRANS: dict[str, dict[str, str]] = {
     "Jäähdytysveden saatavuus- ja ympäristöarviointi":       {"EN": "Cooling water availability and environmental assessment",  "SE": "Kylvattentillgång och miljöbedömning"},
     "Jäähdytysvesitarve- ja ympäristöarviointi":             {"EN": "Cooling water demand and environmental assessment",        "SE": "Kylvattenbehov och miljöbedömning"},
     "Sosioekonominen vaikutusarviointi":                     {"EN": "Socioeconomic impact assessment",                          "SE": "Socioekonomisk konsekvensutredning"},
-    "Kansainväliset referensssilaitosvertailut (IAEA)":      {"EN": "International reference plant comparisons (IAEA)",         "SE": "Internationella referensanläggningsjämförelser (IAEA)"},
+    "Kansainväliset referenssilaitosvertailut (IAEA)":       {"EN": "International reference plant comparisons (IAEA)",         "SE": "Internationella referensanläggningsjämförelser (IAEA)"},
     "Hydraulinen mitoitusraportti (virtaama, putouskorkeus)":{"EN": "Hydraulic design report (flow rate, head)",               "SE": "Hydraulisk dimensioneringsrapport (flöde, fallhöjd)"},
     "Geotekninen pato- ja pohjarakenneselvitys":             {"EN": "Geotechnical dam and foundation study",                    "SE": "Geoteknisk dam- och grundläggningsutredning"},
     "Vesistövaikutusten arviointi (tulva, kuivuus, vedenlaatu)":{"EN": "Watercourse impact assessment (flooding, drought, water quality)", "SE": "Vattendragspåverkansutredning (översvämning, torka, vattenkvalitet)"},
     "Ekologinen virtaamaselvitys (kalat, pohjaeläimet)":     {"EN": "Ecological flow study (fish, benthic fauna)",              "SE": "Ekologisk flödesutredning (fisk, bottendjur)"},
     "Kalaston vaellusesteiden ja kalateiden suunnitelma":    {"EN": "Fish migration barrier and fish pass plan",                "SE": "Plan för fiskvandringsbarriärer och fiskvägar"},
     "Padon turvallisuussuunnitelma (PATL 494/2009)":         {"EN": "Dam safety plan (Dam Safety Act 494/2009)",                "SE": "Damsäkerhetsplan (Damsäkerhetslagen 494/2009)"},
-    "Hätätilannesuunnitelma (padotusriskit)":                {"EN": "Emergency plan (dam failure risks)",                       "SE": "Nödlägesplan (dammrasterrisker)"},
+    "Hätätilannesuunnitelma (padotusriskit)":                {"EN": "Emergency plan (dam failure risks)",                       "SE": "Nödlägesplan (dammbrotsrisker)"},
     "BESS-paloturvallisuusselvitys (NFPA 855)":              {"EN": "BESS fire safety report (NFPA 855)",                       "SE": "BESS brandsäkerhetsrapport (NFPA 855)"},
     "BESS-paloturvallisuusselvitys (NFPA 855 / EN-standardit)":{"EN": "BESS fire safety report (NFPA 855 / EN standards)",     "SE": "BESS brandsäkerhetsrapport (NFPA 855 / EN-standarder)"},
     "Integroitu verkkoliityntäsuunnitelma (tuuli + PV + BESS)":{"EN": "Integrated grid connection plan (wind + PV + BESS)",   "SE": "Integrerad nätanslutningsplan (vind + PV + BESS)"},
@@ -1307,7 +1307,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "disclaimer_b":    ("Detta dokument är ett AI-assisterat utkast. Det är inte juridiskt bindande och "
                             "ersätter inte råd från en kvalificerad tillståndsexpert eller jurist. Innan "
                             "ansökan lämnas in måste dokumentet granskas av en fackman."),
-        "m_hakija":        "Sökande",          "m_ytunnus":    "FO-nummer",
+        "m_hakija":        "Sökande",          "m_ytunnus":    "Organisationsnummer",
         "m_hanketyyppi":   "Projekttyp",       "m_teho":       "Kapacitet / Effekt",
         "m_kunta":         "Kommun",           "m_kt":         "Fastighetsbeteckning",
         "m_maa":           "Land",
@@ -1325,7 +1325,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lahteet_h":       "Källor och referenser",
         "lahteet_b":       "Detta utkast har upprättats med hjälp av följande officiella dokument:",
         "yhteystiedot_h":  "Sökandens kontaktuppgifter",
-        "yht_hakija":      "Sökande",   "yht_ytunnus":    "FO-nummer",
+        "yht_hakija":      "Sökande",   "yht_ytunnus":    "Organisationsnummer",
         "yht_osoite":      "Adress",    "yht_lisatietoja": "Mer information",
         "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
                             "·  AI-utkast — kräver expertgranskning"),
@@ -1427,7 +1427,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "samlede varighed af tilladelsesprocessen — forhåndskonsultation med "
                             "byggesagsafdelingen er det første trin."),
         "kaava_tuuli":     ("<b>Planlægningsstatus og VVM-krav:</b> Et vindkraftprojekt kræver næsten altid "
-                            "en lokaloversigsplan eller lokalplan (MRL 132/1999, 77a §). VVM-proceduren "
+                            "en lokaloversigtsplan eller lokalplan (MRL 132/1999, 77a §). VVM-proceduren "
                             "(YVA-laki 252/2017) er obligatorisk for projekter ≥10 MW eller ≥5 møller — "
                             "plan- og VVM-processerne forløber ofte parallelt og tager tilsammen 3–6 år. "
                             "Planlægningsstatus afklares først."),
@@ -1500,7 +1500,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "Reguleringsstatusen for BESS-prosjektstedet må fastlegges først. I de fleste "
                             "kommuner krever plassering av et batterienergilagringssystem en reguleringsplan "
                             "eller dispensasjon. Reguleringstatus har størst innvirkning på den totale "
-                            "varigheten av tillatelsprosessen — forhåndskonsultasjon med byggesaksavdelingen "
+                            "varigheten av tillatelsesprosessen — forhåndskonsultasjon med byggesaksavdelingen "
                             "er det første trinnet."),
         "kaava_tuuli":     ("<b>Reguleringstatus og KU-krav:</b> Et vindkraftprosjekt krever nesten alltid "
                             "en kommunedelplan eller reguleringsplan (MRL 132/1999, 77a §). KU-prosedyren "
@@ -1520,8 +1520,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "sjekkes — dispensasjon kan være nødvendig utenfor reguleringsplanområder."),
         "kaava_generic":   ("<b>Reguleringstatus:</b> Gjeldende reguleringstatus for prosjektstedet "
                             "må verifiseres på et forhåndskonsultasjonsmøte med byggesaksavdelingen "
-                            "før tillatelssøknaden sendes inn. Regulering påvirker direkte varigheten "
-                            "og kravene i tillatelsprosessen — bygging krever ofte en reguleringsplan, "
+                            "før tillatelsessøknaden sendes inn. Regulering påvirker direkte varigheten "
+                            "og kravene i tillatelsesprosessen — bygging krever ofte en reguleringsplan, "
                             "en endring av denne eller dispensasjon."),
     },
     "PL": {
