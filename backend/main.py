@@ -359,7 +359,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
 
         # Käynnistä oikoluku taustasäikeessä
         job_id = uuid.uuid4().hex[:10]
-        _proofread_store[job_id] = {"status": "pending", "pdf_bytes": None, "error": None}
+        _proofread_store[job_id] = {"status": "pending", "pdf_bytes": None, "error": None, "lang": req.lang or "FI", "kt_safe": req.kiinteistotunnus.replace("/", "-")}
 
         def _bg_proofread():
             try:
@@ -374,7 +374,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         Thread(target=_bg_proofread, daemon=True).start()
 
         kt_safe  = req.kiinteistotunnus.replace("/", "-")
-        filename = f"hakemus_{kt_safe}.pdf"
+        filename = f"{_FILE_PREFIX.get(req.lang or 'FI', 'hakemus')}_{kt_safe}.pdf"
         return Response(
             content    = draft_bytes,
             media_type = "application/pdf",
@@ -397,16 +397,22 @@ async def proofread_status(job_id: str):
     return {"status": job["status"], "error": job.get("error")}
 
 
+_FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
+                "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}
+
+
 @app.get("/api/proofread/{job_id}/download")
 async def proofread_download(job_id: str):
     """Lataa oikoluvun jälkeinen PDF."""
     job = _proofread_store.get(job_id)
     if job is None or job["status"] != "done" or not job["pdf_bytes"]:
         raise HTTPException(status_code=404, detail="PDF ei ole vielä valmis")
+    prefix  = _FILE_PREFIX.get(job.get("lang", "FI"), "hakemus")
+    kt_safe = job.get("kt_safe", job_id)
     return Response(
         content    = job["pdf_bytes"],
         media_type = "application/pdf",
-        headers    = {"Content-Disposition": f'attachment; filename="hakemus_tarkistettu_{job_id}.pdf"'},
+        headers    = {"Content-Disposition": f'attachment; filename="{prefix}_tarkistettu_{kt_safe}.pdf"'},
     )
 
 

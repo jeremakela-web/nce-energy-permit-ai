@@ -1764,6 +1764,7 @@ const TRANSLATIONS = {
     crit_muu:           'Kaavoitus · Pohjavesi · Natura',
     lbl_settlement_km:  'Asutus min',
     lbl_settlement_m:   'Asutus min',
+    ei_sovellu:         'EI-SOVELLU',
     // Placeholders
     gf_ph_hakija:     'Yrityksen tai henkilön nimi',
     gf_ph_kt:         'esim. 091-001-0001-0001',
@@ -2020,6 +2021,7 @@ const TRANSLATIONS = {
     crit_muu:           'Zoning · Groundwater · Natura',
     lbl_settlement_km:  'Settlement min',
     lbl_settlement_m:   'Settlement min',
+    ei_sovellu:         'N/A',
     // Placeholders
     gf_ph_hakija:     'Company or person name',
     gf_ph_kt:         'e.g. 091-001-0001-0001',
@@ -2267,6 +2269,7 @@ const TRANSLATIONS = {
     crit_muu:           'Planläggning · Grundvatten · Natura',
     lbl_settlement_km:  'Bebyggelse min',
     lbl_settlement_m:   'Bebyggelse min',
+    ei_sovellu:         'EJ TILLÄMPLIGT',
     // Placeholders
     gf_ph_hakija:     'Företagets eller personens namn',
     gf_ph_kt:         't.ex. 091-001-0001-0001',
@@ -2550,6 +2553,7 @@ const TRANSLATIONS = {
     crit_muu:           'Zoneinddeling · Grundvand · Natura',
     lbl_settlement_km:  'Bebyggelse min',
     lbl_settlement_m:   'Bebyggelse min',
+    ei_sovellu:         'IKKE RELEVANT',
     // Placeholders
     gf_ph_hakija:             'Virksomhedens eller personens navn',
     gf_ph_kt:                 'f.eks. 091-001-0001-0001',
@@ -2803,6 +2807,7 @@ const TRANSLATIONS = {
     crit_muu:           'Soneinndeling · Grunnvann · Natura',
     lbl_settlement_km:  'Bebyggelse min',
     lbl_settlement_m:   'Bebyggelse min',
+    ei_sovellu:         'IKKE RELEVANT',
     // Placeholders
     gf_ph_hakija:             'Selskapets eller personens navn',
     gf_ph_kt:                 'f.eks. 091-001-0001-0001',
@@ -3056,6 +3061,7 @@ const TRANSLATIONS = {
     crit_muu:           'Zagospodarowanie · Wody gruntowe · Natura',
     lbl_settlement_km:  'Zabudowa min',
     lbl_settlement_m:   'Zabudowa min',
+    ei_sovellu:         'NIE DOTYCZY',
     // Placeholders
     gf_ph_hakija:             'Nazwa firmy lub osoby',
     gf_ph_kt:                 'np. 091-001-0001-0001',
@@ -4033,7 +4039,7 @@ async function submitGeneratorForm() {
   }
 
   // Sentinel for API fields not applicable to this form type
-  if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
+  if (!payload.kiinteistotunnus) payload.kiinteistotunnus = t('ei_sovellu');
   if (!payload.kunta)            payload.kunta = '–';
 
   payload.lang    = activeLang;

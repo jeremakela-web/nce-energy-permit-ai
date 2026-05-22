@@ -736,6 +736,62 @@ _COUNTRY_CONFIG: dict[str, dict] = {
     },
 }
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Maakohtaiset lupa-/viranomainen-/laki-rivit (ylikirjoittavat FI-oletustan)
+# Avain (lupa) = suomenkielinen vakioavain → _t_lupa() kääntää sen
+# Viranomainen / laki = natiivikielinen nimi (ei käännetä, pysyy ao. kielisenä)
+# ─────────────────────────────────────────────────────────────────────────────
+_COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
+    "PL": {
+        "SMR": [
+            ("Periaatepäätös (VN)",           "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
+            ("YVA-menettely",                  "RDOŚ / GDOŚ",                         "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Rakentamislupa (ydinlaitos)",     "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
+            ("Käyttölupa (ydinlaitos)",         "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
+            ("Vesilupa (jäähdytysvesi)",        "Wody Polskie (PGWWP)",                "Prawo wodne (Ustawa z 20.07.2017)"),
+            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "BESS": [
+            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Ympäristölupa",                   "Starosta / RDOŚ",                     "Prawo ochrony środowiska (Ustawa z 27.04.2001)"),
+            ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
+            ("YVA-menettely (tarvitt.)",        "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "tuulivoima_maa": [
+            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("YVA-menettely",                   "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
+            ("Etäisyysvaatimus (tuulivoima)",   "Gmina / Starostwo Powiatowe",         "Ustawa o inwestycjach w zakresie elektrowni wiatrowych (2016)"),
+            ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "aurinkovoima": [
+            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
+            ("YVA-menettely (tarvitt.)",        "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "smr_bess": [
+            ("Periaatepäätös (VN)",             "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
+            ("YVA-menettely",                   "RDOŚ / GDOŚ",                         "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Rakentamislupa (ydinlaitos)",      "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
+            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Vesilupa (jäähdytysvesi)",        "Wody Polskie (PGWWP)",                "Prawo wodne (Ustawa z 20.07.2017)"),
+            ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
+            ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "vesivoima": [
+            ("Vesilupa (padotus, rakentaminen)", "Wody Polskie (PGWWP)",               "Prawo wodne (Ustawa z 20.07.2017)"),
+            ("Ympäristölupa",                   "RDOŚ",                                "Prawo ochrony środowiska (Ustawa z 27.04.2001)"),
+            ("YVA-menettely (tarvitt.)",        "RDOŚ / GDOŚ",                         "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
+            ("Maankäyttösopimus",               "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+    },
+}
+
 _SYSTEM = (
     "Olet NCE Energy Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
     "laadinnassa Suomessa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
@@ -2019,16 +2075,19 @@ def _disclaimer_box(st: dict, lang: str = "FI") -> Table:
     return tbl
 
 
-def _luvat_table(hanketyyppi: str, st: dict, lang: str = "FI") -> Table:
-    """Lupa-taulukko hanketyyppikohtaisesti."""
-    cfg  = _HANKE_CFG[hanketyyppi]
+def _luvat_table(hanketyyppi: str, st: dict, lang: str = "FI", country: str = "FI") -> Table:
+    """Lupa-taulukko hanketyyppikohtaisesti, maakohtaisilla ylikirjoituksilla."""
+    luvat_rows = (
+        _COUNTRY_LUVAT.get(country, {}).get(hanketyyppi)
+        or _HANKE_CFG[hanketyyppi]["luvat"]
+    )
     _th  = ParagraphStyle("th", fontSize=8.5, fontName="Helvetica-Bold")
     rows = [[
         Paragraph(_s(lang, "th_lupa"),  _th),
         Paragraph(_s(lang, "th_viran"), _th),
         Paragraph(_s(lang, "th_laki"),  _th),
     ]]
-    for lupa, viranomainen, laki in cfg["luvat"]:
+    for lupa, viranomainen, laki in luvat_rows:
         rows.append([
             Paragraph(_t_lupa(lang, lupa),         ParagraphStyle("td", fontSize=8.5, leading=12)),
             Paragraph(_t_auth(lang, viranomainen), ParagraphStyle("td", fontSize=8.5, leading=12, textColor=C_BLUE)),
@@ -2472,7 +2531,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         Paragraph(_s(lang, "sec3"), st["h2"]),
         _hr(),
     ]))
-    story.append(_luvat_table(inp.hanketyyppi, st, lang))
+    story.append(_luvat_table(inp.hanketyyppi, st, lang, country))
     story.append(Spacer(1, 5*mm))
     _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
     story.append(Paragraph(_s(lang, _kaava_key), st["body"]))
@@ -2484,7 +2543,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     story.append(Spacer(1, 4*mm))
 
     # ── ISO/IEC-standardit ───────────────────────────────────────────────────
-    country = getattr(inp, "country", "FI") or "FI"
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec_standards"), st["h2"]),
         _hr(),
@@ -2497,9 +2555,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         Paragraph(_s(lang, "sec4"), st["h2"]),
         _hr(),
     ]))
-    laki_rows_fi = {laki for _, _, laki in cfg["luvat"]}
-    laki_rows_fi.update(cfg.get("laki_extra", []))
-    for ref in sorted(laki_rows_fi):
+    country_luvat_override = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
+    if country_luvat_override:
+        laki_set = {laki for _, _, laki in country_luvat_override}
+    else:
+        laki_set = {laki for _, _, laki in cfg["luvat"]}
+        laki_set.update(cfg.get("laki_extra", []))
+    for ref in sorted(laki_set):
         story.append(Paragraph(f"• {_t_law(lang, ref)}", st["bullet"]))
     story.append(Spacer(1, 4*mm))
 
@@ -2634,8 +2696,11 @@ def generate_application(inp: ApplicationInput) -> str:
     else:
         pdf_bytes = generate_pdf(inp, sections, sources)
 
+    _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
+                     "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}
+    _prefix  = _FILE_PREFIX.get(inp.lang or "FI", "hakemus")
     kt_safe  = inp.kiinteistotunnus.replace("/", "-")
-    out_path = os.path.join(_OUTPUT_DIR, f"hakemus_{kt_safe}.pdf")
+    out_path = os.path.join(_OUTPUT_DIR, f"{_prefix}_{kt_safe}.pdf")
     with open(out_path, "wb") as f:
         f.write(pdf_bytes)
 
