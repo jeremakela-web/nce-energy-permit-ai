@@ -4266,7 +4266,24 @@ function selectProjectType(typeId) {
     _hankePhaseChanged(typeId, vaiheSel.value);
   }
 
-  formSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Scroll to form after reflow — desktop scrolls #tab-generator,
+  // mobile scrolls window (tab has overflow:visible at ≤768 px).
+  requestAnimationFrame(() => {
+    const formEl = document.getElementById('gen-form-section');
+    if (!formEl) return;
+    const tabGen = document.getElementById('tab-generator');
+    if (tabGen && tabGen.scrollHeight > tabGen.clientHeight) {
+      // Desktop: scroll the tab container
+      const relTop = formEl.getBoundingClientRect().top
+                   - tabGen.getBoundingClientRect().top
+                   + tabGen.scrollTop;
+      tabGen.scrollTo({ top: relTop - 16, behavior: 'smooth' });
+    } else {
+      // Mobile: scroll the window
+      const absTop = formEl.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: absTop - 16, behavior: 'smooth' });
+    }
+  });
 }
 
 // ─────────────────────────────────────────────
