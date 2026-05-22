@@ -1142,6 +1142,21 @@
       transition: width 1.5s ease;
       width: 0%;
     }
+    .gen-dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 9px 18px;
+      background: linear-gradient(90deg, #00C2A8, #3a7bd5);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 7px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .gen-dl-btn:hover { opacity: 0.85; }
   </style>
 </head>
 <body>
@@ -1192,7 +1207,6 @@
         <span class="pai-full-label">Permit AI</span>
         <span class="pai-short-label">AI</span>
       </button>
-      <div class="badge" id="header-badge" style="display:none;">Pöytyä · 636-439-4-711</div>
     </div>
   </div>
 </header>
@@ -1247,8 +1261,22 @@
               <option value="" data-i18n="map_select_hint">— Valitse hanketyyppi —</option>
             </select>
           </div>
+          <!-- Country selector -->
+          <div id="map-country-bar" style="margin-top:10px;">
+            <div style="font-size:0.68rem;color:#8899aa;margin-bottom:5px;" data-i18n="lbl_country">Maa</div>
+            <div class="lang-btn-row">
+              <button class="lang-btn active" id="map-country-btn-FI" onclick="setMapCountry('FI')">🇫🇮 FI</button>
+              <button class="lang-btn" id="map-country-btn-SE" onclick="setMapCountry('SE')">🇸🇪 SE</button>
+              <button class="lang-btn" id="map-country-btn-DA" onclick="setMapCountry('DA')">🇩🇰 DA</button>
+              <button class="lang-btn" id="map-country-btn-NO" onclick="setMapCountry('NO')">🇳🇴 NO</button>
+              <button class="lang-btn" id="map-country-btn-PL" onclick="setMapCountry('PL')">🇵🇱 PL</button>
+            </div>
+          </div>
+          <!-- Notice shown when non-FI country selected -->
+          <div id="map-country-notice" style="display:none;margin-top:10px;padding:9px 12px;background:rgba(0,194,168,0.07);border:1px solid rgba(0,194,168,0.25);border-radius:7px;font-size:0.73rem;color:#8899aa;line-height:1.5;" data-i18n="map_fi_only">Currently available for Finland only — other countries coming soon.</div>
         </div>
 
+        <div id="map-fi-form">
         <div class="sidebar-section">
           <h3 data-i18n="h3_hanke_tiedot">Hankkeen tiedot</h3>
           <div class="proj-field">
@@ -1481,6 +1509,8 @@
           </div>
         </div>
 
+        </div><!-- #map-fi-form -->
+
         <div class="sidebar-section" id="ai-strategy-section" style="display:none;">
           <h3 data-i18n="h3_ai_strategy">AI-lupaprosessistrategia</h3>
           <div style="font-size:0.72rem;color:#64b5f6;margin-bottom:6px;" data-i18n="ai_strategy_sub">
@@ -1655,6 +1685,7 @@ const TRANSLATIONS = {
     lbl_grid:       'Verkkoliityntä',
     lbl_market:     'Tavoitemarkkinat',
     map_select_hint:'— Valitse hanketyyppi —',
+    map_fi_only:    'Tällä hetkellä saatavilla vain Suomessa — muut maat tulossa pian.',
     gen_timing_smr: 'Tämä voi viedä 60–90 sekuntia SMR/offshore-hakemuksille.',
     gen_timing_std: 'Odota n. 30–60 s.',
     h3_hanke_tiedot:  'Hankkeen tiedot',
@@ -1812,7 +1843,9 @@ const TRANSLATIONS = {
     progress_claude:  'Generoidaan tekstiä (Claude)…',
     progress_pdf:     'Rakennetaan PDF…',
     progress_final:   'Viimeistellään…',
-    progress_done:    'PDF valmis!',
+    progress_done:        'Valmis – lataa PDF',
+    progress_proofread:   'Oikoluku käynnissä…',
+    btn_download_pdf:     'Lataa PDF',
     // Proofread
     proof_running:    '🔄 Oikoluku käynnissä taustalla…',
     proof_running_sub:'Tarkistettu versio tarjotaan ladattavaksi muutaman minuutin kuluttua.',
@@ -1941,6 +1974,7 @@ const TRANSLATIONS = {
     lbl_grid:       'Grid connection',
     lbl_market:     'Target market',
     map_select_hint:'— Select project type —',
+    map_fi_only:    'Currently available for Finland only — other countries coming soon.',
     gen_timing_smr: 'This may take 60–90 seconds for SMR/offshore applications.',
     gen_timing_std: 'Please wait approx. 30–60 s.',
     h3_hanke_tiedot:  'Project Details',
@@ -2098,7 +2132,9 @@ const TRANSLATIONS = {
     progress_claude:  'Generating text (Claude)…',
     progress_pdf:     'Building PDF…',
     progress_final:   'Finalising…',
-    progress_done:    'PDF ready!',
+    progress_done:        'Ready – download PDF',
+    progress_proofread:   'Proofreading in progress…',
+    btn_download_pdf:     'Download PDF',
     // Proofread
     proof_running:    '🔄 Proofreading running in background…',
     proof_running_sub:'A proofread version will be offered for download in a few minutes.',
@@ -2218,6 +2254,7 @@ const TRANSLATIONS = {
     lbl_grid:       'Nätanslutning',
     lbl_market:     'Målmarknad',
     map_select_hint:'— Välj projekttyp —',
+    map_fi_only:    'Tillgänglig för Finland just nu — fler länder kommer snart.',
     gen_timing_smr: 'Detta kan ta 60–90 sekunder för SMR/offshore-ansökningar.',
     gen_timing_std: 'Vänta ca 30–60 s.',
     h3_hanke_tiedot:  'Projektuppgifter',
@@ -2375,7 +2412,9 @@ const TRANSLATIONS = {
     progress_claude:  'Genererar text (Claude)…',
     progress_pdf:     'Bygger PDF…',
     progress_final:   'Slutför…',
-    progress_done:    'PDF klar!',
+    progress_done:        'Klar – ladda ned PDF',
+    progress_proofread:   'Korrekturläsning pågår…',
+    btn_download_pdf:     'Ladda ned PDF',
     // Proofread
     proof_running:    '🔄 Korrekturläsning körs i bakgrunden…',
     proof_running_sub:'En korrekturläst version erbjuds för nedladdning om några minuter.',
@@ -2483,6 +2522,7 @@ const TRANSLATIONS = {
     gen_done_title: 'Tilladelses­ansøgning klar!',
     gen_done_note:  'AI-udkast — kræver ekspertgennemgang inden indsendelse',
     map_select_hint:'— Vælg projekttype —',
+    map_fi_only:    'Tilgængelig for Finland i øjeblikket — andre lande kommer snart.',
     gen_timing_smr: 'Dette kan tage 60–90 sekunder for SMR/offshore-ansøgninger.',
     gen_timing_std: 'Vent ca. 30–60 s.',
     btn_fetch:      'Søg',
@@ -2495,7 +2535,9 @@ const TRANSLATIONS = {
     progress_claude:'Genererer tekst (Claude)…',
     progress_pdf:   'Bygger PDF…',
     progress_final: 'Afslutter…',
-    progress_done:  'PDF klar!',
+    progress_done:       'Klar – download PDF',
+    progress_proofread:  'Korrekturlæsning pågår…',
+    btn_download_pdf:    'Download PDF',
     proof_running:  '🔄 Korrekturlæsning kører i baggrunden…',
     proof_done_title:'Korrekturlæsning fuldført',
     proof_dl:       'Download korrekturlæst version',
@@ -2766,6 +2808,7 @@ const TRANSLATIONS = {
     gen_done_title: 'Tillatelsessøknad klar!',
     gen_done_note:  'AI-utkast — krever ekspertgjennomgang før innlevering',
     map_select_hint:'— Velg prosjekttype —',
+    map_fi_only:    'Tilgjengelig for Finland nå — andre land kommer snart.',
     gen_timing_smr: 'Dette kan ta 60–90 sekunder for SMR/offshore-søknader.',
     gen_timing_std: 'Vent ca. 30–60 s.',
     btn_fetch:      'Søk',
@@ -2778,7 +2821,9 @@ const TRANSLATIONS = {
     progress_claude:'Genererer tekst (Claude)…',
     progress_pdf:   'Bygger PDF…',
     progress_final: 'Ferdigstiller…',
-    progress_done:  'PDF klar!',
+    progress_done:       'Klar – last ned PDF',
+    progress_proofread:  'Korrekturlesing pågår…',
+    btn_download_pdf:    'Last ned PDF',
     proof_running:  '🔄 Korrekturlesing kjører i bakgrunnen…',
     proof_done_title:'Korrekturlesing fullført',
     proof_dl:       'Last ned korrekturlest versjon',
@@ -3049,6 +3094,7 @@ const TRANSLATIONS = {
     gen_done_title: 'Wniosek o zezwolenie gotowy!',
     gen_done_note:  'Szkic AI — wymaga przeglądu eksperta przed złożeniem',
     map_select_hint:'— Wybierz typ projektu —',
+    map_fi_only:    'Obecnie dostępne tylko dla Finlandii — inne kraje wkrótce.',
     gen_timing_smr: 'Może to potrwać 60–90 sekund dla wniosków SMR/offshore.',
     gen_timing_std: 'Poczekaj ok. 30–60 s.',
     btn_fetch:      'Szukaj',
@@ -3061,7 +3107,9 @@ const TRANSLATIONS = {
     progress_claude:'Generowanie tekstu (Claude)…',
     progress_pdf:   'Budowanie PDF…',
     progress_final: 'Finalizacja…',
-    progress_done:  'PDF gotowy!',
+    progress_done:       'Gotowe – pobierz PDF',
+    progress_proofread:  'Korekta w toku…',
+    btn_download_pdf:    'Pobierz PDF',
     proof_running:  '🔄 Korekta w toku w tle…',
     proof_done_title:'Korekta zakończona',
     proof_dl:       'Pobierz wersję po korekcie',
@@ -3626,7 +3674,6 @@ const _COUNTRY_VIR_OPTS = {
     { value: 'Kunta (rakennuslupa)',              label: t('opt_vir_kunta') },
     { value: 'ELY-keskus (YVA)',                  label: t('opt_vir_ely') },
     { value: 'STUK (ydinlupa)',                   label: t('opt_vir_stuk') },
-    { value: 'Business Finland (avustushakemus)', label: t('opt_vir_bf') },
     { value: 'Fingrid (verkkoliityntä)',          label: t('opt_vir_fingrid') },
     { value: 'Luova (ympäristölupa/vesilupa)',     label: t('opt_vir_avi') },
     { value: 'TEM (periaatepäätös)',              label: t('opt_vir_tem') },
@@ -4071,6 +4118,27 @@ function setCountry(code) {
 }
 
 // ─────────────────────────────────────────────
+// Map tab: country selection
+// ─────────────────────────────────────────────
+let mapSelectedCountry = 'FI';
+
+function setMapCountry(code) {
+  mapSelectedCountry = code;
+  ['FI','SE','DA','NO','PL'].forEach(c => {
+    const btn = document.getElementById('map-country-btn-' + c);
+    if (btn) btn.classList.toggle('active', c === code);
+  });
+  const notice  = document.getElementById('map-country-notice');
+  const form    = document.getElementById('map-fi-form');
+  const isFI    = code === 'FI';
+  if (notice) {
+    notice.style.display = isFI ? 'none' : 'block';
+    notice.textContent   = t('map_fi_only');
+  }
+  if (form) form.style.display = isFI ? '' : 'none';
+}
+
+// ─────────────────────────────────────────────
 // Generator: project type selection + form render
 // ─────────────────────────────────────────────
 let selectedProjectType = null;
@@ -4165,7 +4233,7 @@ function selectProjectType(typeId) {
         </button>
         <div class="gen-disclaimer" data-i18n="gf_disclaimer">${t('gf_disclaimer')}</div>
       </div>
-      <div id="gen-proofread-status" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.3);border-radius:8px;font-size:0.78rem;color:#ffa726;"></div>
+      <div id="gen-proofread-status" style="display:none;"></div>
     </div>
   `;
   formSection.style.display = 'block';
@@ -4343,9 +4411,6 @@ async function submitGeneratorForm() {
     });
     clearTimeout(timer);
     clearInterval(_progTimer);
-    if (progFill) progFill.style.width = '100%';
-    if (progPct)  progPct.textContent  = '100%';
-    if (progMsg)  progMsg.textContent  = t('progress_done');
 
     if (!resp.ok) {
       const errText = await resp.text().catch(() => '');
@@ -4354,29 +4419,27 @@ async function submitGeneratorForm() {
     }
 
     const jobId = resp.headers.get('X-Job-Id');
-    const blob  = await resp.blob();
-    const url   = URL.createObjectURL(blob);
-    const a     = document.createElement('a');
-    a.href = url;
-    a.download = `hakemus_${selectedProjectType}_${(payload.kunta || 'hanke').replace(/\s+/g, '_')}.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // Consume draft PDF silently — do not offer it for download
+    await resp.blob();
 
-    btn.innerHTML = `&#x2705; ${t('btn_gen_done')}`;
-    btn.style.background = '#2a7a4a';
+    // Switch to proofreading phase
+    if (progFill) progFill.style.width = '75%';
+    if (progPct)  progPct.textContent  = '75%';
+    if (progMsg)  progMsg.textContent  = t('progress_proofread');
     setTimeout(() => {
-      btn.disabled = false;
-      btn.innerHTML = `&#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>`;
-      btn.style.background = '';
-      if (progWrap) progWrap.classList.remove('visible');
-    }, 4000);
+      if (progFill) progFill.style.width = '90%';
+      if (progPct)  progPct.textContent  = '90%';
+    }, 2000);
+
+    // Re-enable submit so user can start a new generation while waiting
+    btn.disabled = false;
+    btn.innerHTML = `&#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>`;
+    btn.style.background = '';
 
     log(`${t('log_gen_done')}: ${selectedProjectType} / ${payload.kunta}`, 'ok');
 
-    // Oikolukupolling
-    if (jobId && proofBox) {
-      proofBox.style.display = 'block';
-      proofBox.innerHTML = `<strong>${t('proof_running')}</strong><br><span style="font-size:0.73rem;color:#b0b8c8;">${t('proof_running_sub')}</span>`;
+    // Proofread polling — update progress bar; show single download button when done
+    if (jobId) {
       const poll = setInterval(async () => {
         try {
           const sr = await fetch(`${API_BASE}/api/proofread/${jobId}`);
@@ -4384,19 +4447,22 @@ async function submitGeneratorForm() {
           const sd = await sr.json();
           if (sd.status === 'done') {
             clearInterval(poll);
-            const fname = `hakemus_tarkistettu_${selectedProjectType}_${(payload.kunta || 'hanke').replace(/\s+/g, '_')}.pdf`;
-            proofBox.style.borderColor = 'rgba(76,175,80,0.4)';
-            proofBox.style.background  = 'rgba(76,175,80,0.08)';
-            proofBox.style.color       = '#80e090';
-            proofBox.innerHTML = `✅ <strong>${t('proof_done_title')}</strong><br>
-              <a href="${API_BASE}/api/proofread/${jobId}/download"
-                 style="color:#64b5f6;font-weight:600;"
-                 download="${fname}">&#x2B07; ${t('proof_dl')}</a>`;
+            if (progFill) progFill.style.width = '100%';
+            if (progPct)  progPct.textContent  = '100%';
+            if (progMsg)  progMsg.textContent  = t('progress_done');
+            if (proofBox) {
+              proofBox.style.cssText = 'display:block;margin-top:10px;text-align:center;';
+              proofBox.innerHTML =
+                `<a class="gen-dl-btn" href="${API_BASE}/api/proofread/${jobId}/download">` +
+                `&#x2B07; ${t('btn_download_pdf')}</a>`;
+            }
           } else if (sd.status === 'error') {
             clearInterval(poll);
-            proofBox.style.borderColor = 'rgba(233,69,96,0.4)';
-            proofBox.style.color       = '#e94560';
-            proofBox.innerHTML = `${t('proof_failed')}: ${sd.error || ''}`;
+            if (progWrap) progWrap.classList.remove('visible');
+            if (proofBox) {
+              proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,69,96,0.08);border:1px solid rgba(233,69,96,0.3);border-radius:8px;font-size:0.78rem;color:#e94560;';
+              proofBox.textContent = `${t('proof_failed')}: ${sd.error || ''}`;
+            }
           }
         } catch (_e) { clearInterval(poll); }
       }, 7000);
