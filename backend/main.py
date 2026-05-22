@@ -124,6 +124,7 @@ class ReportRequest(BaseModel):
     manual_tulvavaara:   Optional[str]   = None  # ei|kyllä|ei_tietoa
     manual_maapera:      Optional[str]   = None  # kallio|moreeni|hiekka|savi|turve|ei_tietoa
     manual_pinta_ala_ha: Optional[float] = None
+    lang: Optional[str] = "FI"
 
 
 # ── Endpointit ────────────────────────────────────────────────────────────────
@@ -316,6 +317,7 @@ async def generate_report(req: ReportRequest):
         power_mw=req.power_mw,
         grid_connection=req.grid_connection,
         market=req.market,
+        lang=req.lang or "FI",
     )
     filename = f"BESS_raportti_{kt.replace('-', '_')}.pdf"
     return Response(

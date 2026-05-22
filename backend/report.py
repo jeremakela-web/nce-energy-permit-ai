@@ -26,6 +26,53 @@ C_GREEN  = colors.HexColor("#4caf50")
 C_ORANGE = colors.HexColor("#ff9800")
 C_WHITE  = colors.white
 
+_RS: dict[str, dict[str, str]] = {
+    "title":         {"FI": "Akkuvarastohankkeen sijaintianalyysi", "EN": "BESS Site Location Analysis",         "SE": "Platsanalys för batterienergilager",       "DA": "Stedsanalyse for batterienergilager",      "NO": "Stedsanalyse for batterienergilager",      "PL": "Analiza lokalizacji systemu BESS"},
+    "title_sub":     {"FI": "BESS-kaavoituskartoitus",              "EN": "BESS Land Use Survey",                "SE": "Markanvändningskartläggning BESS",         "DA": "Arealanvendelseskortlægning BESS",         "NO": "Arealbrukskartlegging BESS",               "PL": "Raport zagospodarowania terenu BESS"},
+    "confidential":  {"FI": "LUOTTAMUKSELLINEN",                    "EN": "CONFIDENTIAL",                        "SE": "KONFIDENTIELLT",                           "DA": "FORTROLIGT",                               "NO": "KONFIDENSIELT",                            "PL": "POUFNE"},
+    "confid_sub":    {"FI": "Vain vastaanottajan käyttöön",         "EN": "For recipient only",                  "SE": "Endast för mottagaren",                    "DA": "Kun til modtageren",                       "NO": "Kun for mottakeren",                       "PL": "Tylko dla odbiorcy"},
+    "disc_front":    {"FI": "Tämä raportti on laadittu esiselvityskäyttöön ja perustuu julkisiin avoimiin tietoihin. Raportti ei korvaa virallisia lupaselvityksiä eikä ole sitova. NCE Energy ei vastaa mahdollisten tietojen puutteellisuudesta tai muutoksista.",
+                      "EN": "This report is prepared for preliminary investigation purposes and is based on publicly available open data. The report does not replace official permit investigations and is not binding. NCE Energy is not responsible for any incompleteness or changes in the data.",
+                      "SE": "Denna rapport är framtagen för förstudieanvändning och baseras på offentliga öppna uppgifter. Rapporten ersätter inte officiella tillståndsutredningar och är inte bindande. NCE Energy ansvarar inte för eventuella brister eller ändringar i uppgifterna.",
+                      "DA": "Denne rapport er udarbejdet til forundersøgelsesformål og er baseret på offentligt tilgængelige data. Rapporten erstatter ikke officielle tilladelsesundersøgelser og er ikke bindende. NCE Energy er ikke ansvarlig for eventuelle mangler eller ændringer i dataene.",
+                      "NO": "Denne rapporten er utarbeidet for forhåndsundersøkelsesformål og er basert på offentlig tilgjengelige åpne data. Rapporten erstatter ikke offisielle tillatelsesutredninger og er ikke bindende. NCE Energy er ikke ansvarlig for eventuelle mangler eller endringer i dataene.",
+                      "PL": "Raport ten został przygotowany do celów wstępnego rozpoznania i opiera się na publicznie dostępnych danych. Raport nie zastępuje oficjalnych badań zezwoleń i nie jest wiążący. NCE Energy nie ponosi odpowiedzialności za niekompletność lub zmiany danych."},
+    "proj_info":     {"FI": "Hankkeen tiedot",                      "EN": "Project Information",                 "SE": "Projektinformation",                       "DA": "Projektoplysninger",                       "NO": "Prosjektinformasjon",                      "PL": "Informacje o projekcie"},
+    "fld":           {"FI": "Kenttä",                               "EN": "Field",                               "SE": "Fält",                                     "DA": "Felt",                                     "NO": "Felt",                                     "PL": "Pole"},
+    "val":           {"FI": "Arvo",                                 "EN": "Value",                               "SE": "Värde",                                    "DA": "Værdi",                                    "NO": "Verdi",                                    "PL": "Wartość"},
+    "param":         {"FI": "Parametri",                            "EN": "Parameter",                           "SE": "Parameter",                                "DA": "Parameter",                                "NO": "Parameter",                                "PL": "Parametr"},
+    "eval":          {"FI": "Arviointi",                            "EN": "Assessment",                          "SE": "Bedömning",                                "DA": "Vurdering",                                "NO": "Vurdering",                                "PL": "Ocena"},
+    "factor":        {"FI": "Tarkasteltava tekijä",                 "EN": "Factor",                              "SE": "Faktor",                                   "DA": "Faktor",                                   "NO": "Faktor",                                   "PL": "Czynnik"},
+    "result":        {"FI": "Tulos",                                "EN": "Result",                              "SE": "Resultat",                                 "DA": "Resultat",                                 "NO": "Resultat",                                 "PL": "Wynik"},
+    "map_view":      {"FI": "Karttanäkymä",                         "EN": "Map View",                            "SE": "Kartvyn",                                  "DA": "Kortvisning",                               "NO": "Kartvisning",                              "PL": "Widok mapy"},
+    "map_na":        {"FI": "Karttakuva ei saatavilla.",             "EN": "Map image not available.",            "SE": "Kartbild ej tillgänglig.",                  "DA": "Kortbillede ikke tilgængeligt.",            "NO": "Kartbilde ikke tilgjengelig.",              "PL": "Obraz mapy niedostępny."},
+    "sec1":          {"FI": "1. Kiinteistötiedot",                   "EN": "1. Property Information",             "SE": "1. Fastighetsuppgifter",                   "DA": "1. Ejendomsoplysninger",                   "NO": "1. Eiendomsopplysninger",                  "PL": "1. Informacje o nieruchomości"},
+    "sec2":          {"FI": "2. Sähköverkon liitynnän soveltuvuus ja suoja-alueet", "EN": "2. Grid Connection Suitability and Protection Zones", "SE": "2. Elnätets anslutningslämplighet och skyddszoner", "DA": "2. Nettilslutningsegnethed og beskyttelseszoner", "NO": "2. Nettilkoblingens egnethet og vernesoner", "PL": "2. Przydatność przyłączenia do sieci i strefy ochronne"},
+    "sec3":          {"FI": "3. Pohjavesialueet",                    "EN": "3. Groundwater Areas",                "SE": "3. Grundvattenområden",                    "DA": "3. Grundvandsområder",                     "NO": "3. Grunnvannsområder",                     "PL": "3. Obszary wód gruntowych"},
+    "sec4":          {"FI": "4. Muinaismuistot ja kulttuuriympäristö", "EN": "4. Archaeological Heritage and Cultural Environment", "SE": "4. Fornminnen och kulturmiljö", "DA": "4. Fortidsminder og kulturmiljø",          "NO": "4. Fornminner og kulturmiljø",              "PL": "4. Zabytki i środowisko kulturowe"},
+    "sec5":          {"FI": "5. Ympäristö- ja suojelualueet",        "EN": "5. Environmental and Protection Areas", "SE": "5. Miljö- och skyddsområden",            "DA": "5. Miljø- og beskyttelsesområder",         "NO": "5. Miljø- og verneområder",                "PL": "5. Obszary środowiskowe i chronione"},
+    "sec6":          {"FI": "6. Asutuksen etäisyys",                 "EN": "6. Distance to Settlements",          "SE": "6. Avstånd till bebyggelse",               "DA": "6. Afstand til bebyggelse",                "NO": "6. Avstand til bebyggelse",                "PL": "6. Odległość od zabudowy"},
+    "sec7":          {"FI": "7. Kaavoitustilanne ja maankäyttölupa", "EN": "7. Zoning and Land Use Permit",       "SE": "7. Planläggning och markanvändningstillstånd", "DA": "7. Zonering og arealanvendelsestilladelse", "NO": "7. Plansituasjon og arealbrukstillatelse", "PL": "7. Plan zagospodarowania i pozwolenie na użytkowanie"},
+    "sec7b":         {"FI": "7b. Maaperä ja tulvavaara",             "EN": "7b. Soil and Flood Risk",             "SE": "7b. Markförhållanden och översvämningsrisk", "DA": "7b. Jordbund og oversvømmelsesrisiko",    "NO": "7b. Grunnforhold og flomrisiko",            "PL": "7b. Gleba i ryzyko powodzi"},
+    "sec8":          {"FI": "8. Hankkeen toteutettavuusindeksi (0–100)", "EN": "8. Project Feasibility Index (0–100)", "SE": "8. Projektgenomförbarhetsindex (0–100)", "DA": "8. Projektgennemførlighed (0–100)",        "NO": "8. Prosjektgjennomførbarhet (0–100)",      "PL": "8. Wskaźnik wykonalności projektu (0–100)"},
+    "sec8b":         {"FI": "8b. NCE Energy — Lupaprosessianalyysi (tekoälyavusteinen)", "EN": "8b. NCE Energy — Permit Process Analysis (AI-assisted)", "SE": "8b. NCE Energy — Tillståndsprocessanalys (AI-assisterad)", "DA": "8b. NCE Energy — Tilladelsesprocessanalyse (AI-assisteret)", "NO": "8b. NCE Energy — Tillatelsesprosessanalyse (AI-assistert)", "PL": "8b. NCE Energy — Analiza procesu zezwoleń (wspomagana przez AI)"},
+    "sec8c":         {"FI": "8c. Lupaprosessin aikajana",            "EN": "8c. Permit Process Timeline",         "SE": "8c. Tillståndsprocessens tidslinje",        "DA": "8c. Tidslinje for tilladelsesprocessen",   "NO": "8c. Tidslinje for tillatelsesprosessen",   "PL": "8c. Harmonogram procesu zezwoleń"},
+    "sec9":          {"FI": "9. Suositukset",                        "EN": "9. Recommendations",                  "SE": "9. Rekommendationer",                      "DA": "9. Anbefalinger",                          "NO": "9. Anbefalinger",                          "PL": "9. Zalecenia"},
+    "sec10":         {"FI": "10. Lakisääteiset vaatimukset ja viranomaisprosessi", "EN": "10. Statutory Requirements and Authority Process", "SE": "10. Lagstadgade krav och myndighetsprocedur", "DA": "10. Lovmæssige krav og myndighedsproces", "NO": "10. Lovfestede krav og myndighetsprosess", "PL": "10. Wymagania ustawowe i proces urzędowy"},
+    "sec11":         {"FI": "11. Seuraavat toimenpiteet",            "EN": "11. Next Steps",                      "SE": "11. Nästa steg",                           "DA": "11. Næste trin",                           "NO": "11. Neste steg",                           "PL": "11. Kolejne kroki"},
+    "disc_label":    {"FI": "VASTUUVAPAUSLAUSEKE",                   "EN": "DISCLAIMER",                          "SE": "ANSVARSFRISKRIVNING",                      "DA": "ANSVARSFRASKRIVELSE",                      "NO": "ANSVARSFRASKRIVELSE",                      "PL": "ZASTRZEŻENIE"},
+    "confidential_footer": {"FI": "Luottamuksellinen",              "EN": "Confidential",                        "SE": "Konfidentiellt",                           "DA": "Fortroligt",                               "NO": "Konfidensielt",                            "PL": "Poufne"},
+    "page":          {"FI": "Sivu",                                  "EN": "Page",                                "SE": "Sida",                                     "DA": "Side",                                     "NO": "Side",                                     "PL": "Strona"},
+    "owner":         {"FI": "Omistaja / kehittäjä",                  "EN": "Owner / developer",                   "SE": "Ägare / utvecklare",                       "DA": "Ejer / udvikler",                          "NO": "Eier / utvikler",                          "PL": "Właściciel / deweloper"},
+    "project":       {"FI": "Hanke",                                 "EN": "Project",                             "SE": "Projekt",                                  "DA": "Projekt",                                  "NO": "Prosjekt",                                 "PL": "Projekt"},
+    "power":         {"FI": "Teho",                                  "EN": "Power",                               "SE": "Effekt",                                   "DA": "Effekt",                                   "NO": "Effekt",                                   "PL": "Moc"},
+    "grid_conn":     {"FI": "Verkkoliityntä",                        "EN": "Grid connection",                     "SE": "Nätanslutning",                            "DA": "Nettilslutning",                           "NO": "Nettilkobling",                            "PL": "Przyłączenie do sieci"},
+    "market_tgt":    {"FI": "Tavoitemarkkinat",                      "EN": "Target markets",                      "SE": "Målmarknader",                             "DA": "Målmarkeder",                              "NO": "Målmarkeder",                              "PL": "Rynki docelowe"},
+    "loc_muni":      {"FI": "Sijaintikunta",                         "EN": "Municipality",                        "SE": "Belägenhet (kommun)",                      "DA": "Beliggenhedskommune",                      "NO": "Beliggenhetkommune",                       "PL": "Gmina"},
+    "prop_id":       {"FI": "Kiinteistötunnus",                      "EN": "Property ID",                         "SE": "Fastighetsbeteckning",                     "DA": "Ejendomsnummer",                           "NO": "Eiendomsnummer",                           "PL": "Numer nieruchomości"},
+    "report_date":   {"FI": "Raportin päivämäärä",                   "EN": "Report date",                         "SE": "Rapportdatum",                             "DA": "Rapportdato",                              "NO": "Rapportdato",                              "PL": "Data raportu"},
+}
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Tekstikorjaus — vanhat viranomaisnimet → 2026-nimet
 # ─────────────────────────────────────────────────────────────────────────────
@@ -79,6 +126,12 @@ def _styles() -> dict:
     }
 
 
+def _r(lang: str, key: str) -> str:
+    """Retrieve a report UI string for the given language, fallback to FI."""
+    d = _RS.get(key, {})
+    return d.get(lang, d.get("FI", key))
+
+
 def _score_color(score: int) -> colors.Color:
     if score >= 70: return C_GREEN
     if score >= 40: return C_ORANGE
@@ -107,6 +160,7 @@ def generate_bess_report(
     power_mw:        float = 1.0,
     grid_connection: str = "Caruna 20 kV (Jakeluverkko)",
     market:          str = "FCR (Frequency Containment Reserve)",
+    lang:            str = "FI",
 ) -> bytes:
     """
     Luo BESS-kaavoituskartoitusraportin PDF-muodossa.
@@ -143,8 +197,8 @@ def generate_bess_report(
         logo_cell = _logo
 
     title_cell = [
-        Paragraph("Akkuvarastohankkeen sijaintianalyysi", st["title"]),
-        Paragraph("BESS-kaavoituskartoitus", st["title_sub"]),
+        Paragraph(_r(lang, "title"), st["title"]),
+        Paragraph(_r(lang, "title_sub"), st["title_sub"]),
         Paragraph(f"{kiinteistotunnus} · {kuntanimi} · {now}", st["subtitle"]),
     ]
 
@@ -169,8 +223,8 @@ def generate_bess_report(
         Paragraph("ncenergy.fi  |  info@ncenergy.fi", st["contact"]),
     ]
     author_right = [
-        Paragraph("LUOTTAMUKSELLINEN", st["confid"]),
-        Paragraph("Vain vastaanottajan käyttöön", ParagraphStyle(
+        Paragraph(_r(lang, "confidential"), st["confid"]),
+        Paragraph(_r(lang, "confid_sub"), ParagraphStyle(
             "confid_sub", fontSize=7, textColor=C_GRAY, alignment=TA_RIGHT)),
     ]
     author_tbl = Table([[author_left, author_right]], colWidths=[9*cm, 8*cm])
@@ -186,9 +240,7 @@ def generate_bess_report(
     # ── Etusivun vastuuvapauslauseke ─────────────────────────────────────────
     C_DISC_BG = colors.HexColor("#f8f8f8")
     disc_notice = Table([[Paragraph(
-        "Tämä raportti on laadittu esiselvityskäyttöön ja perustuu julkisiin avoimiin tietoihin. "
-        "Raportti ei korvaa virallisia lupaselvityksiä eikä ole sitova. "
-        "NCE Energy ei vastaa mahdollisten tietojen puutteellisuudesta tai muutoksista.",
+        _r(lang, "disc_front"),
         ParagraphStyle("front_disc", fontSize=7.5, textColor=C_GRAY, leading=11),
     )]], colWidths=[17*cm])
     disc_notice.setStyle(TableStyle([
@@ -201,24 +253,24 @@ def generate_bess_report(
 
     # ── Hankkeen tiedot ──────────────────────────────────────────────────────
     story.append(sec(
-        Paragraph("Hankkeen tiedot", st["h2"]),
+        Paragraph(_r(lang, "proj_info"), st["h2"]),
         _table([
-            ["Kenttä", "Arvo"],
-            ["Omistaja / kehittäjä", project_owner],
-            ["Hanke",                project_name],
-            ["Teho",                 f"{power_mw} MW"],
-            ["Verkkoliityntä",       grid_connection],
-            ["Tavoitemarkkinat",     market],
-            ["Sijaintikunta",        kuntanimi],
-            ["Kiinteistötunnus",     kiinteistotunnus],
-            ["Raportin päivämäärä",  now],
+            [_r(lang, "fld"), _r(lang, "val")],
+            [_r(lang, "owner"),       project_owner],
+            [_r(lang, "project"),     project_name],
+            [_r(lang, "power"),       f"{power_mw} MW"],
+            [_r(lang, "grid_conn"),   grid_connection],
+            [_r(lang, "market_tgt"),  market],
+            [_r(lang, "loc_muni"),    kuntanimi],
+            [_r(lang, "prop_id"),     kiinteistotunnus],
+            [_r(lang, "report_date"), now],
         ]),
         Spacer(1, 6*mm),
     ))
 
     # ── Karttakuva ───────────────────────────────────────────────────────────
     if map_image_b64:
-        map_items = [Paragraph("Karttanäkymä", st["h2"])]
+        map_items = [Paragraph(_r(lang, "map_view"), st["h2"])]
         try:
             img_bytes = base64.b64decode(map_image_b64)
             from PIL import Image as PILImage
@@ -232,7 +284,7 @@ def generate_bess_report(
             img.hAlign = "CENTER"
             map_items.append(img)
         except Exception:
-            map_items.append(Paragraph("Karttakuva ei saatavilla.", st["small"]))
+            map_items.append(Paragraph(_r(lang, "map_na"), st["small"]))
         map_items.append(Spacer(1, 6*mm))
         story.append(sec(*map_items))
 
@@ -259,10 +311,10 @@ def generate_bess_report(
         reg_area_str  = "–"
 
     story.append(sec(
-        Paragraph("1. Kiinteistötiedot", st["h2"]),
+        Paragraph(_r(lang, "sec1"), st["h2"]),
         _table([
-            ["Kenttä", "Arvo"],
-            ["Kiinteistötunnus", kiinteistotunnus],
+            [_r(lang, "fld"), _r(lang, "val")],
+            [_r(lang, "prop_id"), kiinteistotunnus],
             ["Kunta", kuntanimi],
             ["Kylä", p.get("kylanimi", "Kyrö")],
             ["Rekisteripinta-ala (MML)", reg_area_str],
@@ -299,9 +351,9 @@ def generate_bess_report(
     road_eval = "✓ OK (>20 m)" if road_ok else "✗ Suoja-alueella (<20 m)"
 
     grid_items = [
-        Paragraph("2. Sähköverkon liitynnän soveltuvuus ja suoja-alueet", st["h2"]),
+        Paragraph(_r(lang, "sec2"), st["h2"]),
         _table([
-            ["Parametri", "Arvo", "Arviointi"],
+            [_r(lang, "param"), _r(lang, "val"), _r(lang, "eval")],
             [f"Lähin johto ({op_name})",         grid_str,  grid_eval],
             ["Johtotyyppi",                       a.get("grid_type", "–"), ""],
             ["Voimajohdon suojavyöhyke (25 m)",   buf_str,  buf_eval],
@@ -347,9 +399,9 @@ def generate_bess_report(
         gw_str = "Ei ✓"
         gw_eval = "✓ OK"
     story.append(sec(
-        Paragraph("3. Pohjavesialueet", st["h2"]),
+        Paragraph(_r(lang, "sec3"), st["h2"]),
         _table([
-            ["Tarkasteltava tekijä", "Tulos", "Arviointi"],
+            [_r(lang, "factor"), _r(lang, "result"), _r(lang, "eval")],
             ["Pohjavesialue (SYKE)", gw_str, gw_eval],
             ["Datalähde", "SYKE paikkatiedot.ymparisto.fi (syke_vhspohjavesi)", ""],
         ]),
@@ -379,9 +431,9 @@ def generate_bess_report(
         h_src_str = ("Museovirasto INSPIRE WFS" if h_src == "museovirasto"
                      else "OpenStreetMap (epävirallinen — tarkista kyppi.fi/palveluikkuna/mjreki/)")
     heritage_items = [
-        Paragraph("4. Muinaismuistot ja kulttuuriympäristö", st["h2"]),
+        Paragraph(_r(lang, "sec4"), st["h2"]),
         _table([
-            ["Tarkasteltava tekijä", "Tulos", "Arviointi"],
+            [_r(lang, "factor"), _r(lang, "result"), _r(lang, "eval")],
             ["Muinaismuistot / RKY (Museovirasto)", h_str, h_eval],
             ["Datalähde", h_src_str, ""],
         ]),
@@ -407,9 +459,9 @@ def generate_bess_report(
     # ── 5. Ympäristö ─────────────────────────────────────────────────────────
     natura = a.get("natura_overlap", False)
     story.append(sec(
-        Paragraph("5. Ympäristö- ja suojelualueet", st["h2"]),
+        Paragraph(_r(lang, "sec5"), st["h2"]),
         _table([
-            ["Tarkasteltava tekijä", "Tulos", "Arviointi"],
+            [_r(lang, "factor"), _r(lang, "result"), _r(lang, "eval")],
             ["Natura 2000 -alue", "Kyllä ⚠" if natura else "Ei ✓", "⚠ YVA mahdollinen" if natura else "✓ OK"],
             ["Datalähde", "SYKE sy:natura2000_sac_fi", ""],
         ]),
@@ -420,9 +472,9 @@ def generate_bess_report(
     bldg_str = f"{bldg_m} m" if bldg_m is not None else "Ei tiedossa"
     bldg_ok  = bldg_m is None or bldg_m > 300
     asutus_items = [
-        Paragraph("6. Asutuksen etäisyys", st["h2"]),
+        Paragraph(_r(lang, "sec6"), st["h2"]),
         _table([
-            ["Parametri", "Arvo", "Arviointi"],
+            [_r(lang, "param"), _r(lang, "val"), _r(lang, "eval")],
             ["Lähin rakennus (OSM)", bldg_str, "✓ OK (>300 m)" if bldg_ok else "⚠ Lähellä (<300 m)"],
             ["Etäisyyssuositus", "> 300 m asutuksesta", ""],
             ["Datalähde", "OpenStreetMap Overpass", ""],
@@ -461,9 +513,9 @@ def generate_bess_report(
     else:
         zoning_src = "Ei saatavilla (MML API-avain puuttuu)"
     zoning_items = [
-        Paragraph("7. Kaavoitustilanne ja maankäyttölupa", st["h2"]),
+        Paragraph(_r(lang, "sec7"), st["h2"]),
         _table([
-            ["Kaavatyyppi", "Tilanne", "Huomio"],
+            [_r(lang, "factor"), _r(lang, "result"), _r(lang, "eval")],
             ["Kaavatilanne",           a.get("zoning_status", "–"), zoning_eval],
             ["Suunnittelutarveratkaisu",
              "Vaaditaan (maaseuturakentaminen)" if is_rural else "Ei koske asemakaava-aluetta",
@@ -520,9 +572,9 @@ def generate_bess_report(
         maapera_eval = "ℹ Tarkista kantavuus"
 
     story.append(sec(
-        Paragraph("7b. Maaperä ja tulvavaara", st["h2"]),
+        Paragraph(_r(lang, "sec7b"), st["h2"]),
         _table([
-            ["Tarkasteltava tekijä", "Tulos", "Arviointi"],
+            [_r(lang, "factor"), _r(lang, "result"), _r(lang, "eval")],
             ["Maaperä", maaperalaaji or "Ei tiedossa", maapera_eval],
             ["Datalähde (maaperä)", maapera_src_str, ""],
             ["Tulvavaara", flood_str, flood_eval],
@@ -534,32 +586,32 @@ def generate_bess_report(
     # ── 8. Hankkeen toteutettavuusindeksi ────────────────────────────────────
     score = a.get("bess_score", 0)
     story.append(sec(
-        Paragraph("8. Hankkeen toteutettavuusindeksi (0–100)", st["h2"]),
+        Paragraph(_r(lang, "sec8"), st["h2"]),
         _score_table(a, score),
     ))
 
     # ── 8b. Lupaprosessianalyysi ─────────────────────────────────────────────
     # Ei sec()/KeepTogether — pitkä AI-teksti voi jakautua sivunvaihdossa
-    story.append(Paragraph("8b. NCE Energy — Lupaprosessianalyysi (tekoälyavusteinen)", st["h2"]))
+    story.append(Paragraph(_r(lang, "sec8b"), st["h2"]))
     for _ai_item in _analysis_section(a, kuntanimi_gen):
         story.append(_ai_item)
 
     # ── 8c. Lupaprosessin aikajana ──────────────────────────────────────────
     story.append(sec(
-        Paragraph("8c. Lupaprosessin aikajana", st["h2"]),
+        Paragraph(_r(lang, "sec8c"), st["h2"]),
         _timeline_table(a, op_name, op_url, lupapiste_url, kuntanimi_gen, power_mw),
     ))
 
     # ── 9. Suositukset ───────────────────────────────────────────────────────
     recs = _recommendations(a, score, op_name=op_name, kuntanimi_gen=kuntanimi_gen, ely_center=ely_center)
     story.append(sec(
-        Paragraph("9. Suositukset", st["h2"]),
+        Paragraph(_r(lang, "sec9"), st["h2"]),
         *[Paragraph(f"{i}. {rec}", st["body"]) for i, rec in enumerate(recs, 1)],
     ))
 
     # ── 10. Lakisääteiset vaatimukset ─────────────────────────────────────────
     story.append(sec(
-        Paragraph("10. Lakisääteiset vaatimukset ja viranomaisprosessi", st["h2"]),
+        Paragraph(_r(lang, "sec10"), st["h2"]),
         _regulatory_table(
             bldg_m,
             gw_overlap=a.get("groundwater_overlap", False),
@@ -614,7 +666,7 @@ def generate_bess_report(
         [str(i), row[0], row[1], row[2]] for i, row in enumerate(_steps_rows, 1)
     ]
     story.append(sec(
-        Paragraph("11. Seuraavat toimenpiteet", st["h2"]),
+        Paragraph(_r(lang, "sec11"), st["h2"]),
         _next_steps_table(steps),
     ))
 
@@ -622,7 +674,7 @@ def generate_bess_report(
     story.append(sec(
         Spacer(1, 10*mm),
         HRFlowable(width="100%", thickness=0.5, color=C_GRAY, spaceAfter=5),
-        Paragraph("VASTUUVAPAUSLAUSEKE", st["disc_label"]),
+        Paragraph(_r(lang, "disc_label"), st["disc_label"]),
         Paragraph(
             "Tämä raportti on laadittu esiselvityskäyttöön ja perustuu julkisiin avoimiin tietoihin "
             f"(MML INSPIRE WFS, OSM Overpass, SYKE) raportin päivämääränä {now}. "
@@ -652,9 +704,9 @@ def generate_bess_report(
         canv.setFont("Helvetica", 6.5)
         canv.setFillColor(C_GRAY)
         canv.drawString(margin, y_text,
-                        f"Akkuvarastohankkeen sijaintianalyysi  |  {kiinteistotunnus}  |  {kuntanimi}")
+                        f"{_r(lang, 'title')}  |  {kiinteistotunnus}  |  {kuntanimi}")
         canv.drawRightString(page_w - margin, y_text,
-                             f"{now}  |  Luottamuksellinen  |  Sivu {doc.page}")
+                             f"{now}  |  {_r(lang, 'confidential_footer')}  |  {_r(lang, 'page')} {doc.page}")
         canv.restoreState()
 
     doc.build(story, onFirstPage=_page_footer, onLaterPages=_page_footer)
