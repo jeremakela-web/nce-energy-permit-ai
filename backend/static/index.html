@@ -1244,18 +1244,7 @@
           <h3 data-i18n="h3_hanketyyppi">Hanketyyppi</h3>
           <div class="proj-field">
             <select id="map-hanketyyppi" onchange="switchMapType(this.value)">
-              <option value="">— Valitse hanketyyppi —</option>
-              <option value="bess">🔋 BESS — Akkuvarasto</option>
-              <option value="tuulivoima_maa">🌬️ Tuulivoima (maa)</option>
-              <option value="tuulivoima_meri">⛵ Tuulivoima (meri)</option>
-              <option value="aurinkovoima">☀️ Aurinkovoima</option>
-              <option value="smr">⚛️ SMR — Pienydinreaktori</option>
-              <option value="vesivoima">💧 Vesivoima</option>
-              <option value="asuinrakennus">🏠 Asuinrakennus</option>
-              <option value="teollisuus">🏭 Teollisuusrakennus</option>
-              <option value="maatalous">🌾 Maatalousrakennus</option>
-              <option value="liikerakennus">🏬 Liikerakennus</option>
-              <option value="muu">📋 Muu hanke</option>
+              <option value="" data-i18n="map_select_hint">— Valitse hanketyyppi —</option>
             </select>
           </div>
         </div>
@@ -1364,7 +1353,7 @@
             </select>
           </div>
           <div class="proj-field" id="manual-pinta-ala-wrap" style="display:none;">
-            <label>Rekisteripinta-ala (ha) <span style="color:#8899aa;font-size:0.7em;">MML ei palauttanut arvoa</span></label>
+            <label><span data-i18n="lbl_pinta_ala_manuaali">Rekisteripinta-ala (ha)</span> <span style="color:#8899aa;font-size:0.7em;" data-i18n="lbl_mml_no_value">MML ei palauttanut arvoa</span></label>
             <input type="number" id="manual-pinta-ala" placeholder="esim. 4.50" min="0.01" step="0.01" />
           </div>
           <div style="margin-top:8px;">
@@ -1493,8 +1482,8 @@
         </div>
 
         <div class="sidebar-section" id="ai-strategy-section" style="display:none;">
-          <h3>AI-lupaprosessistrategia</h3>
-          <div style="font-size:0.72rem;color:#64b5f6;margin-bottom:6px;">
+          <h3 data-i18n="h3_ai_strategy">AI-lupaprosessistrategia</h3>
+          <div style="font-size:0.72rem;color:#64b5f6;margin-bottom:6px;" data-i18n="ai_strategy_sub">
             Claude AI — ei juridinen neuvo
           </div>
           <div id="ai-strategy-text" style="font-size:0.8rem;line-height:1.5;color:#e0e0e0;white-space:pre-wrap;"></div>
@@ -1864,6 +1853,14 @@ const TRANSLATIONS = {
     country_pl:       'Puola',
     country_detected: 'Maa tunnistettu automaattisesti:',
     country_hint:     'Valitse ensin kohdemaasi',
+    // Map tab — puuttuvat käännökset
+    h3_ai_strategy:       'AI-lupaprosessistrategia',
+    ai_strategy_sub:      'Claude AI — ei juridinen neuvo',
+    lbl_pinta_ala_manuaali: 'Rekisteripinta-ala (ha)',
+    lbl_mml_no_value:     'MML ei palauttanut arvoa',
+    lbl_osm_note:         'OSM-data puutteellinen —',
+    lbl_tarjous:          'Pyydä tarjous →',
+    lbl_contact_dst:      'Ota yhteyttä paikalliseen jakeluverkkoyhtiöön',
   },
   EN: {
     tab_generator:        'Permit Document Service',
@@ -2090,6 +2087,13 @@ const TRANSLATIONS = {
     country_pl:       'Poland',
     country_detected: 'Country detected automatically:',
     country_hint:     'Select your target country first',
+    h3_ai_strategy:       'AI Permit Process Strategy',
+    ai_strategy_sub:      'Claude AI — not legal advice',
+    lbl_pinta_ala_manuaali: 'Registered area (ha)',
+    lbl_mml_no_value:     'API did not return a value',
+    lbl_osm_note:         'OSM data incomplete —',
+    lbl_tarjous:          'Request a quote →',
+    lbl_contact_dst:      'Contact your local distribution network operator',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
@@ -2316,6 +2320,13 @@ const TRANSLATIONS = {
     country_pl:       'Polen',
     country_detected: 'Land identifierat automatiskt:',
     country_hint:     'Välj målland först',
+    h3_ai_strategy:       'AI-tillståndsprocessstrategi',
+    ai_strategy_sub:      'Claude AI — inte juridisk rådgivning',
+    lbl_pinta_ala_manuaali: 'Registrerat areal (ha)',
+    lbl_mml_no_value:     'API returnerade inget värde',
+    lbl_osm_note:         'OSM-data ofullständig —',
+    lbl_tarjous:          'Begär offert →',
+    lbl_contact_dst:      'Kontakta lokalt distributionsnätbolag',
   },
   DA: {
     tab_generator:        'Tilladelsesdokumentservice',
@@ -2548,6 +2559,13 @@ const TRANSLATIONS = {
     opt_maa_savi:             'Ler',
     opt_maa_turve:            'Tørv',
     opt_maa_eiti:             'Ukendt',
+    h3_ai_strategy:           'AI-tilladelses­processtrategi',
+    ai_strategy_sub:          'Claude AI — ikke juridisk rådgivning',
+    lbl_pinta_ala_manuaali:   'Registreret areal (ha)',
+    lbl_mml_no_value:         'API returnerede ingen værdi',
+    lbl_osm_note:             'OSM-data ufuldstændig —',
+    lbl_tarjous:              'Anmod om tilbud →',
+    lbl_contact_dst:          'Kontakt dit lokale distributionsnetselskab',
   },
   NO: {
     tab_generator:        'Tillatelsesdokumentservice',
@@ -2780,6 +2798,13 @@ const TRANSLATIONS = {
     opt_maa_savi:             'Leire',
     opt_maa_turve:            'Torv',
     opt_maa_eiti:             'Ukjent',
+    h3_ai_strategy:           'AI-tillatelsesprosessstrategi',
+    ai_strategy_sub:          'Claude AI — ikke juridisk råd',
+    lbl_pinta_ala_manuaali:   'Registrert areal (ha)',
+    lbl_mml_no_value:         'API returnerte ingen verdi',
+    lbl_osm_note:             'OSM-data ufullstendig —',
+    lbl_tarjous:              'Be om tilbud →',
+    lbl_contact_dst:          'Kontakt ditt lokale distribusjonsnettselskap',
   },
   PL: {
     tab_generator:        'Serwis dokumentów zezwoleń',
@@ -3012,6 +3037,13 @@ const TRANSLATIONS = {
     opt_maa_savi:             'Glina',
     opt_maa_turve:            'Torf',
     opt_maa_eiti:             'Nieznane',
+    h3_ai_strategy:           'Strategia procesu zezwolenia AI',
+    ai_strategy_sub:          'Claude AI — nie jest poradą prawną',
+    lbl_pinta_ala_manuaali:   'Zarejestrowana powierzchnia (ha)',
+    lbl_mml_no_value:         'API nie zwróciło wartości',
+    lbl_osm_note:             'Dane OSM niekompletne —',
+    lbl_tarjous:              'Poproś o ofertę →',
+    lbl_contact_dst:          'Skontaktuj się z lokalnym operatorem sieci dystrybucyjnej',
   },
 };
 
@@ -3116,9 +3148,9 @@ function setLang(lang) {
   });
   // Re-render project type cards so names/subs update
   renderCards();
-  // Update map tab selector hint
-  const mapSel = document.getElementById('map-hanketyyppi');
-  if (mapSel && mapSel.options[0]) mapSel.options[0].text = t('map_select_hint');
+  // Rebuild map type select and grid with translated names
+  _rebuildMapTypeSelect();
+  _rebuildMapGrid();
   // Re-render form to translate dropdown options, then restore values
   if (selectedProjectType) {
     const savedVals = _saveFormValues();
@@ -3264,15 +3296,17 @@ function _VERKKO_OPTS() {
       { value: 'Energinet 150 kV', label: 'Energinet 150 kV' },
     ];
     case 'NO': return [sel,
-      { value: 'Tensio',          label: 'Tensio' },
-      { value: 'Elvia',           label: 'Elvia' },
-      { value: 'Lede',            label: 'Lede' },
-      { value: 'Statnett 132 kV', label: 'Statnett 132 kV' },
+      { value: 'Tensio 22 kV',           label: 'Tensio 22 kV' },
+      { value: 'Elvia 22 kV',            label: 'Elvia 22 kV' },
+      { value: 'Lede 22 kV',             label: 'Lede 22 kV' },
+      { value: 'Statnett 132 kV',        label: 'Statnett 132 kV' },
+      { value: 'Statnett 420 kV',        label: 'Statnett 420 kV' },
     ];
     case 'PL': return [sel,
-      { value: 'Tauron Dystrybucja',                     label: 'Tauron Dystrybucja' },
-      { value: 'Enea Operator',                           label: 'Enea Operator' },
-      { value: 'PSE (Polskie Sieci Elektroenergetyczne)', label: 'PSE (Polskie Sieci Elektroenergetyczne)' },
+      { value: 'Tauron Dystrybucja 15/20 kV', label: 'Tauron Dystrybucja 15/20 kV' },
+      { value: 'Enea Operator 15 kV',          label: 'Enea Operator 15 kV' },
+      { value: 'PSE 110 kV',                   label: 'PSE 110 kV' },
+      { value: 'PSE 400 kV',                   label: 'PSE 400 kV' },
     ];
     default: return [sel,  // FI
       { value: 'Jakeluverkko 20 kV (Caruna)', label: t('opt_verkko_caruna') },
@@ -3602,17 +3636,17 @@ const MAANK_SCORE_CFG = {
 
 // UI metadata: which sidebar fields show for each type
 const MAP_TYPE_UI = {
-  bess:           { powerLabel: 'Teho (MW)',        showGrid: true,  showMarket: true,  criteria: 'Sähköliityntä · Pohjavesi · Kaavoitus · Pinta-ala' },
-  tuulivoima_maa: { powerLabel: 'Kokonaisteho (MW)',showGrid: true,  showMarket: false, criteria: 'Etäisyys asutukseen (min 500 m) · Kaavoitus · Natura · Maaperä' },
-  tuulivoima_meri:{ powerLabel: 'Kokonaisteho (MW)',showGrid: true,  showMarket: false, criteria: 'Natura/suojelualueet · Etäisyys asutukseen · Tulvavaara' },
-  aurinkovoima:   { powerLabel: 'Teho (MWp)',       showGrid: true,  showMarket: false, criteria: 'Sähköliityntä · Kaavoitus · Tulvavaara · Pohjavesi' },
-  smr:            { powerLabel: 'Lämpöteho (MW)',   showGrid: true,  showMarket: false, criteria: 'Suojavyöhyke asutuksesta (min 1 km) · Natura · Kaavoitus' },
-  vesivoima:      { powerLabel: 'Teho (MW)',        showGrid: false, showMarket: false, criteria: 'Natura · Kaavoitus · Tulvavaara · Tiesuoja-alue' },
-  asuinrakennus:  { powerLabel: '',                 showGrid: false, showMarket: false, criteria: 'Kaavoitus · Pohjavesi · Tulvavaara · Muinaismuistot · Tieliikenne' },
-  teollisuus:     { powerLabel: '',                 showGrid: true,  showMarket: false, criteria: 'Kaavoitus · Etäisyys asutukseen · Sähköliityntä · Tiesuoja-alue' },
-  maatalous:      { powerLabel: '',                 showGrid: false, showMarket: false, criteria: 'Pohjavesi · Natura · Kaavoitus · Tulvavaara · Tieyhteydet' },
-  liikerakennus:  { powerLabel: '',                 showGrid: false, showMarket: false, criteria: 'Kaavoitus · Tiesuoja-alue/liikenneyhteydet · Tulvavaara' },
-  muu:            { powerLabel: 'Teho (MW)',        showGrid: false, showMarket: false, criteria: 'Kaavoitus · Pohjavesi · Natura' },
+  bess:           { powerLabelKey: 'gf_lbl_teho',           showGrid: true,  showMarket: true,  criteria: 'Sähköliityntä · Pohjavesi · Kaavoitus · Pinta-ala' },
+  tuulivoima_maa: { powerLabelKey: 'gf_lbl_teho_kokonais',  showGrid: true,  showMarket: false, criteria: 'Etäisyys asutukseen (min 500 m) · Kaavoitus · Natura · Maaperä' },
+  tuulivoima_meri:{ powerLabelKey: 'gf_lbl_teho_kokonais',  showGrid: true,  showMarket: false, criteria: 'Natura/suojelualueet · Etäisyys asutukseen · Tulvavaara' },
+  aurinkovoima:   { powerLabelKey: 'gf_lbl_teho_mwp',       showGrid: true,  showMarket: false, criteria: 'Sähköliityntä · Kaavoitus · Tulvavaara · Pohjavesi' },
+  smr:            { powerLabelKey: 'gf_lbl_teho_lampoteho',  showGrid: true,  showMarket: false, criteria: 'Suojavyöhyke asutuksesta (min 1 km) · Natura · Kaavoitus' },
+  vesivoima:      { powerLabelKey: 'gf_lbl_teho',            showGrid: false, showMarket: false, criteria: 'Natura · Kaavoitus · Tulvavaara · Tiesuoja-alue' },
+  asuinrakennus:  { powerLabelKey: '',                       showGrid: false, showMarket: false, criteria: 'Kaavoitus · Pohjavesi · Tulvavaara · Muinaismuistot · Tieliikenne' },
+  teollisuus:     { powerLabelKey: '',                       showGrid: true,  showMarket: false, criteria: 'Kaavoitus · Etäisyys asutukseen · Sähköliityntä · Tiesuoja-alue' },
+  maatalous:      { powerLabelKey: '',                       showGrid: false, showMarket: false, criteria: 'Pohjavesi · Natura · Kaavoitus · Tulvavaara · Tieyhteydet' },
+  liikerakennus:  { powerLabelKey: '',                       showGrid: false, showMarket: false, criteria: 'Kaavoitus · Tiesuoja-alue/liikenneyhteydet · Tulvavaara' },
+  muu:            { powerLabelKey: 'gf_lbl_teho',            showGrid: false, showMarket: false, criteria: 'Kaavoitus · Pohjavesi · Natura' },
 };
 
 // ─────────────────────────────────────────────
@@ -3631,6 +3665,18 @@ function renderCards() {
   `).join('');
 }
 renderCards();
+
+function _rebuildMapTypeSelect() {
+  const sel = document.getElementById('map-hanketyyppi');
+  if (!sel) return;
+  const currentVal = sel.value;
+  sel.innerHTML = `<option value="" data-i18n="map_select_hint">${t('map_select_hint')}</option>` +
+    PROJECT_TYPES.map(pt =>
+      `<option value="${pt.id}">${pt.icon || ''} ${ptName(pt)}</option>`
+    ).join('');
+  if (currentVal) sel.value = currentVal;
+}
+_rebuildMapTypeSelect();
 
 // ─────────────────────────────────────────────
 // Country selection
@@ -4524,9 +4570,9 @@ function switchMapType(type) {
   const gridWrap   = document.getElementById('proj-grid-wrap');
   const marketWrap = document.getElementById('proj-market-wrap');
 
-  if (ui.powerLabel) {
+  if (ui.powerLabelKey) {
     powerWrap.style.display  = '';
-    powerLabel.textContent   = ui.powerLabel;
+    powerLabel.textContent   = t(ui.powerLabelKey);
   } else {
     powerWrap.style.display  = 'none';
   }
@@ -4726,14 +4772,16 @@ const GRID_URLS = {
   'Norlys':          'https://norlys.dk/erhverv/strom/tilslutning/',
   'Energinet 150 kV':'https://energinet.dk/El/Markedsdata',
   // NO
-  'Tensio':          'https://tensio.no/nettilknytning/',
-  'Elvia':           'https://www.elvia.no/nett/tilknytning/',
-  'Lede':            'https://lede.no/nettilknytning/',
+  'Tensio 22 kV':    'https://tensio.no/nettilknytning/',
+  'Elvia 22 kV':     'https://www.elvia.no/nett/tilknytning/',
+  'Lede 22 kV':      'https://lede.no/nettilknytning/',
   'Statnett 132 kV': 'https://www.statnett.no/for-aktorer-i-kraftsystemet/tilknytning-til-nettet/',
+  'Statnett 420 kV': 'https://www.statnett.no/for-aktorer-i-kraftsystemet/tilknytning-til-nettet/',
   // PL
-  'Tauron Dystrybucja':                     'https://www.tauron-dystrybucja.pl/przyłączenia',
-  'Enea Operator':                           'https://www.enea-operator.pl/przyłączenia',
-  'PSE (Polskie Sieci Elektroenergetyczne)': 'https://www.pse.pl/en/transmission-system-operator',
+  'Tauron Dystrybucja 15/20 kV': 'https://www.tauron-dystrybucja.pl/przyłączenia',
+  'Enea Operator 15 kV':         'https://www.enea-operator.pl/przyłączenia',
+  'PSE 110 kV':                  'https://www.pse.pl/en/transmission-system-operator',
+  'PSE 400 kV':                  'https://www.pse.pl/en/transmission-system-operator',
 };
 
 function updateGridLink() {
@@ -4741,10 +4789,10 @@ function updateGridLink() {
   const url  = GRID_URLS[val] ?? '';
   const note = document.getElementById('grid-link-note');
   if (url) {
-    note.innerHTML = 'OSM-data puutteellinen — <a href="' + url +
-      '" target="_blank" rel="noopener" style="color:#4a9eff;text-decoration:none;font-weight:600;">Pyydä tarjous →</a>';
+    note.innerHTML = t('lbl_osm_note') + ' <a href="' + url +
+      '" target="_blank" rel="noopener" style="color:#4a9eff;text-decoration:none;font-weight:600;">' + t('lbl_tarjous') + '</a>';
   } else {
-    note.textContent = 'OSM-data puutteellinen — Ota yhteyttä paikalliseen jakeluverkkoyhtiöön';
+    note.textContent = t('lbl_osm_note') + ' ' + t('lbl_contact_dst');
   }
 }
 
