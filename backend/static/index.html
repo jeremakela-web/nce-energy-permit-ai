@@ -3192,9 +3192,17 @@ function setCountry(code) {
     }
     // Smooth scroll to form after animation settles
     setTimeout(() => {
-      const formSection = document.getElementById('gen-form-section');
-      if (formSection) formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 350);
+      const formEl = document.querySelector(
+        '#gen-form-section, .form-section, #permit-form, .gen-form'
+      );
+      if (formEl) {
+        console.log('Scrolling to:', formEl);
+        window.scrollTo({
+          top: formEl.getBoundingClientRect().top + window.pageYOffset - 20,
+          behavior: 'smooth'
+        });
+      }
+    }, 400);
   }
 
   // Re-populate map-tab grid select
