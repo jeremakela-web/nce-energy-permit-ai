@@ -1765,6 +1765,35 @@ const TRANSLATIONS = {
     lbl_settlement_km:  'Asutus min',
     lbl_settlement_m:   'Asutus min',
     ei_sovellu:         'EI-SOVELLU',
+    opt_vir_paa:        'PAA (ydinlupa)',
+    // Log messages
+    log_gen_start:      'Generoidaan asiakirjaluonnos',
+    log_gen_done:       'Asiakirjaluonnos valmis',
+    log_gen_error:      'Generaattori virhe',
+    log_permit_done:    'Lupahakemusluonnos generoitu',
+    log_enter_kt:       'Syötä kiinteistötunnus',
+    log_enter_kt_first: 'Syötä ensin kiinteistötunnus',
+    log_fetching:       'Haetaan',
+    log_kt_not_found:   'Kiinteistöä ei löydy – tarkista tunnus',
+    log_kt_loaded:      'Kiinteistö ladattu',
+    log_fetch_lines:    'Haetaan voimajohtoja (OSM/Fingrid)…',
+    log_lines_loaded:   'Voimajohdot ladattu',
+    log_fetch_gw:       'Haetaan pohjavesialueita (SYKE)…',
+    log_gw_loaded:      'Pohjavesialueet ladattu',
+    log_fetch_first:    'Hae kiinteistö ensin',
+    log_fetch_bldg:     'Haetaan rakennuksia 1 km säteeltä (OSM)…',
+    log_bldg_loaded:    'Rakennukset ladattu',
+    log_fetch_natura:   'Haetaan Natura 2000 -alueet…',
+    log_natura_loaded:  'Natura-alueet ladattu',
+    log_analysis_start: 'Suoritetaan maankäyttöselvitys…',
+    log_analysis_done:  'Maankäyttöselvitys valmis – soveltuvuusindeksi',
+    log_run_first:      'Aja ensin analyysi ennen manuaalisten tietojen päivitystä',
+    log_manual_updated: 'Manuaaliset tiedot päivitetty – soveltuvuusindeksi',
+    log_manual_none:    'Ei aktivoituja manuaalisia kenttiä',
+    log_report_start:   'Generoidaan PDF-raportti…',
+    log_report_done:    'PDF-raportti ladattu',
+    log_fetch_first_rep:'Hae kiinteistö ensin ennen raportin generointia',
+    log_map_init:       'Kartta alustettu. Haetaan oletuskiinteistö…',
     // Placeholders
     gf_ph_hakija:     'Yrityksen tai henkilön nimi',
     gf_ph_kt:         'esim. 091-001-0001-0001',
@@ -2022,6 +2051,35 @@ const TRANSLATIONS = {
     lbl_settlement_km:  'Settlement min',
     lbl_settlement_m:   'Settlement min',
     ei_sovellu:         'N/A',
+    opt_vir_paa:        'PAA (nuclear permit)',
+    // Log messages
+    log_gen_start:      'Generating document draft',
+    log_gen_done:       'Document draft ready',
+    log_gen_error:      'Generator error',
+    log_permit_done:    'Permit application draft generated',
+    log_enter_kt:       'Enter property ID',
+    log_enter_kt_first: 'Enter property ID first',
+    log_fetching:       'Fetching',
+    log_kt_not_found:   'Property not found – check the ID',
+    log_kt_loaded:      'Property loaded',
+    log_fetch_lines:    'Fetching power lines (OSM/Fingrid)…',
+    log_lines_loaded:   'Power lines loaded',
+    log_fetch_gw:       'Fetching groundwater areas (SYKE)…',
+    log_gw_loaded:      'Groundwater areas loaded',
+    log_fetch_first:    'Fetch property first',
+    log_fetch_bldg:     'Fetching buildings within 1 km (OSM)…',
+    log_bldg_loaded:    'Buildings loaded',
+    log_fetch_natura:   'Fetching Natura 2000 areas…',
+    log_natura_loaded:  'Natura areas loaded',
+    log_analysis_start: 'Running land use analysis…',
+    log_analysis_done:  'Land use analysis complete – suitability index',
+    log_run_first:      'Run the analysis first before updating manual data',
+    log_manual_updated: 'Manual data updated – suitability index',
+    log_manual_none:    'No active manual fields',
+    log_report_start:   'Generating PDF report…',
+    log_report_done:    'PDF report downloaded',
+    log_fetch_first_rep:'Fetch property first before generating report',
+    log_map_init:       'Map initialized. Fetching default property…',
     // Placeholders
     gf_ph_hakija:     'Company or person name',
     gf_ph_kt:         'e.g. 091-001-0001-0001',
@@ -2270,6 +2328,35 @@ const TRANSLATIONS = {
     lbl_settlement_km:  'Bebyggelse min',
     lbl_settlement_m:   'Bebyggelse min',
     ei_sovellu:         'EJ TILLÄMPLIGT',
+    opt_vir_paa:        'PAA (kärntillstånd)',
+    // Log messages
+    log_gen_start:      'Skapar dokumentutkast',
+    log_gen_done:       'Dokumentutkast klart',
+    log_gen_error:      'Generatorfel',
+    log_permit_done:    'Tillståndsansökan genererad',
+    log_enter_kt:       'Ange fastighetsbeteckning',
+    log_enter_kt_first: 'Ange fastighetsbeteckning först',
+    log_fetching:       'Hämtar',
+    log_kt_not_found:   'Fastighet hittades inte – kontrollera beteckningen',
+    log_kt_loaded:      'Fastighet laddad',
+    log_fetch_lines:    'Hämtar kraftledningar (OSM/Fingrid)…',
+    log_lines_loaded:   'Kraftledningar laddade',
+    log_fetch_gw:       'Hämtar grundvattenområden (SYKE)…',
+    log_gw_loaded:      'Grundvattenområden laddade',
+    log_fetch_first:    'Hämta fastigheten först',
+    log_fetch_bldg:     'Hämtar byggnader inom 1 km (OSM)…',
+    log_bldg_loaded:    'Byggnader laddade',
+    log_fetch_natura:   'Hämtar Natura 2000-områden…',
+    log_natura_loaded:  'Natura-områden laddade',
+    log_analysis_start: 'Kör markanvändningsanalys…',
+    log_analysis_done:  'Markanvändningsanalys klar – lämplighetindex',
+    log_run_first:      'Kör analysen först innan du uppdaterar manuella data',
+    log_manual_updated: 'Manuella data uppdaterade – lämplighetindex',
+    log_manual_none:    'Inga aktiva manuella fält',
+    log_report_start:   'Genererar PDF-rapport…',
+    log_report_done:    'PDF-rapport hämtad',
+    log_fetch_first_rep:'Hämta fastigheten innan du genererar rapport',
+    log_map_init:       'Karta initierad. Hämtar standardfastighet…',
     // Placeholders
     gf_ph_hakija:     'Företagets eller personens namn',
     gf_ph_kt:         't.ex. 091-001-0001-0001',
@@ -2554,6 +2641,35 @@ const TRANSLATIONS = {
     lbl_settlement_km:  'Bebyggelse min',
     lbl_settlement_m:   'Bebyggelse min',
     ei_sovellu:         'IKKE RELEVANT',
+    opt_vir_paa:        'PAA (kernetilladelse)',
+    // Log messages
+    log_gen_start:      'Genererer dokumentudkast',
+    log_gen_done:       'Dokumentudkast klar',
+    log_gen_error:      'Generatorfejl',
+    log_permit_done:    'Tilladelsesansøgning genereret',
+    log_enter_kt:       'Indtast ejendomsnummer',
+    log_enter_kt_first: 'Indtast ejendomsnummer først',
+    log_fetching:       'Henter',
+    log_kt_not_found:   'Ejendom ikke fundet – kontroller nummeret',
+    log_kt_loaded:      'Ejendom indlæst',
+    log_fetch_lines:    'Henter elledninger (OSM/Fingrid)…',
+    log_lines_loaded:   'Elledninger indlæst',
+    log_fetch_gw:       'Henter grundvandsområder (SYKE)…',
+    log_gw_loaded:      'Grundvandsområder indlæst',
+    log_fetch_first:    'Hent ejendommen først',
+    log_fetch_bldg:     'Henter bygninger inden for 1 km (OSM)…',
+    log_bldg_loaded:    'Bygninger indlæst',
+    log_fetch_natura:   'Henter Natura 2000-områder…',
+    log_natura_loaded:  'Natura-områder indlæst',
+    log_analysis_start: 'Kører arealanvendelseanalyse…',
+    log_analysis_done:  'Arealanvendelseanalyse færdig – egnethedsindeks',
+    log_run_first:      'Kør analysen først, inden du opdaterer manuelle data',
+    log_manual_updated: 'Manuelle data opdateret – egnethedsindeks',
+    log_manual_none:    'Ingen aktive manuelle felter',
+    log_report_start:   'Genererer PDF-rapport…',
+    log_report_done:    'PDF-rapport hentet',
+    log_fetch_first_rep:'Hent ejendommen inden du genererer rapport',
+    log_map_init:       'Kort initialiseret. Henter standardejendom…',
     // Placeholders
     gf_ph_hakija:             'Virksomhedens eller personens navn',
     gf_ph_kt:                 'f.eks. 091-001-0001-0001',
@@ -2808,6 +2924,35 @@ const TRANSLATIONS = {
     lbl_settlement_km:  'Bebyggelse min',
     lbl_settlement_m:   'Bebyggelse min',
     ei_sovellu:         'IKKE RELEVANT',
+    opt_vir_paa:        'PAA (kjernetillatelse)',
+    // Log messages
+    log_gen_start:      'Genererer dokumentutkast',
+    log_gen_done:       'Dokumentutkast klart',
+    log_gen_error:      'Generatorfeil',
+    log_permit_done:    'Tillatelsessøknad generert',
+    log_enter_kt:       'Angi eiendomsnummer',
+    log_enter_kt_first: 'Angi eiendomsnummer først',
+    log_fetching:       'Henter',
+    log_kt_not_found:   'Eiendom ikke funnet – sjekk nummeret',
+    log_kt_loaded:      'Eiendom lastet',
+    log_fetch_lines:    'Henter kraftledninger (OSM/Fingrid)…',
+    log_lines_loaded:   'Kraftledninger lastet',
+    log_fetch_gw:       'Henter grunnvannsområder (SYKE)…',
+    log_gw_loaded:      'Grunnvannsområder lastet',
+    log_fetch_first:    'Hent eiendommen først',
+    log_fetch_bldg:     'Henter bygninger innen 1 km (OSM)…',
+    log_bldg_loaded:    'Bygninger lastet',
+    log_fetch_natura:   'Henter Natura 2000-områder…',
+    log_natura_loaded:  'Natura-områder lastet',
+    log_analysis_start: 'Kjører arealbruksanalyse…',
+    log_analysis_done:  'Arealbruksanalyse ferdig – egnetshetsindeks',
+    log_run_first:      'Kjør analysen først før du oppdaterer manuelle data',
+    log_manual_updated: 'Manuelle data oppdatert – egnetshetsindeks',
+    log_manual_none:    'Ingen aktive manuelle felter',
+    log_report_start:   'Genererer PDF-rapport…',
+    log_report_done:    'PDF-rapport lastet ned',
+    log_fetch_first_rep:'Hent eiendommen før du genererer rapport',
+    log_map_init:       'Kart initialisert. Henter standardeiendom…',
     // Placeholders
     gf_ph_hakija:             'Selskapets eller personens navn',
     gf_ph_kt:                 'f.eks. 091-001-0001-0001',
@@ -3062,6 +3207,35 @@ const TRANSLATIONS = {
     lbl_settlement_km:  'Zabudowa min',
     lbl_settlement_m:   'Zabudowa min',
     ei_sovellu:         'NIE DOTYCZY',
+    opt_vir_paa:        'PAA (zezwolenie jądrowe)',
+    // Log messages
+    log_gen_start:      'Generowanie wersji roboczej dokumentu',
+    log_gen_done:       'Wersja robocza dokumentu gotowa',
+    log_gen_error:      'Błąd generatora',
+    log_permit_done:    'Wersja robocza wniosku o zezwolenie wygenerowana',
+    log_enter_kt:       'Wprowadź numer nieruchomości',
+    log_enter_kt_first: 'Najpierw wprowadź numer nieruchomości',
+    log_fetching:       'Pobieranie',
+    log_kt_not_found:   'Nie znaleziono nieruchomości – sprawdź numer',
+    log_kt_loaded:      'Nieruchomość załadowana',
+    log_fetch_lines:    'Pobieranie linii energetycznych (OSM/Fingrid)…',
+    log_lines_loaded:   'Linie energetyczne załadowane',
+    log_fetch_gw:       'Pobieranie obszarów wód gruntowych (SYKE)…',
+    log_gw_loaded:      'Obszary wód gruntowych załadowane',
+    log_fetch_first:    'Najpierw pobierz nieruchomość',
+    log_fetch_bldg:     'Pobieranie budynków w promieniu 1 km (OSM)…',
+    log_bldg_loaded:    'Budynki załadowane',
+    log_fetch_natura:   'Pobieranie obszarów Natura 2000…',
+    log_natura_loaded:  'Obszary Natura załadowane',
+    log_analysis_start: 'Uruchamianie analizy zagospodarowania terenu…',
+    log_analysis_done:  'Analiza zagospodarowania gotowa – wskaźnik przydatności',
+    log_run_first:      'Najpierw uruchom analizę przed aktualizacją danych manualnych',
+    log_manual_updated: 'Dane manualne zaktualizowane – wskaźnik przydatności',
+    log_manual_none:    'Brak aktywnych pól manualnych',
+    log_report_start:   'Generowanie raportu PDF…',
+    log_report_done:    'Raport PDF pobrany',
+    log_fetch_first_rep:'Najpierw pobierz nieruchomość przed generowaniem raportu',
+    log_map_init:       'Mapa zainicjalizowana. Pobieranie domyślnej nieruchomości…',
     // Placeholders
     gf_ph_hakija:             'Nazwa firmy lub osoby',
     gf_ph_kt:                 'np. 091-001-0001-0001',
@@ -3445,8 +3619,9 @@ function _VAIHE_OPTS() {
     { value: 'Rakentaminen', label: t('opt_vaihe_rakentaminen') },
   ];
 }
-function _VIRANOMAINEN_OPTS() {
-  return [
+// Country-specific authority options. Value is a stable FI-based key; label is translated.
+const _COUNTRY_VIR_OPTS = {
+  FI: () => [
     { value: '— Valitse —',                      label: t('opt_vir_valitse') },
     { value: 'Kunta (rakennuslupa)',              label: t('opt_vir_kunta') },
     { value: 'ELY-keskus (YVA)',                  label: t('opt_vir_ely') },
@@ -3456,7 +3631,49 @@ function _VIRANOMAINEN_OPTS() {
     { value: 'Luova (ympäristölupa/vesilupa)',     label: t('opt_vir_avi') },
     { value: 'TEM (periaatepäätös)',              label: t('opt_vir_tem') },
     { value: 'Muu',                               label: t('opt_vir_muu') },
-  ];
+  ],
+  SE: () => [
+    { value: '— Valitse —',                       label: t('opt_vir_valitse') },
+    { value: 'Energimyndigheten (tillstånd)',      label: 'Energimyndigheten (tillstånd/koncession)' },
+    { value: 'Mark- och miljödomstolen',           label: 'Mark- och miljödomstolen (miljötillstånd)' },
+    { value: 'Svenska kraftnät (nätanslutning)',  label: 'Svenska kraftnät (nätanslutning)' },
+    { value: 'Länsstyrelsen (MKB/regional)',       label: 'Länsstyrelsen (MKB / regional tillståndsgivning)' },
+    { value: 'Kommunen (bygglov)',                 label: 'Kommunen (bygglov)' },
+    { value: 'Naturvårdsverket',                   label: 'Naturvårdsverket (miljöskydd)' },
+    { value: 'Muu',                                label: t('opt_vir_muu') },
+  ],
+  DA: () => [
+    { value: '— Valitse —',                       label: t('opt_vir_valitse') },
+    { value: 'Energistyrelsen (energitilladelse)', label: 'Energistyrelsen (energitilladelse)' },
+    { value: 'Miljøstyrelsen (miljøtilladelse)',   label: 'Miljøstyrelsen (miljøtilladelse)' },
+    { value: 'Energinet (nettilslutning)',         label: 'Energinet (nettilslutning)' },
+    { value: 'Kommunen (byggetilladelse)',         label: 'Kommunen (byggetilladelse)' },
+    { value: 'Planklagenævnet',                    label: 'Planklagenævnet (klagemyndighed)' },
+    { value: 'Muu',                                label: t('opt_vir_muu') },
+  ],
+  NO: () => [
+    { value: '— Valitse —',                       label: t('opt_vir_valitse') },
+    { value: 'NVE (energikonsesjon)',              label: 'NVE (energikonsesjon/tillatelse)' },
+    { value: 'Miljødirektoratet (miljøtillatelse)',label: 'Miljødirektoratet (miljøtillatelse)' },
+    { value: 'Statnett (nettilknytning)',          label: 'Statnett (nettilknytning)' },
+    { value: 'Statsforvalteren (regional)',        label: 'Statsforvalteren (regional tillatelse)' },
+    { value: 'Kommunen (byggetillatelse)',         label: 'Kommunen (byggetillatelse)' },
+    { value: 'Muu',                                label: t('opt_vir_muu') },
+  ],
+  PL: () => [
+    { value: '— Valitse —',                       label: t('opt_vir_valitse') },
+    { value: 'PAA (ydinlupa)',                     label: t('opt_vir_paa') },
+    { value: 'RDOŚ / GDOŚ (OOŚ/EIA)',            label: 'RDOŚ / GDOŚ (OOŚ — ocena oddziaływania na środowisko)' },
+    { value: 'Wody Polskie (pozwolenie wodnoprawne)', label: 'Wody Polskie (pozwolenie wodnoprawne)' },
+    { value: 'Starostwo Powiatowe (pozwolenie na budowę)', label: 'Starostwo Powiatowe (pozwolenie na budowę)' },
+    { value: 'URE (regulacja energetyki)',         label: 'URE — Urząd Regulacji Energetyki' },
+    { value: 'Muu',                                label: t('opt_vir_muu') },
+  ],
+};
+
+function _VIRANOMAINEN_OPTS() {
+  const fn = _COUNTRY_VIR_OPTS[selectedCountry] || _COUNTRY_VIR_OPTS.FI;
+  return fn();
 }
 
 const HANKE_FIELDS = {
@@ -3953,11 +4170,19 @@ function selectProjectType(typeId) {
   `;
   formSection.style.display = 'block';
 
-  // Auto-fill Kohdeviranomainen from HANKETYYPIT
+  // Auto-fill Kohdeviranomainen — country-aware
   if (hvInfo.autoFields && hvInfo.autoFields.kohdeviranomainen) {
     const sel = document.getElementById('gf-viranomainen');
     if (sel) {
-      sel.value = hvInfo.autoFields.kohdeviranomainen;
+      // Resolve country-specific authority for this typeId
+      const _countryAutoVir = {
+        SE: { smr: 'Energimyndigheten (tillstånd)', bess: 'Kommunen (bygglov)', tuulivoima_maa: 'Energimyndigheten (tillstånd)', aurinkovoima: 'Kommunen (bygglov)', vesivoima: 'Mark- och miljödomstolen', smr_bess: 'Energimyndigheten (tillstånd)' },
+        DA: { smr: 'Energistyrelsen (energitilladelse)', bess: 'Kommunen (byggetilladelse)', tuulivoima_maa: 'Energistyrelsen (energitilladelse)', aurinkovoima: 'Kommunen (byggetilladelse)', vesivoima: 'Energistyrelsen (energitilladelse)', smr_bess: 'Energistyrelsen (energitilladelse)' },
+        NO: { smr: 'NVE (energikonsesjon)', bess: 'NVE (energikonsesjon)', tuulivoima_maa: 'NVE (energikonsesjon)', aurinkovoima: 'Kommunen (byggetillatelse)', vesivoima: 'NVE (energikonsesjon)', smr_bess: 'NVE (energikonsesjon)' },
+        PL: { smr: 'PAA (ydinlupa)', smr_bess: 'PAA (ydinlupa)', bess: 'Starostwo Powiatowe (pozwolenie na budowę)', tuulivoima_maa: 'Starostwo Powiatowe (pozwolenie na budowę)', aurinkovoima: 'Starostwo Powiatowe (pozwolenie na budowę)', vesivoima: 'Wody Polskie (pozwolenie wodnoprawne)' },
+      };
+      let _autoVir = (_countryAutoVir[selectedCountry] || {})[typeId] || hvInfo.autoFields.kohdeviranomainen;
+      sel.value = _autoVir;
       const infoEl = document.createElement('div');
       infoEl.className = 'gf-auto-info';
       infoEl.dataset.i18n = 'gf_auto_info';
@@ -3979,8 +4204,20 @@ function selectProjectType(typeId) {
 // ─────────────────────────────────────────────
 // Generator: submit form → API → download PDF
 // ─────────────────────────────────────────────
+// Country-specific PERMITS_CFG overrides
+const _COUNTRY_PERMITS_CFG = {
+  PL: {
+    smr: {
+      esiselvitys:  { kohdeviranomainen: 'PAA (ydinlupa)', viranomaiset: ['PAA (Państwowa Agencja Atomistyki)', 'RDOŚ / GDOŚ', 'Wody Polskie'], luvat: ['Prawo atomowe — pre-licensing', 'OOŚ (Ustawa środowiskowa)', 'Pozwolenie wodnoprawne'] },
+      lupavaihe:    { kohdeviranomainen: 'PAA (ydinlupa)', viranomaiset: ['PAA (Państwowa Agencja Atomistyki)', 'RDOŚ / GDOŚ', 'Wody Polskie', 'Starostwo Powiatowe'], luvat: ['Zezwolenie na budowę (PAA)', 'OOŚ', 'Prawo wodne', 'Prawo budowlane'] },
+      rakentaminen: { kohdeviranomainen: 'PAA (ydinlupa)', viranomaiset: ['PAA (Państwowa Agencja Atomistyki)', 'Starostwo Powiatowe', 'Straż pożarna'], luvat: ['Nadzór budowlany (PAA)', 'Odbiór budynku', 'Kontrola bezpieczeństwa pożarowego'] },
+    },
+  },
+};
+
 function _hankePhaseChanged(typeId, phase) {
-  const cfg = (PERMITS_CFG[typeId] || {})[phase];
+  const _countryOverride = (_COUNTRY_PERMITS_CFG[selectedCountry] || {})[typeId];
+  const cfg = (_countryOverride || PERMITS_CFG[typeId] || {})[phase];
   if (!cfg) return;
 
   const sel = document.getElementById('gf-viranomainen');
@@ -4067,7 +4304,7 @@ async function submitGeneratorForm() {
   btn.disabled = true;
   btn.innerHTML = `&#x23F3; ${t('btn_gen_loading')}`;
 
-  log(`Generoidaan asiakirjaluonnos: ${selectedProjectType} / ${payload.kunta}…`, 'info');
+  log(`${t('log_gen_start')}: ${selectedProjectType} / ${payload.kunta}…`, 'info');
 
   // Progress bar animation
   const progWrap = document.getElementById('gen-progress-wrap');
@@ -4134,7 +4371,7 @@ async function submitGeneratorForm() {
       if (progWrap) progWrap.classList.remove('visible');
     }, 4000);
 
-    log(`Asiakirjaluonnos valmis: ${selectedProjectType} / ${payload.kunta}`, 'ok');
+    log(`${t('log_gen_done')}: ${selectedProjectType} / ${payload.kunta}`, 'ok');
 
     // Oikolukupolling
     if (jobId && proofBox) {
@@ -4179,7 +4416,7 @@ async function submitGeneratorForm() {
     }, 4000);
     const msg = err.name === 'AbortError' ? t('err_timeout') : err.message;
     console.error('[Generator] virhe:', err);
-    log(`Generaattori virhe: ${msg}`, 'err');
+    log(`${t('log_gen_error')}: ${msg}`, 'err');
     alert(`Virhe: ${msg}`);
   }
 }
@@ -4297,11 +4534,11 @@ async function parseHttpError(resp) {
 // ─────────────────────────────────────────────
 async function fetchProperty() {
   const kt = document.getElementById('kt-input').value.trim();
-  if (!kt) { log('Syötä kiinteistötunnus', 'err'); return; }
+  if (!kt) { log(t('log_enter_kt'), 'err'); return; }
 
   const btn = document.getElementById('btn-fetch-property');
   setLoading(btn, true);
-  log(`Haetaan ${kt}…`, 'info');
+  log(`${t('log_fetching')} ${kt}…`, 'info');
 
   layers.property.clearLayers();
   layers.buffer.clearLayers();
@@ -4316,7 +4553,7 @@ async function fetchProperty() {
     const geojson = await resp.json();
 
     if (!geojson.features || geojson.features.length === 0) {
-      log('Kiinteistöä ei löydy – tarkista tunnus', 'err');
+      log(t('log_kt_not_found'), 'err');
       return;
     }
 
@@ -4358,7 +4595,7 @@ async function fetchProperty() {
     }).addTo(layers.buffer);
 
     map.fitBounds(propLayer.getBounds(), { padding: [60, 60] });
-    log(`Kiinteistö ladattu – ${areaHa}`, 'ok');
+    log(`${t('log_kt_loaded')} – ${areaHa}`, 'ok');
 
   } catch (err) {
     log(`Virhe: ${err.message}`, 'err');
@@ -4372,7 +4609,7 @@ async function fetchProperty() {
 // Fetch: Voimajohdot (OSM Overpass via backend)
 // ─────────────────────────────────────────────
 async function fetchGridLines() {
-  log('Haetaan voimajohtoja (OSM/Fingrid)…', 'info');
+  log(t('log_fetch_lines'), 'info');
   try {
     const url = buildUrl('/api/fingrid/lines', { bbox: '22.5,60.6,23.0,60.9' });
     const resp = await fetch(url);
@@ -4396,7 +4633,7 @@ async function fetchGridLines() {
       },
     }).addTo(layers.grid);
 
-    log(`Voimajohdot ladattu – ${geojson.features?.length || 0} linjaa`, 'ok');
+    log(`${t('log_lines_loaded')} – ${geojson.features?.length || 0}`, 'ok');
   } catch (err) {
     log(`Voimajohtovirhe: ${err.message}`, 'err');
   }
@@ -4406,7 +4643,7 @@ async function fetchGridLines() {
 // Fetch: Pohjavesialueet (SYKE)
 // ─────────────────────────────────────────────
 async function fetchGroundwater() {
-  log('Haetaan pohjavesialueita (SYKE)…', 'info');
+  log(t('log_fetch_gw'), 'info');
   try {
     const url = buildUrl('/api/groundwater', { bbox: '22.5,60.6,23.0,60.9' });
     const resp = await fetch(url);
@@ -4424,7 +4661,7 @@ async function fetchGroundwater() {
         lyr.bindPopup(`<b>Pohjavesialue</b><br>${p.nimi || '–'}<br>Luokka: ${p.luokka || '–'}`);
       },
     }).addTo(layers.groundwater);
-    log(`Pohjavesialueet ladattu – ${geojson.features?.length || 0} aluetta`, 'ok');
+    log(`${t('log_gw_loaded')} – ${geojson.features?.length || 0}`, 'ok');
   } catch (err) {
     log(`Pohjavesivirhe: ${err.message}`, 'err');
   }
@@ -4435,9 +4672,9 @@ async function fetchGroundwater() {
 // ─────────────────────────────────────────────
 async function fetchBuildings() {
   const propBounds = layers.property.getBounds();
-  if (!propBounds.isValid()) { log('Hae kiinteistö ensin', 'warn'); return; }
+  if (!propBounds.isValid()) { log(t('log_fetch_first'), 'warn'); return; }
   const c = propBounds.getCenter();
-  log('Haetaan rakennuksia 1 km säteeltä (OSM)…', 'info');
+  log(t('log_fetch_bldg'), 'info');
   try {
     const url = buildUrl('/api/buildings/nearest', { lat: c.lat, lon: c.lng });
     const resp = await fetch(url);
@@ -4460,7 +4697,7 @@ async function fetchBuildings() {
     const dist = data.nearest_building_m;
     const label = dist != null ? `${dist} m` : '–';
     updateInfoField('info-building', label, dist == null ? 'na' : dist > 300 ? 'ok' : 'warn');
-    log(`Rakennukset ladattu – ${data.buildings_found} kpl, lähin ${label}`, dist > 300 || dist == null ? 'ok' : 'warn');
+    log(`${t('log_bldg_loaded')} – ${data.buildings_found}, ${label}`, dist > 300 || dist == null ? 'ok' : 'warn');
   } catch (err) {
     log(`Rakennusvirhe: ${err.message}`, 'err');
   }
@@ -4470,7 +4707,7 @@ async function fetchBuildings() {
 // Fetch: Natura (SYKE)
 // ─────────────────────────────────────────────
 async function fetchNatura() {
-  log('Haetaan Natura 2000 -alueet…', 'info');
+  log(t('log_fetch_natura'), 'info');
   try {
     const url = buildUrl('/api/natura', { bbox: '22.5,60.6,23.0,60.9' });
     const resp = await fetch(url);
@@ -4483,7 +4720,7 @@ async function fetchNatura() {
         lyr.bindPopup(`<b>Natura 2000</b><br>${p.nimi || p.name || '–'}`);
       },
     }).addTo(layers.natura);
-    log(`Natura-alueet ladattu (${geojson.features?.length || 0})`, 'ok');
+    log(`${t('log_natura_loaded')} (${geojson.features?.length || 0})`, 'ok');
   } catch (err) {
     log(`Natura-virhe: ${err.message}`, 'err');
   }
@@ -4494,13 +4731,13 @@ async function fetchNatura() {
 // ─────────────────────────────────────────────
 async function runAnalysis() {
   const kt = document.getElementById('kt-input').value.trim();
-  if (!kt) { log('Syötä ensin kiinteistötunnus', 'err'); return; }
+  if (!kt) { log(t('log_enter_kt_first'), 'err'); return; }
 
   const btn = document.getElementById('btn-analyze');
   setLoading(btn, true);
   const _mType = document.getElementById('map-hanketyyppi')?.value || '';
   const _mLabel = _mType ? (ptName(PROJECT_TYPES.find(pt => pt.id === _mType)) || _mType) + ' — ' : '';
-  log(`Suoritetaan ${_mLabel}maankäyttöselvitys (kaikki datalähteet)…`, 'info');
+  log(`${t('log_analysis_start')} ${_mLabel}`, 'info');
 
   try {
     const gc = document.getElementById('proj-grid').value;
@@ -4583,7 +4820,7 @@ async function runAnalysis() {
 
     const frontendScore = recalcScore(d);
     setScore(frontendScore);
-    log(`Maankäyttöselvitys valmis – soveltuvuusindeksi: ${frontendScore}/100`, 'ok');
+    log(`${t('log_analysis_done')}: ${frontendScore}/100`, 'ok');
   } catch (err) {
     log(`Analyysivirhe: ${err.message}`, 'err');
   } finally {
@@ -4691,7 +4928,7 @@ function switchMapType(type) {
 
 function applyManualOverrides() {
   if (!lastAnalysis) {
-    log('Aja ensin Käynnistä analyysi ennen manuaalisten tietojen päivitystä', 'warn');
+    log(t('log_run_first'), 'warn');
     return;
   }
 
@@ -4748,9 +4985,9 @@ function applyManualOverrides() {
     lastAnalysis = a;
     const newScore = recalcScore(a);
     setScore(newScore);
-    log('Manuaaliset tiedot päivitetty – soveltuvuusindeksi: ' + newScore + '/100', 'ok');
+    log(`${t('log_manual_updated')}: ${newScore}/100`, 'ok');
   } else {
-    log('Ei aktivoituja manuaalisia kenttiä', 'info');
+    log(t('log_manual_none'), 'info');
   }
 }
 
@@ -4759,16 +4996,16 @@ function applyManualOverrides() {
 // ─────────────────────────────────────────────
 async function generateReport() {
   const kt = document.getElementById('kt-input').value.trim();
-  if (!kt) { log('Syötä ensin kiinteistötunnus', 'err'); return; }
+  if (!kt) { log(t('log_enter_kt_first'), 'err'); return; }
 
   if (!propertyGeoJson) {
-    log('Hae kiinteistö ensin ennen raportin generointia', 'warn');
+    log(t('log_fetch_first_rep'), 'warn');
     return;
   }
 
   const btn = document.getElementById('btn-report');
   setLoading(btn, true);
-  log('Generoidaan PDF-raportti…', 'info');
+  log(t('log_report_start'), 'info');
 
   try {
     const manualKaavoitus   = document.getElementById('manual-kaavoitus').value  || null;
@@ -4811,7 +5048,7 @@ async function generateReport() {
     a.download = `${mapType}_maankäyttöselvitys_${kt.replace(/-/g, '_')}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
-    log('PDF-raportti ladattu', 'ok');
+    log(t('log_report_done'), 'ok');
   } catch (err) {
     log(`Raporttivvirhe: ${err.message}`, 'err');
   } finally {
@@ -4895,7 +5132,7 @@ updateGridLink();
 
 window.addEventListener('load', () => {
   if (document.getElementById('tab-bess').classList.contains('active')) {
-    log('Kartta alustettu. Haetaan oletuskiinteistö…', 'info');
+    log(t('log_map_init'), 'info');
     setTimeout(fetchProperty, 800);
   }
 });
@@ -5032,13 +5269,13 @@ async function generateApplication() {
     }
 
     document.getElementById('pai-gen-form').classList.remove('open');
-    log(`Lupahakemusluonnos generoitu: ${hanketyyppi} / ${kunta}`, 'ok');
+    log(`${t('log_permit_done')}: ${hanketyyppi} / ${kunta}`, 'ok');
 
   } catch (err) {
     waitDiv.innerHTML = `<div class="bubble" style="color:#e94560;">
       ❌ ${t('err_gen_failed')}: ${err.message}
     </div>`;
-    log(`Hakemusgeneraattori virhe: ${err.message}`, 'err');
+    log(`${t('log_gen_error')}: ${err.message}`, 'err');
   }
 
   btn.disabled = false;
