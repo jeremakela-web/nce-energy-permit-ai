@@ -4595,7 +4595,7 @@ function setScore(score) {
 }
 
 function buildUrl(path, extraParams = {}) {
-  const url = new URL(`${API_BASE}${path}`);
+  const url = new URL(`${API_BASE}${path}`, window.location.origin);
   Object.entries(extraParams).forEach(([k, v]) => url.searchParams.set(k, v));
   return url;
 }
