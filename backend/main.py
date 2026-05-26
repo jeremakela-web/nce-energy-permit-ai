@@ -6,6 +6,8 @@ Käynnistys:
     cd bess_tool/backend && uvicorn main:app --reload --port 8000
 """
 
+# TODO: domain muutos ncepermit.ai kun NCE Global perustettu
+
 import asyncio
 import base64
 import io

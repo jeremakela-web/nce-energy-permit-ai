@@ -39,6 +39,7 @@ from sentence_transformers import SentenceTransformer
 # Vakiot
 # ─────────────────────────────────────────────────────────────────────────────
 
+# TODO: domain muutos ncepermit.ai kun NCE Global perustettu
 _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
@@ -252,7 +253,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Asemapiirustus ja pohjakartta (M 1:500)",
             "Rakennesuunnitelma (akkukontti + perustukset)",
             "Paloturvallisuusselvitys (NFPA 855 / EN-standardit)",
@@ -289,7 +290,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "YVA-ohjelma ja YVA-selostus (ELY:n hyväksymä)",
             "Meluselvitys (ETSU-R-97 tai IEC 61400-11)",
             "Varjostusmallinnusraportti",
@@ -327,7 +328,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "YVA-ohjelma ja YVA-selostus",
             "Meriekologinen vaikutusarviointi (Natura tarvittaessa)",
             "Meluselvitys (ilma- ja vedenalainen melu)",
@@ -398,7 +399,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)",
             "YVA-ohjelma ja -selostus",
             "Ydinmateriaalivalvontasuunnitelma (IAEA SQ-protokolla)",
@@ -436,7 +437,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Hydraulinen mitoitusraportti (virtaama, putouskorkeus)",
             "Geotekninen pato- ja pohjarakenneselvitys",
             "Vesistövaikutusten arviointi (tulva, kuivuus, vedenlaatu)",
@@ -474,7 +475,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "YVA-ohjelma ja -selostus (tuulivoiman osalta)",
             "BESS-paloturvallisuusselvitys (NFPA 855)",
             "Sammutusvesien keräyssuunnitelma (BESS)",
@@ -498,7 +499,7 @@ _HANKE_CFG = {
         "luvat": [],
         "liitteet": [
             "Sijaintikartta / projektikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Hakijan taloudellinen tilanne (tilinpäätös, 2 viimeisintä vuotta)",
             "Projektisuunnitelma (T&K-kuvaus, tavoitteet, metodologia)",
             "Budjettilaskelmat ja rahoitussuunnitelma",
@@ -535,7 +536,7 @@ _HANKE_CFG = {
         ],
         "liitteet": [
             "Sijaintikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Alustava turvallisuusseloste (STUK YVL A.1 mukainen)",
             "BESS-paloturvallisuusselvitys (NFPA 855 / EN-standardit)",
             "Integroitu energiavarastosuunnitelma (SMR + BESS-mitoitus)",
@@ -980,7 +981,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
     "SE": {
         "SMR": [
             "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "SSM preliminär säkerhetsredovisning (PSR) — Kärntekniklag (SFS 1984:3)",
             "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
             "Hydrogeologisk utredning (kylvattenresurs)",
@@ -991,7 +992,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
         ],
         "smr_bess": [
             "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "SSM preliminär säkerhetsredovisning (PSR) — Kärntekniklag (SFS 1984:3)",
             "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
             "Brandsäkerhetsrapport BESS (NFPA 855 / EN 50604-1)",
@@ -1004,7 +1005,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
     "DA": {
         "SMR": [
             "Kortbilag / Beliggenhedskort (1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Nuklær sikkerhedsredegørelse (Sundhedsstyrelsen / SIS) — Lov nr. 94/2003",
             "VVM-redegørelse (Vurdering af Virkninger på Miljøet) — Miljøvurderingsloven",
             "Hydrogeologisk undersøgelse (kølevandsbehov)",
@@ -1015,7 +1016,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
         ],
         "smr_bess": [
             "Kortbilag / Beliggenhedskort (1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Nuklær sikkerhedsredegørelse (Sundhedsstyrelsen / SIS) — Lov nr. 94/2003",
             "VVM-redegørelse — Miljøvurderingsloven",
             "Brandsikkerhedsrapport BESS (NFPA 855 / EN 50604-1)",
@@ -1027,7 +1028,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
     "NO": {
         "SMR": [
             "Kart / Stedsbeskrivelse (1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Sikkerhetsanalyse (DSA — Direktoratet for strålevern og atomsikkerhet) — Strålevernloven",
             "Konsekvensutredning (KU) — Plan- og bygningsloven kap. 14",
             "Hydrogeologisk utredning (kjølevannsressurs)",
@@ -1038,7 +1039,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
         ],
         "smr_bess": [
             "Kart / Stedsbeskrivelse (1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Sikkerhetsanalyse (DSA) — Strålevernloven (LOV-2000-05-12-36)",
             "Konsekvensutredning (KU) — Plan- og bygningsloven kap. 14",
             "Brannsikkerhetsrapport BESS (NFPA 855 / EN 50604-1)",
@@ -1050,7 +1051,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
     "PL": {
         "SMR": [
             "Mapa lokalizacyjna (skala 1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Raport bezpieczeństwa (PAA — Państwowa Agencja Atomistyki) — Prawo atomowe",
             "Raport o oddziaływaniu na środowisko (OOŚ) — Ustawa środowiskowa",
             "Badanie hydrogeologiczne (zasoby wód chłodniczych)",
@@ -1061,7 +1062,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
         ],
         "smr_bess": [
             "Mapa lokalizacyjna (skala 1:20 000)",
-            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Maankäyttöselvitys PDF (NCE)",
             "Raport bezpieczeństwa (PAA — Państwowa Agencja Atomistyki) — Prawo atomowe",
             "Raport OOŚ — Ustawa środowiskowa",
             "Raport bezpieczeństwa pożarowego BESS (NFPA 855 / EN 50604-1)",
@@ -1073,7 +1074,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
 }
 
 _SYSTEM = (
-    "Olet NCE Energy Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
+    "Olet NCE Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
     "laadinnassa Suomessa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
     "Viittaat aina voimassa olevaan lainsäädäntöön. Et koskaan anna harhaanjohtavaa tietoa — "
     "jos jokin asia on epävarma, merkitset sen selvästi. "
@@ -1415,7 +1416,7 @@ _LAW_TRANS: dict[str, dict[str, str]] = {
 _LIITE_TRANS: dict[str, dict[str, str]] = {
     "Sijaintikartta (M 1:20 000 tai laajempi)":             {"EN": "Location map (scale 1:20,000 or wider)",                        "SE": "Lägeskartta (skala 1:20 000 eller vidare)",              "DA": "Oversigtskort (målestok 1:20.000 eller bredere)",      "NO": "Oversiktskart (målestokk 1:20 000 eller bredere)",    "PL": "Mapa lokalizacyjna (skala 1:20 000 lub szersza)"},
     "Sijaintikartta / projektikartta (M 1:20 000 tai laajempi)": {"EN": "Location map / project map (scale 1:20,000 or wider)",     "SE": "Lägeskartta / projektkarta (skala 1:20 000 eller vidare)", "DA": "Oversigtskort / projektkort (1:20.000 eller bredere)", "NO": "Oversiktskart / prosjektkart (1:20 000 eller bredere)", "PL": "Mapa lokalizacyjna / projektu (1:20 000 lub szersza)"},
-    "Maankäyttöselvitys PDF (NCE Energy)":                  {"EN": "Land Use Survey PDF (NCE Energy)",                             "SE": "Markanvändningsutredning PDF (NCE Energy)",              "DA": "Arealanvendelsesrapport PDF (NCE Energy)",             "NO": "Arealbruksutredning PDF (NCE Energy)",                "PL": "Raport zagospodarowania terenu PDF (NCE Energy)"},
+    "Maankäyttöselvitys PDF (NCE)":                  {"EN": "Land Use Survey PDF (NCE)",                                    "SE": "Markanvändningsutredning PDF (NCE)",                     "DA": "Arealanvendelsesrapport PDF (NCE)",                    "NO": "Arealbruksutredning PDF (NCE)",                       "PL": "Raport zagospodarowania terenu PDF (NCE)"},
     "Asemapiirustus ja pohjakartta (M 1:500)":              {"EN": "Site plan and base map (1:500)",                               "SE": "Situationsplan och baskarta (1:500)",                    "DA": "Situationsplan og basiskortet (1:500)",                "NO": "Situasjonsplan og basiskart (1:500)",                 "PL": "Plan zagospodarowania i mapa podkładowa (1:500)"},
     "Asemapiirustus ja pohjakartta (M 1:500 tai 1:1000)":   {"EN": "Site plan and base map (1:500 or 1:1000)",                    "SE": "Situationsplan och baskarta (1:500 eller 1:1000)",       "DA": "Situationsplan og basiskortet (1:500 eller 1:1000)",   "NO": "Situasjonsplan og basiskart (1:500 eller 1:1000)",    "PL": "Plan zagospodarowania i mapa (1:500 lub 1:1000)"},
     "Rakennesuunnitelma (akkukontti + perustukset)":         {"EN": "Structural plan (battery container + foundations)",            "SE": "Konstruktionsplan (battericontainer + fundament)",       "DA": "Konstruktionsplan (battericontainer + fundamenter)",   "NO": "Konstruksjonsplan (battericontainer + fundamenter)",  "PL": "Plan konstrukcyjny (kontener bateryjny + fundamenty)"},
@@ -1553,7 +1554,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_kunta":         "Sijaintikunta","m_kt":         "Kiinteistötunnus",
         "m_maa":           "Maa",
         "m_laadittu":      "Laadittu",     "m_laatinut_lbl": "Laatinut",
-        "m_laatinut":      "NCE Energy Permit AI (tekoälyavusteinen)",
+        "m_laatinut":      "NCE Permit AI (tekoälyavusteinen)",
         "sec1": "1. Hankkeen kuvaus",             "sec2": "2. Perustelut ja tarve",
         "sec3": "3. Tarvittavat luvat ja viranomaiset", "sec4": "4. Lakiviitteet",
         "sec5": "5. Liiteluettelo",               "sec6": "6. Seuraavat toimenpiteet",
@@ -1568,7 +1569,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yhteystiedot_h":  "Hakijan yhteystiedot",
         "yht_hakija":      "Hakija",     "yht_ytunnus":   "Y-tunnus",
         "yht_osoite":      "Osoite",     "yht_lisatietoja": "Lisätietoja",
-        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
                             "·  AI-luonnos — vaatii asiantuntijatarkistuksen"),
         "th_lupa":  "Lupa / ilmoitus", "th_viran": "Viranomainen", "th_laki": "Lakiperuste",
         "th_nro":   "Nro",  "th_liite": "Liite",  "th_tila": "Tila",
@@ -1585,7 +1587,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "sijaintisuunnitelmat ja ympäristövaikutusten arvioinnit tarkentuvat "
                             "jatkosuunnittelun myötä."),
         "bess_pintaala":   "Laitosalueen arvioitu pinta-ala on 0,4–0,6 ha.",
-        "mks_viittaus":    ("Hankealueen maankäyttö on selvitetty NCE Energyn maankäyttöselvityksessä "
+        "mks_viittaus":    ("Hankealueen maankäyttö on selvitetty NCE:n maankäyttöselvityksessä "
                             "(ks. Liite 0b: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
                             "kaavatilanteen, suojelualueet sekä pohjavesialuetiedot."),
         "kaava_BESS":      ("<b>Kaavatilanne (kriittisin esiselvityskohta):</b> BESS-hankkeen sijoituspaikan "
@@ -1627,7 +1629,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_kunta":         "Municipality",   "m_kt":         "Property ID",
         "m_maa":           "Country",
         "m_laadittu":      "Prepared",       "m_laatinut_lbl": "Prepared by",
-        "m_laatinut":      "NCE Energy Permit AI (AI-assisted)",
+        "m_laatinut":      "NCE Permit AI (AI-assisted)",
         "sec1": "1. Project Description",          "sec2": "2. Justification and Need",
         "sec3": "3. Required Permits and Authorities", "sec4": "4. Legal References",
         "sec5": "5. Appendix List",                "sec6": "6. Next Steps",
@@ -1642,7 +1644,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yhteystiedot_h":  "Applicant Contact Details",
         "yht_hakija":      "Applicant",  "yht_ytunnus":    "Business ID",
         "yht_osoite":      "Address",    "yht_lisatietoja": "Further information",
-        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
                             "·  AI draft — requires expert review"),
         "th_lupa":  "Permit / Notification", "th_viran": "Authority", "th_laki": "Legal Basis",
         "th_nro":   "No.", "th_liite": "Appendix", "th_tila": "Status",
@@ -1659,7 +1662,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "site plans and environmental impact assessments will be refined "
                             "during further planning."),
         "bess_pintaala":   "The estimated site area is 0.4–0.6 ha.",
-        "mks_viittaus":    ("The land use of the project area has been investigated in NCE Energy's "
+        "mks_viittaus":    ("The land use of the project area has been investigated in NCE's "
                             "land use report (see Appendix 0b: Land Use Report PDF). The report includes "
                             "property information, zoning status, protected areas and groundwater area data."),
         "kaava_BESS":      ("<b>Zoning status (most critical pre-study item):</b> The zoning status of the "
@@ -1701,7 +1704,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_kunta":         "Kommun",           "m_kt":         "Fastighetsbeteckning",
         "m_maa":           "Land",
         "m_laadittu":      "Upprättat",        "m_laatinut_lbl": "Upprättat av",
-        "m_laatinut":      "NCE Energy Permit AI (AI-assisterat)",
+        "m_laatinut":      "NCE Permit AI (AI-assisterat)",
         "sec1": "1. Projektbeskrivning",             "sec2": "2. Motivering och behov",
         "sec3": "3. Nödvändiga tillstånd och myndigheter", "sec4": "4. Laghänvisningar",
         "sec5": "5. Bilagor",                        "sec6": "6. Nästa steg",
@@ -1716,7 +1719,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yhteystiedot_h":  "Sökandens kontaktuppgifter",
         "yht_hakija":      "Sökande",   "yht_ytunnus":    "Organisationsnummer",
         "yht_osoite":      "Adress",    "yht_lisatietoja": "Mer information",
-        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
                             "·  AI-utkast — kräver expertgranskning"),
         "th_lupa":  "Tillstånd / anmälan", "th_viran": "Myndighet", "th_laki": "Rättslig grund",
         "th_nro":   "Nr", "th_liite": "Bilaga", "th_tila": "Status",
@@ -1733,7 +1737,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "specifikationer, platsplaner och miljökonsekvensbedömningar preciseras "
                             "under den fortsatta planeringen."),
         "bess_pintaala":   "Den uppskattade anläggningsytan är 0,4–0,6 ha.",
-        "mks_viittaus":    ("Markanvändningen i projektområdet har utretts i NCE Energys "
+        "mks_viittaus":    ("Markanvändningen i projektområdet har utretts i NCE:s "
                             "markanvändningsutredning (se Bilaga 0b: Markanvändningsutredning PDF). "
                             "Utredningen innehåller fastighetsuppgifter, planläggningsstatus, "
                             "skyddsområden och grundvattenuppgifter."),
@@ -1777,7 +1781,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_kunta":         "Kommune",          "m_kt":         "Ejendomsnummer",
         "m_maa":           "Land",
         "m_laadittu":      "Udarbejdet",       "m_laatinut_lbl": "Udarbejdet af",
-        "m_laatinut":      "NCE Energy Permit AI (AI-assisteret)",
+        "m_laatinut":      "NCE Permit AI (AI-assisteret)",
         "sec1": "1. Projektbeskrivelse",             "sec2": "2. Begrundelse og behov",
         "sec3": "3. Nødvendige tilladelser og myndigheder", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Bilagsliste",                    "sec6": "6. Næste skridt",
@@ -1792,7 +1796,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yhteystiedot_h":  "Ansøgerens kontaktoplysninger",
         "yht_hakija":      "Ansøger",    "yht_ytunnus":    "CVR-nummer",
         "yht_osoite":      "Adresse",    "yht_lisatietoja": "Yderligere oplysninger",
-        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
                             "·  AI-udkast — kræver ekspertgennemgang"),
         "th_lupa":  "Tilladelse / anmeldelse", "th_viran": "Myndighed", "th_laki": "Retsgrundlag",
         "th_nro":   "Nr.", "th_liite": "Bilag", "th_tila": "Status",
@@ -1809,7 +1814,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "specifikationer, lokalplaner og miljøkonsekvensvurderinger vil blive "
                             "præciseret under den videre planlægning."),
         "bess_pintaala":   "Det anslåede anlægsareal er 0,4–0,6 ha.",
-        "mks_viittaus":    ("Arealanvendelsen i projektområdet er undersøgt i NCE Energys "
+        "mks_viittaus":    ("Arealanvendelsen i projektområdet er undersøgt i NCE's "
                             "arealanvendelsesrapport (se Bilag 0b: Arealanvendelsesrapport PDF). "
                             "Rapporten indeholder ejendomsoplysninger, planlægningsstatus, "
                             "beskyttede områder og grundvandsdata."),
@@ -1855,7 +1860,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_kunta":         "Kommune",           "m_kt":         "Eiendomsnummer",
         "m_maa":           "Land",
         "m_laadittu":      "Utarbeidet",        "m_laatinut_lbl": "Utarbeidet av",
-        "m_laatinut":      "NCE Energy Permit AI (AI-assistert)",
+        "m_laatinut":      "NCE Permit AI (AI-assistert)",
         "sec1": "1. Prosjektbeskrivelse",            "sec2": "2. Begrunnelse og behov",
         "sec3": "3. Nødvendige tillatelser og myndigheter", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Vedleggsliste",                  "sec6": "6. Neste steg",
@@ -1870,7 +1875,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yhteystiedot_h":  "Søkerens kontaktopplysninger",
         "yht_hakija":      "Søker",      "yht_ytunnus":    "Org.nummer",
         "yht_osoite":      "Adresse",    "yht_lisatietoja": "Ytterligere informasjon",
-        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
                             "·  AI-utkast — krever ekspertgjennomgang"),
         "th_lupa":  "Tillatelse / melding", "th_viran": "Myndighet", "th_laki": "Rettsgrunnlag",
         "th_nro":   "Nr.", "th_liite": "Vedlegg", "th_tila": "Status",
@@ -1887,7 +1893,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "stedplaner og miljøkonsekvensutredninger vil bli presisert "
                             "under videre planlegging."),
         "bess_pintaala":   "Det anslåtte anleggsarealet er 0,4–0,6 ha.",
-        "mks_viittaus":    ("Arealbruken i prosjektområdet er undersøkt i NCE Energys "
+        "mks_viittaus":    ("Arealbruken i prosjektområdet er undersøkt i NCE's "
                             "arealbruksrapport (se Vedlegg 0b: Arealbruksrapport PDF). "
                             "Rapporten inneholder eiendomsopplysninger, reguleringstatus, "
                             "verneområder og grunnvannsdata."),
@@ -1933,7 +1939,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_kunta":         "Gmina",             "m_kt":         "Numer nieruchomości",
         "m_maa":           "Kraj",
         "m_laadittu":      "Sporządzono",       "m_laatinut_lbl": "Sporządzone przez",
-        "m_laatinut":      "NCE Energy Permit AI (wspomagane przez AI)",
+        "m_laatinut":      "NCE Permit AI (wspomagane przez AI)",
         "sec1": "1. Opis projektu",                  "sec2": "2. Uzasadnienie i potrzeba",
         "sec3": "3. Wymagane zezwolenia i organy",   "sec4": "4. Podstawy prawne",
         "sec5": "5. Lista załączników",              "sec6": "6. Następne kroki",
@@ -1948,7 +1954,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yhteystiedot_h":  "Dane kontaktowe wnioskodawcy",
         "yht_hakija":      "Wnioskodawca", "yht_ytunnus":    "NIP/KRS",
         "yht_osoite":      "Adres",        "yht_lisatietoja": "Dodatkowe informacje",
-        "footer":          ("NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi  "
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
                             "·  Szkic AI — wymaga przeglądu eksperta"),
         "th_lupa":  "Zezwolenie / zgłoszenie", "th_viran": "Organ", "th_laki": "Podstawa prawna",
         "th_nro":   "Nr", "th_liite": "Załącznik", "th_tila": "Status",
@@ -1965,7 +1972,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "plany lokalizacyjne i oceny oddziaływania na środowisko zostaną doprecyzowane "
                             "w trakcie dalszego planowania."),
         "bess_pintaala":   "Szacunkowa powierzchnia instalacji wynosi 0,4–0,6 ha.",
-        "mks_viittaus":    ("Zagospodarowanie terenu obszaru projektu zostało zbadane w raporcie NCE Energy "
+        "mks_viittaus":    ("Zagospodarowanie terenu obszaru projektu zostało zbadane w raporcie NCE "
                             "dotyczącym zagospodarowania terenu (zob. Załącznik 0b: Raport PDF). Raport "
                             "zawiera informacje o nieruchomości, status planistyczny, obszary chronione "
                             "i dane o wodach gruntowych."),
@@ -2923,7 +2930,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         [_s(lang, "yht_hakija"),      inp.hakija],
         [_s(lang, "yht_ytunnus"),     inp.y_tunnus if inp.y_tunnus else "–"],
         [_s(lang, "yht_osoite"),      inp.osoite if inp.osoite else "–"],
-        [_s(lang, "yht_lisatietoja"), "NCE Energy Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi"],
+        [_s(lang, "yht_lisatietoja"), "NCE Permit AI  ·  ncenergy.fi  ·  jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi"],
     ]
     yht_tbl = Table(
         [[Paragraph(k, ParagraphStyle("yk", fontSize=8.5, textColor=C_GRAY, fontName="Helvetica-Bold")),
