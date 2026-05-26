@@ -11,6 +11,7 @@ import base64
 import io
 import os
 import re
+import unicodedata
 import uuid
 from threading import Thread
 from typing import Optional
@@ -379,8 +380,8 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         Thread(target=_bg_proofread, daemon=True).start()
 
         _prefix   = _FILE_PREFIX.get(req.lang or "FI", "hakemus")
-        _kt       = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", req.hanketyyppi or "doc")
-        _kunta    = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", req.kunta or "hanke")
+        _kt       = _fn(req.hanketyyppi or "doc")
+        _kunta    = _fn(req.kunta or "hanke")
         filename  = f"{_prefix}_{_kt}_{_kunta}.pdf"
         return Response(
             content    = draft_bytes,
@@ -408,6 +409,12 @@ _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
                 "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}
 
 
+def _fn(s: str) -> str:
+    """Sanitize a string for use in Content-Disposition filename (ASCII-safe)."""
+    nfkd = unicodedata.normalize("NFKD", s)
+    return re.sub(r"[^a-zA-Z0-9]", "_", nfkd.encode("ascii", "ignore").decode("ascii"))
+
+
 @app.get("/api/proofread/{job_id}/download")
 async def proofread_download(job_id: str):
     """Lataa oikoluvun jälkeinen PDF."""
@@ -415,8 +422,8 @@ async def proofread_download(job_id: str):
     if job is None or job["status"] != "done" or not job["pdf_bytes"]:
         raise HTTPException(status_code=404, detail="PDF ei ole vielä valmis")
     prefix  = _FILE_PREFIX.get(job.get("lang", "FI"), "hakemus")
-    _kt     = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", job.get("hanketyyppi", "doc"))
-    _kunta  = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", job.get("kunta", "hanke"))
+    _kt     = _fn(job.get("hanketyyppi", "doc"))
+    _kunta  = _fn(job.get("kunta", "hanke"))
     return Response(
         content    = job["pdf_bytes"],
         media_type = "application/pdf",

@@ -12,6 +12,7 @@ import io
 import os
 import re
 import sys
+import unicodedata
 from datetime import datetime
 from dataclasses import dataclass
 from functools import lru_cache
@@ -44,6 +45,17 @@ _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
 _MODEL_ID    = "claude-sonnet-4-6"
 _EMBED_MODEL = "all-MiniLM-L6-v2"
+
+
+def _latin1_safe(text: str) -> str:
+    """Transliterate non-latin-1 chars (e.g. Polish ń→n) so ReportLab's
+    built-in Helvetica font never raises a UnicodeEncodeError."""
+    try:
+        text.encode("latin-1")
+        return text
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        nfkd = unicodedata.normalize("NFKD", text)
+        return nfkd.encode("latin-1", errors="ignore").decode("latin-1")
 
 
 @lru_cache(maxsize=1)
@@ -2521,6 +2533,7 @@ def _md_table_to_rl(lines: list, st: dict):
 
 def _para_text(text: str, st: dict) -> list:
     """Muunna AI:n tuottama teksti Paragraph-listaksi (kappalejaot \\n\\n)."""
+    text = _latin1_safe(text)
     items = []
     for para in text.split("\n\n"):
         para = para.strip()
@@ -2622,17 +2635,20 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
             self.setLineWidth(0.3)
             self.setFont("Helvetica", 6.5)
             self.setFillColor(C_GRAY)
-            _lang = getattr(inp, "lang", "FI")
+            _lang  = getattr(inp, "lang", "FI")
             _draft = _s(_lang, "hdr_draft")
+            _kunta = _latin1_safe(inp.kunta or "")
+            _kt    = _latin1_safe(inp.kiinteistotunnus or "")
+            _ht    = _latin1_safe(inp.hanketyyppi or "")
             # Ylätunniste
             self.line(m, page_h - 1.55*cm, page_w - m, page_h - 1.55*cm)
             self.drawString(m, page_h - 1.2*cm,
-                f"{inp.hanketyyppi} {_draft}  |  {inp.kunta}  |  {now}")
+                f"{_ht} {_draft}  |  {_kunta}  |  {now}")
             self.drawRightString(page_w - m, page_h - 1.2*cm, _s(_lang, "hdr_right"))
             # Alatunniste
             self.line(m, 1.45*cm, page_w - m, 1.45*cm)
             self.drawString(m, 0.9*cm,
-                f"{inp.hanketyyppi} {_draft}  |  {inp.kiinteistotunnus}  |  {inp.kunta}")
+                f"{_ht} {_draft}  |  {_kt}  |  {_kunta}")
             self.drawRightString(page_w - m, 0.9*cm,
                 f"{now}  |  {_s(_lang, 'ftr_ai')}  |  {_s(_lang, 'ftr_sivu')} {page_num} / {total}")
             self.restoreState()
