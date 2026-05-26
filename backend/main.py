@@ -359,7 +359,12 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
 
         # Käynnistä oikoluku taustasäikeessä
         job_id = uuid.uuid4().hex[:10]
-        _proofread_store[job_id] = {"status": "pending", "pdf_bytes": None, "error": None, "lang": req.lang or "FI", "kt_safe": req.kiinteistotunnus.replace("/", "-")}
+        _proofread_store[job_id] = {
+            "status": "pending", "pdf_bytes": None, "error": None,
+            "lang":        req.lang or "FI",
+            "hanketyyppi": req.hanketyyppi or "doc",
+            "kunta":       req.kunta or "hanke",
+        }
 
         def _bg_proofread():
             try:
@@ -373,8 +378,10 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
 
         Thread(target=_bg_proofread, daemon=True).start()
 
-        kt_safe  = req.kiinteistotunnus.replace("/", "-")
-        filename = f"{_FILE_PREFIX.get(req.lang or 'FI', 'hakemus')}_{kt_safe}.pdf"
+        _prefix   = _FILE_PREFIX.get(req.lang or "FI", "hakemus")
+        _kt       = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", req.hanketyyppi or "doc")
+        _kunta    = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", req.kunta or "hanke")
+        filename  = f"{_prefix}_{_kt}_{_kunta}.pdf"
         return Response(
             content    = draft_bytes,
             media_type = "application/pdf",
@@ -408,11 +415,12 @@ async def proofread_download(job_id: str):
     if job is None or job["status"] != "done" or not job["pdf_bytes"]:
         raise HTTPException(status_code=404, detail="PDF ei ole vielä valmis")
     prefix  = _FILE_PREFIX.get(job.get("lang", "FI"), "hakemus")
-    kt_safe = job.get("kt_safe", job_id)
+    _kt     = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", job.get("hanketyyppi", "doc"))
+    _kunta  = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", job.get("kunta", "hanke"))
     return Response(
         content    = job["pdf_bytes"],
         media_type = "application/pdf",
-        headers    = {"Content-Disposition": f'attachment; filename="{prefix}_tarkistettu_{kt_safe}.pdf"'},
+        headers    = {"Content-Disposition": f'attachment; filename="{prefix}_{_kt}_{_kunta}.pdf"'},
     )
 
 

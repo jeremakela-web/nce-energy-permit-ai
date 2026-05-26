@@ -790,6 +790,274 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Maankäyttösopimus",               "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
         ],
     },
+    # ── Sverige ──────────────────────────────────────────────────────────────
+    "SE": {
+        "SMR": [
+            ("Periaatepäätös (VN)",              "Nærings- och beredskapsdept. / Regeringen", "Kärntekniklag (SFS 1984:3)"),
+            ("YVA-menettely",                    "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Rakentamislupa (ydinlaitos)",       "Strålsäkerhetsmyndigheten (SSM)",           "Kärntekniklag (SFS 1984:3)"),
+            ("Käyttölupa (ydinlaitos)",           "Strålsäkerhetsmyndigheten (SSM)",           "Kärntekniklag (SFS 1984:3)"),
+            ("Vesilupa (jäähdytysvesi)",          "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
+            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "BESS": [
+            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Ympäristölupa",                     "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808)"),
+            ("Verkkoliityntäsopimus",             "Svenska kraftnät / lokalt elnätsbolag",     "Ellagen (SFS 1997:857)"),
+            ("YVA-menettely (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "tuulivoima_maa": [
+            ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "Länsstyrelsen",                         "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Tillstånd / koncession",               "Energimyndigheten",                      "Ellagen (SFS 1997:857) / Miljöbalken"),
+            ("Osayleiskaava tai asemakaava",          "Kommunen",                              "Plan- och bygglagen (SFS 2010:900)"),
+            ("Rakennuslupa",                          "Kommunen (byggnadsnämnd)",              "Plan- och bygglagen (SFS 2010:900)"),
+            ("Ympäristölupa (tarvitt.)",              "Mark- och miljödomstolen",              "Miljöbalken (SFS 1998:808)"),
+            ("Verkkoliityntäsopimus",                 "Svenska kraftnät",                      "Ellagen (SFS 1997:857)"),
+        ],
+        "aurinkovoima": [
+            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Verkkoliityntäsopimus",             "Svenska kraftnät / lokalt elnätsbolag",     "Ellagen (SFS 1997:857)"),
+            ("YVA-menettely (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "smr_bess": [
+            ("Periaatepäätös (VN)",              "Nærings- och beredskapsdept. / Regeringen", "Kärntekniklag (SFS 1984:3)"),
+            ("YVA-menettely",                    "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Rakentamislupa (ydinlaitos)",       "Strålsäkerhetsmyndigheten (SSM)",           "Kärntekniklag (SFS 1984:3)"),
+            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Vesilupa (jäähdytysvesi)",          "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
+            ("Verkkoliityntäsopimus",             "Svenska kraftnät",                          "Ellagen (SFS 1997:857)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "vesivoima": [
+            ("Vesilupa (padotus, rakentaminen)",  "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
+            ("Ympäristölupa",                     "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808)"),
+            ("YVA-menettely (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Verkkoliityntäsopimus",             "Svenska kraftnät",                          "Ellagen (SFS 1997:857)"),
+        ],
+        "tuulivoima_meri": [
+            ("YVA-menettely",                    "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Tillstånd / koncession (offshore)", "Energimyndigheten",                        "Ellagen (SFS 1997:857) / Kontinentalsockellagen"),
+            ("Ympäristölupa",                     "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808)"),
+            ("Vesilupa (merialue)",               "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
+            ("Verkkoliityntäsopimus",             "Svenska kraftnät",                          "Ellagen (SFS 1997:857)"),
+        ],
+    },
+    # ── Danmark ──────────────────────────────────────────────────────────────
+    "DA": {
+        "SMR": [
+            ("Periaatepäätös (VN)",              "Energistyrelsen / Klima-, Energi- og Forsyningsministeriet", "Lov om anvendelse af Danmarks undergrund (nr. 181/1990)"),
+            ("YVA-menettely",                    "Miljøministeriet / Miljøstyrelsen",          "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Rakentamislupa (ydinlaitos)",       "Sundhedsstyrelsen / Statens Institut for Strålebeskyttelse (SIS)", "Lov om brug af radioaktive stoffer (nr. 94/2003)"),
+            ("Käyttölupa (ydinlaitos)",           "Sundhedsstyrelsen / SIS",                   "Lov om brug af radioaktive stoffer (nr. 94/2003)"),
+            ("Vesilupa (jäähdytysvesi)",          "Kystdirektoratet",                          "Kystbeskyttelsesloven (LBK nr. 705/2022)"),
+            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen (planafdelingen)",                 "Planloven (LBK nr. 1157/2021)"),
+        ],
+        "BESS": [
+            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Ympäristölupa",                     "Kommunen / Miljøstyrelsen",                 "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
+            ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
+            ("YVA-menettely (tarvitt.)",          "Miljøstyrelsen",                            "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+        ],
+        "tuulivoima_maa": [
+            ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "Miljøstyrelsen",                        "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Vindmølletilladelse",                   "Energistyrelsen",                       "Lov om vedvarende energi (LBK nr. 388/2022)"),
+            ("Osayleiskaava tai asemakaava",           "Kommunen",                             "Planloven (LBK nr. 1157/2021)"),
+            ("Rakennuslupa",                          "Kommunen (teknik og miljø)",            "Byggeloven (LBK nr. 1178/2023)"),
+            ("Ympäristölupa (tarvitt.)",              "Miljøstyrelsen",                        "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
+            ("Verkkoliityntäsopimus",                 "Energinet",                             "Elforsyningsloven (LBK nr. 119/2020)"),
+        ],
+        "aurinkovoima": [
+            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
+            ("YVA-menettely (tarvitt.)",          "Miljøstyrelsen",                            "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+        ],
+        "smr_bess": [
+            ("Periaatepäätös (VN)",              "Energistyrelsen / Klima-, Energi- og Forsyningsministeriet", "Lov om anvendelse af Danmarks undergrund (nr. 181/1990)"),
+            ("YVA-menettely",                    "Miljøministeriet / Miljøstyrelsen",          "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Rakentamislupa (ydinlaitos)",       "Sundhedsstyrelsen / SIS",                   "Lov om brug af radioaktive stoffer (nr. 94/2003)"),
+            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Vesilupa (jäähdytysvesi)",          "Kystdirektoratet",                          "Kystbeskyttelsesloven (LBK nr. 705/2022)"),
+            ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+        ],
+        "vesivoima": [
+            ("Vesilupa (padotus, rakentaminen)",  "Kystdirektoratet / Miljøstyrelsen",         "Vandforsyningsloven (LBK nr. 118/2020)"),
+            ("Ympäristölupa",                     "Miljøstyrelsen",                            "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
+            ("YVA-menettely (tarvitt.)",          "Miljøstyrelsen",                            "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
+        ],
+        "tuulivoima_meri": [
+            ("YVA-menettely",                    "Miljøstyrelsen",                             "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Havvindtilladelse",                 "Energistyrelsen",                           "Lov om fremme af vedvarende energi (LBK nr. 388/2022)"),
+            ("Ympäristölupa",                     "Miljøstyrelsen",                            "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
+            ("Vesilupa (merialue)",               "Kystdirektoratet",                          "Kystbeskyttelsesloven (LBK nr. 705/2022)"),
+            ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
+        ],
+    },
+    # ── Norge ─────────────────────────────────────────────────────────────────
+    "NO": {
+        "SMR": [
+            ("Periaatepäätös (VN)",              "Nærings- og fiskeridepartementet (NFD)",     "Atomenergiloven (LOV-1972-05-12-28)"),
+            ("YVA-menettely",                    "Statsforvalteren / Miljødirektoratet",        "Plan- og bygningsloven (LOV-2008-06-27-71) kap. 14"),
+            ("Rakentamislupa (ydinlaitos)",       "Direktoratet for strålevern og atomsikkerhet (DSA)", "Strålevernloven (LOV-2000-05-12-36)"),
+            ("Käyttölupa (ydinlaitos)",           "Direktoratet for strålevern og atomsikkerhet (DSA)", "Strålevernloven (LOV-2000-05-12-36)"),
+            ("Vesilupa (jäähdytysvesi)",          "NVE (Norges vassdrags- og energidirektorat)","Vassdragsreguleringsloven (LOV-1917-12-14-17)"),
+            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "BESS": [
+            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Ympäristölupa",                     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("Verkkoliityntäsopimus",             "Statnett / lokalt nettselskap",              "Energiloven (LOV-1990-06-29-50)"),
+            ("YVA-menettely (tarvitt.)",          "Statsforvalteren / Miljødirektoratet",        "Plan- og bygningsloven kap. 14"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "tuulivoima_maa": [
+            ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "NVE / Miljødirektoratet",               "Plan- og bygningsloven kap. 14"),
+            ("Konsesjon (anleggskonsesjon)",          "NVE",                                   "Energiloven (LOV-1990-06-29-50) § 3-1"),
+            ("Osayleiskaava tai asemakaava",          "Kommunen",                              "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Rakennuslupa",                          "Kommunen (plan og bygning)",            "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Ympäristölupa (tarvitt.)",              "Statsforvalteren",                      "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("Verkkoliityntäsopimus",                 "Statnett",                              "Energiloven (LOV-1990-06-29-50)"),
+        ],
+        "aurinkovoima": [
+            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Verkkoliityntäsopimus",             "Statnett / lokalt nettselskap",              "Energiloven (LOV-1990-06-29-50)"),
+            ("YVA-menettely (tarvitt.)",          "NVE / Miljødirektoratet",                   "Plan- og bygningsloven kap. 14"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "smr_bess": [
+            ("Periaatepäätös (VN)",              "Nærings- og fiskeridepartementet (NFD)",     "Atomenergiloven (LOV-1972-05-12-28)"),
+            ("YVA-menettely",                    "Statsforvalteren / Miljødirektoratet",        "Plan- og bygningsloven kap. 14"),
+            ("Rakentamislupa (ydinlaitos)",       "Direktoratet for strålevern og atomsikkerhet (DSA)", "Strålevernloven (LOV-2000-05-12-36)"),
+            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Vesilupa (jäähdytysvesi)",          "NVE",                                        "Vassdragsreguleringsloven (LOV-1917-12-14-17)"),
+            ("Verkkoliityntäsopimus",             "Statnett",                                   "Energiloven (LOV-1990-06-29-50)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "vesivoima": [
+            ("Vesilupa (padotus, rakentaminen)",  "NVE",                                        "Vassdragsreguleringsloven (LOV-1917-12-14-17)"),
+            ("Ympäristölupa",                     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("YVA-menettely (tarvitt.)",          "NVE / Miljødirektoratet",                   "Plan- og bygningsloven kap. 14"),
+            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Verkkoliityntäsopimus",             "Statnett",                                   "Energiloven (LOV-1990-06-29-50)"),
+        ],
+        "tuulivoima_meri": [
+            ("YVA-menettely",                    "NVE / Miljødirektoratet",                    "Plan- og bygningsloven kap. 14"),
+            ("Konsesjon (offshore-konsesjon)",    "NVE / Olje- og energidepartementet",         "Havenergilova (LOV-2010-06-04-21)"),
+            ("Ympäristölupa",                     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("Vesilupa (merialue)",               "Kystverket",                                 "Havne- og farvannsloven (LOV-2019-06-21-70)"),
+            ("Verkkoliityntäsopimus",             "Statnett",                                   "Energiloven (LOV-1990-06-29-50)"),
+        ],
+    },
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Maakohtaiset liiteluettelot (ylikirjoittavat FI-oletuksen)
+# Erityisesti ydinhankkeet: kansallisen turvallisuusviranomaisen dokumenttityypit
+# ─────────────────────────────────────────────────────────────────────────────
+_COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
+    "SE": {
+        "SMR": [
+            "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "SSM preliminär säkerhetsredovisning (PSR) — Kärntekniklag (SFS 1984:3)",
+            "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
+            "Hydrogeologisk utredning (kylvattenresurs)",
+            "Nätanslutningsplan (Svenska kraftnät)",
+            "Detaljplan / kommunal markanvändningsplan",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
+        ],
+        "smr_bess": [
+            "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "SSM preliminär säkerhetsredovisning (PSR) — Kärntekniklag (SFS 1984:3)",
+            "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
+            "Brandsäkerhetsrapport BESS (NFPA 855 / EN 50604-1)",
+            "Hydrogeologisk utredning (kylvattenresurs)",
+            "Nätanslutningsplan (Svenska kraftnät)",
+            "Detaljplan / kommunal markanvändningsplan",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+        ],
+    },
+    "DA": {
+        "SMR": [
+            "Kortbilag / Beliggenhedskort (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Nuklær sikkerhedsredegørelse (Sundhedsstyrelsen / SIS) — Lov nr. 94/2003",
+            "VVM-redegørelse (Vurdering af Virkninger på Miljøet) — Miljøvurderingsloven",
+            "Hydrogeologisk undersøgelse (kølevandsbehov)",
+            "Nettilslutningsplan (Energinet)",
+            "Lokalplan / kommuneplanramme",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
+        "smr_bess": [
+            "Kortbilag / Beliggenhedskort (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Nuklær sikkerhedsredegørelse (Sundhedsstyrelsen / SIS) — Lov nr. 94/2003",
+            "VVM-redegørelse — Miljøvurderingsloven",
+            "Brandsikkerhedsrapport BESS (NFPA 855 / EN 50604-1)",
+            "Nettilslutningsplan (Energinet)",
+            "Lokalplan / kommuneplanramme",
+            "Virksomhedsregistreringsudskrift (CVR)",
+        ],
+    },
+    "NO": {
+        "SMR": [
+            "Kart / Stedsbeskrivelse (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Sikkerhetsanalyse (DSA — Direktoratet for strålevern og atomsikkerhet) — Strålevernloven",
+            "Konsekvensutredning (KU) — Plan- og bygningsloven kap. 14",
+            "Hydrogeologisk utredning (kjølevannsressurs)",
+            "Nettilknytningsplan (Statnett)",
+            "Reguleringsplan / kommuneplan",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
+        ],
+        "smr_bess": [
+            "Kart / Stedsbeskrivelse (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Sikkerhetsanalyse (DSA) — Strålevernloven (LOV-2000-05-12-36)",
+            "Konsekvensutredning (KU) — Plan- og bygningsloven kap. 14",
+            "Brannsikkerhetsrapport BESS (NFPA 855 / EN 50604-1)",
+            "Nettilknytningsplan (Statnett)",
+            "Reguleringsplan / kommuneplan",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+        ],
+    },
+    "PL": {
+        "SMR": [
+            "Mapa lokalizacyjna (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Raport bezpieczeństwa (PAA — Państwowa Agencja Atomistyki) — Prawo atomowe",
+            "Raport o oddziaływaniu na środowisko (OOŚ) — Ustawa środowiskowa",
+            "Badanie hydrogeologiczne (zasoby wód chłodniczych)",
+            "Plan przyłączenia do sieci (PSE S.A.)",
+            "Miejscowy plan zagospodarowania przestrzennego (MPZP)",
+            "Odpis z KRS / CEIDG",
+            "Pełnomocnictwo (jeżeli reprezentant działa w imieniu wnioskodawcy)",
+        ],
+        "smr_bess": [
+            "Mapa lokalizacyjna (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE Energy)",
+            "Raport bezpieczeństwa (PAA — Państwowa Agencja Atomistyki) — Prawo atomowe",
+            "Raport OOŚ — Ustawa środowiskowa",
+            "Raport bezpieczeństwa pożarowego BESS (NFPA 855 / EN 50604-1)",
+            "Plan przyłączenia do sieci (PSE S.A.)",
+            "Miejscowy plan zagospodarowania przestrzennego (MPZP)",
+            "Odpis z KRS / CEIDG",
+        ],
+    },
 }
 
 _SYSTEM = (
@@ -882,6 +1150,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
                               "Listaa sen jälkeen 5 muuta konkreettista askelta aikatauluineen "
                               "(kk tarkkuudella)."),
         "toimenpiteet_vaihe": " Ota huomioon hankkeen nykyinen vaihe: {vaihe}.",
+        "phase_label":        "Hankkeen vaihe",
         "viranomainen_ohje":  ("TÄRKEÄÄ: Hakemus osoitetaan viranomaiselle '{auth}'. "
                                "Mukauta hakemuksen sisältö, rakenne ja kieli sen vaatimuksiin sopivaksi. "
                                "Viittaa kyseisen viranomaisen ohjeisiin, lomakkeisiin ja vaatimuksiin."),
@@ -908,6 +1177,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "toimenpiteet_inst": ("The first step is ALWAYS: \"{first}\".\n"
                               "Then list 5 more concrete steps with timelines (in months)."),
         "toimenpiteet_vaihe": " Take into account the current project phase: {vaihe}.",
+        "phase_label":        "Project phase",
         "viranomainen_ohje":  ("IMPORTANT: The application is addressed to authority '{auth}'. "
                                "Adapt the content, structure and language to meet its requirements. "
                                "Refer to that authority's guidelines, forms and requirements."),
@@ -934,6 +1204,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "toimenpiteet_inst": ("Det första steget är ALLTID: \"{first}\".\n"
                               "Lista sedan 5 fler konkreta steg med tidslinjer (i månader)."),
         "toimenpiteet_vaihe": " Beakta projektets nuvarande fas: {vaihe}.",
+        "phase_label":        "Projektfas",
         "viranomainen_ohje":  ("VIKTIGT: Ansökan riktas till myndigheten '{auth}'. "
                                "Anpassa innehåll, struktur och språk för att uppfylla dess krav. "
                                "Hänvisa till myndighetens riktlinjer, formulär och krav."),
@@ -959,6 +1230,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "toimenpiteet_inst": ("Det første trin er ALTID: \"{first}\".\n"
                               "Angiv derefter 5 yderligere konkrete trin med tidslinjer (i måneder)."),
         "toimenpiteet_vaihe": " Tag hensyn til projektets nuværende fase: {vaihe}.",
+        "phase_label":        "Projektfase",
         "viranomainen_ohje":  ("VIGTIGT: Ansøgningen er rettet til myndighed '{auth}'. "
                                "Tilpas indhold, struktur og sprog til myndighedens krav. "
                                "Henvis til myndighedens retningslinjer, formularer og krav."),
@@ -984,6 +1256,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "toimenpiteet_inst": ("Det første trinnet er ALLTID: \"{first}\".\n"
                               "List deretter 5 andre konkrete trinn med tidslinjer (i måneder)."),
         "toimenpiteet_vaihe": " Ta hensyn til prosjektets nåværende fase: {vaihe}.",
+        "phase_label":        "Prosjektfase",
         "viranomainen_ohje":  ("VIKTIG: Søknaden er adressert til myndighet '{auth}'. "
                                "Tilpass innhold, struktur og språk til myndighetens krav. "
                                "Henvis til myndighetens retningslinjer, skjemaer og krav."),
@@ -1010,6 +1283,7 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "toimenpiteet_inst": ("Pierwszym krokiem jest ZAWSZE: \"{first}\".\n"
                               "Następnie wymiń 5 kolejnych konkretnych kroków z harmonogramem (w miesiącach)."),
         "toimenpiteet_vaihe": " Uwzględnij aktualną fazę projektu: {vaihe}.",
+        "phase_label":        "Faza projektu",
         "viranomainen_ohje":  ("WAŻNE: Wniosek jest skierowany do organu '{auth}'. "
                                "Dostosuj treść, strukturę i język do jego wymagań. "
                                "Odwołaj się do wytycznych, formularzy i wymagań tego organu."),
@@ -1230,6 +1504,23 @@ def _t_law(lang: str, fi: str) -> str:
 
 def _t_liite(lang: str, fi: str) -> str:
     return _t_str(lang, fi, _LIITE_TRANS)
+
+
+# Hankkeen vaiheen käännökset (FI-avain → muut kielet)
+_VAIHE_TRANS: dict[str, dict[str, str]] = {
+    "Esiselvitys":  {"EN": "Pre-study",       "SE": "Förundersökning", "DA": "Forundersøgelse", "NO": "Forstudie",      "PL": "Analiza wstępna"},
+    "esiselvitys":  {"EN": "Pre-study",       "SE": "Förundersökning", "DA": "Forundersøgelse", "NO": "Forstudie",      "PL": "Analiza wstępna"},
+    "Lupavaihe":    {"EN": "Permit phase",     "SE": "Tillståndsfas",   "DA": "Tilladelsesfase", "NO": "Tillatelsefase", "PL": "Faza zezwoleń"},
+    "lupavaihe":    {"EN": "Permit phase",     "SE": "Tillståndsfas",   "DA": "Tilladelsesfase", "NO": "Tillatelsefase", "PL": "Faza zezwoleń"},
+    "Rakentaminen": {"EN": "Construction",     "SE": "Byggfas",         "DA": "Anlægsfase",      "NO": "Byggefase",      "PL": "Budowa"},
+    "rakentaminen": {"EN": "Construction",     "SE": "Byggfas",         "DA": "Anlægsfase",      "NO": "Byggefase",      "PL": "Budowa"},
+}
+
+def _t_vaihe(lang: str, vaihe: str) -> str:
+    """Käännä hankkeen vaihe -arvo kohdekielelle. Fallback → alkuperäinen arvo."""
+    if lang == "FI" or not vaihe:
+        return vaihe
+    return _VAIHE_TRANS.get(vaihe, {}).get(lang, vaihe)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1929,7 +2220,9 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
         sijainti_lisatieto = f"\nSijainti / ympäristövaikutukset: {inp.sijainti_ymparistovaikutukset}"
     vaihe_lisatieto = ""
     if inp.hankkeen_vaihe:
-        vaihe_lisatieto = f"\nHankkeen vaihe: {inp.hankkeen_vaihe}"
+        _vaihe_translated = _t_vaihe(lang, inp.hankkeen_vaihe)
+        _phase_label = ph.get("phase_label", "Hankkeen vaihe")
+        vaihe_lisatieto = f"\n{_phase_label}: {_vaihe_translated}"
     viranomainen_lisatieto = ""
     if inp.kohdeviranomainen:
         viranomainen_lisatieto = f"\nKohdeviranomainen: {inp.kohdeviranomainen}"
@@ -1946,7 +2239,7 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     kuvaus_inst   = ph["kuvaus_inst"] + (ph["kuvaus_extra"] if inp.sijainti_ymparistovaikutukset else "")
     luvat_inst    = ph["luvat_inst"] + (ph["luvat_extra"].format(auth=inp.kohdeviranomainen) if inp.kohdeviranomainen else "")
     toim_inst     = (ph["toimenpiteet_inst"].format(first=first_action)
-                     + (ph["toimenpiteet_vaihe"].format(vaihe=inp.hankkeen_vaihe) if inp.hankkeen_vaihe else ""))
+                     + (ph["toimenpiteet_vaihe"].format(vaihe=_t_vaihe(lang, inp.hankkeen_vaihe)) if inp.hankkeen_vaihe else ""))
 
     _std_key   = _HANKE_STD_KEY.get(inp.hanketyyppi, "_generic")
     _standards = _ISO_STANDARDS.get(_std_key, _ISO_STANDARDS["_generic"])
@@ -2108,9 +2401,10 @@ def _luvat_table(hanketyyppi: str, st: dict, lang: str = "FI", country: str = "F
     return tbl
 
 
-def _liitteet_table(hanketyyppi: str, lang: str = "FI") -> Table:
-    """Liiteluettelo checkboxeilla."""
-    cfg  = _HANKE_CFG[hanketyyppi]
+def _liitteet_table(hanketyyppi: str, lang: str = "FI", country: str = "FI") -> Table:
+    """Liiteluettelo checkboxeilla, maakohtaisella ylikirjoituksella."""
+    country_liitteet = _COUNTRY_LIITTEET.get(country, {}).get(hanketyyppi)
+    liitteet = country_liitteet if country_liitteet else _HANKE_CFG[hanketyyppi]["liitteet"]
     _th2 = ParagraphStyle("th2", fontSize=8.5, fontName="Helvetica-Bold")
     rows = [[
         Paragraph(_s(lang, "th_nro"),   _th2),
@@ -2118,7 +2412,7 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI") -> Table:
         Paragraph(_s(lang, "th_tila"),  ParagraphStyle("th2c", fontSize=8.5, fontName="Helvetica-Bold",
                                                         alignment=TA_CENTER)),
     ]]
-    for i, liite in enumerate(cfg["liitteet"]):
+    for i, liite in enumerate(liitteet):
         if i == 0:
             nro = "0"
         elif i == 1:
@@ -2132,7 +2426,7 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI") -> Table:
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
     # Standardien vaatimustenmukaisuusselvitys (aina viimeisenä liitteenä)
-    std_nro = str(len(cfg["liitteet"]) - 1)
+    std_nro = str(len(liitteet) - 1)
     rows.append([
         Paragraph(std_nro, ParagraphStyle("tn", fontSize=8.5)),
         Paragraph(_s(lang, "liite_standards"), ParagraphStyle("tl", fontSize=8.5, leading=12)),
@@ -2375,7 +2669,7 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
     meta_rows = [
         [_s(_bf_lang, "m_hakija"),       inp.hakija],
         [_s(_bf_lang, "bf_kotipaikka"),  inp.kunta],
-        [_s(_bf_lang, "bf_vaihe"),       inp.hankkeen_vaihe or "–"],
+        [_s(_bf_lang, "bf_vaihe"),       _t_vaihe(_bf_lang, inp.hankkeen_vaihe) if inp.hankkeen_vaihe else "–"],
         [_s(_bf_lang, "bf_tk_kuvaus"),   (inp.sijainti_ymparistovaikutukset or "–")[:120]],
         [_s(_bf_lang, "m_laadittu"),     now],
         [_s(_bf_lang, "m_laatinut_lbl"), _s(_bf_lang, "m_laatinut")],
@@ -2460,8 +2754,14 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     story.append(Spacer(1, 6*mm))
     story.append(Paragraph(_s(lang, "sub_title"), st["sub"]))
     story.append(Paragraph(_nimi(lang, inp.hanketyyppi, cfg['nimi_fi']), st["title"]))
+    # Phase-aware subtitle: "Pre-study — …" or "Permit phase — …" etc.
+    _vaihe_raw = (inp.hankkeen_vaihe or "Esiselvitys").lower()
+    if _vaihe_raw in ("esiselvitys", ""):
+        _phase_sub_txt = _s(lang, "esiselvitys_sub")
+    else:
+        _phase_sub_txt = f"{_t_vaihe(lang, inp.hankkeen_vaihe)} — {_s(lang, 'sub_title')}"
     story.append(Paragraph(
-        _s(lang, "esiselvitys_sub"),
+        _phase_sub_txt,
         ParagraphStyle("kan_sub2", fontSize=9, textColor=C_GRAY,
                        fontName="Helvetica", spaceAfter=4, leading=13),
     ))
@@ -2474,6 +2774,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     teho_val = f"{inp.teho_mw} MW"
     if inp.kapasiteetti_mwh and inp.kapasiteetti_mwh > 0:
         teho_val += f"  /  {inp.kapasiteetti_mwh} MWh"
+    _ph_labels = _PROMPT_HEADERS.get(lang, _PROMPT_HEADERS["FI"])
     meta_rows = [
         [_s(lang, "m_hakija"),      inp.hakija],
         [_s(lang, "m_ytunnus"),     inp.y_tunnus if inp.y_tunnus else ""],
@@ -2481,6 +2782,9 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
         [_s(lang, "m_teho"),        teho_val],
         [_s(lang, "m_kunta"),       inp.kunta],
         [_s(lang, "m_kt"),          inp.kiinteistotunnus],
+        *([[_ph_labels.get("phase_label", "Hankkeen vaihe"),
+            _t_vaihe(lang, inp.hankkeen_vaihe)]]
+          if inp.hankkeen_vaihe else []),
         *([[_s(lang, "m_maa"),       _COUNTRY_CONFIG.get(country, {}).get("name", country)]]
           if country != "FI" else []),
         [_s(lang, "m_laadittu"),        now],
@@ -2572,7 +2876,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     ]))
     story.append(Paragraph(_s(lang, "liitteet_note"), st["body"]))
     story.append(Spacer(1, 3*mm))
-    story.append(_liitteet_table(inp.hanketyyppi, lang))
+    story.append(_liitteet_table(inp.hanketyyppi, lang, country))
     story.append(Spacer(1, 4*mm))
 
     # ── 6. Seuraavat toimenpiteet ─────────────────────────────────────────────
@@ -2698,9 +3002,10 @@ def generate_application(inp: ApplicationInput) -> str:
 
     _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
                      "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}
-    _prefix  = _FILE_PREFIX.get(inp.lang or "FI", "hakemus")
-    kt_safe  = inp.kiinteistotunnus.replace("/", "-")
-    out_path = os.path.join(_OUTPUT_DIR, f"{_prefix}_{kt_safe}.pdf")
+    _prefix    = _FILE_PREFIX.get(inp.lang or "FI", "hakemus")
+    _kt        = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", inp.hanketyyppi or "doc")
+    _kunta     = re.sub(r"[^a-zA-Z0-9À-ɏ]", "_", inp.kunta or "hanke")
+    out_path   = os.path.join(_OUTPUT_DIR, f"{_prefix}_{_kt}_{_kunta}.pdf")
     with open(out_path, "wb") as f:
         f.write(pdf_bytes)
 
