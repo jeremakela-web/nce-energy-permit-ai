@@ -1240,6 +1240,7 @@
         </div>
         <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
         <div id="gen-country-hint" class="gen-country-hint" style="display:none;" data-i18n="country_hint">Valitse ensin kohdemaasi</div>
+        <div id="gen-country-notice" style="display:none;margin-top:10px;padding:10px 14px;background:#0d1f38;border:1px solid #1e3a5a;border-radius:8px;font-size:0.78rem;color:#8899aa;" data-i18n="gen_country_coming_soon"></div>
       </div>
 
       <!-- Form section (hidden until card selected) -->
@@ -1527,7 +1528,15 @@
       </aside>
 
       <!-- ── Map ── -->
-      <div id="map"></div>
+      <div id="map" style="position:relative;">
+        <div id="map-loading-overlay" style="
+          display:none; position:absolute; inset:0; z-index:1000;
+          background:rgba(10,22,40,0.55); pointer-events:none;
+          align-items:center; justify-content:center; flex-direction:column; gap:8px;">
+          <span class="spinner" style="width:20px;height:20px;border-width:3px;"></span>
+          <span style="color:#00C2A8;font-size:0.75rem;font-weight:600;" id="map-loading-text">Haetaan kiinteistötietoja…</span>
+        </div>
+      </div>
 
     </div><!-- .main-container -->
   </div><!-- #tab-bess -->
@@ -1640,6 +1649,7 @@ const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:80
 const DEFAULT_KT = '';
 const CENTER = [60.7, 22.7];
 const ZOOM = 13;
+let _propFetchController = null;
 
 let propertyGeoJson = null;
 let lastAnalysis = null;
@@ -1686,6 +1696,7 @@ const TRANSLATIONS = {
     lbl_market:     'Tavoitemarkkinat',
     map_select_hint:'— Valitse hanketyyppi —',
     map_fi_only:    'Tällä hetkellä saatavilla vain Suomessa — muut maat tulossa pian.',
+    gen_country_coming_soon: '🌍 Asiakirjapalvelu on tällä hetkellä saatavilla vain Suomelle (FI) sekä Puolalle (PL) SMR-hankkeiden osalta. SE, DA ja NO tulevat pian.',
     gen_timing_smr: 'Tämä voi viedä 60–90 sekuntia SMR/offshore-hakemuksille.',
     gen_timing_std: 'Odota n. 30–60 s.',
     h3_hanke_tiedot:  'Hankkeen tiedot',
@@ -1975,6 +1986,7 @@ const TRANSLATIONS = {
     lbl_market:     'Target market',
     map_select_hint:'— Select project type —',
     map_fi_only:    'Currently available for Finland only — other countries coming soon.',
+    gen_country_coming_soon: '🌍 Permit Document Service is currently available for Finland (FI) and Poland (PL, SMR projects only). SE, DA and NO coming soon.',
     gen_timing_smr: 'This may take 60–90 seconds for SMR/offshore applications.',
     gen_timing_std: 'Please wait approx. 30–60 s.',
     h3_hanke_tiedot:  'Project Details',
@@ -2255,6 +2267,7 @@ const TRANSLATIONS = {
     lbl_market:     'Målmarknad',
     map_select_hint:'— Välj projekttyp —',
     map_fi_only:    'Tillgänglig för Finland just nu — fler länder kommer snart.',
+    gen_country_coming_soon: '🌍 Tillståndsdokumenttjänsten är för närvarande tillgänglig för Finland (FI) och Polen (PL, endast SMR-projekt). SE, DA och NO kommer snart.',
     gen_timing_smr: 'Detta kan ta 60–90 sekunder för SMR/offshore-ansökningar.',
     gen_timing_std: 'Vänta ca 30–60 s.',
     h3_hanke_tiedot:  'Projektuppgifter',
@@ -2523,6 +2536,7 @@ const TRANSLATIONS = {
     gen_done_note:  'AI-udkast — kræver ekspertgennemgang inden indsendelse',
     map_select_hint:'— Vælg projekttype —',
     map_fi_only:    'Tilgængelig for Finland i øjeblikket — andre lande kommer snart.',
+    gen_country_coming_soon: '🌍 Tilladelsesdokumenttjenesten er i øjeblikket tilgængelig for Finland (FI) og Polen (PL, kun SMR-projekter). SE, DA og NO kommer snart.',
     gen_timing_smr: 'Dette kan tage 60–90 sekunder for SMR/offshore-ansøgninger.',
     gen_timing_std: 'Vent ca. 30–60 s.',
     btn_fetch:      'Søg',
@@ -2809,6 +2823,7 @@ const TRANSLATIONS = {
     gen_done_note:  'AI-utkast — krever ekspertgjennomgang før innlevering',
     map_select_hint:'— Velg prosjekttype —',
     map_fi_only:    'Tilgjengelig for Finland nå — andre land kommer snart.',
+    gen_country_coming_soon: '🌍 Tillatelsesdokumenttjenesten er for øyeblikket tilgjengelig for Finland (FI) og Polen (PL, kun SMR-prosjekter). SE, DA og NO kommer snart.',
     gen_timing_smr: 'Dette kan ta 60–90 sekunder for SMR/offshore-søknader.',
     gen_timing_std: 'Vent ca. 30–60 s.',
     btn_fetch:      'Søk',
@@ -3095,6 +3110,7 @@ const TRANSLATIONS = {
     gen_done_note:  'Szkic AI — wymaga przeglądu eksperta przed złożeniem',
     map_select_hint:'— Wybierz typ projektu —',
     map_fi_only:    'Obecnie dostępne tylko dla Finlandii — inne kraje wkrótce.',
+    gen_country_coming_soon: '🌍 Usługa dokumentów pozwoleń jest dostępna dla Finlandii (FI) i Polski (PL, tylko projekty SMR). SE, DA i NO — wkrótce.',
     gen_timing_smr: 'Może to potrwać 60–90 sekund dla wniosków SMR/offshore.',
     gen_timing_std: 'Poczekaj ok. 30–60 s.',
     btn_fetch:      'Szukaj',
@@ -4075,6 +4091,22 @@ function _rebuildMapGrid() {
   updateGridLink();
 }
 
+function _isPermitAvailable(country, hanketyyppi) {
+  if (country === 'FI') return true;
+  if (country === 'PL' && hanketyyppi === 'SMR') return true;
+  return false;
+}
+
+function _updatePermitNotice() {
+  const notice = document.getElementById('gen-country-notice');
+  const formSection = document.getElementById('gen-form-section');
+  if (!notice) return;
+  const unavailable = selectedProjectType && !_isPermitAvailable(selectedCountry, selectedProjectType);
+  notice.style.display = unavailable ? 'block' : 'none';
+  notice.textContent   = unavailable ? t('gen_country_coming_soon') : '';
+  if (formSection) formSection.style.display = unavailable ? 'none' : (selectedProjectType ? '' : 'none');
+}
+
 function setCountry(code) {
   const firstConfirm = !countryConfirmed;
   selectedCountry  = code;
@@ -4107,11 +4139,12 @@ function setCountry(code) {
     const tabGen = document.getElementById('tab-generator');
     const formEl = document.getElementById('gen-form-section');
     if (tabGen && formEl) {
-      console.log('Scrolling to:', formEl);
       const relTop = formEl.getBoundingClientRect().top - tabGen.getBoundingClientRect().top + tabGen.scrollTop;
       tabGen.scrollTo({ top: relTop - 16, behavior: 'smooth' });
     }
   }
+
+  _updatePermitNotice();
 
   // Re-populate map-tab grid select
   _rebuildMapGrid();
@@ -4237,6 +4270,7 @@ function selectProjectType(typeId) {
     </div>
   `;
   formSection.style.display = 'block';
+  _updatePermitNotice();
 
   // Auto-fill Kohdeviranomainen — country-aware
   if (hvInfo.autoFields && hvInfo.autoFields.kohdeviranomainen) {
@@ -4348,6 +4382,7 @@ function _parseApiError(errText, httpStatus) {
 
 async function submitGeneratorForm() {
   if (!selectedProjectType) return;
+  if (!_isPermitAvailable(selectedCountry, selectedProjectType)) return;
 
   const fieldDef = HANKE_FIELDS[selectedProjectType];
   const payload = { hanketyyppi: BACKEND_TYPE_MAP[selectedProjectType] || selectedProjectType };
@@ -4615,20 +4650,47 @@ async function parseHttpError(resp) {
 // ─────────────────────────────────────────────
 // Fetch property boundaries
 // ─────────────────────────────────────────────
+function _showMapLoading(visible) {
+  const el = document.getElementById('map-loading-overlay');
+  if (!el) return;
+  el.style.display = visible ? 'flex' : 'none';
+}
+
 async function fetchProperty() {
   const kt = document.getElementById('kt-input').value.trim();
   if (!kt) { log(t('log_enter_kt'), 'err'); return; }
 
+  // Cancel any previous in-flight request
+  if (_propFetchController) { _propFetchController.abort(); }
+  _propFetchController = new AbortController();
+
   const btn = document.getElementById('btn-fetch-property');
   setLoading(btn, true);
-  log(`${t('log_fetching')} ${kt}…`, 'info');
 
+  // ── Full state reset before fetch ──────────────────────────────────────────
   layers.property.clearLayers();
   layers.buffer.clearLayers();
+  layers.buildings.clearLayers();
+  layers.groundwater.clearLayers();
+  layers.natura.clearLayers();
+  propertyGeoJson = null;
+  lastAnalysis = null;
+  const _ANALYSIS_FIELDS = [
+    'info-grid-dist','info-grid-status','info-zoning','info-nature',
+    'info-groundwater','info-building','info-landuse','info-heritage',
+    'info-road','info-soil','info-flood','info-substation',
+  ];
+  _ANALYSIS_FIELDS.forEach(id => { const e = document.getElementById(id); if (e) { e.textContent = '–'; e.className = 'value na'; } });
+  document.getElementById('ai-strategy-section')?.style && (document.getElementById('ai-strategy-section').style.display = 'none');
+
+  // Fix: ensure Leaflet knows the map's actual pixel size before any fitBounds
+  map.invalidateSize();
+  _showMapLoading(true);
+  log(`${t('log_fetching')} ${kt}…`, 'info');
 
   try {
     const url = buildUrl(`/api/property/${encodeURIComponent(kt)}`);
-    const resp = await fetch(url);
+    const resp = await fetch(url, { signal: _propFetchController.signal });
     if (!resp.ok) {
       const msg = await parseHttpError(resp);
       throw new Error(msg);
@@ -4677,13 +4739,17 @@ async function fetchProperty() {
       color: '#64b5f6', weight: 2, dashArray: '6 4', fillOpacity: 0.04,
     }).addTo(layers.buffer);
 
+    // invalidateSize again right before fitBounds to ensure correct tile geometry
+    map.invalidateSize();
     map.fitBounds(propLayer.getBounds(), { padding: [60, 60] });
     log(`${t('log_kt_loaded')} – ${areaHa}`, 'ok');
 
   } catch (err) {
+    if (err.name === 'AbortError') return;
     log(`Virhe: ${err.message}`, 'err');
     console.error(err);
   } finally {
+    _showMapLoading(false);
     setLoading(btn, false);
   }
 }
@@ -5159,7 +5225,7 @@ document.getElementById('btn-report').addEventListener('click', generateReport);
 document.getElementById('btn-apply-manual').addEventListener('click', applyManualOverrides);
 
 document.getElementById('kt-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') fetchProperty();
+  if (e.key === 'Enter' && !document.getElementById('btn-fetch-property').disabled) fetchProperty();
 });
 
 // ─────────────────────────────────────────────
