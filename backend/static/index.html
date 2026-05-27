@@ -262,6 +262,8 @@
       text-transform: uppercase;
       letter-spacing: 0.6px;
     }
+    .gen-card.coming-soon { opacity: 0.6; }
+    .gen-card-badge.badge-soon { background: rgba(255,180,0,0.15); color: #ffb400; }
 
     /* ── Mobiilikorjaukset ───────────────────────────── */
     .tab-label-short { display: none; }
@@ -1275,6 +1277,8 @@
           </div>
           <!-- Notice shown when non-FI country selected -->
           <div id="map-country-notice" style="display:none;margin-top:10px;padding:9px 12px;background:rgba(0,194,168,0.07);border:1px solid rgba(0,194,168,0.25);border-radius:7px;font-size:0.73rem;color:#8899aa;line-height:1.5;" data-i18n="map_fi_only">Currently available for Finland only — other countries coming soon.</div>
+          <!-- Notice shown when coming-soon hanketyyppi selected -->
+          <div id="map-type-notice" style="display:none;margin-top:10px;padding:9px 12px;background:#0d1f38;border:1px solid #1e3a5a;border-radius:7px;font-size:0.73rem;color:#8899aa;line-height:1.5;"></div>
         </div>
 
         <div id="map-fi-form">
@@ -1697,6 +1701,8 @@ const TRANSLATIONS = {
     map_select_hint:'— Valitse hanketyyppi —',
     map_fi_only:    'Tällä hetkellä saatavilla vain Suomessa — muut maat tulossa pian.',
     gen_country_coming_soon: '🌍 Asiakirjapalvelu on tällä hetkellä saatavilla vain Suomelle (FI) sekä Puolalle (PL) SMR-hankkeiden osalta. SE, DA ja NO tulevat pian.',
+    badge_coming_soon:       'Tulossa',
+    sco2_coming_soon:        '🌀 sCO₂ Turbine — Tulossa pian. Ylikriittinen hiilidioksiditurbiini: 10× pienempi kuin perinteinen höyryturbiini, hyötysuhde jopa 50%. Soveltuu SMR-, aurinkolämpö- ja BESS-hankkeisiin.',
     gen_timing_smr: 'Tämä voi viedä 60–90 sekuntia SMR/offshore-hakemuksille.',
     gen_timing_std: 'Odota n. 30–60 s.',
     h3_hanke_tiedot:  'Hankkeen tiedot',
@@ -1987,6 +1993,8 @@ const TRANSLATIONS = {
     map_select_hint:'— Select project type —',
     map_fi_only:    'Currently available for Finland only — other countries coming soon.',
     gen_country_coming_soon: '🌍 Permit Document Service is currently available for Finland (FI) and Poland (PL, SMR projects only). SE, DA and NO coming soon.',
+    badge_coming_soon:       'Coming soon',
+    sco2_coming_soon:        '🌀 sCO₂ Turbine — Coming soon. Supercritical CO₂ turbine: 10× smaller than a conventional steam turbine, up to 50% efficiency. Suitable for SMR, solar-thermal, and BESS projects.',
     gen_timing_smr: 'This may take 60–90 seconds for SMR/offshore applications.',
     gen_timing_std: 'Please wait approx. 30–60 s.',
     h3_hanke_tiedot:  'Project Details',
@@ -2268,6 +2276,8 @@ const TRANSLATIONS = {
     map_select_hint:'— Välj projekttyp —',
     map_fi_only:    'Tillgänglig för Finland just nu — fler länder kommer snart.',
     gen_country_coming_soon: '🌍 Tillståndsdokumenttjänsten är för närvarande tillgänglig för Finland (FI) och Polen (PL, endast SMR-projekt). SE, DA och NO kommer snart.',
+    badge_coming_soon:       'Kommer snart',
+    sco2_coming_soon:        '🌀 sCO₂ Turbine — Kommer snart. Superkritisk CO₂-turbin: 10× mindre än konventionell ångturbin, upp till 50% verkningsgrad. Passar för SMR-, soltermi- och BESS-projekt.',
     gen_timing_smr: 'Detta kan ta 60–90 sekunder för SMR/offshore-ansökningar.',
     gen_timing_std: 'Vänta ca 30–60 s.',
     h3_hanke_tiedot:  'Projektuppgifter',
@@ -2537,6 +2547,8 @@ const TRANSLATIONS = {
     map_select_hint:'— Vælg projekttype —',
     map_fi_only:    'Tilgængelig for Finland i øjeblikket — andre lande kommer snart.',
     gen_country_coming_soon: '🌍 Tilladelsesdokumenttjenesten er i øjeblikket tilgængelig for Finland (FI) og Polen (PL, kun SMR-projekter). SE, DA og NO kommer snart.',
+    badge_coming_soon:       'Kommer snart',
+    sco2_coming_soon:        '🌀 sCO₂ Turbine — Kommer snart. Superkritisk CO₂-turbin: 10× mindre end konventionel dampturbin, op til 50% virkningsgrad. Egnet til SMR-, soltermiske og BESS-projekter.',
     gen_timing_smr: 'Dette kan tage 60–90 sekunder for SMR/offshore-ansøgninger.',
     gen_timing_std: 'Vent ca. 30–60 s.',
     btn_fetch:      'Søg',
@@ -2824,6 +2836,8 @@ const TRANSLATIONS = {
     map_select_hint:'— Velg prosjekttype —',
     map_fi_only:    'Tilgjengelig for Finland nå — andre land kommer snart.',
     gen_country_coming_soon: '🌍 Tillatelsesdokumenttjenesten er for øyeblikket tilgjengelig for Finland (FI) og Polen (PL, kun SMR-prosjekter). SE, DA og NO kommer snart.',
+    badge_coming_soon:       'Kommer snart',
+    sco2_coming_soon:        '🌀 sCO₂ Turbine — Kommer snart. Superkritisk CO₂-turbin: 10× mindre enn konvensjonell dampturbin, opptil 50% virkningsgrad. Egnet for SMR-, solvarme- og BESS-prosjekter.',
     gen_timing_smr: 'Dette kan ta 60–90 sekunder for SMR/offshore-søknader.',
     gen_timing_std: 'Vent ca. 30–60 s.',
     btn_fetch:      'Søk',
@@ -3111,6 +3125,8 @@ const TRANSLATIONS = {
     map_select_hint:'— Wybierz typ projektu —',
     map_fi_only:    'Obecnie dostępne tylko dla Finlandii — inne kraje wkrótce.',
     gen_country_coming_soon: '🌍 Usługa dokumentów pozwoleń jest dostępna dla Finlandii (FI) i Polski (PL, tylko projekty SMR). SE, DA i NO — wkrótce.',
+    badge_coming_soon:       'Wkrótce',
+    sco2_coming_soon:        '🌀 sCO₂ Turbine — Wkrótce. Turbina nadkrytyczna CO₂: 10× mniejsza niż konwencjonalna turbina parowa, sprawność do 50%. Nadaje się do projektów SMR, termalnej energii słonecznej i BESS.',
     gen_timing_smr: 'Może to potrwać 60–90 sekund dla wniosków SMR/offshore.',
     gen_timing_std: 'Poczekaj ok. 30–60 s.',
     btn_fetch:      'Szukaj',
@@ -3583,6 +3599,11 @@ const PROJECT_TYPES = [
     icon: '📋',
     name: { FI: 'Muu hanke',        EN: 'Other Project',       SE: 'Annat projekt',     DA: 'Andet projekt',     NO: 'Annet prosjekt',    PL: 'Inny projekt'         },
     sub:  { FI: 'Muut hanketyypit', EN: 'Other project types', SE: 'Andra projekttyper',DA: 'Andre projekttyper', NO: 'Andre prosjekttyper',PL: 'Inne typy projektów'  } },
+  { id: 'sco2',
+    icon: '🌀',
+    comingSoon: true,
+    name: { FI: 'sCO₂ Turbine',              EN: 'sCO₂ Turbine',              SE: 'sCO₂ Turbin',               DA: 'sCO₂ Turbin',               NO: 'sCO₂ Turbin',               PL: 'Turbina sCO₂'              },
+    sub:  { FI: 'Ylikriittinen CO₂-turbiini', EN: 'Supercritical CO₂ turbine', SE: 'Superkritisk CO₂-turbin',   DA: 'Superkritisk CO₂-turbin',   NO: 'Superkritisk CO₂-turbin',   PL: 'Turbina nadkrytyczna CO₂'  } },
 ];
 
 function ptName(pt) {
@@ -4029,11 +4050,11 @@ function renderCards() {
   const grid = document.getElementById('gen-cards-grid');
   if (!grid) return;
   grid.innerHTML = PROJECT_TYPES.map(pt => `
-    <div class="gen-card" data-type="${pt.id}" onclick="selectProjectType('${pt.id}')">
+    <div class="gen-card${pt.comingSoon ? ' coming-soon' : ''}" data-type="${pt.id}" onclick="selectProjectType('${pt.id}')">
       <div class="gen-card-icon">${pt.icon}</div>
       <div class="gen-card-name">${ptName(pt)}</div>
       <div class="gen-card-sub">${ptSub(pt)}</div>
-      ${pt.badge ? `<div class="gen-card-badge">${pt.badge}</div>` : ''}
+      ${pt.comingSoon ? `<div class="gen-card-badge badge-soon">${t('badge_coming_soon')}</div>` : pt.badge ? `<div class="gen-card-badge">${pt.badge}</div>` : ''}
     </div>
   `).join('');
 }
@@ -4045,7 +4066,7 @@ function _rebuildMapTypeSelect() {
   const currentVal = sel.value;
   sel.innerHTML = `<option value="" data-i18n="map_select_hint">${t('map_select_hint')}</option>` +
     PROJECT_TYPES.map(pt =>
-      `<option value="${pt.id}">${pt.icon || ''} ${ptName(pt)}</option>`
+      `<option value="${pt.id}">${pt.icon || ''} ${ptName(pt)}${pt.comingSoon ? ` (${t('badge_coming_soon')})` : ''}</option>`
     ).join('');
   if (currentVal) sel.value = currentVal;
 }
@@ -4101,6 +4122,15 @@ function _updatePermitNotice() {
   const notice = document.getElementById('gen-country-notice');
   const formSection = document.getElementById('gen-form-section');
   if (!notice) return;
+  if (selectedProjectType) {
+    const pt = PROJECT_TYPES.find(p => p.id === selectedProjectType);
+    if (pt && pt.comingSoon) {
+      notice.style.display = 'block';
+      notice.textContent = t('sco2_coming_soon');
+      if (formSection) formSection.style.display = 'none';
+      return;
+    }
+  }
   const unavailable = selectedProjectType && !_isPermitAvailable(selectedCountry, selectedProjectType);
   notice.style.display = unavailable ? 'block' : 'none';
   notice.textContent   = unavailable ? t('gen_country_coming_soon') : '';
@@ -4184,6 +4214,16 @@ function selectProjectType(typeId) {
   });
 
   const countryBar = document.getElementById('gen-country-bar');
+
+  const _pt = PROJECT_TYPES.find(p => p.id === typeId);
+  if (_pt && _pt.comingSoon) {
+    if (countryBar) countryBar.style.display = 'none';
+    const hint = document.getElementById('gen-country-hint');
+    if (hint) hint.style.display = 'none';
+    _updatePermitNotice();
+    return;
+  }
+
   if (countryBar) countryBar.style.display = 'block';
 
   // Gate: wait for explicit country selection before showing form
@@ -5041,6 +5081,14 @@ function recalcScore(a) {
 // switchMapType — update sidebar UI for selected project type
 // ─────────────────────────────────────────────
 function switchMapType(type) {
+  const mapTypeNotice = document.getElementById('map-type-notice');
+  const _mpt = PROJECT_TYPES.find(p => p.id === type);
+  if (_mpt && _mpt.comingSoon) {
+    if (mapTypeNotice) { mapTypeNotice.style.display = 'block'; mapTypeNotice.textContent = t('sco2_coming_soon'); }
+    return;
+  }
+  if (mapTypeNotice) mapTypeNotice.style.display = 'none';
+
   const ui  = MAP_TYPE_UI[type] || MAP_TYPE_UI.bess;
   const cfg = MAANK_SCORE_CFG[type] || MAANK_SCORE_CFG.bess;
 
