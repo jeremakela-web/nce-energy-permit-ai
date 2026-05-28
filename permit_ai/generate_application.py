@@ -1191,8 +1191,12 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
 _SYSTEM = (
     "Olet NCE Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
     "laadinnassa Suomessa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
-    "Viittaat aina voimassa olevaan lainsäädäntöön. Et koskaan anna harhaanjohtavaa tietoa — "
-    "jos jokin asia on epävarma, merkitset sen selvästi. "
+    "Viittaat aina voimassa olevaan lainsäädäntöön. "
+    "KRIITTINEN SÄÄNTÖ — EPÄVARMA TIETO: Jos jokin yksittäinen fakta, vaatimus tai "
+    "lakiviite on epävarma, puuttuu annetusta kontekstista tai vaatii erikoisasiantuntemusta, "
+    "lisää välittömästi kyseisen lauseen tai kappaleen jälkeen merkintä "
+    "'⚠️ Asiantuntijatarkistus suositellaan'. Älä koskaan täytä tietopuutteita arvauksilla "
+    "tai spekulaatiolla — mieluummin merkitse asia epävarmaksi kuin generoi väärää tietoa. "
     "Kaikki tuottamasi teksti on AI-luonnos joka vaatii asiantuntijatarkistuksen."
 )
 
@@ -1247,17 +1251,83 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
 
 _WRITE_INSTRUCTION: dict[str, str] = {
     "FI": ("Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. "
-           "Viittaa lakeihin ja säädöksiin lyhentein hakasulkeissa tekstin sisällä, esim. [YSL §27] tai [Rakentamislaki 751/2023]:"),
+           "Viittaa lakeihin lyhentein hakasulkeissa, esim. [YSL §27] tai [Rakentamislaki 751/2023]. "
+           "Jos jokin tieto on epävarma, puuttuu tai vaatii erikoisosaamista, "
+           "lisää merkintä '⚠️ Asiantuntijatarkistus suositellaan' heti kyseisen kohdan jälkeen — "
+           "älä spekuloi eläkä täytä tietopuutteita oletuksilla:"),
     "EN": ("Write the following four sections in English, clearly separated by headings. "
-           "Include inline law citations in brackets, e.g. [EIA Act] or [Building Act 751/2023]:"),
+           "Include inline law citations in brackets, e.g. [EIA Act] or [Building Act 751/2023]. "
+           "If any information is uncertain, missing or requires specialist expertise, "
+           "add the marker '⚠️ Expert review recommended' immediately after that point — "
+           "do not speculate or fill gaps with assumptions:"),
     "SE": ("Skriv följande fyra avsnitt på svenska, tydligt åtskilda med rubriker. "
-           "Inkludera lagcitat i hakparentes i texten, t.ex. [PBL 2010:900] eller [MB 1998:808]:"),
+           "Inkludera lagcitat i hakparentes, t.ex. [PBL 2010:900] eller [MB 1998:808]. "
+           "Om någon uppgift är osäker, saknas eller kräver specialistkunskap, "
+           "lägg till märkningen '⚠️ Expertgranskning rekommenderas' direkt efter det berörda stycket — "
+           "spekulera inte och fyll inte i kunskapsluckor med antaganden:"),
     "DA": ("Skriv følgende fire afsnit på dansk, tydeligt adskilt med overskrifter. "
-           "Inkluder lovcitater i kantede parenteser i teksten, f.eks. [PBL §12] eller [MBL]:"),
+           "Inkluder lovcitater i kantede parenteser, f.eks. [PBL §12] eller [MBL]. "
+           "Hvis en oplysning er usikker, mangler eller kræver specialistviden, "
+           "tilføj mærket '⚠️ Ekspertgennemgang anbefales' umiddelbart efter det pågældende afsnit — "
+           "spekuler ikke og udfyld ikke videnshuller med antagelser:"),
     "NO": ("Skriv følgende fire seksjoner på norsk, tydelig atskilt med overskrifter. "
-           "Inkluder lovhenvisninger i hakeparenteser i teksten, f.eks. [PBL §12-1] eller [NVE-forskrift]:"),
+           "Inkluder lovhenvisninger i hakeparenteser, f.eks. [PBL §12-1] eller [NVE-forskrift]. "
+           "Hvis en opplysning er usikker, mangler eller krever spesialistkompetanse, "
+           "legg til merket '⚠️ Ekspertgjennomgang anbefales' umiddelbart etter det aktuelle avsnittet — "
+           "ikke spekuler og ikke fyll kunnskapshull med antakelser:"),
     "PL": ("Napisz następujące cztery sekcje po polsku, wyraźnie oddzielone nagłówkami. "
-           "Umieść odniesienia do przepisów w nawiasach kwadratowych w tekście, np. [Ustawa OOŚ] lub [Prawo budowlane Art. 28]:"),
+           "Umieść odniesienia do przepisów w nawiasach kwadratowych, np. [Ustawa OOŚ] lub [Prawo budowlane Art. 28]. "
+           "Jeśli jakakolwiek informacja jest niepewna, brakuje jej lub wymaga wiedzy specjalistycznej, "
+           "dodaj oznaczenie '⚠️ Zalecana weryfikacja przez eksperta' bezpośrednio po danym fragmencie — "
+           "nie spekuluj i nie uzupełniaj luk w wiedzy założeniami:"),
+}
+
+# Hanketyypit joissa epävarmuusmerkintä on erityisen kriittinen
+_CRITICAL_HANKE_TYPES: set[str] = {"SMR", "smr_bess", "ymparistolupa"}
+
+_CRITICAL_EXTRA: dict[str, str] = {
+    "FI": ("⚠️ ERITYISOHJE TÄLLE HANKETYYPILLE: {hanketyyppi}-hankkeissa viranomaisvaatimukset, "
+           "turvallisuusmääräykset ja lakiperusta ovat erityisen tarkkoja ja muuttuvia. "
+           "Käytä merkintää '⚠️ Asiantuntijatarkistus suositellaan' AINA kun: "
+           "(a) viranomaisvaatimus tai lupamenettely on epäselkä tai mahdollisesti muuttunut, "
+           "(b) tekninen raja-arvo tai parametri ei perustu annettuun dokumentaatioon, "
+           "(c) lainsäädäntötieto on puutteellinen tai tulkinnanvarainen. "
+           "Älä koskaan generoi lukuja, aikatauluja tai vaatimuksia ilman dokumentoitua perustetta."),
+    "EN": ("⚠️ SPECIAL INSTRUCTION FOR THIS PROJECT TYPE: For {hanketyyppi} projects, regulatory requirements, "
+           "safety regulations and statutory basis are particularly precise and subject to change. "
+           "Use the marker '⚠️ Expert review recommended' WHENEVER: "
+           "(a) a regulatory requirement or permit procedure is unclear or potentially changed, "
+           "(b) a technical limit or parameter is not grounded in the provided documentation, "
+           "(c) legal information is incomplete or open to interpretation. "
+           "Never generate figures, timelines or requirements without a documented basis."),
+    "SE": ("⚠️ SÄRSKILD INSTRUKTION FÖR DENNA PROJEKTTYP: För {hanketyyppi}-projekt är myndighetskrav, "
+           "säkerhetsföreskrifter och rättslig grund särskilt precisa och föränderliga. "
+           "Använd märkningen '⚠️ Expertgranskning rekommenderas' ALLTID när: "
+           "(a) ett myndighetskrav eller tillståndsförfarande är oklart eller möjligen förändrat, "
+           "(b) ett tekniskt gränsvärde eller en parameter inte grundar sig på given dokumentation, "
+           "(c) lagstiftningsinformation är ofullständig eller tolkningsbar. "
+           "Generera aldrig siffror, tidsplaner eller krav utan dokumenterat underlag."),
+    "DA": ("⚠️ SÆRLIG INSTRUKTION FOR DENNE PROJEKTTYPE: For {hanketyyppi}-projekter er myndighedskrav, "
+           "sikkerhedsforskrifter og retsgrundlag særligt præcise og foranderlige. "
+           "Brug mærket '⚠️ Ekspertgennemgang anbefales' ALTID når: "
+           "(a) et myndighedskrav eller tilladelsesprocedure er uklart eller muligvis ændret, "
+           "(b) en teknisk grænseværdi eller parameter ikke er baseret på den givne dokumentation, "
+           "(c) lovgivningsoplysninger er ufuldstændige eller åbne for fortolkning. "
+           "Generer aldrig tal, tidsplaner eller krav uden dokumenteret grundlag."),
+    "NO": ("⚠️ SPESIELL INSTRUKS FOR DENNE PROSJEKTTYPEN: For {hanketyyppi}-prosjekter er myndighetskrav, "
+           "sikkerhetsforskrifter og rettsgrunnlag særlig presise og i endring. "
+           "Bruk merket '⚠️ Ekspertgjennomgang anbefales' ALLTID når: "
+           "(a) et myndighetskrav eller tillatelsesprosedyre er uklart eller muligens endret, "
+           "(b) en teknisk grenseverdi eller parameter ikke er basert på gitt dokumentasjon, "
+           "(c) lovgivningsinformasjon er ufullstendig eller tolkbar. "
+           "Generer aldri tall, tidsplaner eller krav uten dokumentert grunnlag."),
+    "PL": ("⚠️ SPECJALNA INSTRUKCJA DLA TEGO TYPU PROJEKTU: W projektach {hanketyyppi} wymogi regulacyjne, "
+           "przepisy bezpieczeństwa i podstawa prawna są szczególnie precyzyjne i zmienne. "
+           "Używaj oznaczenia '⚠️ Zalecana weryfikacja przez eksperta' ZAWSZE gdy: "
+           "(a) wymóg regulacyjny lub procedura zezwolenia jest niejasna lub mogła ulec zmianie, "
+           "(b) wartość graniczna techniczna lub parametr nie wynika z dostarczonej dokumentacji, "
+           "(c) informacje prawne są niekompletne lub otwarte na interpretację. "
+           "Nigdy nie generuj liczb, harmonogramów ani wymogów bez udokumentowanej podstawy."),
 }
 
 _PROMPT_HEADERS: dict[str, dict[str, str]] = {
@@ -2312,7 +2382,7 @@ Päivämäärä: {now}
 Alla on relevanttia energia-alan T&K-dokumentaatiota:
 {rag_context}
 
-Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:
+Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. Jos jokin tieto on epävarma tai puuttuu, lisää merkintä '⚠️ Asiantuntijatarkistus suositellaan' heti kyseisen kohdan jälkeen — älä spekuloi:
 
 ## T&K-KUVAUS
 Kirjoita 3–5 kappaleen kuvaus tutkimus- ja kehitystyöstä: tutkimusongelma, innovaatio, teknologinen lähestymistapa, odotetut tulokset ja tieteellinen/teknologinen uutuusarvo. Ota huomioon hakijan toimiala ja T&K-haasteiden kuvaus.
@@ -2416,6 +2486,11 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
             f"Mainitse tämä perustelut-osiossa."
         )
 
+    critical_block = ""
+    if inp.hanketyyppi in _CRITICAL_HANKE_TYPES:
+        _crit_tmpl = _CRITICAL_EXTRA.get(lang, _CRITICAL_EXTRA["FI"])
+        critical_block = "\n\n" + _crit_tmpl.format(hanketyyppi=inp.hanketyyppi)
+
     prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
@@ -2423,7 +2498,7 @@ Kiinteistötunnus: {inp.kiinteistotunnus}
 Teho: {inp.teho_mw} MW{kap_lisatieto}
 Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
-Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}
+Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}
 
 {ph["rag_intro"]}
 {rag_context}
