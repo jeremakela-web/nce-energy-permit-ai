@@ -338,7 +338,8 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
     """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude). Oikoluku taustalla."""
     allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR",
                "smr_bess", "vesivoima", "hybridi", "business_finland",
-               "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu"}
+               "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
+               "ymparistolupa", "datakeskus"}
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
                             detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
