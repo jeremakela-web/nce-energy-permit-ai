@@ -646,29 +646,40 @@ def _rag_context(
     hanketyyppi: str,
     country: str = "FI",
     n_per_query: int = 4,
-) -> tuple[str, list[str]]:
+) -> tuple[str, list[dict]]:
     """Hae relevantit dokumenttichunkit.
 
     Jos country != 'FI', haetaan ensin maakohtaiset dokumentit ja täydennetään
     FI-dokumenteilla (suomalainen lainsäädäntö on aina relevanttia kontekstia).
     Graceful fallback: jos metadata-suodatus epäonnistuu, haetaan ilman suodatinta.
+    Palauttaa (context_text, list[dict]) — kukin dict on {id, display, url}.
     """
     cfg = _HANKE_CFG[hanketyyppi]
     try:
         embed_model = _get_embed_model()
         col         = _get_chroma_col()
 
-        seen_ids:    set[str]  = set()
-        all_docs:    list[str] = []
-        all_sources: set[str]  = set()
+        seen_ids:       set[str]        = set()
+        all_docs:       list[str]       = []
+        all_source_meta: dict[str, dict] = {}  # src_id → {display, url}
 
         def _collect(results: dict) -> None:
-            for doc, id_ in zip(results["documents"][0], results["ids"][0]):
+            docs   = results["documents"][0]
+            ids    = results["ids"][0]
+            metas  = (results.get("metadatas") or [[]])[0]
+            if not metas:
+                metas = [{}] * len(ids)
+            for doc, id_, meta in zip(docs, ids, metas):
                 if id_ not in seen_ids:
                     seen_ids.add(id_)
                     all_docs.append(doc)
-                    # source = ID ilman viimeistä "__N" tai "_N" osaa
-                    all_sources.add(re.sub(r"[_-]\d+$", "", id_))
+                    src_id = re.sub(r"[_-]\d+$", "", id_)
+                    if src_id not in all_source_meta:
+                        meta = meta or {}
+                        all_source_meta[src_id] = {
+                            "display": meta.get("source", src_id),
+                            "url":     meta.get("url"),
+                        }
 
         for q in cfg["rag_queries"]:
             emb = embed_model.encode([q]).tolist()
@@ -699,10 +710,23 @@ def _rag_context(
                     pass
 
         context = "\n\n---\n\n".join(all_docs)
-        return context, sorted(all_sources)
+        sources = [{"id": sid, **info} for sid, info in sorted(all_source_meta.items())]
+        return context, sources
     except Exception as exc:
         print(f"[RAG] Haku epäonnistui ({exc}) — jatketaan ilman kontekstia")
         return "", []
+
+
+def _statutory_sources(hanketyyppi: str, country: str = "FI") -> list[str]:
+    """Palauta lakiviitteet hankkeelle (luvat + laki_extra), maakohtainen override ensin."""
+    country_override = _COUNTRY_LUVAT.get(country, {}).get(hanketyyppi)
+    if country_override:
+        refs = {laki for _, _, laki in country_override}
+    else:
+        cfg  = _HANKE_CFG[hanketyyppi]
+        refs = {laki for _, _, laki in cfg["luvat"]}
+        refs.update(cfg.get("laki_extra", []))
+    return sorted(refs)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1222,12 +1246,18 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
 }
 
 _WRITE_INSTRUCTION: dict[str, str] = {
-    "FI": "Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla:",
-    "EN": "Write the following four sections in English, clearly separated by headings:",
-    "SE": "Skriv följande fyra avsnitt på svenska, tydligt åtskilda med rubriker:",
-    "DA": "Skriv følgende fire afsnit på dansk, tydeligt adskilt med overskrifter:",
-    "NO": "Skriv følgende fire seksjoner på norsk, tydelig atskilt med overskrifter:",
-    "PL": "Napisz następujące cztery sekcje po polsku, wyraźnie oddzielone nagłówkami:",
+    "FI": ("Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. "
+           "Viittaa lakeihin ja säädöksiin lyhentein hakasulkeissa tekstin sisällä, esim. [YSL §27] tai [Rakentamislaki 751/2023]:"),
+    "EN": ("Write the following four sections in English, clearly separated by headings. "
+           "Include inline law citations in brackets, e.g. [EIA Act] or [Building Act 751/2023]:"),
+    "SE": ("Skriv följande fyra avsnitt på svenska, tydligt åtskilda med rubriker. "
+           "Inkludera lagcitat i hakparentes i texten, t.ex. [PBL 2010:900] eller [MB 1998:808]:"),
+    "DA": ("Skriv følgende fire afsnit på dansk, tydeligt adskilt med overskrifter. "
+           "Inkluder lovcitater i kantede parenteser i teksten, f.eks. [PBL §12] eller [MBL]:"),
+    "NO": ("Skriv følgende fire seksjoner på norsk, tydelig atskilt med overskrifter. "
+           "Inkluder lovhenvisninger i hakeparenteser i teksten, f.eks. [PBL §12-1] eller [NVE-forskrift]:"),
+    "PL": ("Napisz następujące cztery sekcje po polsku, wyraźnie oddzielone nagłówkami. "
+           "Umieść odniesienia do przepisów w nawiasach kwadratowych w tekście, np. [Ustawa OOŚ] lub [Prawo budowlane Art. 28]:"),
 }
 
 _PROMPT_HEADERS: dict[str, dict[str, str]] = {
@@ -1658,7 +1688,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "liitteet_note":   ("Seuraavat liitteet on toimitettava hakemuksen yhteydessä. "
                             "Merkitse ☐-ruutuun kun liite on valmis."),
         "lahteet_h":       "Lähteet ja tietolähteet",
-        "lahteet_b":       "Tämä luonnos on laadittu hyödyntäen seuraavia viranomaisdokumentteja:",
+        "lahteet_laki_h":  "Säädösperusta",
+        "lahteet_rag_h":   "Viranomaislähteet",
+        "lahteet_b":       "Seuraavia viranomaisdokumentteja on käytetty luonnoksen valmistelussa:",
         "yhteystiedot_h":  "Hakijan yhteystiedot",
         "yht_hakija":      "Hakija",     "yht_ytunnus":   "Y-tunnus",
         "yht_osoite":      "Osoite",     "yht_lisatietoja": "Lisätietoja",
@@ -1737,7 +1769,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "liitteet_note":   ("The following appendices must be submitted with the application. "
                             "Mark the checkbox when the appendix is ready."),
         "lahteet_h":       "Sources and References",
-        "lahteet_b":       "This draft was prepared using the following official documents:",
+        "lahteet_laki_h":  "Statutory Basis",
+        "lahteet_rag_h":   "Authority Sources",
+        "lahteet_b":       "The following official documents were used in preparing this draft:",
         "yhteystiedot_h":  "Applicant Contact Details",
         "yht_hakija":      "Applicant",  "yht_ytunnus":    "Business ID",
         "yht_osoite":      "Address",    "yht_lisatietoja": "Further information",
@@ -1812,7 +1846,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "liitteet_note":   ("Följande bilagor ska lämnas in tillsammans med ansökan. "
                             "Markera rutan när bilagan är klar."),
         "lahteet_h":       "Källor och referenser",
-        "lahteet_b":       "Detta utkast har upprättats med hjälp av följande officiella dokument:",
+        "lahteet_laki_h":  "Rättslig grund",
+        "lahteet_rag_h":   "Myndighetskällor",
+        "lahteet_b":       "Följande officiella dokument har använts vid upprättandet av detta utkast:",
         "yhteystiedot_h":  "Sökandens kontaktuppgifter",
         "yht_hakija":      "Sökande",   "yht_ytunnus":    "Organisationsnummer",
         "yht_osoite":      "Adress",    "yht_lisatietoja": "Mer information",
@@ -1888,7 +1924,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "liitteet_note":   ("Følgende bilag skal indsendes sammen med ansøgningen. "
                             "Sæt kryds i afkrydsningsfeltet, når bilaget er klar."),
         "lahteet_h":       "Kilder og referencer",
-        "lahteet_b":       "Dette udkast er udarbejdet ved hjælp af følgende officielle dokumenter:",
+        "lahteet_laki_h":  "Retsgrundlag",
+        "lahteet_rag_h":   "Myndighedskilder",
+        "lahteet_b":       "Følgende officielle dokumenter er anvendt ved udarbejdelsen af dette udkast:",
         "yhteystiedot_h":  "Ansøgerens kontaktoplysninger",
         "yht_hakija":      "Ansøger",    "yht_ytunnus":    "CVR-nummer",
         "yht_osoite":      "Adresse",    "yht_lisatietoja": "Yderligere oplysninger",
@@ -1966,7 +2004,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "liitteet_note":   ("Følgende vedlegg må leveres sammen med søknaden. "
                             "Kryss av i boksen når vedlegget er klart."),
         "lahteet_h":       "Kilder og referanser",
-        "lahteet_b":       "Dette utkastet er utarbeidet ved hjelp av følgende offisielle dokumenter:",
+        "lahteet_laki_h":  "Rettsgrunnlag",
+        "lahteet_rag_h":   "Myndighetskilder",
+        "lahteet_b":       "Følgende offisielle dokumenter er benyttet ved utarbeidelsen av dette utkastet:",
         "yhteystiedot_h":  "Søkerens kontaktopplysninger",
         "yht_hakija":      "Søker",      "yht_ytunnus":    "Org.nummer",
         "yht_osoite":      "Adresse",    "yht_lisatietoja": "Ytterligere informasjon",
@@ -2044,7 +2084,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "liitteet_note":   ("Następujące załączniki muszą zostać złożone wraz z wnioskiem. "
                             "Zaznacz pole wyboru, gdy załącznik jest gotowy."),
         "lahteet_h":       "Źródła i odniesienia",
-        "lahteet_b":       "Niniejszy szkic został przygotowany przy użyciu następujących oficjalnych dokumentów:",
+        "lahteet_laki_h":  "Podstawa prawna",
+        "lahteet_rag_h":   "Źródła urzędowe",
+        "lahteet_b":       "Przy sporządzaniu niniejszego szkicu wykorzystano następujące oficjalne dokumenty:",
         "yhteystiedot_h":  "Dane kontaktowe wnioskodawcy",
         "yht_hakija":      "Wnioskodawca", "yht_ytunnus":    "NIP/KRS",
         "yht_osoite":      "Adres",        "yht_lisatietoja": "Dodatkowe informacje",
@@ -2448,6 +2490,9 @@ def _st() -> dict:
         "h2":       ParagraphStyle("ah2", fontSize=11, textColor=C_NAVY,
                                    fontName="Helvetica-Bold", spaceBefore=14,
                                    spaceAfter=5, leading=15),
+        "h3":       ParagraphStyle("ah3", fontSize=9.5, textColor=C_NAVY,
+                                   fontName="Helvetica-Bold", spaceBefore=8,
+                                   spaceAfter=3, leading=13),
         "body":     ParagraphStyle("ab", fontSize=9, leading=14, spaceAfter=5),
         "small":    ParagraphStyle("asm", fontSize=7.5, textColor=C_GRAY,
                                    leading=11, spaceAfter=2),
@@ -2757,7 +2802,7 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
     return _NumberedCanvas
 
 
-def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> bytes:
+def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> bytes:
     """PDF-rakenne Business Finland Sprint -hakemukselle."""
     buf    = io.BytesIO()
     now    = datetime.now().strftime("%d.%m.%Y")
@@ -2831,11 +2876,19 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
 
     if sources:
         story.append(KeepTogether([
-            Paragraph(_s(_bf_lang, "lahteet_h"), st["h2"]), _hr(),
-            Paragraph(_s(_bf_lang, "lahteet_b"), st["body"]),
+            Paragraph(_s(_bf_lang, "lahteet_h"), st["h2"]),
+            _hr(),
         ]))
-        for s in sources:
-            story.append(Paragraph(f"• {s}", st["bullet"]))
+        story.append(Paragraph(_s(_bf_lang, "lahteet_rag_h"), st["h3"]))
+        story.append(Paragraph(_s(_bf_lang, "lahteet_b"), st["body"]))
+        for src in sources:
+            display = src.get("display", src.get("id", "–"))
+            url = src.get("url")
+            if url:
+                line = f'• <a href="{url}" color="#1a56db">{display}</a> — <font color="#1a56db">{url}</font>'
+            else:
+                line = f"• {display}"
+            story.append(Paragraph(line, st["bullet"]))
         story.append(Spacer(1, 3*mm))
 
     story.append(_hr(C_NAVY, 1.0))
@@ -2847,7 +2900,7 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) 
     return buf.getvalue()
 
 
-def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> bytes:
+def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> bytes:
     """Rakenna PDF ja palauta bytes."""
     buf    = io.BytesIO()
     now    = datetime.now().strftime("%d.%m.%Y")
@@ -3015,14 +3068,28 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
     story.append(Spacer(1, 4*mm))
 
     # ── Lähteet ───────────────────────────────────────────────────────────────
-    if sources:
+    statutory = _statutory_sources(inp.hanketyyppi, country)
+    if statutory or sources:
         story.append(KeepTogether([
             Paragraph(_s(lang, "lahteet_h"), st["h2"]),
             _hr(),
-            Paragraph(_s(lang, "lahteet_b"), st["body"]),
         ]))
-        for s in sources:
-            story.append(Paragraph(f"• {s}", st["bullet"]))
+        if statutory:
+            story.append(Paragraph(_s(lang, "lahteet_laki_h"), st["h3"]))
+            for ref in statutory:
+                story.append(Paragraph(f"• {_t_law(lang, ref)}", st["bullet"]))
+            story.append(Spacer(1, 3*mm))
+        if sources:
+            story.append(Paragraph(_s(lang, "lahteet_rag_h"), st["h3"]))
+            story.append(Paragraph(_s(lang, "lahteet_b"), st["body"]))
+            for src in sources:
+                display = src.get("display", src.get("id", "–"))
+                url = src.get("url")
+                if url:
+                    line = f'• <a href="{url}" color="#1a56db">{display}</a> — <font color="#1a56db">{url}</font>'
+                else:
+                    line = f"• {display}"
+                story.append(Paragraph(line, st["bullet"]))
         story.append(Spacer(1, 3*mm))
 
     # ── Hakijan yhteystiedot ──────────────────────────────────────────────────
@@ -3106,7 +3173,7 @@ def generate_application(inp: ApplicationInput) -> str:
 
     print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi}, maa={inp.country or 'FI'})…")
     rag_ctx, sources = _rag_context(inp.hanketyyppi, inp.country or "FI")
-    print(f"      {len(rag_ctx.split())} sanaa, lähteet: {sources}")
+    print(f"      {len(rag_ctx.split())} sanaa, lähteet: {[s['display'] for s in sources]}")
 
     print("[2/4] Generoidaan hakemusteksti (Claude)…")
     if is_bf:
