@@ -44,8 +44,19 @@ _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
-_MODEL_ID    = "claude-sonnet-4-6"
-_EMBED_MODEL = "all-MiniLM-L6-v2"
+_MODEL_ID      = "claude-sonnet-4-6"
+_MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
+_EMBED_MODEL   = "all-MiniLM-L6-v2"
+
+# Sentinel values sent by the frontend when a field is not applicable
+_SENTINEL_VALS = frozenset({
+    "EI-SOVELLU", "N/A", "EJ TILLÄMPLIGT", "IKKE RELEVANT", "NIE DOTYCZY",
+})
+
+
+def _clean_kt(kt: str) -> str:
+    """Replace frontend sentinel 'EI-SOVELLU' / 'N/A' etc. with dash."""
+    return "–" if (not kt or kt.upper() in {v.upper() for v in _SENTINEL_VALS}) else kt
 
 
 def _latin1_safe(text: str) -> str:
@@ -155,6 +166,30 @@ def _postprocess_text(text: str, lang: str = "FI") -> str:
     return text
 
 
+def _limit_huom_markers(sections: dict, lang: str, max_count: int = 4) -> dict:
+    """Rajoita epävarmuusmerkintöjen kokonaismäärä raporttiin (max_count kappaletta)."""
+    huom = _HUOM_LABEL.get(lang, "[Note] ")
+    total = sum(s.count(huom) for s in sections.values() if isinstance(s, str))
+    if total <= max_count:
+        return sections
+    n = 0
+    result = {}
+    for key, val in sections.items():
+        if not isinstance(val, str):
+            result[key] = val
+            continue
+        parts = val.split(huom)
+        out = [parts[0]]
+        for part in parts[1:]:
+            n += 1
+            if n <= max_count:
+                out.append(huom + part)
+            else:
+                out.append(part)  # poista ylimääräinen merkintä, säilytä teksti
+        result[key] = "".join(out)
+    return result
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TASO 2 — AI-oikoluku
 # ─────────────────────────────────────────────────────────────────────────────
@@ -185,7 +220,7 @@ def _proofread_sections(sections: dict) -> dict:
     )
     try:
         resp = anthropic.Anthropic().messages.create(
-            model=_MODEL_ID,
+            model=_MODEL_ID_FAST,
             max_tokens=4096,
             messages=[{"role": "user", "content": prompt}],
         )
@@ -610,6 +645,17 @@ _HANKE_CFG = {
             "datakeskus sähköliityntä Fingrid kantaverkko kapasiteetti",
             "datakeskus kaavoitus asemakaavanmuutos YVA ympäristövaikutukset",
         ],
+        "context_extra": (
+            "DATAKESKUS-ERITYISOHJE: Turun kylmä ilmasto mahdollistaa Free Cooling -järjestelmän "
+            "(ulkoilmajäähdytys) tai Liquid Cooling -ratkaisun ilman mekaanista jäähdytystä suurimman "
+            "osan vuodesta — mainitse tämä energiatehokkuusperusteluissa. "
+            "Käytä selkeästi IT-kuorma (IT load, MW) ja kokonaisteho (bruttokulutus inkl. jäähdytys, "
+            "UPS-häviöt ja valaistus) erillään. Mainitse PUE-tavoite (≤1.3 on hyvä taso). "
+            "Hukkalämpö (free cooling -kierron paluulämpö ~25–35 °C) sopii Turun "
+            "kaukolämpöverkkoon (Turku Energia / Fortum) — tämä on keskeinen ympäristöetu. "
+            "Seuraavat toimenpiteet -osiossa Vastuutaho-sarakkeessa tulee olla konkreettinen titteli: "
+            "'Projektipäällikkö / NCE', 'Lupakonsultti / NCE', 'IT-arkkitehti / Hakija' tms."
+        ),
         "luvat": [
             ("Rakentamislupa",                     "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
             ("Asemakaavanmuutos (tarvitt.)",        "Kunta + ELY-keskus",          "MRL 132/1999"),
@@ -633,6 +679,7 @@ _HANKE_CFG = {
             "Tulipalonsammutus- ja paloturvallisuussuunnitelma",
             "Verkkoliityntälaskelma (Fingrid kapasiteettiselvitys)",
             "Ympäristövaikutusten arviointi (tarvittaessa)",
+            "PUE- ja energiatehokkuusselvitys",
             "Hakijan rekisteriote",
         ],
     },
@@ -645,7 +692,7 @@ _HANKE_CFG = {
 def _rag_context(
     hanketyyppi: str,
     country: str = "FI",
-    n_per_query: int = 4,
+    n_per_query: int = 2,
 ) -> tuple[str, list[dict]]:
     """Hae relevantit dokumenttichunkit.
 
@@ -2491,14 +2538,18 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
         _crit_tmpl = _CRITICAL_EXTRA.get(lang, _CRITICAL_EXTRA["FI"])
         critical_block = "\n\n" + _crit_tmpl.format(hanketyyppi=inp.hanketyyppi)
 
+    context_extra_block = ""
+    if cfg.get("context_extra"):
+        context_extra_block = "\n\n" + cfg["context_extra"]
+
     prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
-Kiinteistötunnus: {inp.kiinteistotunnus}
+Kiinteistötunnus: {_clean_kt(inp.kiinteistotunnus)}
 Teho: {inp.teho_mw} MW{kap_lisatieto}
 Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
-Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}
+Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}{context_extra_block}
 
 {ph["rag_intro"]}
 {rag_context}
@@ -2520,7 +2571,7 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     resp   = claude.messages.create(
         model=_MODEL_ID,
-        max_tokens=8000,
+        max_tokens=5000,
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
@@ -2859,7 +2910,7 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
             _lang  = getattr(inp, "lang", "FI")
             _draft = _s(_lang, "hdr_draft")
             _kunta = _latin1_safe(inp.kunta or "")
-            _kt    = _latin1_safe(inp.kiinteistotunnus or "")
+            _kt    = _latin1_safe(_clean_kt(inp.kiinteistotunnus or ""))
             _ht    = _latin1_safe(inp.hanketyyppi or "")
             # Ylätunniste
             self.line(m, page_h - 1.55*cm, page_w - m, page_h - 1.55*cm)
@@ -3026,7 +3077,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         [_s(lang, "m_hanketyyppi"), f"{inp.hanketyyppi} — {_nimi(lang, inp.hanketyyppi, cfg['nimi_fi'])}"],
         [_s(lang, "m_teho"),        teho_val],
         [_s(lang, "m_kunta"),       inp.kunta],
-        [_s(lang, "m_kt"),          inp.kiinteistotunnus],
+        [_s(lang, "m_kt"),          _clean_kt(inp.kiinteistotunnus)],
         *([[_ph_labels.get("phase_label", "Hankkeen vaihe"),
             _t_vaihe(lang, inp.hankkeen_vaihe)]]
           if inp.hankkeen_vaihe else []),
@@ -3086,11 +3137,12 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
+    _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec3"), st["h2"]),
         _hr(),
+        _luvat_tbl,
     ]))
-    story.append(_luvat_table(inp.hanketyyppi, st, lang, country))
     story.append(Spacer(1, 5*mm))
     _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
     story.append(Paragraph(_s(lang, _kaava_key), st["body"]))
@@ -3110,18 +3162,22 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
-    story.append(KeepTogether([
-        Paragraph(_s(lang, "sec4"), st["h2"]),
-        _hr(),
-    ]))
     country_luvat_override = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     if country_luvat_override:
         laki_set = {laki for _, _, laki in country_luvat_override}
     else:
         laki_set = {laki for _, _, laki in cfg["luvat"]}
         laki_set.update(cfg.get("laki_extra", []))
-    for ref in sorted(laki_set):
-        story.append(Paragraph(f"• {_t_law(lang, ref)}", st["bullet"]))
+    laki_bullets = [Paragraph(f"• {_t_law(lang, ref)}", st["bullet"])
+                    for ref in sorted(laki_set)]
+    # Keep heading + at least 2 bullets together so heading never strands alone
+    story.append(KeepTogether([
+        Paragraph(_s(lang, "sec4"), st["h2"]),
+        _hr(),
+        *laki_bullets[:2],
+    ]))
+    for b in laki_bullets[2:]:
+        story.append(b)
     story.append(Spacer(1, 4*mm))
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
@@ -3142,29 +3198,21 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.extend(_toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang))
     story.append(Spacer(1, 4*mm))
 
-    # ── Lähteet ───────────────────────────────────────────────────────────────
-    statutory = _statutory_sources(inp.hanketyyppi, country)
-    if statutory or sources:
+    # ── Lähteet (vain RAG-viranomaislähteet; säädösperusta on jo osiossa 4) ───
+    if sources:
         story.append(KeepTogether([
             Paragraph(_s(lang, "lahteet_h"), st["h2"]),
             _hr(),
         ]))
-        if statutory:
-            story.append(Paragraph(_s(lang, "lahteet_laki_h"), st["h3"]))
-            for ref in statutory:
-                story.append(Paragraph(f"• {_t_law(lang, ref)}", st["bullet"]))
-            story.append(Spacer(1, 3*mm))
-        if sources:
-            story.append(Paragraph(_s(lang, "lahteet_rag_h"), st["h3"]))
-            story.append(Paragraph(_s(lang, "lahteet_b"), st["body"]))
-            for src in sources:
-                display = src.get("display", src.get("id", "–"))
-                url = src.get("url")
-                if url:
-                    line = f'• <a href="{url}" color="#1a56db">{display}</a> — <font color="#1a56db">{url}</font>'
-                else:
-                    line = f"• {display}"
-                story.append(Paragraph(line, st["bullet"]))
+        story.append(Paragraph(_s(lang, "lahteet_b"), st["body"]))
+        for src in sources:
+            display = src.get("display", src.get("id", "–"))
+            url = src.get("url")
+            if url:
+                line = f'• <a href="{url}" color="#1a56db">{display}</a> — <font color="#1a56db">{url}</font>'
+            else:
+                line = f"• {display}"
+            story.append(Paragraph(line, st["bullet"]))
         story.append(Spacer(1, 3*mm))
 
     # ── Hakijan yhteystiedot ──────────────────────────────────────────────────
@@ -3219,6 +3267,7 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
     _lang = inp.lang or "FI"
     sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
                 for k, v in sections.items()}
+    sections = _limit_huom_markers(sections, _lang, max_count=4)
     if is_bf:
         pdf_bytes = _generate_bf_pdf(inp, sections, sources)
     else:
@@ -3232,6 +3281,7 @@ def apply_proofread_to_pdf(inp: ApplicationInput, sections: dict, sources: list)
     sections = _proofread_sections(sections)
     sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
                 for k, v in sections.items()}
+    sections = _limit_huom_markers(sections, _lang, max_count=4)
     is_bf = inp.hanketyyppi == "business_finland"
     if is_bf:
         return _generate_bf_pdf(inp, sections, sources)
