@@ -236,6 +236,7 @@ _HANKE_CFG = {
     "BESS": {
         "nimi_fi":    "Akkuenergiavarastohanke",
         "lyhenne":    "BESS",
+        "kasittelyaika": {"FI": "6–18 kk", "EN": "6–18 months"},
         "rag_queries": [
             "BESS akkuvarasto ympäristölupa paloturvallisuusvaatimukset sijoittaminen",
             "litiumioniakku sammutusvedet pohjavesialue ympäristölupa",
@@ -272,6 +273,7 @@ _HANKE_CFG = {
     "tuulivoima_maa": {
         "nimi_fi":    "Maalle sijoitettava tuulivoimahanke",
         "lyhenne":    "WPP-maa",
+        "kasittelyaika": {"FI": "4–7 vuotta", "EN": "4–7 years"},
         "rag_queries": [
             "tuulivoima YVA ympäristövaikutusten arviointi maa lupa",
             "tuulivoimala kaava suunnittelutarveratkaisu meluselvitys linnusto",
@@ -309,6 +311,7 @@ _HANKE_CFG = {
     "tuulivoima_meri": {
         "nimi_fi":    "Merelle sijoitettava tuulivoimahanke (offshore)",
         "lyhenne":    "WPP-meri",
+        "kasittelyaika": {"FI": "7–12 vuotta", "EN": "7–12 years"},
         "rag_queries": [
             "tuulivoima meri offshore lupa ympäristölupa",
             "tuulivoima YVA vesialue vesiliikenne Traficom",
@@ -347,6 +350,7 @@ _HANKE_CFG = {
     "aurinkovoima": {
         "nimi_fi":    "Aurinkovoimalahanke",
         "lyhenne":    "PV",
+        "kasittelyaika": {"FI": "1–3 vuotta", "EN": "1–3 years"},
         "rag_queries": [
             "aurinkovoima aurinkopaneeli rakentamislupa ympäristölupa",
             "aurinkovoimala verkkoliityntä jakeluverkko vaatimukset",
@@ -380,6 +384,7 @@ _HANKE_CFG = {
     "SMR": {
         "nimi_fi":    "Pienydinreaktori (SMR) — ennakkolupahakemus",
         "lyhenne":    "SMR",
+        "kasittelyaika": {"FI": "10–15 vuotta", "EN": "10–15 years"},
         "rag_queries": [
             "ydinvoima lupa STUK ydinturvallisuus YVL-ohje regulatory oversight",
             "ydinlaitos ympäristövaikutusten arviointi periaatepäätös safety design",
@@ -419,6 +424,7 @@ _HANKE_CFG = {
     "vesivoima": {
         "nimi_fi":    "Vesivoimalahanke",
         "lyhenne":    "HPP",
+        "kasittelyaika": {"FI": "5–10 vuotta", "EN": "5–10 years"},
         "rag_queries": [
             "vesivoima vesivoimala vesilupa rakentaminen",
             "vesistö pato padotus vesirakentaminen ympäristölupa",
@@ -456,6 +462,7 @@ _HANKE_CFG = {
     "hybridi": {
         "nimi_fi":    "Hybridivoimalahanke (BESS + tuuli/aurinko)",
         "lyhenne":    "HYB",
+        "kasittelyaika": {"FI": "4–8 vuotta", "EN": "4–8 years"},
         "rag_queries": [
             "BESS akkuvarasto ympäristölupa paloturvallisuus litiumioniakku",
             "tuulivoima aurinkovoima YVA lupa kaava meluselvitys",
@@ -515,6 +522,7 @@ _HANKE_CFG = {
     "smr_bess": {
         "nimi_fi":    "SMR + BESS -hybridienergiajärjestelmä",
         "lyhenne":    "SMR+BESS",
+        "kasittelyaika": {"FI": "10–15 vuotta", "EN": "10–15 years"},
         "rag_queries": [
             "ydinvoima SMR lupa STUK pre-licensing YVL turvallisuusseloste",
             "BESS akkuvarasto ympäristölupa paloturvallisuus litiumioniakku sammutusvedet",
@@ -557,6 +565,7 @@ _HANKE_CFG = {
     "ymparistolupa": {
         "nimi_fi":    "Ympäristölupahakemus",
         "lyhenne":    "YL",
+        "kasittelyaika": {"FI": "3–12 kk", "EN": "3–12 months"},
         "rag_queries": [
             "ympäristölupa lupahakemus YSL 527/2014 luvantarve Luova toiminta",
             "ympäristölupa hakemuksen sisältö selvitykset liitteet ympäristövaikutukset",
@@ -590,6 +599,41 @@ _HANKE_CFG = {
             "YVA-selostus tai perustelut YVA:n soveltumattomuudesta",
             "Hakijan oikeushenkilön rekisteriote (kaupparekisteri)",
             "Valtakirja (jos asiamies edustaa)",
+        ],
+    },
+    "datakeskus": {
+        "nimi_fi":    "Datakeskushanke",
+        "lyhenne":    "DC",
+        "kasittelyaika": {"FI": "2–5 vuotta", "EN": "2–5 years"},
+        "rag_queries": [
+            "datakeskus rakentamislupa ympäristölupa jäähdytys meluhaitat",
+            "datakeskus sähköliityntä Fingrid kantaverkko kapasiteetti",
+            "datakeskus kaavoitus asemakaavanmuutos YVA ympäristövaikutukset",
+        ],
+        "luvat": [
+            ("Rakentamislupa",                     "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
+            ("Asemakaavanmuutos (tarvitt.)",        "Kunta + ELY-keskus",          "MRL 132/1999"),
+            ("YVA-menettely (tarvitt. ≥50 MW)",    "ELY-keskus / Luova",          "YVA-laki 252/2017"),
+            ("Ympäristölupa (jäähdytys, melu)",    "Lupa- ja valvontavirasto",    "YSL 527/2014"),
+            ("Naapurikuuleminen",                   "Kunta / hakija",              "Rakentamislaki 751/2023, 44 §"),
+            ("Verkkoliityntäsopimus",               "Fingrid Oyj / DSO",           "Sähkömarkkinalaki 588/2013"),
+        ],
+        "laki_extra": [
+            "Luonnonsuojelulaki 9/2023",
+            "Meluselvitysasetus 993/1992",
+        ],
+        "liitteet": [
+            "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Asemapiirustus ja pohjakartta (M 1:500)",
+            "Rakennussuunnitelmat (tekninen tila, jäähdytysjärjestelmät)",
+            "Meluselvitys (jäähdytys- ja aggregaattimelu)",
+            "Jäähdytyksen lämpökuormaselvitys",
+            "Sähköjärjestelmäsuunnitelma (UPS, varavoima, liityntä)",
+            "Tulipalonsammutus- ja paloturvallisuussuunnitelma",
+            "Verkkoliityntälaskelma (Fingrid kapasiteettiselvitys)",
+            "Ympäristövaikutusten arviointi (tarvittaessa)",
+            "Hakijan rekisteriote",
         ],
     },
 }
@@ -711,6 +755,9 @@ _HANKE_NIMI_TRANS: dict[str, dict[str, str]] = {
     "ymparistolupa":  {"EN": "Environmental Permit Application (YSL 527/2014)", "SE": "Miljötillståndsansökan",
                        "DA": "Miljøtilladelsesansøgning",                      "NO": "Søknad om miljøtillatelse",
                        "PL": "Wniosek o pozwolenie środowiskowe"},
+    "datakeskus":     {"EN": "Data Centre Permit Application",                  "SE": "Tillståndsansökan för datacenter",
+                       "DA": "Tilladelsesansøgning for datacenter",              "NO": "Tillatelsessøknad for datasenter",
+                       "PL": "Wniosek o zezwolenie na centrum danych"},
 }
 
 def _nimi(lang: str, hanketyyppi: str, nimi_fi: str) -> str:
@@ -1595,6 +1642,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "disclaimer_b":    ("Tämä asiakirja on tekoälyavusteisesti laadittu luonnos. Se ei ole juridisesti "
                             "sitova eikä korvaa pätevän lupa-asiantuntijan tai lakimiehen neuvoja. Ennen "
                             "hakemuksen jättämistä asiakirja on tarkistutettava alan ammattilaisella."),
+        "nce_speed_note":  ("NCE Permit AI generoi hakemuspohjan ~60 sekunnissa. "
+                            "Viranomaisen arviointiviive on erillinen prosessi ja vaihtelee "
+                            "hanketyypeittäin (ks. alta)."),
+        "arviointiviive_lbl": "Viranomaisen arviointiviive",
         "m_hakija":        "Hakija",       "m_ytunnus":    "Y-tunnus",
         "m_hanketyyppi":   "Hanketyyppi",  "m_teho":       "Teho / kapasiteetti",
         "m_kunta":         "Sijaintikunta","m_kt":         "Kiinteistötunnus",
@@ -1670,6 +1721,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "disclaimer_b":    ("This document is an AI-assisted draft. It is not legally binding and does not "
                             "replace the advice of a qualified permit expert or lawyer. Before submitting "
                             "the application, this document must be reviewed by a professional."),
+        "nce_speed_note":  ("NCE Permit AI generates the application draft in ~60 seconds. "
+                            "Authority processing time is a separate process and varies by project type "
+                            "(see below)."),
+        "arviointiviive_lbl": "Authority processing time",
         "m_hakija":        "Applicant",      "m_ytunnus":    "Business ID",
         "m_hanketyyppi":   "Project Type",   "m_teho":       "Capacity / Power",
         "m_kunta":         "Municipality",   "m_kt":         "Property ID",
@@ -2858,6 +2913,9 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
           if country != "FI" else []),
         [_s(lang, "m_laadittu"),        now],
         [_s(lang, "m_laatinut_lbl"),    _s(lang, "m_laatinut")],
+        *([[_s(lang, "arviointiviive_lbl"),
+            cfg.get("kasittelyaika", {}).get(lang, cfg.get("kasittelyaika", {}).get("EN", ""))]]
+          if cfg.get("kasittelyaika") else []),
     ]
     meta_tbl = Table(
         [[Paragraph(k, ParagraphStyle("mk", fontSize=8.5, textColor=C_GRAY,
@@ -2877,6 +2935,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[str]) -> b
 
     # AI-varoituslaatikko
     story.append(_disclaimer_box(st, lang))
+    if _s(lang, "nce_speed_note"):
+        story.append(Spacer(1, 3*mm))
+        story.append(Paragraph(
+            _s(lang, "nce_speed_note"),
+            ParagraphStyle("nce_note", fontSize=8, textColor=C_NAVY,
+                           fontName="Helvetica-Oblique", leading=12, alignment=TA_CENTER),
+        ))
     story.append(Spacer(1, 8*mm))
 
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
