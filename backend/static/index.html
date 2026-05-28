@@ -3430,9 +3430,6 @@ const LANG_META = {
 };
 
 const LUPA_I18N = {
-  'Rakennuslupa':                           { EN: 'Building permit',                      SE: 'Bygglov',                           DA: 'Byggetilladelse',                     NO: 'Byggetillatelse',                  PL: 'Pozwolenie na budowę' },
-  'Rakennuslupa (mahdollinen)':             { EN: 'Building permit (possible)',            SE: 'Bygglov (möjligt)',                  DA: 'Byggetilladelse (mulig)',             NO: 'Byggetillatelse (mulig)',           PL: 'Pozwolenie na budowę (możliwe)' },
-  'Rakennuslupa (offshore)':               { EN: 'Building permit (offshore)',             SE: 'Bygglov (offshore)',                 DA: 'Byggetilladelse (offshore)',          NO: 'Byggetillatelse (offshore)',        PL: 'Pozwolenie na budowę (offshore)' },
   'Rakentamislupa':                         { EN: 'Construction permit',                   SE: 'Bygglov',                           DA: 'Byggetilladelse',                     NO: 'Byggetillatelse',                  PL: 'Pozwolenie na budowę' },
   'Rakentamislupa (mahdollinen)':           { EN: 'Construction permit (possible)',         SE: 'Bygglov (möjligt)',                  DA: 'Byggetilladelse (mulig)',             NO: 'Byggetillatelse (mulig)',           PL: 'Pozwolenie na budowę (możliwe)' },
   'Rakentamislupa (offshore)':             { EN: 'Construction permit (offshore)',          SE: 'Bygglov (offshore)',                 DA: 'Byggetilladelse (offshore)',          NO: 'Byggetillatelse (offshore)',        PL: 'Pozwolenie na budowę (offshore)' },
@@ -4480,7 +4477,7 @@ const _COUNTRY_PERMITS_CFG = {
     },
     bess: {
       esiselvitys:  { kohdeviranomainen: 'Kunta / RDOŚ',    viranomaiset: ['Gmina (kunta)', 'RDOŚ (ympäristöpäätös)'],                                            luvat: ['MPZP-selvitys (paikallinen asemakaava)', 'Decyzja środowiskowa — tarveharkinta (RDOŚ)', 'Sieciowa zdolność przyłączeniowa (DSO/PSE)'] },
-      lupavaihe:    { kohdeviranomainen: 'Starostwo (rakennuslupa)', viranomaiset: ['RDOŚ / GDOŚ', 'Starostwo Powiatowe', 'URE'],                                   luvat: ['Decyzja środowiskowa (RDOŚ/GDOŚ)', 'Pozwolenie na budowę (Starostwo)', 'Koncesja URE (rekisteröinti > 1 MW)', 'Umowa przyłączeniowa (DSO)'] },
+      lupavaihe:    { kohdeviranomainen: 'Starostwo (pozwolenie na budowę)', viranomaiset: ['RDOŚ / GDOŚ', 'Starostwo Powiatowe', 'URE'],                                   luvat: ['Decyzja środowiskowa (RDOŚ/GDOŚ)', 'Pozwolenie na budowę (Starostwo)', 'Koncesja URE (rekisteröinti > 1 MW)', 'Umowa przyłączeniowa (DSO)'] },
       rakentaminen: { kohdeviranomainen: 'Starostwo / URE', viranomaiset: ['Starostwo Powiatowe', 'URE', 'DSO'],                                                   luvat: ['Odbiór budynku (Nadzór Budowlany)', 'Wpis do rejestru URE', 'Umowa dystrybucyjna (DSO)'] },
     },
     tuulivoima_maa: {
@@ -4490,7 +4487,7 @@ const _COUNTRY_PERMITS_CFG = {
     },
     aurinkovoima: {
       esiselvitys:  { kohdeviranomainen: 'Gmina / Starosta', viranomaiset: ['Gmina (kunta)', 'Starosta', 'DSO'],                                                   luvat: ['MPZP tai WZ-päätös (Warunki Zabudowy)', 'Sieciowa zdolność przyłączeniowa (DSO)', 'OOŚ-tarveharkinta (>1 MW)'] },
-      lupavaihe:    { kohdeviranomainen: 'Starosta (rakennuslupa)', viranomaiset: ['Starosta (>150 kW)', 'DSO / PSE', 'URE'],                                       luvat: ['Pozwolenie na budowę (Starosta, yli 150 kW)', 'Zgłoszenie budowlane (alle 150 kW)', 'Umowa przyłączeniowa (DSO)', 'Koncesja URE (yli 500 kW)'] },
+      lupavaihe:    { kohdeviranomainen: 'Starosta (pozwolenie na budowę)', viranomaiset: ['Starosta (>150 kW)', 'DSO / PSE', 'URE'],                                       luvat: ['Pozwolenie na budowę (Starosta, yli 150 kW)', 'Zgłoszenie budowlane (alle 150 kW)', 'Umowa przyłączeniowa (DSO)', 'Koncesja URE (yli 500 kW)'] },
       rakentaminen: { kohdeviranomainen: 'Nadzór budowlany', viranomaiset: ['Nadzór Budowlany', 'DSO', 'URE'],                                                     luvat: ['Odbiór budynku', 'Wpis do rejestru mikroinstalacji tai wytwórców (URE)', 'Umowa dystrybucyjna (DSO)'] },
     },
   },

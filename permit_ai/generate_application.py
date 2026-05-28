@@ -737,16 +737,16 @@ _HANKE_NIMI_TRANS: dict[str, dict[str, str]] = {
     "business_finland":{"EN": "Business Finland R&D Grant Application",      "SE": "Business Finland FoU-bidragsansökan",
                         "DA": "Business Finland F&U-tilskudsansøgning",        "NO": "Business Finland FoU-støttesøknad",
                         "PL": "Wniosek o dofinansowanie B+R Business Finland"},
-    "asuinrakennus":  {"EN": "Residential Building Permit Application",      "SE": "Bygglovsansökan för bostadsbyggnad",
+    "asuinrakennus":  {"EN": "Residential Construction Permit Application",   "SE": "Bygglovsansökan för bostadsbyggnad",
                        "DA": "Byggetilladelsesansøgning for beboelsesbygning", "NO": "Byggetillatelsessøknad for boligbygg",
                        "PL": "Wniosek o pozwolenie na budowę budynku mieszkalnego"},
-    "teollisuus":     {"EN": "Industrial Building Permit Application",       "SE": "Bygglovsansökan för industribyggnad",
-                       "DA": "Byggetilladelsesansøgning for industribygning",  "NO": "Byggetillatelsessøknad for industribygg",
+    "teollisuus":     {"EN": "Industrial Construction Permit Application",    "SE": "Bygglovsansökan för industribyggnad",
+                       "DA": "Byggetilladelsesansøgning for industribygning",  "NO": "Byggetillatelsessøknad för industribygg",
                        "PL": "Wniosek o pozwolenie na budowę budynku przemysłowego"},
-    "maatalous":      {"EN": "Agricultural Building Permit Application",     "SE": "Bygglovsansökan för lantbruksbyggnad",
+    "maatalous":      {"EN": "Agricultural Construction Permit Application",  "SE": "Bygglovsansökan för lantbruksbyggnad",
                        "DA": "Byggetilladelsesansøgning for landbrugsbygning", "NO": "Byggetillatelsessøknad for landbruksbygg",
                        "PL": "Wniosek o pozwolenie na budowę budynku rolniczego"},
-    "liikerakennus":  {"EN": "Commercial Building Permit Application",       "SE": "Bygglovsansökan för affärsbyggnad",
+    "liikerakennus":  {"EN": "Commercial Construction Permit Application",    "SE": "Bygglovsansökan för affärsbyggnad",
                        "DA": "Byggetilladelsesansøgning for erhvervsbygning",  "NO": "Byggetillatelsessøknad for næringsbygg",
                        "PL": "Wniosek o pozwolenie na budowę budynku handlowego"},
     "muu":            {"EN": "Other Project Permit Application",             "SE": "Tillståndsansökan för annat projekt",
@@ -853,25 +853,25 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Rakentamislupa (ydinlaitos)",     "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
             ("Käyttölupa (ydinlaitos)",         "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
             ("Vesilupa (jäähdytysvesi)",        "Wody Polskie (PGWWP)",                "Prawo wodne (Ustawa z 20.07.2017)"),
-            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na budowę",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
             ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
         ],
         "BESS": [
-            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na budowę",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
             ("Ympäristölupa",                   "Starosta / RDOŚ",                     "Prawo ochrony środowiska (Ustawa z 27.04.2001)"),
             ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
             ("YVA-menettely (tarvitt.)",        "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
             ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
         ],
         "tuulivoima_maa": [
-            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na budowę",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
             ("YVA-menettely",                   "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
             ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
             ("Etäisyysvaatimus (tuulivoima)",   "Gmina / Starostwo Powiatowe",         "Ustawa o inwestycjach w zakresie elektrowni wiatrowych (2016)"),
             ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
         ],
         "aurinkovoima": [
-            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na budowę",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
             ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
             ("YVA-menettely (tarvitt.)",        "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
             ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
@@ -880,7 +880,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Periaatepäätös (VN)",             "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
             ("YVA-menettely",                   "RDOŚ / GDOŚ",                         "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
             ("Rakentamislupa (ydinlaitos)",      "PAA (Państwowa Agencja Atomistyki)",  "Prawo atomowe (Ustawa z 29.11.2000)"),
-            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na budowę",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
             ("Vesilupa (jäähdytysvesi)",        "Wody Polskie (PGWWP)",                "Prawo wodne (Ustawa z 20.07.2017)"),
             ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
             ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
@@ -889,7 +889,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Vesilupa (padotus, rakentaminen)", "Wody Polskie (PGWWP)",               "Prawo wodne (Ustawa z 20.07.2017)"),
             ("Ympäristölupa",                   "RDOŚ",                                "Prawo ochrony środowiska (Ustawa z 27.04.2001)"),
             ("YVA-menettely (tarvitt.)",        "RDOŚ / GDOŚ",                         "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
-            ("Rakennuslupa",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na budowę",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
             ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
             ("Maankäyttösopimus",               "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
         ],
@@ -902,11 +902,11 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Rakentamislupa (ydinlaitos)",       "Strålsäkerhetsmyndigheten (SSM)",           "Kärntekniklag (SFS 1984:3)"),
             ("Käyttölupa (ydinlaitos)",           "Strålsäkerhetsmyndigheten (SSM)",           "Kärntekniklag (SFS 1984:3)"),
             ("Vesilupa (jäähdytysvesi)",          "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
-            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Bygglov",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
         ],
         "BESS": [
-            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Bygglov",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
             ("Ympäristölupa",                     "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808)"),
             ("Verkkoliityntäsopimus",             "Svenska kraftnät / lokalt elnätsbolag",     "Ellagen (SFS 1997:857)"),
             ("YVA-menettely (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
@@ -916,12 +916,12 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "Länsstyrelsen",                         "Miljöbalken (SFS 1998:808) kap. 6"),
             ("Tillstånd / koncession",               "Energimyndigheten",                      "Ellagen (SFS 1997:857) / Miljöbalken"),
             ("Osayleiskaava tai asemakaava",          "Kommunen",                              "Plan- och bygglagen (SFS 2010:900)"),
-            ("Rakennuslupa",                          "Kommunen (byggnadsnämnd)",              "Plan- och bygglagen (SFS 2010:900)"),
+            ("Bygglov",                          "Kommunen (byggnadsnämnd)",              "Plan- och bygglagen (SFS 2010:900)"),
             ("Ympäristölupa (tarvitt.)",              "Mark- och miljödomstolen",              "Miljöbalken (SFS 1998:808)"),
             ("Verkkoliityntäsopimus",                 "Svenska kraftnät",                      "Ellagen (SFS 1997:857)"),
         ],
         "aurinkovoima": [
-            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Bygglov",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
             ("Verkkoliityntäsopimus",             "Svenska kraftnät / lokalt elnätsbolag",     "Ellagen (SFS 1997:857)"),
             ("YVA-menettely (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
@@ -930,7 +930,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Periaatepäätös (VN)",              "Nærings- och beredskapsdept. / Regeringen", "Kärntekniklag (SFS 1984:3)"),
             ("YVA-menettely",                    "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808) kap. 6"),
             ("Rakentamislupa (ydinlaitos)",       "Strålsäkerhetsmyndigheten (SSM)",           "Kärntekniklag (SFS 1984:3)"),
-            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Bygglov",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
             ("Vesilupa (jäähdytysvesi)",          "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
             ("Verkkoliityntäsopimus",             "Svenska kraftnät",                          "Ellagen (SFS 1997:857)"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
@@ -939,7 +939,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Vesilupa (padotus, rakentaminen)",  "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
             ("Ympäristölupa",                     "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808)"),
             ("YVA-menettely (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
-            ("Rakennuslupa",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Bygglov",                      "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
             ("Verkkoliityntäsopimus",             "Svenska kraftnät",                          "Ellagen (SFS 1997:857)"),
         ],
         "tuulivoima_meri": [
@@ -958,11 +958,11 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Rakentamislupa (ydinlaitos)",       "Sundhedsstyrelsen / Statens Institut for Strålebeskyttelse (SIS)", "Lov om brug af radioaktive stoffer (nr. 94/2003)"),
             ("Käyttölupa (ydinlaitos)",           "Sundhedsstyrelsen / SIS",                   "Lov om brug af radioaktive stoffer (nr. 94/2003)"),
             ("Vesilupa (jäähdytysvesi)",          "Kystdirektoratet",                          "Kystbeskyttelsesloven (LBK nr. 705/2022)"),
-            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Byggetilladelse",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen (planafdelingen)",                 "Planloven (LBK nr. 1157/2021)"),
         ],
         "BESS": [
-            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Byggetilladelse",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
             ("Ympäristölupa",                     "Kommunen / Miljøstyrelsen",                 "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
             ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
             ("YVA-menettely (tarvitt.)",          "Miljøstyrelsen",                            "Miljøvurderingsloven (LBK nr. 1976/2021)"),
@@ -972,12 +972,12 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "Miljøstyrelsen",                        "Miljøvurderingsloven (LBK nr. 1976/2021)"),
             ("Vindmølletilladelse",                   "Energistyrelsen",                       "Lov om vedvarende energi (LBK nr. 388/2022)"),
             ("Osayleiskaava tai asemakaava",           "Kommunen",                             "Planloven (LBK nr. 1157/2021)"),
-            ("Rakennuslupa",                          "Kommunen (teknik og miljø)",            "Byggeloven (LBK nr. 1178/2023)"),
+            ("Byggetilladelse",                          "Kommunen (teknik og miljø)",            "Byggeloven (LBK nr. 1178/2023)"),
             ("Ympäristölupa (tarvitt.)",              "Miljøstyrelsen",                        "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
             ("Verkkoliityntäsopimus",                 "Energinet",                             "Elforsyningsloven (LBK nr. 119/2020)"),
         ],
         "aurinkovoima": [
-            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Byggetilladelse",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
             ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
             ("YVA-menettely (tarvitt.)",          "Miljøstyrelsen",                            "Miljøvurderingsloven (LBK nr. 1976/2021)"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
@@ -986,7 +986,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Periaatepäätös (VN)",              "Energistyrelsen / Klima-, Energi- og Forsyningsministeriet", "Lov om anvendelse af Danmarks undergrund (nr. 181/1990)"),
             ("YVA-menettely",                    "Miljøministeriet / Miljøstyrelsen",          "Miljøvurderingsloven (LBK nr. 1976/2021)"),
             ("Rakentamislupa (ydinlaitos)",       "Sundhedsstyrelsen / SIS",                   "Lov om brug af radioaktive stoffer (nr. 94/2003)"),
-            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Byggetilladelse",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
             ("Vesilupa (jäähdytysvesi)",          "Kystdirektoratet",                          "Kystbeskyttelsesloven (LBK nr. 705/2022)"),
             ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
@@ -995,7 +995,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Vesilupa (padotus, rakentaminen)",  "Kystdirektoratet / Miljøstyrelsen",         "Vandforsyningsloven (LBK nr. 118/2020)"),
             ("Ympäristölupa",                     "Miljøstyrelsen",                            "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
             ("YVA-menettely (tarvitt.)",          "Miljøstyrelsen",                            "Miljøvurderingsloven (LBK nr. 1976/2021)"),
-            ("Rakennuslupa",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Byggetilladelse",                      "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
             ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
         ],
         "tuulivoima_meri": [
@@ -1014,11 +1014,11 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Rakentamislupa (ydinlaitos)",       "Direktoratet for strålevern og atomsikkerhet (DSA)", "Strålevernloven (LOV-2000-05-12-36)"),
             ("Käyttölupa (ydinlaitos)",           "Direktoratet for strålevern og atomsikkerhet (DSA)", "Strålevernloven (LOV-2000-05-12-36)"),
             ("Vesilupa (jäähdytysvesi)",          "NVE (Norges vassdrags- og energidirektorat)","Vassdragsreguleringsloven (LOV-1917-12-14-17)"),
-            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Byggetillatelse",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
         ],
         "BESS": [
-            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Byggetillatelse",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
             ("Ympäristölupa",                     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
             ("Verkkoliityntäsopimus",             "Statnett / lokalt nettselskap",              "Energiloven (LOV-1990-06-29-50)"),
             ("YVA-menettely (tarvitt.)",          "Statsforvalteren / Miljødirektoratet",        "Plan- og bygningsloven kap. 14"),
@@ -1028,12 +1028,12 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "NVE / Miljødirektoratet",               "Plan- og bygningsloven kap. 14"),
             ("Konsesjon (anleggskonsesjon)",          "NVE",                                   "Energiloven (LOV-1990-06-29-50) § 3-1"),
             ("Osayleiskaava tai asemakaava",          "Kommunen",                              "Plan- og bygningsloven (LOV-2008-06-27-71)"),
-            ("Rakennuslupa",                          "Kommunen (plan og bygning)",            "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Byggetillatelse",                          "Kommunen (plan og bygning)",            "Plan- og bygningsloven (LOV-2008-06-27-71)"),
             ("Ympäristölupa (tarvitt.)",              "Statsforvalteren",                      "Forurensningsloven (LOV-1981-03-13-6)"),
             ("Verkkoliityntäsopimus",                 "Statnett",                              "Energiloven (LOV-1990-06-29-50)"),
         ],
         "aurinkovoima": [
-            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Byggetillatelse",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
             ("Verkkoliityntäsopimus",             "Statnett / lokalt nettselskap",              "Energiloven (LOV-1990-06-29-50)"),
             ("YVA-menettely (tarvitt.)",          "NVE / Miljødirektoratet",                   "Plan- og bygningsloven kap. 14"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
@@ -1042,7 +1042,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Periaatepäätös (VN)",              "Nærings- og fiskeridepartementet (NFD)",     "Atomenergiloven (LOV-1972-05-12-28)"),
             ("YVA-menettely",                    "Statsforvalteren / Miljødirektoratet",        "Plan- og bygningsloven kap. 14"),
             ("Rakentamislupa (ydinlaitos)",       "Direktoratet for strålevern og atomsikkerhet (DSA)", "Strålevernloven (LOV-2000-05-12-36)"),
-            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Byggetillatelse",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
             ("Vesilupa (jäähdytysvesi)",          "NVE",                                        "Vassdragsreguleringsloven (LOV-1917-12-14-17)"),
             ("Verkkoliityntäsopimus",             "Statnett",                                   "Energiloven (LOV-1990-06-29-50)"),
             ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
@@ -1051,7 +1051,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Vesilupa (padotus, rakentaminen)",  "NVE",                                        "Vassdragsreguleringsloven (LOV-1917-12-14-17)"),
             ("Ympäristölupa",                     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
             ("YVA-menettely (tarvitt.)",          "NVE / Miljødirektoratet",                   "Plan- og bygningsloven kap. 14"),
-            ("Rakennuslupa",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Byggetillatelse",                      "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
             ("Verkkoliityntäsopimus",             "Statnett",                                   "Energiloven (LOV-1990-06-29-50)"),
         ],
         "tuulivoima_meri": [
@@ -1430,10 +1430,6 @@ _LUPA_TRANS: dict[str, dict[str, str]] = {
     "Ympäristölupa (tarvitt.)":                     {"EN": "Environmental permit (if required)",               "SE": "Miljötillstånd (vid behov)",                  "DA": "Miljøgodkendelse (om nødvendigt)",               "NO": "Miljøtillatelse (om nødvendig)",                "PL": "Pozwolenie środowiskowe (jeśli wymagane)"},
     "Ympäristölupa (tarvitt. ≥1 ha)":              {"EN": "Environmental permit (if required, ≥1 ha)",        "SE": "Miljötillstånd (vid behov, ≥1 ha)",           "DA": "Miljøgodkendelse (om nødvendigt, ≥1 ha)",       "NO": "Miljøtillatelse (om nødvendig, ≥1 ha)",        "PL": "Pozwolenie środowiskowe (jeśli wymagane, ≥1 ha)"},
     "Ympäristölupa (BESS-komponentti)":             {"EN": "Environmental permit (BESS component)",            "SE": "Miljötillstånd (BESS-komponent)",              "DA": "Miljøgodkendelse (BESS-komponent)",              "NO": "Miljøtillatelse (BESS-komponent)",              "PL": "Pozwolenie środowiskowe (komponent BESS)"},
-    "Rakennuslupa":                                  {"EN": "Building permit",                                  "SE": "Bygglov",                                     "DA": "Byggetilladelse",                               "NO": "Byggetillatelse",                               "PL": "Pozwolenie na budowę"},
-    "Rakennuslupa tai toimenpidelupa":               {"EN": "Building permit or action permit",                 "SE": "Bygglov eller åtgärdstillstånd",              "DA": "Byggetilladelse eller handlingstilladelse",     "NO": "Byggetillatelse eller tiltakstillatelse",       "PL": "Pozwolenie na budowę lub pozwolenie na działanie"},
-    "Rakennuslupa (tuulivoimala)":                   {"EN": "Building permit (wind turbine)",                   "SE": "Bygglov (vindkraftverk)",                     "DA": "Byggetilladelse (vindmølle)",                   "NO": "Byggetillatelse (vindturbin)",                  "PL": "Pozwolenie na budowę (turbina wiatrowa)"},
-    "Rakennus-/toimenpidelupa (PV + BESS)":          {"EN": "Building/action permit (PV + BESS)",              "SE": "Bygglov/åtgärdstillstånd (PV + BESS)",        "DA": "Bygge-/handlingstilladelse (PV + BESS)",        "NO": "Bygge-/tiltakstillatelse (PV + BESS)",          "PL": "Pozwolenie na budowę/działanie (PV + BESS)"},
     "Naapurikuuleminen":                             {"EN": "Neighbour consultation",                           "SE": "Grannehörande",                               "DA": "Nabohøring",                                    "NO": "Nabohøring",                                    "PL": "Konsultacje sąsiedzkie"},
     "Pelastussuunnitelma / lausunto":                {"EN": "Emergency plan / statement",                       "SE": "Räddningsplan / utlåtande",                   "DA": "Redningsplan / udtalelse",                      "NO": "Redningsplan / uttalelse",                      "PL": "Plan ratunkowy / opinia"},
     "Pelastussuunnitelma / lausunto (BESS)":         {"EN": "Emergency plan / statement (BESS)",                "SE": "Räddningsplan / utlåtande (BESS)",            "DA": "Redningsplan / udtalelse (BESS)",                "NO": "Redningsplan / uttalelse (BESS)",                "PL": "Plan ratunkowy / opinia (BESS)"},
@@ -1858,10 +1854,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "säkerhetsredogörelse enligt YVL-riktlinjerna inleder processen. "
                             "Planläggning hanteras parallellt men kärnkraftssäkerhetsförfarandet är "
                             "den dominerande faktorn."),
-        "kaava_aurinkovoima": ("<b>Åtgärdstillstånd eller bygglov — och planläggning:</b> För en liten "
-                            "solkraftspark (under ca 1 ha) räcker det ofta med åtgärdstillstånd istället "
-                            "för fullt bygglov (Bygglag 751/2023 / MRL 132/1999, 126 §). MKB krävs inte "
-                            "för projekt under 50 ha. Planläggningsstatus måste ändå kontrolleras — "
+        "kaava_aurinkovoima": ("<b>Bygglov och planläggning:</b> Från och med 1.1.2025 ersätter rakentamislupa "
+                            "(bygglov) de tidigare typerna bygglov och åtgärdstillstånd (Bygglag 751/2023). "
+                            "MKB krävs inte för projekt under 50 ha. Planläggningsstatus måste ändå kontrolleras — "
                             "planeringstillstånd kan behövas utanför detaljplaneområden."),
         "kaava_generic":   ("<b>Planläggningsstatus:</b> Gällande planläggningsstatus för projektplatsen "
                             "måste verifieras i ett förkonsultationsmöte med byggnadstillsynen innan "
@@ -1936,9 +1931,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "sikkerhedsredegørelse i henhold til YVL-retningslinjerne indleder processen. "
                             "Planlægning behandles parallelt, men kernesikkerhedsproceduren er den "
                             "dominerende faktor."),
-        "kaava_aurinkovoima": ("<b>Handlingstilladelse eller byggetilladelse — og planlægning:</b> For en lille "
-                            "solcellepark (under ca. 1 ha) er en handlingstilladelse ofte tilstrækkelig i "
-                            "stedet for en fuld byggetilladelse (Bygglov 751/2023 / MRL 132/1999, § 126). "
+        "kaava_aurinkovoima": ("<b>Byggetilladelse og planlægning:</b> Fra og med 1.1.2025 erstatter rakentamislupa "
+                            "(byggetilladelse) de tidligere typer byggetilladelse og handlingstilladelse (Bygglov 751/2023). "
                             "VVM kræves ikke for projekter under 50 ha. Planlægningsstatus skal dog stadig "
                             "kontrolleres — en planlægningstilladelse kan være nødvendig uden for "
                             "lokalplanområder."),
@@ -2015,9 +2009,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "sikkerhetsrapport i henhold til YVL-retningslinjene starter prosessen. "
                             "Regulering håndteres parallelt, men kjernekraftsikkerhetsprosedyren er den "
                             "dominerende faktoren."),
-        "kaava_aurinkovoima": ("<b>Tiltak- eller byggetillatelse — og regulering:</b> For en liten "
-                            "solkraftpark (under ca. 1 ha) er en tiltakstillatelse ofte tilstrekkelig i "
-                            "stedet for full byggetillatelse (Bygglov 751/2023 / MRL 132/1999, § 126). "
+        "kaava_aurinkovoima": ("<b>Byggetillatelse og regulering:</b> Fra og med 1.1.2025 erstatter rakentamislupa "
+                            "(byggetillatelse) de tidligere typene byggetillatelse og tiltakstillatelse (Bygglov 751/2023). "
                             "KU kreves ikke for prosjekter under 50 ha. Reguleringstatus må likevel "
                             "sjekkes — dispensasjon kan være nødvendig utenfor reguleringsplanområder."),
         "kaava_generic":   ("<b>Reguleringstatus:</b> Gjeldende reguleringstatus for prosjektstedet "

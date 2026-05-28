@@ -527,7 +527,7 @@ def generate_bess_report(
         Spacer(1, 4*mm),
         (Paragraph(
             f"Maaseutualueella (ei asemakaavaa) BESS-laitos edellyttää suunnittelutarveratkaisua "
-            f"(STR) {kuntanimi_gen} kunnalta ennen rakennuslupaa (Rakentamislaki 751/2023, § 46). "
+            f"(STR) {kuntanimi_gen} kunnalta ennen rakentamislupaa (Rakentamislaki 751/2023, § 46). "
             "STR:n myöntäminen edellyttää, ettei hanke aiheuta haittaa kaavoitukselle, "
             "liikenteelle tai luonnonarvoille.",
             st["body"]) if is_rural else None),
@@ -638,7 +638,7 @@ def generate_bess_report(
     ]
     if zoning_ok:
         _steps_rows.append([
-            f"Suunnittelutarveratkaisu (STR)\nHae STR {kuntanimi_gen} kunnalta ennen rakennuslupaa – maaseuturakentaminen\n"
+            f"Suunnittelutarveratkaisu (STR)\nHae STR {kuntanimi_gen} kunnalta ennen rakentamislupaa – maaseuturakentaminen\n"
             f"Lupapiste: {lupapiste_url}",
             f"Carbon Zero Finland /\n{kuntanimi_gen} kunta", "KRIITTINEN",
         ])
@@ -889,7 +889,7 @@ def _regulatory_table(
         cond_rows.append([
             str(row_num),
             f"Suunnittelutarveratkaisu (STR) — maaseutualue\n"
-            f"STR ennen rakennuslupaa, hae: {lupapiste_url}",
+            f"STR ennen rakentamislupaa, hae: {lupapiste_url}",
             f"{kuntanimi_gen} kunta\nRakentamislaki 751/2023, § 46",
             "Pakollinen ennen rakentamista",
         ])
@@ -1420,7 +1420,7 @@ def _recommendations(
         road_m = a.get("nearest_road_m")
         recs.append(f"Tiesuoja-alue: Kiinteistö on {road_m} m päässä valtatien reunasta (<20 m) – neuvottele ELY-keskuksen kanssa tai sijoita laitos kauemmas (Maantielaki 503/2005 § 44).")
     if a.get("zoning_ok"):
-        recs.append(f"Suunnittelutarveratkaisu (STR): Maaseutualue – hae STR {kuntanimi_gen} kunnalta ennen rakennuslupaa (Rakentamislaki 751/2023, § 46).")
+        recs.append(f"Suunnittelutarveratkaisu (STR): Maaseutualue – hae STR {kuntanimi_gen} kunnalta ennen rakentamislupaa (Rakentamislaki 751/2023, § 46).")
     else:
         recs.append(f"Kaavoitus: Asemakaava-alue – tee kaavoitusselvitys {kuntanimi_gen} kunnan kanssa ennen hankkeen eteenpäinviemistä.")
     bldg_m = a.get("nearest_building_m")

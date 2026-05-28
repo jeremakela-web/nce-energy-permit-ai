@@ -928,7 +928,7 @@
           <div class="proj-field">
             <select id="kaav-tyyppi" onchange="switchKaavoitusForm(this.value)">
               <option value="">— Valitse —</option>
-              <option value="rakennuslupa">Rakennuslupa</option>
+              <option value="rakentamislupa">Rakentamislupa</option>
               <option value="BESS">BESS</option>
               <option value="tuulivoima">Tuulivoima</option>
               <option value="aurinkovoima">Aurinkovoima</option>
@@ -1363,7 +1363,7 @@ function switchTab(tabId) {
 // Kaavoituskartoitus: hanketyyppilomakkeet
 // ─────────────────────────────────────────────
 const KAAV_EXTRA_FIELDS = {
-  rakennuslupa: [
+  rakentamislupa: [
     { id: 'kaav-kerrosala',  label: 'Kerrosala (m²)',   type: 'number', min: '1',   step: '1' },
     { id: 'kaav-kerrosluku', label: 'Kerrosluku',       type: 'number', min: '1',   step: '1' },
     { id: 'kaav-kaytt',      label: 'Käyttötarkoitus',  type: 'select',
@@ -1402,11 +1402,11 @@ function switchKaavoitusForm(type) {
   if (bessFields)    bessFields.style.display    = showBess ? '' : 'none';
   if (manualSection) manualSection.style.display = showBess ? '' : 'none';
 
-  const hidePower = type === 'rakennuslupa' || type === 'muu' || type === '';
+  const hidePower = type === 'rakentamislupa' || type === 'muu' || type === '';
   if (powerWrap) powerWrap.style.display = hidePower ? 'none' : '';
 
   if (analyzeBtn) {
-    const labels = { rakennuslupa: 'Rakennuslupa', BESS: 'BESS', tuulivoima: 'Tuulivoima',
+    const labels = { rakentamislupa: 'Rakentamislupa', BESS: 'BESS', tuulivoima: 'Tuulivoima',
                      aurinkovoima: 'Aurinkovoima', SMR: 'SMR', muu: 'Hanke' };
     analyzeBtn.textContent = 'Analysoi ' + (labels[type] || 'sijainti');
   }
@@ -1456,7 +1456,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kap',         apiKey: null,                            label: 'Kapasiteetti (MWh)',                  type: 'number', min: '0.1', step: '0.1' },
       { id: 'gf-sijainti',      apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset',    type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',         apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                     type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen',  apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                  type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen',  apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                  type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   tuulivoima_maa: {
@@ -1470,7 +1470,7 @@ const HANKE_FIELDS = {
       { id: 'gf-yva',         apiKey: null,                            label: 'YVA tarvitaan',                   type: 'select', options: ['— Valitse —', 'Kyllä (≥10 voimalaa tai ≥45 MW)', 'Ei', 'Ei tiedossa'] },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   tuulivoima_meri: {
@@ -1483,7 +1483,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Merialueen koordinaatit / viite',  type: 'text',   placeholder: '61°N 21°E', full: true },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset',  type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                   type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   aurinkovoima: {
@@ -1496,7 +1496,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   SMR: {
@@ -1510,7 +1510,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kaytto',      apiKey: null,                            label: 'Käyttötarkoitus',                 type: 'select', options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   smr_bess: {
@@ -1523,7 +1523,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   vesivoima: {
@@ -1536,7 +1536,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   hybridi: {
@@ -1549,7 +1549,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
   business_finland: {
@@ -1564,7 +1564,7 @@ const HANKE_FIELDS = {
       { id: 'gf-kesto',       apiKey: null,                            label: 'Kesto (kk)',                      type: 'number', min: '6',     step: '1' },
       { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'T&K-haasteet / innovaatiokuvaus',  type: 'text',   placeholder: 'Kuvaa tutkimushaaste ja innovaatio lyhyesti', full: true },
       { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakennuslupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
     ]
   },
 };

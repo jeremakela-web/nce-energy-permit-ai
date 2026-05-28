@@ -204,7 +204,7 @@ YVA-MENETTELYN VAIHEET
 3. Perusteltu päätelmä (reasoned conclusion)
    - ELY-keskuksen tai LVV:n antama kirjallinen arvio
    - Otettava huomioon lupakäsittelyssä
-4. YVA-selostus liitetään ympäristölupa-/rakennuslupahakemukseen
+4. YVA-selostus liitetään ympäristölupa-/rakentamislupahakemukseen
 
 YHTEYSVIRANOMAISET
 - ELY-keskus: useimmat hanketyypit
