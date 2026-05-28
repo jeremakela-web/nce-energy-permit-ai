@@ -551,6 +551,44 @@ _HANKE_CFG = {
             "Hätäjärjestelmien ja -menettelyjen kuvaus",
         ],
     },
+    "ymparistolupa": {
+        "nimi_fi":    "Ympäristölupahakemus",
+        "lyhenne":    "YL",
+        "rag_queries": [
+            "ympäristölupa lupahakemus YSL 527/2014 luvantarve Luova toiminta",
+            "ympäristölupa hakemuksen sisältö selvitykset liitteet ympäristövaikutukset",
+            "ympäristönsuojelulaki maaperän pilaantuminen pohjavesi päästöt ilmanlaatu melu",
+        ],
+        "luvat": [
+            ("Ympäristölupa",                     "Lupa- ja valvontavirasto (Luova)", "YSL 527/2014"),
+            ("Ympäristövaikutusten arviointi (YVA)", "ELY-keskus / Luova",            "YVA-laki 252/2017"),
+            ("Rekisteröinti-ilmoitus (tarvitt.)", "Kunta",                            "YSL 527/2014, 10 §"),
+            ("Vesilupa (tarvitt.)",               "Lupa- ja valvontavirasto (Luova)", "Vesilaki 587/2011"),
+            ("Meluilmoitus (tarvitt.)",           "Kunta",                            "YSL 527/2014, 118 §"),
+        ],
+        "laki_extra": [
+            "Luonnonsuojelulaki 9/2023",
+            "Jätelaki 646/2011",
+            "Kemikaalilaki 599/2013",
+            "Terveydensuojelulaki 763/1994",
+            "Maankäyttö- ja rakennuslaki 132/1999 / Rakentamislaki 751/2023",
+        ],
+        "liitteet": [
+            "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Luvan lomake — Luova (tai Luovan sähköinen hakemuspohja)",
+            "Toimintakuvaus ja prosessikaavio",
+            "Ympäristövaikutusten selvitys (maaperä, pohjavesi, ilma, melu, tärinä)",
+            "Päästöluettelo ja mittaustulokset (ilma, vesi, maaperä)",
+            "Jätteen käsittely- ja varastointisuunnitelma",
+            "Pohjavesialueen kartta (SYKE:n tietojärjestelmä)",
+            "Naapuritilojen omistajatiedot (kiinteistörekisteri)",
+            "Poikkeustilanteiden toimintaohje",
+            "YVA-selostus tai perustelut YVA:n soveltumattomuudesta",
+            "Hakijan oikeushenkilön rekisteriote (kaupparekisteri)",
+            "Valtakirja (jos asiamies edustaa)",
+        ],
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -667,6 +705,9 @@ _HANKE_NIMI_TRANS: dict[str, dict[str, str]] = {
     "muu":            {"EN": "Other Project Permit Application",             "SE": "Tillståndsansökan för annat projekt",
                        "DA": "Tilladelsesansøgning for andet projekt",         "NO": "Tillatelsessøknad for annet prosjekt",
                        "PL": "Wniosek o zezwolenie na inny projekt"},
+    "ymparistolupa":  {"EN": "Environmental Permit Application (YSL 527/2014)", "SE": "Miljötillståndsansökan",
+                       "DA": "Miljøtilladelsesansøgning",                      "NO": "Søknad om miljøtillatelse",
+                       "PL": "Wniosek o pozwolenie środowiskowe"},
 }
 
 def _nimi(lang: str, hanketyyppi: str, nimi_fi: str) -> str:
