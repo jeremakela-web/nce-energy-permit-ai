@@ -121,6 +121,9 @@ _POSTPROCESS_RULES_FI: list[tuple[str, str]] = [
      '2 tunnin purkautumisaika (C/2)'),
     (r'\bC/2-tyyppi(?:ä|ssä|llä|lta|lle|ksi|stä)?\b',
      '2 tunnin purkautumisaika (C/2)'),
+    # Rakennuslupa → Rakentamislupa (Rakentamislaki 751/2023, voimaan 1.1.2025)
+    (r'\bRakennus(lu[pv]\w*)\b', r'Rakentamis\1'),
+    (r'\brakennus(lu[pv]\w*)\b', r'rakentamis\1'),
 ]
 
 # Rules that apply to ALL languages (symbol/emoji cleanup)
@@ -240,7 +243,7 @@ _HANKE_CFG = {
         ],
         "luvat": [
             ("Ympäristölupa",                   "Lupa- ja valvontavirasto (Luova)",  "YSL 527/2014"),
-            ("Rakennuslupa",                     "Kunta / rakennusvalvonta",          "Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakentamislupa",                    "Kunta / rakennusvalvonta",          "Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",                "Kunta / hakija",                    "Rakentamislaki 751/2023, 44 §"),
             ("Pelastussuunnitelma / lausunto",   "Paikallinen pelastuslaitos",        "Pelastuslaki 379/2011, 15 §"),
             ("Verkkoliityntäsopimus",            "Jakeluverkkoyhtiö / Fingrid Oyj",   "Sähkömarkkinalaki 588/2013"),
@@ -277,7 +280,7 @@ _HANKE_CFG = {
         "luvat": [
             ("YVA-menettely (≥10 MW / ≥5 voimalaa)", "ELY-keskus / Luova",       "YVA-laki 252/2017"),
             ("Osayleiskaava tai asemakaava",          "Kunta",                    "MRL 132/1999 § 77a"),
-            ("Rakennuslupa",                          "Kunta / rakennusvalvonta", "Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakentamislupa",                         "Kunta / rakennusvalvonta", "Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",                     "Kunta / hakija",           "Rakentamislaki 751/2023, 44 §"),
             ("Ympäristölupa (tarvitt.)",              "Luova",                    "YSL 527/2014"),
             ("Verkkoliityntäsopimus",                 "Fingrid Oyj / jakelu",     "Sähkömarkkinalaki 588/2013"),
@@ -315,7 +318,7 @@ _HANKE_CFG = {
             ("YVA-menettely",                    "ELY-keskus / Luova",       "YVA-laki 252/2017"),
             ("Vesilupa",                         "Luova",                    "Vesilaki 587/2011"),
             ("Ympäristölupa",                    "Luova",                    "YSL 527/2014"),
-            ("Rakennuslupa",                     "Kunta / rakennusvalvonta", "Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakentamislupa",                    "Kunta / rakennusvalvonta", "Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",                "Kunta / hakija",           "Rakentamislaki 751/2023, 44 §"),
             ("Alusliikenteen turvallisuuslupa",  "Traficom",                 "Merilaki 674/1994"),
             ("Puolustusvoimien lausunto",        "Puolustusvoimat / PLM",    "Laki alueiden käytöstä"),
@@ -345,12 +348,12 @@ _HANKE_CFG = {
         "nimi_fi":    "Aurinkovoimalahanke",
         "lyhenne":    "PV",
         "rag_queries": [
-            "aurinkovoima aurinkopaneeli rakennuslupa ympäristölupa",
+            "aurinkovoima aurinkopaneeli rakentamislupa ympäristölupa",
             "aurinkovoimala verkkoliityntä jakeluverkko vaatimukset",
             "aurinkovoimala maankäyttö kaava maisema",
         ],
         "luvat": [
-            ("Rakennuslupa tai toimenpidelupa", "Kunta / rakennusvalvonta",  "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126"),
+            ("Rakentamislupa",                  "Kunta / rakennusvalvonta",  "Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",               "Kunta / hakija",            "Rakentamislaki 751/2023, 44 §"),
             ("Suunnittelutarveratkaisu (tarvitt.)", "Kunta",                 "MRL 132/1999 § 137"),
             ("Ympäristölupa (tarvitt. ≥1 ha)",  "Luova / kunta",            "YSL 527/2014"),
@@ -389,7 +392,7 @@ _HANKE_CFG = {
             ("Käyttölupa",                        "STUK",                       "YEL 990/1987 § 20"),
             ("Ympäristölupa",                     "Luova",                      "YSL 527/2014"),
             ("Vesilupa (jäähdytysvesi)",           "Luova",                     "Vesilaki 587/2011"),
-            ("Rakennuslupa",                      "Kunta",                      "Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakentamislupa",                     "Kunta",                      "Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",                 "Kunta / hakija",              "Rakentamislaki 751/2023, 44 §"),
             ("Maankäyttösopimus / kaavoitus",     "Kunta",                      "MRL 132/1999 § 9"),
         ],
@@ -425,7 +428,7 @@ _HANKE_CFG = {
             ("Vesilupa (padotus, rakentaminen)", "Luova",                      "Vesilaki 587/2011 § 3:2"),
             ("Ympäristölupa",                    "Luova",                      "YSL 527/2014"),
             ("YVA-menettely (tarvitt.)",          "ELY-keskus / Luova",        "YVA-laki 252/2017"),
-            ("Rakennuslupa",                     "Kunta / rakennusvalvonta",   "Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakentamislupa",                    "Kunta / rakennusvalvonta",   "Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",                "Kunta / hakija",              "Rakentamislaki 751/2023, 44 §"),
             ("Verkkoliityntäsopimus",            "Jakeluverkkoyhtiö / Fingrid", "Sähkömarkkinalaki 588/2013"),
             ("Kalastuslaki-ilmoitus",            "ELY-keskus",                 "Kalastuslaki 379/2015"),
@@ -461,9 +464,9 @@ _HANKE_CFG = {
         "luvat": [
             ("YVA-menettely (kynnyksen ylittyessä)", "ELY-keskus / Luova",      "YVA-laki 252/2017"),
             ("Osayleiskaava / asemakaava",           "Kunta",                   "MRL 132/1999"),
-            ("Rakennuslupa (tuulivoimala)",          "Kunta / rakennusvalvonta","Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakentamislupa (tuulivoimala)",         "Kunta / rakennusvalvonta","Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",                   "Kunta / hakija",          "Rakentamislaki 751/2023, 44 §"),
-            ("Rakennus-/toimenpidelupa (PV + BESS)", "Kunta",                   "Rakentamislaki 751/2023 / MRL 132/1999 § 126"),
+            ("Rakentamislupa (PV + BESS)",           "Kunta",                   "Rakentamislaki 751/2023"),
             ("Ympäristölupa (BESS-komponentti)",    "Luova",                    "YSL 527/2014"),
             ("Pelastussuunnitelma / lausunto (BESS)","Pelastuslaitos",           "Pelastuslaki 379/2011, 15 §"),
             ("Verkkoliityntäsopimus",               "Fingrid Oyj / jakelu",     "Sähkömarkkinalaki 588/2013"),
@@ -524,7 +527,7 @@ _HANKE_CFG = {
             ("Käyttölupa (ydinlaitos)",             "STUK",                       "YEL 990/1987 § 20"),
             ("Ympäristölupa (BESS-komponentti)",    "Luova",                      "YSL 527/2014"),
             ("Pelastussuunnitelma / lausunto (BESS)","Pelastuslaitos",             "Pelastuslaki 379/2011, 15 §"),
-            ("Rakennuslupa",                        "Kunta",                      "Rakentamislaki 751/2023 / MRL 132/1999"),
+            ("Rakentamislupa",                       "Kunta",                      "Rakentamislaki 751/2023"),
             ("Naapurikuuleminen",                   "Kunta / hakija",             "Rakentamislaki 751/2023, 44 §"),
             ("Vesilupa (jäähdytysvesi, tarvitt.)",  "Luova",                      "Vesilaki 587/2011"),
             ("Verkkoliityntäsopimus",               "Fingrid Oyj",                "Sähkömarkkinalaki 588/2013"),
@@ -1408,7 +1411,9 @@ _LUPA_TRANS: dict[str, dict[str, str]] = {
     "Suunnittelutarveratkaisu (tarvitt.)":           {"EN": "Planning permit (if required)",                   "SE": "Planeringsbehovsbeslut (vid behov)",           "DA": "Planlægningsbehov (om nødvendigt)",             "NO": "Planbehovsvurdering (om nødvendig)",            "PL": "Decyzja o warunkach zabudowy (jeśli wymagana)"},
     "Maisema- tai kulttuuriympäristölausunto":        {"EN": "Landscape or cultural environment statement",    "SE": "Landskap- eller kulturmiljöutlåtande",         "DA": "Landskabs- eller kulturmiljøudtalelse",         "NO": "Landskap- eller kulturmiljøuttalelse",          "PL": "Opinia krajobrazowa lub środowiska kulturowego"},
     "Periaatepäätös (VN)":                           {"EN": "Decision-in-principle (Council of State)",       "SE": "Principbeslut (statsrådet)",                  "DA": "Principbeslutning (statsrådet)",                "NO": "Prinsippvedtak (statsrådet)",                   "PL": "Decyzja zasadnicza (Rada Ministrów)"},
-    "Rakentamislupa":                                {"EN": "Construction licence",                             "SE": "Byggnadstillstånd",                           "DA": "Byggetilladelse",                               "NO": "Byggetillatelse",                               "PL": "Pozwolenie na budowę"},
+    "Rakentamislupa":                                {"EN": "Construction permit",                              "SE": "Bygglov",                                     "DA": "Byggetilladelse",                               "NO": "Byggetillatelse",                               "PL": "Pozwolenie na budowę"},
+    "Rakentamislupa (tuulivoimala)":                 {"EN": "Construction permit (wind turbine)",               "SE": "Bygglov (vindkraftverk)",                     "DA": "Byggetilladelse (vindmølle)",                   "NO": "Byggetillatelse (vindturbin)",                  "PL": "Pozwolenie na budowę (turbina wiatrowa)"},
+    "Rakentamislupa (PV + BESS)":                    {"EN": "Construction permit (PV + BESS)",                  "SE": "Bygglov (PV + BESS)",                         "DA": "Byggetilladelse (PV + BESS)",                   "NO": "Byggetillatelse (PV + BESS)",                   "PL": "Pozwolenie na budowę (PV + BESS)"},
     "Rakentamislupa (ydinlaitos)":                   {"EN": "Construction licence (nuclear facility)",         "SE": "Byggnadstillstånd (kärnkraftverk)",            "DA": "Byggetilladelse (kerneanlæg)",                  "NO": "Byggetillatelse (kjernekraftanlegg)",           "PL": "Pozwolenie na budowę (obiekt jądrowy)"},
     "Käyttölupa":                                    {"EN": "Operating licence",                               "SE": "Drifttillstånd",                               "DA": "Driftstilladelse",                              "NO": "Driftstillatelse",                              "PL": "Zezwolenie na eksploatację"},
     "Käyttölupa (ydinlaitos)":                       {"EN": "Operating licence (nuclear facility)",            "SE": "Drifttillstånd (kärnkraftverk)",               "DA": "Driftstilladelse (kerneanlæg)",                 "NO": "Driftstillatelse (kjernekraftanlegg)",          "PL": "Zezwolenie na eksploatację (obiekt jądrowy)"},
@@ -1583,7 +1588,7 @@ def _t_vaihe(lang: str, vaihe: str) -> str:
 
 _PDF_STRINGS: dict[str, dict[str, str]] = {
     "FI": {
-        "sub_title":       "Rakennuslupahakemusluonnos",
+        "sub_title":       "Rakentamislupahakemusluonnos",
         "esiselvitys_sub": ("Esiselvitys- ja ennakkoneuvottelumateriaali — "
                             "Valmisteltu rakennusvalvonnan ennakkoneuvottelua varten"),
         "disclaimer_h":    "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN",
@@ -1646,11 +1651,11 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "ennakkolupamenettely ovat pakollisia ennen kaikkia muita lupia. STUK:n "
                             "YVL-ohjeiden mukainen turvallisuusseloste käynnistää prosessin. Kaavatilanne "
                             "selvitetään rinnalla, mutta ydinturvallisuusmenettely on hallitseva tekijä."),
-        "kaava_aurinkovoima": ("<b>Toimenpidelupa vai rakennuslupa — ja kaavatilanne:</b> Pienimuotoiselle "
-                            "aurinkopuistolle (alle noin 1 ha) riittää usein toimenpidelupa rakennusluvan "
-                            "sijaan (Rakentamislaki 751/2023 / MRL 132/1999, 126 §). YVA-menettely ei koske "
-                            "alle 50 ha hankkeita. Kaavatilanne on silti tarkistettava — asemakaava-alueen "
-                            "ulkopuolella voidaan tarvita suunnittelutarveratkaisu."),
+        "kaava_aurinkovoima": ("<b>Rakentamislupa ja kaavatilanne:</b> Pienimuotoiselle aurinkopuistolle "
+                            "(alle noin 1 ha) voidaan soveltaa rakentamislain kevennettyä menettelyä "
+                            "(Rakentamislaki 751/2023, 49 §). YVA-menettely ei koske alle 50 ha hankkeita. "
+                            "Kaavatilanne on silti tarkistettava — asemakaava-alueen ulkopuolella voidaan "
+                            "tarvita suunnittelutarveratkaisu."),
         "kaava_generic":   ("<b>Kaavatilanne:</b> Hankkeen sijoituspaikan voimassa oleva kaavatilanne on "
                             "tarkistettava rakennusvalvonnan ennakkoneuvottelussa ennen lupahakemuksen "
                             "jättämistä. Kaavatilanne vaikuttaa suoraan lupaprosessin kestoon ja "
@@ -1658,9 +1663,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "taikka suunnittelutarveratkaisua."),
     },
     "EN": {
-        "sub_title":       "Building Permit Application Draft",
+        "sub_title":       "Construction Permit Application Draft",
         "esiselvitys_sub": ("Pre-study and Pre-consultation Material — "
-                            "Prepared for building permit pre-consultation"),
+                            "Prepared for construction permit pre-consultation"),
         "disclaimer_h":    "AI DRAFT — REQUIRES EXPERT REVIEW",
         "disclaimer_b":    ("This document is an AI-assisted draft. It is not legally binding and does not "
                             "replace the advice of a qualified permit expert or lawyer. Before submitting "
@@ -1721,11 +1726,11 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "990/1987, § 11) and STUK's pre-licensing procedure are mandatory before all "
                             "other permits. STUK's YVL-guideline safety report initiates the process. "
                             "Zoning is addressed in parallel but the nuclear safety procedure is dominant."),
-        "kaava_aurinkovoima": ("<b>Action permit vs. building permit — and zoning:</b> For a small-scale "
-                            "solar park (below approx. 1 ha), an action permit often suffices instead of a "
-                            "full building permit (Construction Act 751/2023 / MRL 132/1999, § 126). EIA is "
-                            "not required for projects under 50 ha. Zoning must still be checked — a "
-                            "planning permit may be needed outside detailed plan areas."),
+        "kaava_aurinkovoima": ("<b>Construction permit and zoning:</b> For a small-scale solar park "
+                            "(below approx. 1 ha), the simplified procedure under the Construction Act "
+                            "751/2023 (§ 49) may apply. EIA is not required for projects under 50 ha. "
+                            "Zoning must still be checked — a planning permit may be needed outside "
+                            "detailed plan areas."),
         "kaava_generic":   ("<b>Zoning status:</b> The current zoning status of the project site must be "
                             "verified in a pre-consultation meeting with the building authority before the "
                             "permit application is submitted. Zoning directly affects the duration and "

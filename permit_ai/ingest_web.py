@@ -65,7 +65,9 @@ WEB_SOURCES: dict[str, list[str]] = {
     # Suomen ympäristölainsäädäntö — ympäristölupa (Luova / LVV)
     # Huom: Finlex on JS-renderöity — käytä ingest_fi_env.py lakitekstin indeksointiin
     "FI": [
-        "https://lvv.fi/ymparisto",            # Lupa- ja valvontavirasto (LVV / ent. AVI)
+        "https://lvv.fi/ymparisto",                                   # Lupa- ja valvontavirasto
+        "https://lvv.fi/en/environment/renewable-energy-projects",    # LVV EN — uusiutuva energia
+        "https://www.ymparisto.fi/fi/luvat-ja-velvoitteet/ymparistolupa",  # SYKE — ympäristölupa
     ],
     "SE": [
         "https://www.boverket.se/sv/PBL-kunskapsbanken/",
@@ -81,11 +83,22 @@ WEB_SOURCES: dict[str, list[str]] = {
     ],
     "PL": [
         "https://isap.sejm.gov.pl/",
+        "https://www.ure.gov.pl/en",                   # Polish energy regulator (URE)
+        "https://www.pse.pl/en",                        # Polish grid operator (PSE)
+        "https://www.gov.pl/web/klimat/odnawialne-zrodla-energii",  # Polish Ministry — renewables
+        # Single-page articles — vain annettu URL (ei crawlata)
+        "https://www.dudkowiak.com/blog/battery-energy-storage-in-poland-legal-requirements-and-investment-risks-in-2025/",
+        "https://www.greenrecruitmentcompany.com/blog/2025/12/why-polands-new-renewable-energy-permits-are-making-waves-in-2025",
     ],
 }
 
 # Sivustot joita ei crawlata linkkien kautta (vain annettu URL itse)
-NO_CRAWL_DOMAINS = {"lovdata.no", "isap.sejm.gov.pl"}
+NO_CRAWL_DOMAINS = {
+    "lovdata.no",
+    "isap.sejm.gov.pl",
+    "www.dudkowiak.com",
+    "www.greenrecruitmentcompany.com",
+}
 
 
 # ── Tekstin poiminta ─────────────────────────────────────────────────────────

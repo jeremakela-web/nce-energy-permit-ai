@@ -1878,7 +1878,7 @@ const TRANSLATIONS = {
     opt_vaihe_lupavaihe:   'Lupavaihe',
     opt_vaihe_rakentaminen:'Rakentaminen',
     opt_vir_valitse:  '— Valitse —',
-    opt_vir_kunta:    'Kunta (rakennuslupa)',
+    opt_vir_kunta:    'Kunta (rakentamislupa)',
     opt_vir_ely:      'ELY-keskus (YVA)',
     opt_vir_stuk:     'STUK (ydinlupa)',
     opt_vir_bf:       'Business Finland (avustushakemus)',
@@ -2172,7 +2172,7 @@ const TRANSLATIONS = {
     opt_vaihe_lupavaihe:   'Permit phase',
     opt_vaihe_rakentaminen:'Construction',
     opt_vir_valitse:  '— Select —',
-    opt_vir_kunta:    'Municipality (building permit)',
+    opt_vir_kunta:    'Municipality (construction permit)',
     opt_vir_ely:      'ELY Centre (EIA)',
     opt_vir_stuk:     'STUK (nuclear permit)',
     opt_vir_bf:       'Business Finland (grant application)',
@@ -3421,6 +3421,11 @@ const LUPA_I18N = {
   'Rakennuslupa':                           { EN: 'Building permit',                      SE: 'Bygglov',                           DA: 'Byggetilladelse',                     NO: 'Byggetillatelse',                  PL: 'Pozwolenie na budowę' },
   'Rakennuslupa (mahdollinen)':             { EN: 'Building permit (possible)',            SE: 'Bygglov (möjligt)',                  DA: 'Byggetilladelse (mulig)',             NO: 'Byggetillatelse (mulig)',           PL: 'Pozwolenie na budowę (możliwe)' },
   'Rakennuslupa (offshore)':               { EN: 'Building permit (offshore)',             SE: 'Bygglov (offshore)',                 DA: 'Byggetilladelse (offshore)',          NO: 'Byggetillatelse (offshore)',        PL: 'Pozwolenie na budowę (offshore)' },
+  'Rakentamislupa':                         { EN: 'Construction permit',                   SE: 'Bygglov',                           DA: 'Byggetilladelse',                     NO: 'Byggetillatelse',                  PL: 'Pozwolenie na budowę' },
+  'Rakentamislupa (mahdollinen)':           { EN: 'Construction permit (possible)',         SE: 'Bygglov (möjligt)',                  DA: 'Byggetilladelse (mulig)',             NO: 'Byggetillatelse (mulig)',           PL: 'Pozwolenie na budowę (możliwe)' },
+  'Rakentamislupa (offshore)':             { EN: 'Construction permit (offshore)',          SE: 'Bygglov (offshore)',                 DA: 'Byggetilladelse (offshore)',          NO: 'Byggetillatelse (offshore)',        PL: 'Pozwolenie na budowę (offshore)' },
+  'Rakentamislupa (tuulivoimala)':         { EN: 'Construction permit (wind turbine)',      SE: 'Bygglov (vindkraftverk)',            DA: 'Byggetilladelse (vindmølle)',          NO: 'Byggetillatelse (vindturbin)',      PL: 'Pozwolenie na budowę (turbina wiatrowa)' },
+  'Rakentamislupa (PV + BESS)':            { EN: 'Construction permit (PV + BESS)',         SE: 'Bygglov (PV + BESS)',               DA: 'Byggetilladelse (PV + BESS)',          NO: 'Byggetillatelse (PV + BESS)',       PL: 'Pozwolenie na budowę (PV + BESS)' },
   'Toimenpidelupa':                         { EN: 'Action permit',                         SE: 'Åtgärdstillstånd',                  DA: 'Handlingstilladelse',                 NO: 'Tiltakstillatelse',                PL: 'Zezwolenie na działanie' },
   'Toimenpidelupa (mahdollinen)':           { EN: 'Action permit (possible)',               SE: 'Åtgärdstillstånd (möjligt)',         DA: 'Handlingstilladelse (mulig)',         NO: 'Tiltakstillatelse (mulig)',         PL: 'Zezwolenie na działanie (możliwe)' },
   'Toimenpidelupa (pienet)':               { EN: 'Action permit (small)',                  SE: 'Åtgärdstillstånd (litet)',           DA: 'Handlingstilladelse (lille)',         NO: 'Tiltakstillatelse (liten)',         PL: 'Zezwolenie na działanie (małe)' },
@@ -3724,7 +3729,7 @@ function _VAIHE_OPTS() {
 const _COUNTRY_VIR_OPTS = {
   FI: () => [
     { value: '— Valitse —',                      label: t('opt_vir_valitse') },
-    { value: 'Kunta (rakennuslupa)',              label: t('opt_vir_kunta') },
+    { value: 'Kunta (rakentamislupa)',             label: t('opt_vir_kunta') },
     { value: 'ELY-keskus (YVA)',                  label: t('opt_vir_ely') },
     { value: 'STUK (ydinlupa)',                   label: t('opt_vir_stuk') },
     { value: 'Fingrid (verkkoliityntä)',          label: t('opt_vir_fingrid') },
@@ -3950,17 +3955,17 @@ const HANKE_FIELDS = {
 // HANKETYYPIT — lupatyypit + autoFields per type
 // ─────────────────────────────────────────────
 const HANKETYYPIT = {
-  asuinrakennus:  { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa', 'Toimenpidelupa (mahdollinen)'] },
-  teollisuus:     { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa', 'Ympäristölupa (mahdollinen)', 'Toimenpidelupa'] },
-  bess:           { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa', 'Toimenpidelupa', 'Kemikaalilupa (Tukes)', 'Verkkoliityntä (Fingrid/jakelu)'] },
-  tuulivoima_maa: { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa', 'YVA (≥10 voimalaa / ≥45MW)', 'Ympäristölupa', 'Kaavakohde'] },
-  tuulivoima_meri:{ autoFields: { kohdeviranomainen: 'Luova (ympäristölupa/vesilupa)' }, lupatyypit: ['Vesilupa (Luova)', 'YVA', 'Ympäristölupa', 'Rakennuslupa (offshore)'] },
-  aurinkovoima:   { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa', 'Toimenpidelupa (pienet)', 'Ympäristölupa (suuri hanke)'] },
-  smr:            { autoFields: { kohdeviranomainen: 'STUK (ydinlupa)' },              lupatyypit: ['Periaatepäätös (TEM)', 'Rakentamislupa (STUK)', 'Käyttölupa (STUK)', 'YVA'] },
-  vesivoima:      { autoFields: { kohdeviranomainen: 'Luova (ympäristölupa/vesilupa)' }, lupatyypit: ['Vesilupa (Luova)', 'Ympäristölupa', 'Rakennuslupa'] },
-  maatalous:      { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa', 'Toimenpidelupa', 'Ympäristölupa (suuri kotieläintalous)'] },
-  liikerakennus:  { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa', 'Toimenpidelupa', 'Pelastuslaitoksen hyväksyntä'] },
-  muu:            { autoFields: { kohdeviranomainen: 'Kunta (rakennuslupa)' },         lupatyypit: ['Rakennuslupa (mahdollinen)', 'Toimenpidelupa (mahdollinen)'] },
+  asuinrakennus:  { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa'] },
+  teollisuus:     { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Ympäristölupa (mahdollinen)'] },
+  bess:           { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Kemikaalilupa (Tukes)', 'Verkkoliityntä (Fingrid/jakelu)'] },
+  tuulivoima_maa: { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'YVA (≥10 voimalaa / ≥45MW)', 'Ympäristölupa', 'Kaavakohde'] },
+  tuulivoima_meri:{ autoFields: { kohdeviranomainen: 'Luova (ympäristölupa/vesilupa)' }, lupatyypit: ['Vesilupa (Luova)', 'YVA', 'Ympäristölupa', 'Rakentamislupa (offshore)'] },
+  aurinkovoima:   { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Ympäristölupa (suuri hanke)'] },
+  smr:            { autoFields: { kohdeviranomainen: 'STUK (ydinlupa)' },               lupatyypit: ['Periaatepäätös (TEM)', 'Rakentamislupa (STUK)', 'Käyttölupa (STUK)', 'YVA'] },
+  vesivoima:      { autoFields: { kohdeviranomainen: 'Luova (ympäristölupa/vesilupa)' }, lupatyypit: ['Vesilupa (Luova)', 'Ympäristölupa', 'Rakentamislupa'] },
+  maatalous:      { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Ympäristölupa (suuri kotieläintalous)'] },
+  liikerakennus:  { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Pelastuslaitoksen hyväksyntä'] },
+  muu:            { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa (mahdollinen)'] },
   ymparistolupa:  { autoFields: { kohdeviranomainen: 'Luova (ympäristölupa/vesilupa)' }, lupatyypit: ['Ympäristölupa (YSL 527/2014)', 'YVA (tarvittaessa)', 'Vesilupa (tarvittaessa)'] },
 };
 
@@ -3995,58 +4000,58 @@ const BACKEND_TYPE_MAP = {
 const PERMITS_CFG = {
   bess: {
     esiselvitys:  { kohdeviranomainen: 'Fingrid / jakeluverkkoyhtiö',          viranomaiset: ['Fingrid / jakeluverkko', 'Tukes'],                              luvat: ['Liityntäselvitys (Fingrid)', 'Kemikaalikäsittelyilmoitus (Tukes)', 'Kaavoitusselvitys (Kunta)'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta', 'Tukes', 'Fingrid / jakeluverkko'],                     luvat: ['Rakennuslupa (Kunta)', 'Kemikaalilupa (Tukes)', 'Verkkoliityntäsopimus (Fingrid)'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Tukes', 'Pelastuslaitos'],                             luvat: ['Rakennuslupa', 'Käyttöönotto (Tukes)', 'Paloturvallisuushyväksyntä'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta', 'Tukes', 'Fingrid / jakeluverkko'],                     luvat: ['Rakentamislupa (Kunta)', 'Kemikaalilupa (Tukes)', 'Verkkoliityntäsopimus (Fingrid)'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Tukes', 'Pelastuslaitos'],                             luvat: ['Rakentamislupa', 'Käyttöönotto (Tukes)', 'Paloturvallisuushyväksyntä'] },
   },
   smr: {
     esiselvitys:  { kohdeviranomainen: 'STUK / TEM',                           viranomaiset: ['STUK', 'TEM', 'Lupa- ja valvontavirasto'],                     luvat: ['Periaatepäätös (TEM)', 'STUK pre-licensing review', 'YVA-tarveharkinta'] },
-    lupavaihe:    { kohdeviranomainen: 'STUK (ydinlupa)',                       viranomaiset: ['STUK', 'TEM', 'Lupa- ja valvontavirasto', 'Kunta'],            luvat: ['Rakentamislupa (STUK)', 'YVA', 'Ympäristölupa (AVI)', 'Rakennuslupa (Kunta)'] },
+    lupavaihe:    { kohdeviranomainen: 'STUK (ydinlupa)',                       viranomaiset: ['STUK', 'TEM', 'Lupa- ja valvontavirasto', 'Kunta'],            luvat: ['Rakentamislupa (STUK)', 'YVA', 'Ympäristölupa (AVI)', 'Rakentamislupa (Kunta)'] },
     rakentaminen: { kohdeviranomainen: 'STUK (rakentamisen valvonta)',          viranomaiset: ['STUK', 'Kunta', 'Pelastuslaitos'],                             luvat: ['Rakentamislupa (STUK)', 'Käyttöönottotarkastus', 'Rakennusvalvonta (Kunta)'] },
   },
   tuulivoima_maa: {
     esiselvitys:  { kohdeviranomainen: 'Kunta / ELY-keskus',                   viranomaiset: ['Kunta', 'ELY-keskus', 'Väylävirasto'],                         luvat: ['YVA-tarveharkinta', 'Kaavaselvitys', 'Tuulimittauslupa'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta', 'ELY-keskus', 'Lupa- ja valvontavirasto'],              luvat: ['Rakennuslupa (Kunta)', 'YVA (≥10 voimalaa / ≥45 MW)', 'Ympäristölupa', 'Kaavamuutos'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'ELY-keskus', 'Pelastuslaitos'],                       luvat: ['Rakennuslupa', 'Aloitusilmoitus', 'Loppukatselmus (Kunta)'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta', 'ELY-keskus', 'Lupa- ja valvontavirasto'],              luvat: ['Rakentamislupa (Kunta)', 'YVA (≥10 voimalaa / ≥45 MW)', 'Ympäristölupa', 'Kaavamuutos'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'ELY-keskus', 'Pelastuslaitos'],                       luvat: ['Rakentamislupa', 'Aloitusilmoitus', 'Loppukatselmus (Kunta)'] },
   },
   tuulivoima_meri: {
     esiselvitys:  { kohdeviranomainen: 'Lupa- ja valvontavirasto / TEM',       viranomaiset: ['Lupa- ja valvontavirasto', 'TEM', 'Merivoimat'],               luvat: ['YVA-tarveharkinta', 'Merenkulkulupa', 'Puolustusvoimien lausunto'] },
-    lupavaihe:    { kohdeviranomainen: 'Lupa- ja valvontavirasto (vesilupa)',   viranomaiset: ['Lupa- ja valvontavirasto', 'ELY-keskus', 'Kunta'],             luvat: ['Vesilupa (Luova)', 'YVA', 'Ympäristölupa', 'Rakennuslupa (offshore)'] },
-    rakentaminen: { kohdeviranomainen: 'Lupa- ja valvontavirasto',             viranomaiset: ['Lupa- ja valvontavirasto', 'Kunta', 'Väylävirasto'],           luvat: ['Vesilupa', 'Merenkulkuilmoitus', 'Rakennuslupa'] },
+    lupavaihe:    { kohdeviranomainen: 'Lupa- ja valvontavirasto (vesilupa)',   viranomaiset: ['Lupa- ja valvontavirasto', 'ELY-keskus', 'Kunta'],             luvat: ['Vesilupa (Luova)', 'YVA', 'Ympäristölupa', 'Rakentamislupa (offshore)'] },
+    rakentaminen: { kohdeviranomainen: 'Lupa- ja valvontavirasto',             viranomaiset: ['Lupa- ja valvontavirasto', 'Kunta', 'Väylävirasto'],           luvat: ['Vesilupa', 'Merenkulkuilmoitus', 'Rakentamislupa'] },
   },
   aurinkovoima: {
     esiselvitys:  { kohdeviranomainen: 'Kunta',                                viranomaiset: ['Kunta', 'ELY-keskus', 'Fingrid / jakeluverkko'],               luvat: ['Kaavaselvitys', 'Liityntäselvitys', 'Ympäristöselvitys'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta', 'ELY-keskus'],                                         luvat: ['Rakennuslupa (Kunta)', 'Toimenpidelupa (pienet)', 'Ympäristölupa (suuri hanke)'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakennuslupa', 'Sähköturvallisuusilmoitus (Tukes)', 'Loppukatselmus'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta', 'ELY-keskus'],                                         luvat: ['Rakentamislupa (Kunta)', 'Ympäristölupa (suuri hanke)'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakentamislupa', 'Sähköturvallisuusilmoitus (Tukes)', 'Loppukatselmus'] },
   },
   vesivoima: {
     esiselvitys:  { kohdeviranomainen: 'Lupa- ja valvontavirasto',             viranomaiset: ['Lupa- ja valvontavirasto', 'ELY-keskus', 'SYKE'],             luvat: ['YVA-tarveharkinta', 'Vesilain ennakkoneuvottelu', 'Kalatalouslausunto'] },
-    lupavaihe:    { kohdeviranomainen: 'Lupa- ja valvontavirasto (vesilupa)',   viranomaiset: ['Lupa- ja valvontavirasto', 'ELY-keskus', 'Kunta'],             luvat: ['Vesilupa (Luova)', 'Ympäristölupa', 'Rakennuslupa'] },
-    rakentaminen: { kohdeviranomainen: 'Lupa- ja valvontavirasto',             viranomaiset: ['Lupa- ja valvontavirasto', 'Kunta', 'ELY-keskus'],             luvat: ['Vesilupa', 'Rakennuslupa', 'Kalatalousmaksu'] },
+    lupavaihe:    { kohdeviranomainen: 'Lupa- ja valvontavirasto (vesilupa)',   viranomaiset: ['Lupa- ja valvontavirasto', 'ELY-keskus', 'Kunta'],             luvat: ['Vesilupa (Luova)', 'Ympäristölupa', 'Rakentamislupa'] },
+    rakentaminen: { kohdeviranomainen: 'Lupa- ja valvontavirasto',             viranomaiset: ['Lupa- ja valvontavirasto', 'Kunta', 'ELY-keskus'],             luvat: ['Vesilupa', 'Rakentamislupa', 'Kalatalousmaksu'] },
   },
   asuinrakennus: {
     esiselvitys:  { kohdeviranomainen: 'Kunta',                                viranomaiset: ['Kunta'],                                                       luvat: ['Suunnittelutarveratkaisu (tarvittaessa)', 'Kaavakonsultaatio'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakennuslupa (Kunta)', 'Toimenpidelupa (pienet muutokset)'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakennuslupa', 'Loppukatselmus', 'Käyttöönottotarkastus'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakentamislupa (Kunta)'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakentamislupa', 'Loppukatselmus', 'Käyttöönottotarkastus'] },
   },
   teollisuus: {
     esiselvitys:  { kohdeviranomainen: 'Kunta / ELY-keskus',                   viranomaiset: ['Kunta', 'ELY-keskus', 'Tukes'],                               luvat: ['Kaavaselvitys', 'Ympäristövaikutusten arviointi', 'Kemikaalilupaselvitys'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta', 'Lupa- ja valvontavirasto', 'Tukes'],                  luvat: ['Rakennuslupa (Kunta)', 'Ympäristölupa', 'Toimenpidelupa', 'Kemikaalilupa (Tukes)'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Tukes', 'Pelastuslaitos'],                            luvat: ['Rakennuslupa', 'Käyttöönotto (Tukes)', 'Pelastuslaitoksen tarkastus'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta', 'Lupa- ja valvontavirasto', 'Tukes'],                  luvat: ['Rakentamislupa (Kunta)', 'Ympäristölupa', 'Kemikaalilupa (Tukes)'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Tukes', 'Pelastuslaitos'],                            luvat: ['Rakentamislupa', 'Käyttöönotto (Tukes)', 'Pelastuslaitoksen tarkastus'] },
   },
   maatalous: {
     esiselvitys:  { kohdeviranomainen: 'Kunta',                                viranomaiset: ['Kunta', 'ELY-keskus'],                                         luvat: ['Kaavaselvitys', 'Ympäristölupaselvitys (suuri kotieläintalous)'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta', 'Lupa- ja valvontavirasto'],                           luvat: ['Rakennuslupa (Kunta)', 'Toimenpidelupa', 'Ympäristölupa (suuri kotieläintalous)'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'ELY-keskus'],                                         luvat: ['Rakennuslupa', 'Loppukatselmus'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta', 'Lupa- ja valvontavirasto'],                           luvat: ['Rakentamislupa (Kunta)', 'Ympäristölupa (suuri kotieläintalous)'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'ELY-keskus'],                                         luvat: ['Rakentamislupa', 'Loppukatselmus'] },
   },
   liikerakennus: {
     esiselvitys:  { kohdeviranomainen: 'Kunta',                                viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Kaavaselvitys', 'Suunnittelutarveratkaisu'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakennuslupa (Kunta)', 'Toimenpidelupa', 'Pelastuslaitoksen hyväksyntä'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakennuslupa', 'Pelastuslaitoksen tarkastus', 'Loppukatselmus'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakentamislupa (Kunta)', 'Pelastuslaitoksen hyväksyntä'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta', 'Pelastuslaitos'],                                     luvat: ['Rakentamislupa', 'Pelastuslaitoksen tarkastus', 'Loppukatselmus'] },
   },
   muu: {
     esiselvitys:  { kohdeviranomainen: 'Kunta',                                viranomaiset: ['Kunta'],                                                       luvat: ['Kaavaselvitys', 'Lupaselvitys'] },
-    lupavaihe:    { kohdeviranomainen: 'Kunta (rakennuslupa)',                  viranomaiset: ['Kunta'],                                                       luvat: ['Rakennuslupa (Kunta, mahdollinen)', 'Toimenpidelupa (mahdollinen)'] },
-    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta'],                                                       luvat: ['Rakennuslupa', 'Loppukatselmus'] },
+    lupavaihe:    { kohdeviranomainen: 'Kunta (rakentamislupa)',                viranomaiset: ['Kunta'],                                                       luvat: ['Rakentamislupa (Kunta, mahdollinen)'] },
+    rakentaminen: { kohdeviranomainen: 'Kunta (rakennusvalvonta)',              viranomaiset: ['Kunta'],                                                       luvat: ['Rakentamislupa', 'Loppukatselmus'] },
   },
   ymparistolupa: {
     esiselvitys:  { kohdeviranomainen: 'ELY-keskus / Luova',                   viranomaiset: ['ELY-keskus', 'Lupa- ja valvontavirasto', 'SYKE'],             luvat: ['YVA-tarveharkinta (ELY)', 'Ennakkoneuvottelu (Luova)', 'SYKE-lausuntopyyntö'] },
@@ -4162,7 +4167,8 @@ function _rebuildMapGrid() {
 
 function _isPermitAvailable(country, hanketyyppi) {
   if (country === 'FI') return true;
-  if (country === 'PL' && hanketyyppi === 'smr') return true;
+  const PL_ENABLED = new Set(['smr', 'bess', 'tuulivoima_maa', 'aurinkovoima']);
+  if (country === 'PL' && PL_ENABLED.has(hanketyyppi)) return true;
   return false;
 }
 
