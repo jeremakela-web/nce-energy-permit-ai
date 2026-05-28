@@ -62,12 +62,10 @@ COUNTRY_LANG: dict[str, str] = {
 
 # ── Valmiit lähdekohtaiset URL-konfiguraatiot ────────────────────────────────
 WEB_SOURCES: dict[str, list[str]] = {
-    # Suomen ympäristölainsäädäntö — ympäristölupa + YVA
+    # Suomen ympäristölainsäädäntö — ympäristölupa (Luova / LVV)
+    # Huom: Finlex on JS-renderöity — käytä ingest_fi_env.py lakitekstin indeksointiin
     "FI": [
-        "https://www.finlex.fi/fi/laki/ajantasa/2014/20140527",  # YSL 527/2014
-        "https://www.finlex.fi/fi/laki/ajantasa/2017/20170252",  # YVA-laki 252/2017
-        "https://www.luova.fi/fi/ymparistoluvat/",               # Luova (ent. AVI)
-        "https://www.syke.fi/fi-FI/Ymparisto/Ymparistoluvat_ja_ymparistovalvonta",
+        "https://lvv.fi/ymparisto",            # Lupa- ja valvontavirasto (LVV / ent. AVI)
     ],
     "SE": [
         "https://www.boverket.se/sv/PBL-kunskapsbanken/",
@@ -87,7 +85,7 @@ WEB_SOURCES: dict[str, list[str]] = {
 }
 
 # Sivustot joita ei crawlata linkkien kautta (vain annettu URL itse)
-NO_CRAWL_DOMAINS = {"lovdata.no", "isap.sejm.gov.pl", "www.finlex.fi"}
+NO_CRAWL_DOMAINS = {"lovdata.no", "isap.sejm.gov.pl"}
 
 
 # ── Tekstin poiminta ─────────────────────────────────────────────────────────
