@@ -4629,24 +4629,31 @@ async function submitGeneratorForm() {
     clearTimeout(timer);
     clearInterval(_progTimer);
 
-    if (!resp.ok) {
+    // Backend returns 400 for bad input; 202 Accepted for successful job start
+    if (resp.status === 400 || (!resp.ok && resp.status !== 202)) {
       const errText = await resp.text().catch(() => '');
       console.error('[Generator] server error:', resp.status, errText);
       throw new Error(_parseApiError(errText, resp.status));
     }
 
     const jobId = resp.headers.get('X-Job-Id');
-    // Consume draft PDF silently — do not offer it for download
-    await resp.blob();
+    // Consume response body (JSON {job_id} or error text)
+    await resp.text();
 
-    // Switch to proofreading phase
-    if (progFill) progFill.style.width = '75%';
-    if (progPct)  progPct.textContent  = '75%';
-    if (progMsg)  progMsg.textContent  = t('progress_proofread');
-    setTimeout(() => {
-      if (progFill) progFill.style.width = '90%';
-      if (progPct)  progPct.textContent  = '90%';
-    }, 2000);
+    // Generation queued — show slow background-progress animation (10 s steps)
+    if (progFill) progFill.style.width = '15%';
+    if (progPct)  progPct.textContent  = '15%';
+    if (progMsg)  progMsg.textContent  = t('progress_rag');
+    const _bgSteps = [[30,'progress_claude'],[55,'progress_pdf'],[75,'progress_proofread'],[85,'progress_final']];
+    let _bgIdx = 0;
+    const _bgTimer = setInterval(() => {
+      if (_bgIdx < _bgSteps.length) {
+        const [pct, key] = _bgSteps[_bgIdx++];
+        if (progFill) progFill.style.width = pct + '%';
+        if (progMsg)  progMsg.textContent  = t(key);
+        if (progPct)  progPct.textContent  = pct + '%';
+      }
+    }, 15000);
 
     // Re-enable submit so user can start a new generation while waiting
     btn.disabled = false;
@@ -4655,15 +4662,16 @@ async function submitGeneratorForm() {
 
     log(`${t('log_gen_done')}: ${selectedProjectType} / ${payload.kunta}`, 'ok');
 
-    // Proofread polling — update progress bar; show single download button when done
+    // Poll for completion — update progress; show download button when done
     if (jobId) {
       const poll = setInterval(async () => {
         try {
           const sr = await fetch(`${API_BASE}/api/proofread/${jobId}`);
-          if (!sr.ok) { clearInterval(poll); return; }
+          if (!sr.ok) { clearInterval(poll); clearInterval(_bgTimer); return; }
           const sd = await sr.json();
           if (sd.status === 'done') {
             clearInterval(poll);
+            clearInterval(_bgTimer);
             if (progFill) progFill.style.width = '100%';
             if (progPct)  progPct.textContent  = '100%';
             if (progMsg)  progMsg.textContent  = t('progress_done');
@@ -4675,15 +4683,16 @@ async function submitGeneratorForm() {
             }
           } else if (sd.status === 'error') {
             clearInterval(poll);
+            clearInterval(_bgTimer);
             if (progWrap) progWrap.classList.remove('visible');
             if (proofBox) {
               proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,69,96,0.08);border:1px solid rgba(233,69,96,0.3);border-radius:8px;font-size:0.78rem;color:#e94560;';
               proofBox.textContent = `${t('proof_failed')}: ${sd.error || ''}`;
             }
           }
-        } catch (_e) { clearInterval(poll); }
+        } catch (_e) { clearInterval(poll); clearInterval(_bgTimer); }
       }, 7000);
-      setTimeout(() => clearInterval(poll), 360_000);
+      setTimeout(() => { clearInterval(poll); clearInterval(_bgTimer); }, 360_000);
     }
 
   } catch (err) {

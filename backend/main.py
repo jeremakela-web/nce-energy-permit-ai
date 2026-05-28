@@ -11,6 +11,7 @@ Käynnistys:
 import asyncio
 import base64
 import io
+import json
 import os
 import re
 import unicodedata
@@ -102,6 +103,7 @@ class ApplicationRequest(BaseModel):
     hankkeen_vaihe:               Optional[str]   = None
     kohdeviranomainen:            Optional[str]   = None
     lang:                         Optional[str]   = "FI"
+    country:                      Optional[str]   = "FI"
 
 
 # ── Oikolukutehtävien in-memory-varasto ──────────────────────────────────────
@@ -335,7 +337,7 @@ async def generate_report(req: ReportRequest):
 @app.post("/api/generate-application")
 @limiter.limit("5/hour")
 async def generate_application_endpoint(request: Request, req: ApplicationRequest):
-    """Generoi lupahakemusluonnos PDF-muodossa (RAG + Claude). Oikoluku taustalla."""
+    """Käynnistä lupahakemus-PDF:n generointi taustasäikeessä. Palauttaa job_id heti (202)."""
     allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR",
                "smr_bess", "vesivoima", "hybridi", "business_finland",
                "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
@@ -343,60 +345,53 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
                             detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
-    try:
-        inp = ApplicationInput(
-            hanketyyppi                   = req.hanketyyppi,
-            kiinteistotunnus              = req.kiinteistotunnus,
-            teho_mw                       = req.teho_mw or 0.0,
-            kapasiteetti_mwh              = req.kapasiteetti_mwh or 0.0,
-            y_tunnus                      = req.y_tunnus or "",
-            osoite                        = req.osoite or "",
-            kunta                         = req.kunta,
-            hakija                        = req.hakija,
-            sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset or "",
-            hankkeen_vaihe                = req.hankkeen_vaihe or "",
-            kohdeviranomainen             = req.kohdeviranomainen or "",
-            lang                          = req.lang or "FI",
-        )
-        # Nopea luonnos ilman oikolukua (~30 s)
-        draft_bytes, sections, sources = await asyncio.to_thread(generate_application_draft, inp)
 
-        # Käynnistä oikoluku taustasäikeessä
-        job_id = uuid.uuid4().hex[:10]
-        _proofread_store[job_id] = {
-            "status": "pending", "pdf_bytes": None, "error": None,
-            "lang":        req.lang or "FI",
-            "hanketyyppi": req.hanketyyppi or "doc",
-            "kunta":       req.kunta or "hanke",
-        }
+    inp = ApplicationInput(
+        hanketyyppi                   = req.hanketyyppi,
+        kiinteistotunnus              = req.kiinteistotunnus,
+        teho_mw                       = req.teho_mw or 0.0,
+        kapasiteetti_mwh              = req.kapasiteetti_mwh or 0.0,
+        y_tunnus                      = req.y_tunnus or "",
+        osoite                        = req.osoite or "",
+        kunta                         = req.kunta,
+        hakija                        = req.hakija,
+        sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset or "",
+        hankkeen_vaihe                = req.hankkeen_vaihe or "",
+        kohdeviranomainen             = req.kohdeviranomainen or "",
+        lang                          = req.lang or "FI",
+        country                       = req.country or "FI",
+    )
 
-        def _bg_proofread():
-            try:
-                _proofread_store[job_id]["status"] = "running"
-                pdf = apply_proofread_to_pdf(inp, sections, sources)
-                _proofread_store[job_id]["pdf_bytes"] = pdf
-                _proofread_store[job_id]["status"] = "done"
-            except Exception as exc2:
-                _proofread_store[job_id]["status"] = "error"
-                _proofread_store[job_id]["error"] = str(exc2)
+    job_id = uuid.uuid4().hex[:10]
+    _proofread_store[job_id] = {
+        "status": "pending", "pdf_bytes": None, "error": None,
+        "lang":        req.lang or "FI",
+        "hanketyyppi": req.hanketyyppi or "doc",
+        "kunta":       req.kunta or "hanke",
+    }
 
-        Thread(target=_bg_proofread, daemon=True).start()
+    def _bg_generate():
+        try:
+            _proofread_store[job_id]["status"] = "running"
+            draft_bytes, sections, sources = generate_application_draft(inp)
+            pdf = apply_proofread_to_pdf(inp, sections, sources)
+            _proofread_store[job_id]["pdf_bytes"] = pdf
+            _proofread_store[job_id]["status"] = "done"
+        except Exception as exc:
+            _proofread_store[job_id]["status"] = "error"
+            _proofread_store[job_id]["error"] = str(exc)
 
-        _prefix   = _FILE_PREFIX.get(req.lang or "FI", "hakemus")
-        _kt       = _fn(req.hanketyyppi or "doc")
-        _kunta    = _fn(req.kunta or "hanke")
-        filename  = f"{_prefix}_{_kt}_{_kunta}.pdf"
-        return Response(
-            content    = draft_bytes,
-            media_type = "application/pdf",
-            headers    = {
-                "Content-Disposition":         f'attachment; filename="{filename}"',
-                "X-Job-Id":                    job_id,
-                "Access-Control-Expose-Headers": "X-Job-Id",
-            },
-        )
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Hakemuksen generointi epäonnistui: {exc}")
+    Thread(target=_bg_generate, daemon=True).start()
+
+    return Response(
+        content    = json.dumps({"job_id": job_id}),
+        status_code = 202,
+        media_type = "application/json",
+        headers    = {
+            "X-Job-Id":                      job_id,
+            "Access-Control-Expose-Headers": "X-Job-Id",
+        },
+    )
 
 
 @app.get("/api/proofread/{job_id}")
