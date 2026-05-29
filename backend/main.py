@@ -144,6 +144,20 @@ async def health():
     return {"status": "ok", "mml_key_set": bool(MML_API_KEY)}
 
 
+@app.get("/api/debug-encoding")
+def debug_encoding():
+    import unicodedata
+    test = "testiäö"
+    nfc = unicodedata.normalize("NFC", test)
+    return {
+        "raw": test,
+        "raw_repr": repr(test),
+        "nfc_repr": repr(nfc),
+        "ae_char": repr("ä"),
+        "oe_char": repr("ö"),
+    }
+
+
 @app.get("/api/property/{kiinteistotunnus}")
 async def property_boundaries(
     kiinteistotunnus: str,
