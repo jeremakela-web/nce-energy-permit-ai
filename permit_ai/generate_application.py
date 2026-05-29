@@ -44,7 +44,7 @@ _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
-_MODEL_ID      = "claude-sonnet-4-6"
+_MODEL_ID      = "claude-sonnet-4-20250514"
 _MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
 _EMBED_MODEL   = "all-MiniLM-L6-v2"
 
@@ -1545,6 +1545,9 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
 }
 
 _SYSTEM = (
+    "Käytä aina oikeita suomenkielisiä merkkejä: ä, ö, å. "
+    "ÄLÄ KOSKAAN kirjoita 'a' tai 'o' silloin kun oikea merkki on 'ä' tai 'ö'. "
+    "Tämä on kriittinen vaatimus. "
     "Olet NCE Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
     "laadinnassa Suomessa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
     "Viittaat aina voimassa olevaan lainsäädäntöön. "
