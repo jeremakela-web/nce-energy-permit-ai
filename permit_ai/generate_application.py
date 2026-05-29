@@ -44,7 +44,7 @@ _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
-_MODEL_ID      = "claude-sonnet-4-20250514"
+_MODEL_ID      = "claude-sonnet-4-5"
 _MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
 _EMBED_MODEL   = "all-MiniLM-L6-v2"
 
