@@ -29,7 +29,7 @@ from reportlab.lib.units import cm, mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    CondPageBreak, HRFlowable, KeepTogether, Paragraph,
+    HRFlowable, KeepTogether, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 from reportlab.pdfgen.canvas import Canvas as _CanvasBase
@@ -3568,10 +3568,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         ))
     story.append(Spacer(1, 8*mm))
 
-    _CPB = 100 * mm  # konditionaalinen sivunvaihto: alle 100 mm tilaa -> uusi sivu
-
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
-    story.append(CondPageBreak(_CPB))
     _kuvaus_elems = _para_text(sections.get("kuvaus", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec1"), st["h2"]),
@@ -3586,7 +3583,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 2. Perustelut ja tarve ────────────────────────────────────────────────
-    story.append(CondPageBreak(_CPB))
     _perust_elems = _para_text(sections.get("perustelut", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec2"), st["h2"]),
@@ -3597,7 +3593,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
-    story.append(CondPageBreak(_CPB))
     _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
     _country_luvat_data = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     _luvat_row_count = len(_country_luvat_data or _HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
@@ -3619,7 +3614,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── ISO/IEC-standardit ───────────────────────────────────────────────────
-    story.append(CondPageBreak(_CPB))
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec_standards"), st["h2"]),
         _hr(),
@@ -3628,7 +3622,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
-    story.append(CondPageBreak(_CPB))
     country_luvat_override = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     if country_luvat_override:
         laki_set = {laki for _, _, laki in country_luvat_override}
@@ -3647,7 +3640,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
-    story.append(CondPageBreak(_CPB))
     _liite_tbl = _liitteet_table(inp.hanketyyppi, lang, country)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec5"), st["h2"]),
@@ -3659,7 +3651,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 6. Seuraavat toimenpiteet ─────────────────────────────────────────────
-    story.append(CondPageBreak(_CPB))
     _toim_elems = _toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec6"), st["h2"]),
@@ -3704,7 +3695,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
         ("VALIGN",         (0, 0), (-1, -1), "TOP"),
     ]))
-    story.append(CondPageBreak(_CPB))
     story.append(KeepTogether([
         Paragraph(_s(lang, "yhteystiedot_h"), st["h2"]),
         _hr(),
