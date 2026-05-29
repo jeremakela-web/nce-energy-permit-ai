@@ -243,7 +243,7 @@ def _proofread_sections(sections: dict) -> dict:
     try:
         resp = anthropic.Anthropic().messages.create(
             model=_MODEL_ID_FAST,
-            max_tokens=4096,
+            max_tokens=6000,
             messages=[{"role": "user", "content": prompt}],
         )
         corrected = resp.content[0].text
@@ -668,21 +668,34 @@ _HANKE_CFG = {
             "datakeskus kaavoitus asemakaavanmuutos YVA ympäristövaikutukset",
         ],
         "context_extra": (
-            "DATAKESKUS-ERITYISOHJE: Turun kylmä ilmasto mahdollistaa Free Cooling -järjestelmän "
-            "(ulkoilmajäähdytys) tai Liquid Cooling -ratkaisun ilman mekaanista jäähdytystä suurimman "
-            "osan vuodesta — mainitse tämä energiatehokkuusperusteluissa. "
-            "Käytä selkeästi IT-kuorma (IT load, MW) ja kokonaisteho (bruttokulutus inkl. jäähdytys, "
-            "UPS-häviöt ja valaistus) erillään. Mainitse PUE-tavoite (≤1.3 on hyvä taso). "
-            "Hukkalämpö (free cooling -kierron paluulämpö ~25–35 °C) sopii Turun "
-            "kaukolämpöverkkoon (Turku Energia / Fortum) — tämä on keskeinen ympäristöetu. "
-            "VERKKOLIITYNTÄ: Käytä tätä tarkkaa muotoilua raportissa: "
+            "DATAKESKUS — OSIOKOHTAISET SISÄLTÖVAATIMUKSET:\n\n"
+            "HANKKEEN KUVAUS -osiossa TÄYTYY olla kaikki seuraavat:\n"
+            "1) Hankkeen tarkoitus ja liiketoiminnallinen perustelu\n"
+            "2) Tekniset parametrit: IT-kuorma (käytä annettua teho-arvoa MW), "
+            "arvioitu kokonaiskulutus (IT-kuorma × 1,3 = kokonaisteho MW), PUE-tavoite 1,3\n"
+            "3) Jäähdytysratkaisu: Free Cooling (ulkoilmajäähdytys) toimii Turun kylmässä "
+            "ilmastossa suurimman osan vuodesta — ei mekaanista jäähdytystä tarvita talvella\n"
+            "4) Hukkalämmön hyödyntäminen: paluulämpö ~25–35 °C palautetaan Turun "
+            "kaukolämpöverkkoon (Turku Energia / Fortum) — merkittävä ympäristöetu\n"
+            "5) Sijaintiedut: teollisuusalue, liikenneyhteydet, olemassa oleva infrastruktuuri\n\n"
+            "PERUSTELUT-osiossa TÄYTYY olla:\n"
+            "1) Digitalisaation kasvava kapasiteettitarve Suomessa\n"
+            "2) Energiatehokkuus: PUE 1,3 on hyvä taso, Free Cooling säästää energiaa\n"
+            "3) Hukkalämmön hyödyntäminen kaukolämpöön = konkreettinen hiilineutraaliushyöty\n"
+            "4) Turku on ihanteellinen sijainti: kylmä ilmasto, teollisuusinfra, satamalogistiikka\n\n"
+            "SEURAAVAT TOIMENPITEET -osiossa TÄYTYY olla täsmälleen 6 vaihetta:\n"
+            "1. Ennakkoneuvottelu rakennusvalvonta – Lupakonsultti / NCE – 1–2 vk\n"
+            "2. Asemakaavanmuutos-selvitys – Projektipäällikkö / NCE – 1–3 kk\n"
+            "3. YVA-harkinta ELY-keskuksen kanssa – Lupakonsultti / NCE – 2–4 kk\n"
+            "4. Verkkoliittymäneuvottelu Turku Energia + Fingrid – IT-arkkitehti / Hakija – 3–6 kk\n"
+            "5. Rakentamislupahakemus – Lupakonsultti / NCE – 6–12 kk\n"
+            "6. Ympäristölupahakemus (jäähdytys ja melu) – Lupakonsultti / NCE – 6–12 kk\n\n"
+            "VERKKOLIITYNTÄ — käytä tätä tarkkaa muotoilua: "
             "'Jakeluverkkoliittymä (alle 110 kV) solmitaan Turku Energian kanssa. "
-            "Mahdollinen kantaverkkoliittymä (110 kV) Fingrid Oyj:n kanssa.' "
-            "YVA-HARKINTA: Käytä tätä tarkkaa muotoilua raportissa: "
+            "Mahdollinen kantaverkkoliittymä (110 kV) Fingrid Oyj:n kanssa.'\n\n"
+            "YVA — käytä tätä tarkkaa muotoilua: "
             "'[teho] MW datakeskus ei automaattisesti ylitä YVA-kynnysarvoa, mutta "
-            "tapauskohtainen harkinta tehdään ELY-keskuksessa.' — korvaa [teho] hankkeen teholla. "
-            "Seuraavat toimenpiteet -osiossa Vastuutaho-sarakkeessa tulee olla konkreettinen titteli: "
-            "'Projektipäällikkö / NCE', 'Lupakonsultti / NCE', 'IT-arkkitehti / Hakija' tms."
+            "tapauskohtainen harkinta tehdään ELY-keskuksessa.' (korvaa [teho] hankkeen teholla)"
         ),
         "luvat": [
             ("Rakentamislupa",                     "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
@@ -1419,21 +1432,24 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "perustelut":   "PERUSTELUT JA TARVE",
         "luvat":        "LUPAMENETTELYJEN KUVAUS",
         "toimenpiteet": "SEURAAVAT TOIMENPITEET",
-        "kuvaus_inst":  ("Kirjoita 3–5 kappaleen kuvaus hankkeesta: tarkoitus, tekniset tiedot, "
-                         "sijainti, liityntä verkkoon ja ympäristövaikutukset. Mainitse hanketyypille "
-                         "tyypilliset tekniset parametrit."),
+        "kuvaus_inst":  ("Kirjoita 4–5 kappaleen perusteellinen kuvaus hankkeesta: tarkoitus, tekniset "
+                         "tiedot, sijainti, liityntä verkkoon ja ympäristövaikutukset. Mainitse "
+                         "hanketyypille tyypilliset tekniset parametrit. Osion on oltava riittävän "
+                         "kattava ennakkoneuvottelua varten."),
         "kuvaus_extra": " Ota huomioon annettu sijainti- ja ympäristövaikutustieto.",
-        "perustelut_inst": ("Kirjoita 2–3 kappaleen perustelu miksi hanke on tarpeellinen "
+        "perustelut_inst": ("Kirjoita 3–4 kappaleen perustelu miksi hanke on tarpeellinen "
                             "(energiajärjestelmän näkökulma, Suomen ilmastotavoitteet, "
-                            "aluetaloudelliset vaikutukset)."),
+                            "aluetaloudelliset vaikutukset, teknologiset edut)."),
         "luvat_inst":   ("Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa "
                          "koskee ja miksi se vaaditaan tälle hankkeelle."),
         "luvat_extra":  " Viittaa erityisesti kohdeviranomaisen {auth} prosesseihin ja vaatimuksiin.",
         "toimenpiteet_first": ("Kunnan rakennusvalvonnan ennakkoneuvottelu + kaavatarkastus — "
                                "Hakija / {kunta}n rakennusvalvonta — 1–2 viikon sisällä"),
         "toimenpiteet_inst": ("Ensimmäinen toimenpide on AINA: \"{first}\".\n"
-                              "Listaa sen jälkeen 5 muuta konkreettista askelta aikatauluineen "
-                              "(kk tarkkuudella)."),
+                              "Listaa sen jälkeen täsmälleen 5 muuta konkreettista askelta "
+                              "aikatauluineen (kk tarkkuudella). "
+                              "Muoto: numero. Toimenpide – Vastuutaho – Aikataulu\n"
+                              "Yhteensä 6 vaihetta."),
         "toimenpiteet_vaihe": " Ota huomioon hankkeen nykyinen vaihe: {vaihe}.",
         "phase_label":        "Hankkeen vaihe",
         "viranomainen_ohje":  ("TÄRKEÄÄ: Hakemus osoitetaan viranomaiselle '{auth}'. "
@@ -2605,7 +2621,7 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     resp   = claude.messages.create(
         model=_MODEL_ID,
-        max_tokens=5000,
+        max_tokens=7000,
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
