@@ -9,10 +9,13 @@ Käyttö:
 """
 
 import io
+import logging
 import os
 import re
 import sys
 import unicodedata
+
+logger = logging.getLogger(__name__)
 from datetime import datetime
 from dataclasses import dataclass
 from functools import lru_cache
@@ -2771,15 +2774,15 @@ Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali
     _dbg_nfc   = unicodedata.normalize("NFC", _dbg_raw)
     _dbg_diak  = _fix_fi_diacritics(_dbg_nfc)
     _dbg_lat1  = _latin1_safe(_dbg_diak)
-    print("\n====== DEBUG: ä/ö trace ======")
-    print(f"[1] RAW (Claude API)   : {_dbg_raw!r}")
-    print(f"[2] After NFC          : {_dbg_nfc!r}")
-    print(f"[3] After fix_diak     : {_dbg_diak!r}")
-    print(f"[4] After latin1_safe  : {_dbg_lat1!r}")
-    print(f"[1→2 changed]          : {_dbg_raw != _dbg_nfc}")
-    print(f"[2→3 changed]          : {_dbg_nfc != _dbg_diak}")
-    print(f"[3→4 changed]          : {_dbg_diak != _dbg_lat1}")
-    print("==============================\n")
+    logger.warning("DEBUG: ä/ö trace start")
+    logger.warning("DEBUG [1] RAW (Claude API)  : %s", repr(_dbg_raw))
+    logger.warning("DEBUG [2] After NFC         : %s", repr(_dbg_nfc))
+    logger.warning("DEBUG [3] After fix_diak    : %s", repr(_dbg_diak))
+    logger.warning("DEBUG [4] After latin1_safe : %s", repr(_dbg_lat1))
+    logger.warning("DEBUG [1→2 changed]         : %s", _dbg_raw != _dbg_nfc)
+    logger.warning("DEBUG [2→3 changed]         : %s", _dbg_nfc != _dbg_diak)
+    logger.warning("DEBUG [3→4 changed]         : %s", _dbg_diak != _dbg_lat1)
+    logger.warning("DEBUG: ä/ö trace end")
     # ── END DEBUG ────────────────────────────────────────────────────────────
     raw = unicodedata.normalize("NFC", resp.content[0].text)
 
@@ -3662,8 +3665,7 @@ def generate_application(inp: ApplicationInput) -> str:
     """
     Generoi lupahakemus-PDF (tai BF-hakemus) ja palauta tallennuspolku.
     """
-    import sys
-    print(f"DEBUG TEST: äö toimii", flush=True, file=sys.stderr)
+    logger.warning("DEBUG TEST: äö toimii - raw=%s", repr("testäö"))
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
 
     is_bf = inp.hanketyyppi == "business_finland"
