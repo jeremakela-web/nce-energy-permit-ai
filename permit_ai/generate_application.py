@@ -300,6 +300,7 @@ def _fix_fi_diacritics(text: str) -> str:
             omitted the diacritic entirely (kaytettavyys → käytettävyys).
     """
     text = unicodedata.normalize("NFC", text)
+    text = text.replace('■', '').replace('■', '')
     for rx, repl in _FI_DIAK_RE:
         text = rx.sub(repl, text)
     return text
@@ -3030,10 +3031,10 @@ def _st() -> dict:
                                    leading=13, spaceAfter=2),
         "h2":       ParagraphStyle("ah2", fontSize=11, textColor=C_NAVY,
                                    fontName=PDF_FONT_BOLD, spaceBefore=14,
-                                   spaceAfter=5, leading=15, keepWithNext=1),
+                                   spaceAfter=0, leading=15, keepWithNext=1),
         "h3":       ParagraphStyle("ah3", fontSize=9.5, textColor=C_NAVY,
                                    fontName=PDF_FONT_BOLD, spaceBefore=8,
-                                   spaceAfter=3, leading=13, keepWithNext=1),
+                                   spaceAfter=0, leading=13, keepWithNext=1),
         "body":     ParagraphStyle("ab", fontSize=9, leading=14, spaceAfter=5),
         "small":    ParagraphStyle("asm", fontSize=7.5, textColor=C_GRAY,
                                    leading=11, spaceAfter=2),
@@ -3262,7 +3263,9 @@ def _para_text(text: str, st: dict) -> list:
                 items.append(KeepTogether([prev, p]))
             else:
                 # keepWithNext=1 estää yksittäisen lauseen jäämisen sivun alaosaan
-                _st = ParagraphStyle("body_kwn", parent=st["body"], keepWithNext=1)
+                # spaceBefore=0 ensimmäisessä kappaleessa välttää otsikon ja tekstin välisen aukon
+                _sb = 0 if not items else st["body"].spaceBefore
+                _st = ParagraphStyle("body_kwn", parent=st["body"], keepWithNext=1, spaceBefore=_sb)
                 items.append(Paragraph(clean, _st))
     return items
 
