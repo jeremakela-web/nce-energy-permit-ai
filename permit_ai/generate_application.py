@@ -2665,10 +2665,10 @@ def _st() -> dict:
                                    leading=13, spaceAfter=2),
         "h2":       ParagraphStyle("ah2", fontSize=11, textColor=C_NAVY,
                                    fontName="Helvetica-Bold", spaceBefore=14,
-                                   spaceAfter=5, leading=15),
+                                   spaceAfter=5, leading=15, keepWithNext=1),
         "h3":       ParagraphStyle("ah3", fontSize=9.5, textColor=C_NAVY,
                                    fontName="Helvetica-Bold", spaceBefore=8,
-                                   spaceAfter=3, leading=13),
+                                   spaceAfter=3, leading=13, keepWithNext=1),
         "body":     ParagraphStyle("ab", fontSize=9, leading=14, spaceAfter=5),
         "small":    ParagraphStyle("asm", fontSize=7.5, textColor=C_GRAY,
                                    leading=11, spaceAfter=2),
@@ -2849,6 +2849,12 @@ def _md_table_to_rl(lines: list, st: dict):
 def _para_text(text: str, st: dict) -> list:
     """Muunna AI:n tuottama teksti Paragraph-listaksi (kappalejaot \\n\\n)."""
     text = _latin1_safe(text)
+    _ai_h2 = ParagraphStyle("ai_h2", fontSize=10.5, fontName="Helvetica-Bold",
+                             textColor=C_NAVY, spaceBefore=10, spaceAfter=3,
+                             leading=14, keepWithNext=1)
+    _ai_h3 = ParagraphStyle("ai_h3", fontSize=9.5, fontName="Helvetica-Bold",
+                             textColor=C_BLUE, spaceBefore=6, spaceAfter=3,
+                             leading=13, keepWithNext=1)
     items = []
     for para in text.split("\n\n"):
         para = para.strip()
@@ -2861,11 +2867,11 @@ def _para_text(text: str, st: dict) -> list:
             if tbl is not None:
                 items.append(tbl)
                 continue
-        # Alaotsikko (##)
-        if para.startswith("## "):
-            items.append(Paragraph(para[3:], ParagraphStyle(
-                "ai_h3", fontSize=9.5, fontName="Helvetica-Bold",
-                textColor=C_BLUE, spaceBefore=6, spaceAfter=3)))
+        # Otsikot: ### ja ##
+        if para.startswith("### "):
+            items.append(Paragraph(para[4:], _ai_h3))
+        elif para.startswith("## "):
+            items.append(Paragraph(para[3:], _ai_h2))
         # Listakohta (- tai *)
         elif para.startswith(("- ", "* ", "• ")):
             for line in para.splitlines():
@@ -2879,7 +2885,8 @@ def _para_text(text: str, st: dict) -> list:
                 if line:
                     items.append(Paragraph(line, st["bullet"]))
         else:
-            clean = para.replace("**", "")
+            # **bold** → <b>bold</b> for ReportLab XML
+            clean = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', para)
             items.append(Paragraph(clean, st["body"]))
     return items
 
@@ -3191,11 +3198,17 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
-    story.append(KeepTogether([
-        Paragraph(_s(lang, "sec3"), st["h2"]),
-        _hr(),
-    ]))
-    story.append(_luvat_table(inp.hanketyyppi, st, lang, country))
+    _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
+    _luvat_rows = len(_HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
+    if _luvat_rows <= 8:
+        story.append(KeepTogether([
+            Paragraph(_s(lang, "sec3"), st["h2"]),
+            _hr(),
+            _luvat_tbl,
+        ]))
+    else:
+        story.append(KeepTogether([Paragraph(_s(lang, "sec3"), st["h2"]), _hr()]))
+        story.append(_luvat_tbl)
     story.append(Spacer(1, 5*mm))
     _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
     story.append(Paragraph(_s(lang, _kaava_key), st["body"]))
