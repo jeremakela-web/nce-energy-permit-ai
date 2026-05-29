@@ -3125,10 +3125,16 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     _meta_kt = _clean_kt(inp.kiinteistotunnus)
     _hanke_short = _HANKE_SHORT.get(inp.hanketyyppi, inp.hanketyyppi.replace("_", " ").title())
     _location = inp.kunta
+    _sij_hint = ""
     if inp.sijainti_ymparistovaikutukset:
-        _sij_hint = inp.sijainti_ymparistovaikutukset.split("\n")[0].split(",")[0].strip()[:30]
-        if _sij_hint:
-            _location = f"{inp.kunta}, {_sij_hint}"
+        # Take only the first comma-segment; reject if it looks like a full sentence (>20 chars)
+        _seg = inp.sijainti_ymparistovaikutukset.split("\n")[0].split(",")[0].strip()
+        if len(_seg) <= 20:
+            _sij_hint = _seg
+    if not _sij_hint and inp.hanketyyppi == "datakeskus":
+        _sij_hint = "Teollisuusalue"
+    if _sij_hint:
+        _location = f"{inp.kunta}, {_sij_hint}"
     _meta_parts = [f"{inp.teho_mw} MW {_hanke_short}", _location]
     if _meta_kt != "–":
         _meta_parts.append(_meta_kt)
