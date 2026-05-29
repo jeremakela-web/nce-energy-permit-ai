@@ -3024,17 +3024,33 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
         return _para_text(text, st)
     header = [_s(lang, "toim_nro"), _s(lang, "toim_toimenpide"),
               _s(lang, "toim_vastuutaho"), _s(lang, "toim_aikataulu")]
-    th_s = ParagraphStyle("tp_th", fontSize=8, fontName="Helvetica-Bold", textColor=C_WHITE)
-    td_s = ParagraphStyle("tp_td", fontSize=8, fontName="Helvetica", leading=11)
-    tbl_data = [[Paragraph(h, th_s) for h in header]]
+    th_s = ParagraphStyle("tp_th", fontSize=8, fontName="Helvetica-Bold",
+                          textColor=C_WHITE, leading=11)
+    th_c = ParagraphStyle("tp_thc", fontSize=8, fontName="Helvetica-Bold",
+                          textColor=C_WHITE, leading=11, alignment=1)
+    td_s = ParagraphStyle("tp_td", fontSize=8, fontName="Helvetica", leading=12)
+    td_c = ParagraphStyle("tp_tdc", fontSize=8, fontName="Helvetica", leading=12, alignment=1)
+    # colWidths sum to 16.6 cm = A4 content width (21 - 2×2.2)
+    tbl_data = [[Paragraph(header[0], th_c),
+                 Paragraph(header[1], th_s),
+                 Paragraph(header[2], th_s),
+                 Paragraph(header[3], th_s)]]
     for row in rows:
-        tbl_data.append([Paragraph(str(c), td_s) for c in row])
-    tbl = Table(tbl_data, colWidths=[1.0*cm, 7.0*cm, 4.5*cm, 3.5*cm], repeatRows=1)
+        tbl_data.append([
+            Paragraph(str(row[0]), td_c),
+            Paragraph(str(row[1]), td_s),
+            Paragraph(str(row[2]), td_s),
+            Paragraph(str(row[3]), td_s),
+        ])
+    tbl = Table(tbl_data, colWidths=[0.9*cm, 7.2*cm, 4.5*cm, 4.0*cm], repeatRows=1)
     tbl.setStyle(TableStyle([
         ("BACKGROUND",     (0, 0), (-1, 0), C_NAVY),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
         ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
-        ("PADDING",        (0, 0), (-1, -1), 5),
+        ("TOPPADDING",     (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING",  (0, 0), (-1, -1), 6),
+        ("LEFTPADDING",    (0, 0), (-1, -1), 5),
+        ("RIGHTPADDING",   (0, 0), (-1, -1), 5),
         ("VALIGN",         (0, 0), (-1, -1), "TOP"),
         ("NOSPLIT",        (0, 0), (-1, 0)),
     ]))
