@@ -3662,6 +3662,8 @@ def generate_application(inp: ApplicationInput) -> str:
     """
     Generoi lupahakemus-PDF (tai BF-hakemus) ja palauta tallennuspolku.
     """
+    import sys
+    print(f"DEBUG TEST: äö toimii", flush=True, file=sys.stderr)
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
 
     is_bf = inp.hanketyyppi == "business_finland"
