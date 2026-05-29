@@ -3262,11 +3262,12 @@ def _para_text(text: str, st: dict) -> list:
                 prev = items.pop()
                 items.append(KeepTogether([prev, p]))
             else:
-                # keepWithNext=1 estää yksittäisen lauseen jäämisen sivun alaosaan
                 # spaceBefore=0 ensimmäisessä kappaleessa välttää otsikon ja tekstin välisen aukon
-                _sb = 0 if not items else st["body"].spaceBefore
-                _st = ParagraphStyle("body_kwn", parent=st["body"], keepWithNext=1, spaceBefore=_sb)
-                items.append(Paragraph(clean, _st))
+                if not items:
+                    _st = ParagraphStyle("body_first", parent=st["body"], spaceBefore=0)
+                    items.append(Paragraph(clean, _st))
+                else:
+                    items.append(Paragraph(clean, st["body"]))
     return items
 
 
