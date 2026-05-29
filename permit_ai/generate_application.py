@@ -653,16 +653,21 @@ _HANKE_CFG = {
             "UPS-häviöt ja valaistus) erillään. Mainitse PUE-tavoite (≤1.3 on hyvä taso). "
             "Hukkalämpö (free cooling -kierron paluulämpö ~25–35 °C) sopii Turun "
             "kaukolämpöverkkoon (Turku Energia / Fortum) — tämä on keskeinen ympäristöetu. "
+            "VERKKOLIITYNTÄ: Erota selkeästi kaksi sopimusta: (1) Turku Energia = jakeluverkko (DSO, "
+            "alle 110 kV) ja (2) Fingrid = kantaverkko (TSO, 110–400 kV). Mainitse molemmat. "
+            "YVA-HARKINTA: Kirjoita 'YVA-harkinta tehdään tapauskohtaisesti ELY-keskuksen kanssa "
+            "riippumatta tehokynnyksestä' — älä mainitse '≥50 MW' kynnystä absoluuttisena rajana. "
             "Seuraavat toimenpiteet -osiossa Vastuutaho-sarakkeessa tulee olla konkreettinen titteli: "
             "'Projektipäällikkö / NCE', 'Lupakonsultti / NCE', 'IT-arkkitehti / Hakija' tms."
         ),
         "luvat": [
             ("Rakentamislupa",                     "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
             ("Asemakaavanmuutos (tarvitt.)",        "Kunta + ELY-keskus",          "MRL 132/1999"),
-            ("YVA-menettely (tarvitt. ≥50 MW)",    "ELY-keskus / Luova",          "YVA-laki 252/2017"),
+            ("YVA-harkinta (tapauskohtainen)",       "ELY-keskus / Luova",          "YVA-laki 252/2017"),
             ("Ympäristölupa (jäähdytys, melu)",    "Lupa- ja valvontavirasto",    "YSL 527/2014"),
             ("Naapurikuuleminen",                   "Kunta / hakija",              "Rakentamislaki 751/2023, 44 §"),
-            ("Verkkoliityntäsopimus",               "Fingrid Oyj / DSO",           "Sähkömarkkinalaki 588/2013"),
+            ("Verkkoliityntäsopimus (jakelu)",      "Turku Energia (DSO)",         "Sähkömarkkinalaki 588/2013"),
+            ("Verkkoliityntäsopimus (kantaverkko)", "Fingrid Oyj (TSO)",           "Sähkömarkkinalaki 588/2013"),
         ],
         "laki_extra": [
             "Luonnonsuojelulaki 9/2023",
@@ -1244,7 +1249,11 @@ _SYSTEM = (
     "lisää välittömästi kyseisen lauseen tai kappaleen jälkeen merkintä "
     "'⚠️ Asiantuntijatarkistus suositellaan'. Älä koskaan täytä tietopuutteita arvauksilla "
     "tai spekulaatiolla — mieluummin merkitse asia epävarmaksi kuin generoi väärää tietoa. "
-    "Kaikki tuottamasi teksti on AI-luonnos joka vaatii asiantuntijatarkistuksen."
+    "Kaikki tuottamasi teksti on AI-luonnos joka vaatii asiantuntijatarkistuksen. "
+    "YHTEYSTIETOSÄÄNTÖ: Älä koskaan generoi hakijan osoitetta, puhelinnumeroa, "
+    "sähköpostia tai Y-tunnusta tekstiosioihin — käytä vain luvan sisältöön liittyviä tietoja. "
+    "LAUSERAKENNE: Kirjoita lyhyitä, selkeitä virkkeitä (enintään 2 lausetta per kappale). "
+    "Vältä pitkiä luettelomaisesti yhdisteltyjä juridisia lauseita."
 )
 
 _LANG_INSTRUCTIONS: dict[str, str] = {
@@ -1299,6 +1308,7 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
 _WRITE_INSTRUCTION: dict[str, str] = {
     "FI": ("Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. "
            "Viittaa lakeihin lyhentein hakasulkeissa, esim. [YSL §27] tai [Rakentamislaki 751/2023]. "
+           "Kirjoita lyhyitä virkkeitä — enintään kaksi lausetta per kappale, ei pitkiä juridisia luettelolauseita. "
            "Jos jokin tieto on epävarma, puuttuu tai vaatii erikoisosaamista, "
            "lisää merkintä '⚠️ Asiantuntijatarkistus suositellaan' heti kyseisen kohdan jälkeen — "
            "älä spekuloi eläkä täytä tietopuutteita oletuksilla:"),
@@ -2541,6 +2551,13 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     context_extra_block = ""
     if cfg.get("context_extra"):
         context_extra_block = "\n\n" + cfg["context_extra"]
+    if inp.hanketyyppi == "datakeskus" and inp.teho_mw:
+        _kokon = round(float(inp.teho_mw) * 1.3, 1)
+        context_extra_block += (
+            f"\n\nIT-TEHOTIEDOT TÄHÄN RAPORTTIIN: IT-kuorma {inp.teho_mw} MW, "
+            f"arvioitu kokonaiskulutus ~{_kokon} MW (PUE 1.3). "
+            f"Käytä AINA näitä lukuja raportissa — älä käytä muita lukuja."
+        )
 
     prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
 
@@ -2868,13 +2885,14 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
     tbl_data = [[Paragraph(h, th_s) for h in header]]
     for row in rows:
         tbl_data.append([Paragraph(str(c), td_s) for c in row])
-    tbl = Table(tbl_data, colWidths=[1.0*cm, 7.0*cm, 4.5*cm, 3.5*cm])
+    tbl = Table(tbl_data, colWidths=[1.0*cm, 7.0*cm, 4.5*cm, 3.5*cm], repeatRows=1)
     tbl.setStyle(TableStyle([
         ("BACKGROUND",     (0, 0), (-1, 0), C_NAVY),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
         ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
         ("PADDING",        (0, 0), (-1, -1), 5),
         ("VALIGN",         (0, 0), (-1, -1), "TOP"),
+        ("NOSPLIT",        (0, 0), (-1, 0)),
     ]))
     return [tbl]
 
@@ -3061,7 +3079,11 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         ParagraphStyle("kan_sub2", fontSize=9, textColor=C_GRAY,
                        fontName="Helvetica", spaceAfter=4, leading=13),
     ))
-    story.append(Paragraph(f"{inp.teho_mw} MW  ·  {inp.kunta}  ·  {inp.kiinteistotunnus}", st["meta"]))
+    _meta_kt = _clean_kt(inp.kiinteistotunnus)
+    _meta_parts = [f"{inp.teho_mw} MW", inp.kunta]
+    if _meta_kt != "–":
+        _meta_parts.append(_meta_kt)
+    story.append(Paragraph("  ·  ".join(_meta_parts), st["meta"]))
     story.append(Spacer(1, 4*mm))
     story.append(_hr(C_NAVY, 1.5))
     story.append(Spacer(1, 3*mm))
@@ -3221,9 +3243,9 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         _hr(),
     ]))
     yhteystiedot_data = [
-        [_s(lang, "yht_hakija"),      inp.hakija],
-        [_s(lang, "yht_ytunnus"),     inp.y_tunnus if inp.y_tunnus else "–"],
-        [_s(lang, "yht_osoite"),      inp.osoite if inp.osoite else "–"],
+        [_s(lang, "yht_hakija"), inp.hakija],
+        *([[_s(lang, "yht_ytunnus"), inp.y_tunnus]] if inp.y_tunnus else []),
+        *([[_s(lang, "yht_osoite"),  inp.osoite]]  if inp.osoite  else []),
         [_s(lang, "yht_lisatietoja"), "NCE Permit AI  ·  ncenergy.fi  ·  jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi"],
     ]
     yht_tbl = Table(
