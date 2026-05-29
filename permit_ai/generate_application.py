@@ -26,11 +26,27 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import cm, mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     CondPageBreak, HRFlowable, KeepTogether, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 from reportlab.pdfgen.canvas import Canvas as _CanvasBase
+
+# ── TrueType font registration (UTF-8 safe, replaces Latin-1 Helvetica) ──────
+_DEJAVU_PATH      = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+_DEJAVU_BOLD_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+if os.path.exists(_DEJAVU_PATH):
+    pdfmetrics.registerFont(TTFont("DejaVu", _DEJAVU_PATH))
+    PDF_FONT = "DejaVu"
+else:
+    PDF_FONT = "Helvetica"
+if os.path.exists(_DEJAVU_BOLD_PATH):
+    pdfmetrics.registerFont(TTFont("DejaVu-Bold", _DEJAVU_BOLD_PATH))
+    PDF_FONT_BOLD = "DejaVu-Bold"
+else:
+    PDF_FONT_BOLD = "Helvetica-Bold"
 
 # ── RAG / AI ─────────────────────────────────────────────────────────────────
 sys.path.insert(0, os.path.dirname(__file__))
@@ -63,15 +79,15 @@ def _clean_kt(kt: str) -> str:
 
 
 def _latin1_safe(text: str) -> str:
-    """Transliterate non-latin-1 chars (e.g. Polish ń→n) so ReportLab's
-    built-in Helvetica font never raises a UnicodeEncodeError.
-    Finnish ä (0xe4), ö (0xf6) and en-dash (0x96 in CP1252/WinAnsiEncoding)
-    ARE encodable in Latin-1/CP1252 and pass through unchanged.
+    """NFC-normalise and return text unchanged.
 
-    NFC-normalise first: the AI sometimes returns 'a' + U+0308 (combining
-    diaeresis) instead of the precomposed ä (U+00E4).  Without NFC the
-    NFKD path below would drop U+0308 and turn ä into bare 'a'."""
+    When PDF_FONT is a TrueType font (DejaVu), ReportLab handles the full
+    Unicode range natively — no Latin-1 transliteration needed.  We keep
+    the NFC step so combining diacritics (a+U+0308) are collapsed to
+    precomposed ä before they reach the PDF renderer."""
     text = unicodedata.normalize("NFC", text)
+    if PDF_FONT != "Helvetica":
+        return text  # TrueType font — pass through unchanged
     try:
         text.encode("latin-1")
         return text
@@ -2949,22 +2965,22 @@ def _st() -> dict:
     """Paragraphityylit."""
     return {
         "title":    ParagraphStyle("at", fontSize=20, textColor=C_NAVY,
-                                   fontName="Helvetica-Bold", spaceAfter=3, leading=24),
+                                   fontName=PDF_FONT_BOLD, spaceAfter=3, leading=24),
         "sub":      ParagraphStyle("as", fontSize=10, textColor=C_RED,
-                                   fontName="Helvetica-Bold", spaceAfter=4),
+                                   fontName=PDF_FONT_BOLD, spaceAfter=4),
         "meta":     ParagraphStyle("am", fontSize=8.5, textColor=C_GRAY,
                                    leading=13, spaceAfter=2),
         "h2":       ParagraphStyle("ah2", fontSize=11, textColor=C_NAVY,
-                                   fontName="Helvetica-Bold", spaceBefore=14,
+                                   fontName=PDF_FONT_BOLD, spaceBefore=14,
                                    spaceAfter=5, leading=15, keepWithNext=1),
         "h3":       ParagraphStyle("ah3", fontSize=9.5, textColor=C_NAVY,
-                                   fontName="Helvetica-Bold", spaceBefore=8,
+                                   fontName=PDF_FONT_BOLD, spaceBefore=8,
                                    spaceAfter=3, leading=13, keepWithNext=1),
         "body":     ParagraphStyle("ab", fontSize=9, leading=14, spaceAfter=5),
         "small":    ParagraphStyle("asm", fontSize=7.5, textColor=C_GRAY,
                                    leading=11, spaceAfter=2),
         "warn":     ParagraphStyle("aw", fontSize=8, textColor=C_WARN,
-                                   fontName="Helvetica-Bold", alignment=TA_CENTER,
+                                   fontName=PDF_FONT_BOLD, alignment=TA_CENTER,
                                    spaceBefore=4, spaceAfter=4),
         "bullet":   ParagraphStyle("abul", fontSize=9, leading=14,
                                    leftIndent=14, spaceAfter=3),
@@ -2982,7 +2998,7 @@ def _disclaimer_box(st: dict, lang: str = "FI") -> Table:
     row = [[Paragraph(
         f"{_s(lang, 'disclaimer_h')}\n{_s(lang, 'disclaimer_b')}",
         ParagraphStyle("disc", fontSize=8, textColor=colors.HexColor("#7a4400"),
-                       fontName="Helvetica-Bold", alignment=TA_CENTER, leading=12)
+                       fontName=PDF_FONT_BOLD, alignment=TA_CENTER, leading=12)
     )]]
     tbl = Table(row, colWidths=[16.5 * cm])
     tbl.setStyle(TableStyle([
@@ -2999,7 +3015,7 @@ def _luvat_table(hanketyyppi: str, st: dict, lang: str = "FI", country: str = "F
         _COUNTRY_LUVAT.get(country, {}).get(hanketyyppi)
         or _HANKE_CFG[hanketyyppi]["luvat"]
     )
-    _th  = ParagraphStyle("th", fontSize=8.5, fontName="Helvetica-Bold")
+    _th  = ParagraphStyle("th", fontSize=8.5, fontName=PDF_FONT_BOLD)
     rows = [[
         Paragraph(_s(lang, "th_lupa"),  _th),
         Paragraph(_s(lang, "th_viran"), _th),
@@ -3030,11 +3046,11 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI", country: str = "FI") -> 
     """Liiteluettelo checkboxeilla, maakohtaisella ylikirjoituksella."""
     country_liitteet = _COUNTRY_LIITTEET.get(country, {}).get(hanketyyppi)
     liitteet = country_liitteet if country_liitteet else _HANKE_CFG[hanketyyppi]["liitteet"]
-    _th2 = ParagraphStyle("th2", fontSize=8.5, fontName="Helvetica-Bold")
+    _th2 = ParagraphStyle("th2", fontSize=8.5, fontName=PDF_FONT_BOLD)
     rows = [[
         Paragraph(_s(lang, "th_nro"),   _th2),
         Paragraph(_s(lang, "th_liite"), _th2),
-        Paragraph(_s(lang, "th_tila"),  ParagraphStyle("th2c", fontSize=8.5, fontName="Helvetica-Bold",
+        Paragraph(_s(lang, "th_tila"),  ParagraphStyle("th2c", fontSize=8.5, fontName=PDF_FONT_BOLD,
                                                         alignment=TA_CENTER)),
     ]]
     for i, liite in enumerate(liitteet, start=1):
@@ -3073,7 +3089,7 @@ def _standards_table(hanketyyppi: str, country: str, lang: str, st: dict) -> Tab
     sup_country = _NATIONAL_SUPERVISORS.get(country, _NATIONAL_SUPERVISORS["FI"])
     supervisor = sup_country.get(hanketyyppi) or sup_country.get("_generic", "–")
 
-    _th  = ParagraphStyle("stth",  fontSize=8.5, fontName="Helvetica-Bold")
+    _th  = ParagraphStyle("stth",  fontSize=8.5, fontName=PDF_FONT_BOLD)
     _td  = ParagraphStyle("sttd",  fontSize=8.0, leading=11)
     _tds = ParagraphStyle("sttds", fontSize=7.5, leading=11, textColor=C_GRAY)
     rows = [[
@@ -3119,9 +3135,9 @@ def _md_table_to_rl(lines: list, st: dict):
     page_w, _ = A4
     avail_w = page_w - 2 * 2.2 * cm
     col_w = avail_w / col_count
-    th_style = ParagraphStyle("md_th", fontSize=8, fontName="Helvetica-Bold",
+    th_style = ParagraphStyle("md_th", fontSize=8, fontName=PDF_FONT_BOLD,
                                textColor=C_WHITE)
-    td_style = ParagraphStyle("md_td", fontSize=8, fontName="Helvetica", leading=11)
+    td_style = ParagraphStyle("md_td", fontSize=8, fontName=PDF_FONT, leading=11)
     tbl_data = []
     for i, row in enumerate(rows):
         tbl_data.append([Paragraph(cell, th_style if i == 0 else td_style)
@@ -3140,10 +3156,10 @@ def _md_table_to_rl(lines: list, st: dict):
 def _para_text(text: str, st: dict) -> list:
     """Muunna AI:n tuottama teksti Paragraph-listaksi (kappalejaot \\n\\n)."""
     text = _latin1_safe(text)
-    _ai_h2 = ParagraphStyle("ai_h2", fontSize=10.5, fontName="Helvetica-Bold",
+    _ai_h2 = ParagraphStyle("ai_h2", fontSize=10.5, fontName=PDF_FONT_BOLD,
                              textColor=C_NAVY, spaceBefore=10, spaceAfter=3,
                              leading=14, keepWithNext=1)
-    _ai_h3 = ParagraphStyle("ai_h3", fontSize=9.5, fontName="Helvetica-Bold",
+    _ai_h3 = ParagraphStyle("ai_h3", fontSize=9.5, fontName=PDF_FONT_BOLD,
                              textColor=C_BLUE, spaceBefore=6, spaceAfter=3,
                              leading=13, keepWithNext=1)
     items = []
@@ -3204,12 +3220,12 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
         return _para_text(text, st)
     header = [_s(lang, "toim_nro"), _s(lang, "toim_toimenpide"),
               _s(lang, "toim_vastuutaho"), _s(lang, "toim_aikataulu")]
-    th_s = ParagraphStyle("tp_th", fontSize=8, fontName="Helvetica-Bold",
+    th_s = ParagraphStyle("tp_th", fontSize=8, fontName=PDF_FONT_BOLD,
                           textColor=C_WHITE, leading=11)
-    th_c = ParagraphStyle("tp_thc", fontSize=8, fontName="Helvetica-Bold",
+    th_c = ParagraphStyle("tp_thc", fontSize=8, fontName=PDF_FONT_BOLD,
                           textColor=C_WHITE, leading=11, alignment=1)
-    td_s = ParagraphStyle("tp_td", fontSize=8, fontName="Helvetica", leading=12)
-    td_c = ParagraphStyle("tp_tdc", fontSize=8, fontName="Helvetica", leading=12, alignment=1)
+    td_s = ParagraphStyle("tp_td", fontSize=8, fontName=PDF_FONT, leading=12)
+    td_c = ParagraphStyle("tp_tdc", fontSize=8, fontName=PDF_FONT, leading=12, alignment=1)
     # colWidths sum to 16.6 cm = A4 content width (21 - 2×2.2)
     tbl_data = [[Paragraph(header[0], th_c),
                  Paragraph(header[1], th_s),
@@ -3263,7 +3279,7 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
             self.saveState()
             self.setStrokeColor(C_DGRAY)
             self.setLineWidth(0.3)
-            self.setFont("Helvetica", 6.5)
+            self.setFont(PDF_FONT, 6.5)
             self.setFillColor(C_GRAY)
             _lang  = getattr(inp, "lang", "FI")
             _draft = _s(_lang, "hdr_draft")
@@ -3322,7 +3338,7 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[dict])
     ]
     meta_tbl = Table(
         [[Paragraph(k, ParagraphStyle("mk", fontSize=8.5, textColor=C_GRAY,
-                                      fontName="Helvetica-Bold")),
+                                      fontName=PDF_FONT_BOLD)),
           Paragraph(v, ParagraphStyle("mv", fontSize=8.5, leading=12))]
          for k, v in meta_rows],
         colWidths=[4.5*cm, 12.0*cm],
@@ -3417,7 +3433,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Paragraph(
         _phase_sub_txt,
         ParagraphStyle("kan_sub2", fontSize=9, textColor=C_GRAY,
-                       fontName="Helvetica", spaceAfter=4, leading=13),
+                       fontName=PDF_FONT, spaceAfter=4, leading=13),
     ))
     _meta_kt = _clean_kt(inp.kiinteistotunnus)
     _hanke_short = _HANKE_SHORT.get(inp.hanketyyppi, inp.hanketyyppi.replace("_", " ").title())
@@ -3455,7 +3471,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     ]
     meta_tbl = Table(
         [[Paragraph(k, ParagraphStyle("mk", fontSize=8.5, textColor=C_GRAY,
-                                      fontName="Helvetica-Bold")),
+                                      fontName=PDF_FONT_BOLD)),
           Paragraph(v, ParagraphStyle("mv", fontSize=8.5, leading=12))]
          for k, v in meta_rows],
         colWidths=[4.5*cm, 12.0*cm],
@@ -3599,7 +3615,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         [_s(lang, "yht_lisatietoja"), "NCE Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi"],
     ]
     yht_tbl = Table(
-        [[Paragraph(k, ParagraphStyle("yk", fontSize=8.5, textColor=C_GRAY, fontName="Helvetica-Bold")),
+        [[Paragraph(k, ParagraphStyle("yk", fontSize=8.5, textColor=C_GRAY, fontName=PDF_FONT_BOLD)),
           Paragraph(v, ParagraphStyle("yv", fontSize=8.5, leading=12))]
          for k, v in yhteystiedot_data],
         colWidths=[4.5*cm, 12.0*cm],
