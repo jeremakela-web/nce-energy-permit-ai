@@ -61,13 +61,35 @@ def _clean_kt(kt: str) -> str:
 
 def _latin1_safe(text: str) -> str:
     """Transliterate non-latin-1 chars (e.g. Polish ń→n) so ReportLab's
-    built-in Helvetica font never raises a UnicodeEncodeError."""
+    built-in Helvetica font never raises a UnicodeEncodeError.
+    Finnish ä (0xe4), ö (0xf6) and en-dash (0x96 in CP1252/WinAnsiEncoding)
+    ARE encodable in Latin-1/CP1252 and pass through unchanged."""
     try:
         text.encode("latin-1")
         return text
     except (UnicodeEncodeError, UnicodeDecodeError):
         nfkd = unicodedata.normalize("NFKD", text)
         return nfkd.encode("latin-1", errors="ignore").decode("latin-1")
+
+
+# Short display names for the PDF cover title line
+_HANKE_SHORT: dict[str, str] = {
+    "BESS":            "BESS",
+    "tuulivoima_maa":  "Tuulivoima (maa)",
+    "tuulivoima_meri": "Tuulivoima (meri)",
+    "aurinkovoima":    "Aurinkovoima",
+    "SMR":             "SMR",
+    "vesivoima":       "Vesivoima",
+    "hybridi":         "Hybridivoimala",
+    "smr_bess":        "SMR+BESS",
+    "ymparistolupa":   "Ympäristölupa",
+    "datakeskus":      "Datakeskus",
+    "business_finland":"Business Finland",
+    "asuinrakennus":   "Asuinrakennus",
+    "toimitila":       "Toimitila",
+    "teollisuus":      "Teollisuus",
+    "maatalous":       "Maatalous",
+}
 
 
 @lru_cache(maxsize=1)
@@ -653,10 +675,12 @@ _HANKE_CFG = {
             "UPS-häviöt ja valaistus) erillään. Mainitse PUE-tavoite (≤1.3 on hyvä taso). "
             "Hukkalämpö (free cooling -kierron paluulämpö ~25–35 °C) sopii Turun "
             "kaukolämpöverkkoon (Turku Energia / Fortum) — tämä on keskeinen ympäristöetu. "
-            "VERKKOLIITYNTÄ: Erota selkeästi kaksi sopimusta: (1) Turku Energia = jakeluverkko (DSO, "
-            "alle 110 kV) ja (2) Fingrid = kantaverkko (TSO, 110–400 kV). Mainitse molemmat. "
-            "YVA-HARKINTA: Kirjoita 'YVA-harkinta tehdään tapauskohtaisesti ELY-keskuksen kanssa "
-            "riippumatta tehokynnyksestä' — älä mainitse '≥50 MW' kynnystä absoluuttisena rajana. "
+            "VERKKOLIITYNTÄ: Käytä tätä tarkkaa muotoilua raportissa: "
+            "'Jakeluverkkoliittymä (alle 110 kV) solmitaan Turku Energian kanssa. "
+            "Mahdollinen kantaverkkoliittymä (110 kV) Fingrid Oyj:n kanssa.' "
+            "YVA-HARKINTA: Käytä tätä tarkkaa muotoilua raportissa: "
+            "'[teho] MW datakeskus ei automaattisesti ylitä YVA-kynnysarvoa, mutta "
+            "tapauskohtainen harkinta tehdään ELY-keskuksessa.' — korvaa [teho] hankkeen teholla. "
             "Seuraavat toimenpiteet -osiossa Vastuutaho-sarakkeessa tulee olla konkreettinen titteli: "
             "'Projektipäällikkö / NCE', 'Lupakonsultti / NCE', 'IT-arkkitehti / Hakija' tms."
         ),
@@ -1792,9 +1816,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_sub": ("Esiselvitys- ja ennakkoneuvottelumateriaali — "
                             "Valmisteltu rakennusvalvonnan ennakkoneuvottelua varten"),
         "disclaimer_h":    "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN",
-        "disclaimer_b":    ("Tämä asiakirja on tekoälyavusteisesti laadittu luonnos. Se ei ole juridisesti "
-                            "sitova eikä korvaa pätevän lupa-asiantuntijan tai lakimiehen neuvoja. Ennen "
-                            "hakemuksen jättämistä asiakirja on tarkistutettava alan ammattilaisella."),
+        "disclaimer_b":    ("Tekoälyavusteinen luonnos — ei juridisesti sitova. "
+                            "Tarkistuta asiantuntijalla ennen hakemuksen jättämistä."),
         "nce_speed_note":  ("NCE Permit AI generoi hakemuspohjan ~60 sekunnissa. "
                             "Viranomaisen arviointiviive on erillinen prosessi ja vaihtelee "
                             "hanketyypeittäin (ks. alta)."),
@@ -1873,9 +1896,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_sub": ("Pre-study and Pre-consultation Material — "
                             "Prepared for construction permit pre-consultation"),
         "disclaimer_h":    "AI DRAFT — REQUIRES EXPERT REVIEW",
-        "disclaimer_b":    ("This document is an AI-assisted draft. It is not legally binding and does not "
-                            "replace the advice of a qualified permit expert or lawyer. Before submitting "
-                            "the application, this document must be reviewed by a professional."),
+        "disclaimer_b":    ("AI-assisted draft — not legally binding. "
+                            "Review with a qualified expert before submission."),
         "nce_speed_note":  ("NCE Permit AI generates the application draft in ~60 seconds. "
                             "Authority processing time is a separate process and varies by project type "
                             "(see below)."),
@@ -1954,9 +1976,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_sub": ("Förundersökning och förkonsultationsmaterial — "
                             "Utarbetat för förkonsultation med byggnadstillsyn"),
         "disclaimer_h":    "AI-UTKAST — KRÄVER EXPERTGRANSKNING",
-        "disclaimer_b":    ("Detta dokument är ett AI-assisterat utkast. Det är inte juridiskt bindande och "
-                            "ersätter inte råd från en kvalificerad tillståndsexpert eller jurist. Innan "
-                            "ansökan lämnas in måste dokumentet granskas av en fackman."),
+        "disclaimer_b":    ("AI-assisterat utkast — inte juridiskt bindande. "
+                            "Granska med en kvalificerad expert innan inlämning."),
         "m_hakija":        "Sökande",          "m_ytunnus":    "Organisationsnummer",
         "m_hanketyyppi":   "Projekttyp",       "m_teho":       "Kapacitet / Effekt",
         "m_kunta":         "Kommun",           "m_kt":         "Fastighetsbeteckning",
@@ -2032,9 +2053,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_sub": ("Forundersøgelses- og forhåndskonsultationsmateriale — "
                             "Udarbejdet til forhåndskonsultation med byggesagsafdelingen"),
         "disclaimer_h":    "AI-UDKAST — KRÆVER EKSPERTGENNEMGANG",
-        "disclaimer_b":    ("Dette dokument er et AI-assisteret udkast. Det er ikke juridisk bindende og "
-                            "erstatter ikke rådgivning fra en kvalificeret tilladelsesekspert eller advokat. "
-                            "Inden ansøgningen indsendes, skal dokumentet gennemgås af en fagmand."),
+        "disclaimer_b":    ("AI-assisteret udkast — ikke juridisk bindende. "
+                            "Gennemgå med en kvalificeret ekspert inden indsendelse."),
         "m_hakija":        "Ansøger",          "m_ytunnus":    "CVR-nummer",
         "m_hanketyyppi":   "Projekttype",      "m_teho":       "Kapacitet / Effekt",
         "m_kunta":         "Kommune",          "m_kt":         "Ejendomsnummer",
@@ -2112,9 +2132,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_sub": ("Forstudie- og forhåndskonsultasjonsmateriale — "
                             "Utarbeidet til forhåndskonsultasjon med byggesaksavdelingen"),
         "disclaimer_h":    "AI-UTKAST — KREVER EKSPERTGJENNOMGANG",
-        "disclaimer_b":    ("Dette dokumentet er et AI-assistert utkast. Det er ikke juridisk bindende og "
-                            "erstatter ikke råd fra en kvalifisert tillatelsesekspert eller advokat. "
-                            "Før søknaden sendes inn, må dokumentet gjennomgås av en fagperson."),
+        "disclaimer_b":    ("AI-assistert utkast — ikke juridisk bindende. "
+                            "Gjennomgå med en kvalifisert ekspert før innsending."),
         "m_hakija":        "Søker",             "m_ytunnus":    "Org.nummer",
         "m_hanketyyppi":   "Prosjekttype",      "m_teho":       "Kapasitet / Effekt",
         "m_kunta":         "Kommune",           "m_kt":         "Eiendomsnummer",
@@ -2191,10 +2210,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_sub": ("Materiał z analizy wstępnej i konsultacji wstępnych — "
                             "Przygotowany do wstępnej konsultacji z wydziałem budowlanym"),
         "disclaimer_h":    "SZKIC AI — WYMAGA PRZEGLĄDU EKSPERTA",
-        "disclaimer_b":    ("Niniejszy dokument jest szkicem przygotowanym z pomocą AI. Nie jest prawnie "
-                            "wiążący i nie zastępuje porady wykwalifikowanego eksperta ds. zezwoleń ani "
-                            "prawnika. Przed złożeniem wniosku dokument musi zostać sprawdzony przez "
-                            "specjalistę."),
+        "disclaimer_b":    ("Szkic przygotowany z pomocą AI — nie jest prawnie wiążący. "
+                            "Przed złożeniem wniosku sprawdź z wykwalifikowanym ekspertem."),
         "m_hakija":        "Wnioskodawca",      "m_ytunnus":    "NIP/KRS",
         "m_hanketyyppi":   "Typ projektu",      "m_teho":       "Moc / pojemność",
         "m_kunta":         "Gmina",             "m_kt":         "Numer nieruchomości",
@@ -2713,23 +2730,16 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI", country: str = "FI") -> 
         Paragraph(_s(lang, "th_tila"),  ParagraphStyle("th2c", fontSize=8.5, fontName="Helvetica-Bold",
                                                         alignment=TA_CENTER)),
     ]]
-    for i, liite in enumerate(liitteet):
-        if i == 0:
-            nro = "0"
-        elif i == 1:
-            nro = "0b"
-        else:
-            nro = str(i - 1)
+    for i, liite in enumerate(liitteet, start=1):
         rows.append([
-            Paragraph(nro,   ParagraphStyle("tn", fontSize=8.5)),
+            Paragraph(str(i), ParagraphStyle("tn", fontSize=8.5, alignment=TA_CENTER)),
             Paragraph(_t_liite(lang, liite), ParagraphStyle("tl", fontSize=8.5, leading=12)),
             Paragraph(_s(lang, "liite_toimitettu"),
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
     # Standardien vaatimustenmukaisuusselvitys (aina viimeisenä liitteenä)
-    std_nro = str(len(liitteet) - 1)
     rows.append([
-        Paragraph(std_nro, ParagraphStyle("tn", fontSize=8.5)),
+        Paragraph(str(len(liitteet) + 1), ParagraphStyle("tn", fontSize=8.5, alignment=TA_CENTER)),
         Paragraph(_s(lang, "liite_standards"), ParagraphStyle("tl", fontSize=8.5, leading=12)),
         Paragraph(_s(lang, "liite_toimitettu"),
                   ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
@@ -3080,7 +3090,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
                        fontName="Helvetica", spaceAfter=4, leading=13),
     ))
     _meta_kt = _clean_kt(inp.kiinteistotunnus)
-    _meta_parts = [f"{inp.teho_mw} MW", inp.kunta]
+    _hanke_short = _HANKE_SHORT.get(inp.hanketyyppi, inp.hanketyyppi.replace("_", " ").title())
+    _location = inp.kunta
+    if inp.sijainti_ymparistovaikutukset:
+        _sij_hint = inp.sijainti_ymparistovaikutukset.split("\n")[0].split(",")[0].strip()[:30]
+        if _sij_hint:
+            _location = f"{inp.kunta}, {_sij_hint}"
+    _meta_parts = [f"{inp.teho_mw} MW {_hanke_short}", _location]
     if _meta_kt != "–":
         _meta_parts.append(_meta_kt)
     story.append(Paragraph("  ·  ".join(_meta_parts), st["meta"]))
@@ -3159,12 +3175,11 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
-    _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec3"), st["h2"]),
         _hr(),
-        _luvat_tbl,
     ]))
+    story.append(_luvat_table(inp.hanketyyppi, st, lang, country))
     story.append(Spacer(1, 5*mm))
     _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
     story.append(Paragraph(_s(lang, _kaava_key), st["body"]))
@@ -3206,8 +3221,8 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec5"), st["h2"]),
         _hr(),
+        Paragraph(_s(lang, "liitteet_note"), st["body"]),
     ]))
-    story.append(Paragraph(_s(lang, "liitteet_note"), st["body"]))
     story.append(Spacer(1, 3*mm))
     story.append(_liitteet_table(inp.hanketyyppi, lang, country))
     story.append(Spacer(1, 4*mm))
@@ -3289,7 +3304,7 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
     _lang = inp.lang or "FI"
     sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
                 for k, v in sections.items()}
-    sections = _limit_huom_markers(sections, _lang, max_count=4)
+    sections = _limit_huom_markers(sections, _lang, max_count=3)
     if is_bf:
         pdf_bytes = _generate_bf_pdf(inp, sections, sources)
     else:
@@ -3303,7 +3318,7 @@ def apply_proofread_to_pdf(inp: ApplicationInput, sections: dict, sources: list)
     sections = _proofread_sections(sections)
     sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
                 for k, v in sections.items()}
-    sections = _limit_huom_markers(sections, _lang, max_count=4)
+    sections = _limit_huom_markers(sections, _lang, max_count=3)
     is_bf = inp.hanketyyppi == "business_finland"
     if is_bf:
         return _generate_bf_pdf(inp, sections, sources)
