@@ -468,13 +468,43 @@ def _final_polish(sections: dict, lang: str) -> dict:
     return _limit_huom_markers(result, lang, max_count=3)
 
 
+_HUOM_PRIORITY_KW = [
+    "verkkoliittym", "verkkoliitynt", "kaavoitus", "asemakaava", "yleiskaava",
+    "ympäristölupa", "ymparistolupa", "ympäristövaikutus", "ymparistovaikutus",
+    "yva", "meluselvitys", "pohjavesi", "natura", "suojelualue",
+]
+
+
 def _limit_huom_markers(sections: dict, lang: str, max_count: int = 4) -> dict:
-    """Rajoita epävarmuusmerkintöjen kokonaismäärä raporttiin (max_count kappaletta)."""
+    """Rajoita epävarmuusmerkintöjen määrä max_count kappaleeseen.
+
+    Priorisoi tärkeät aihepiirit (verkkoliittymä, kaavoitus, ympäristölupa jne.)
+    ennen tekstijärjestyksessä ensimmäisiä esiintymiä."""
     huom = _HUOM_LABEL.get(lang, "[Note] ")
-    total = sum(s.count(huom) for s in sections.values() if isinstance(s, str))
-    if total <= max_count:
+    all_markers = []  # (section_key, marker_index_in_section, priority_score)
+    for key, val in sections.items():
+        if not isinstance(val, str):
+            continue
+        start = 0
+        idx = 0
+        while True:
+            pos = val.find(huom, start)
+            if pos == -1:
+                break
+            ctx = val[max(0, pos - 300): pos + 100].lower()
+            score = sum(1 for kw in _HUOM_PRIORITY_KW if kw in ctx)
+            all_markers.append((key, idx, score))
+            idx += 1
+            start = pos + len(huom)
+
+    if len(all_markers) <= max_count:
         return sections
-    n = 0
+
+    # Keep the max_count highest-scoring markers (ties broken by earlier position)
+    ranked = sorted(range(len(all_markers)),
+                    key=lambda i: (-all_markers[i][2], i))
+    keep = {(all_markers[i][0], all_markers[i][1]) for i in ranked[:max_count]}
+
     result = {}
     for key, val in sections.items():
         if not isinstance(val, str):
@@ -482,12 +512,11 @@ def _limit_huom_markers(sections: dict, lang: str, max_count: int = 4) -> dict:
             continue
         parts = val.split(huom)
         out = [parts[0]]
-        for part in parts[1:]:
-            n += 1
-            if n <= max_count:
+        for idx, part in enumerate(parts[1:]):
+            if (key, idx) in keep:
                 out.append(huom + part)
             else:
-                out.append(part)  # poista ylimääräinen merkintä, säilytä teksti
+                out.append(part)
         result[key] = "".join(out)
     return result
 
@@ -3153,6 +3182,9 @@ def _md_table_to_rl(lines: list, st: dict):
     return tbl
 
 
+_HUOM_PREFIXES = tuple(lbl.strip() for lbl in _HUOM_LABEL.values())
+
+
 def _para_text(text: str, st: dict) -> list:
     """Muunna AI:n tuottama teksti Paragraph-listaksi (kappalejaot \\n\\n)."""
     text = _latin1_safe(text)
@@ -3192,9 +3224,15 @@ def _para_text(text: str, st: dict) -> list:
                 if line:
                     items.append(Paragraph(line, st["bullet"]))
         else:
-            # **bold** → <b>bold</b> for ReportLab XML
             clean = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', para)
-            items.append(Paragraph(clean, st["body"]))
+            p = Paragraph(clean, st["body"])
+            # [Huom]-kappale pysyy edellisen elementin kanssa samalla sivulla
+            is_huom = any(para.startswith(pfx) for pfx in _HUOM_PREFIXES)
+            if is_huom and items:
+                prev = items.pop()
+                items.append(KeepTogether([prev, p]))
+            else:
+                items.append(p)
     return items
 
 
@@ -3224,8 +3262,8 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
                           textColor=C_WHITE, leading=11)
     th_c = ParagraphStyle("tp_thc", fontSize=8, fontName=PDF_FONT_BOLD,
                           textColor=C_WHITE, leading=11, alignment=1)
-    td_s = ParagraphStyle("tp_td", fontSize=8, fontName=PDF_FONT, leading=12)
-    td_c = ParagraphStyle("tp_tdc", fontSize=8, fontName=PDF_FONT, leading=12, alignment=1)
+    td_s = ParagraphStyle("tp_td",  fontSize=8, fontName=PDF_FONT,      leading=12)
+    td_c = ParagraphStyle("tp_tdc", fontSize=8, fontName=PDF_FONT_BOLD, leading=12, alignment=1)
     # colWidths sum to 16.6 cm = A4 content width (21 - 2×2.2)
     tbl_data = [[Paragraph(header[0], th_c),
                  Paragraph(header[1], th_s),
