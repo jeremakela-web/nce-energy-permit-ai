@@ -2766,6 +2766,21 @@ Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
+    # ── DEBUG: trace ä/ö through each processing step ──────────────────────
+    _dbg_raw   = resp.content[0].text[:500]
+    _dbg_nfc   = unicodedata.normalize("NFC", _dbg_raw)
+    _dbg_diak  = _fix_fi_diacritics(_dbg_nfc)
+    _dbg_lat1  = _latin1_safe(_dbg_diak)
+    print("\n====== DEBUG: ä/ö trace ======")
+    print(f"[1] RAW (Claude API)   : {_dbg_raw!r}")
+    print(f"[2] After NFC          : {_dbg_nfc!r}")
+    print(f"[3] After fix_diak     : {_dbg_diak!r}")
+    print(f"[4] After latin1_safe  : {_dbg_lat1!r}")
+    print(f"[1→2 changed]          : {_dbg_raw != _dbg_nfc}")
+    print(f"[2→3 changed]          : {_dbg_nfc != _dbg_diak}")
+    print(f"[3→4 changed]          : {_dbg_diak != _dbg_lat1}")
+    print("==============================\n")
+    # ── END DEBUG ────────────────────────────────────────────────────────────
     raw = unicodedata.normalize("NFC", resp.content[0].text)
 
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
