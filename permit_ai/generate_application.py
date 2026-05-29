@@ -513,7 +513,7 @@ def _proofread_sections(sections: dict) -> dict:
             max_tokens=6000,
             messages=[{"role": "user", "content": prompt}],
         )
-        corrected = resp.content[0].text
+        corrected = unicodedata.normalize("NFC", resp.content[0].text)
         result = dict(sections)
         for block in corrected.split("===OSIO:"):
             block = block.strip()
@@ -2763,7 +2763,7 @@ Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
-    raw = resp.content[0].text
+    raw = unicodedata.normalize("NFC", resp.content[0].text)
 
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
         start = text.find(f"## {header}")
@@ -2895,7 +2895,7 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
-    raw = resp.content[0].text
+    raw = unicodedata.normalize("NFC", resp.content[0].text)
 
     # Parsitaan osiot käyttämällä kielen mukaisia otsikoita
     h = [ph["kuvaus"], ph["perustelut"], ph["luvat"], ph["toimenpiteet"]]
