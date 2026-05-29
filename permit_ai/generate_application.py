@@ -3289,10 +3289,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         story.append(Spacer(1, 3*mm))
 
     # ── Hakijan yhteystiedot ──────────────────────────────────────────────────
-    story.append(KeepTogether([
-        Paragraph(_s(lang, "yhteystiedot_h"), st["h2"]),
-        _hr(),
-    ]))
     yhteystiedot_data = [
         [_s(lang, "yht_hakija"), inp.hakija],
         *([[_s(lang, "yht_ytunnus"), inp.y_tunnus]] if inp.y_tunnus else []),
@@ -3311,7 +3307,12 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
         ("VALIGN",         (0, 0), (-1, -1), "TOP"),
     ]))
-    story.append(yht_tbl)
+    story.append(CondPageBreak(_CPB))
+    story.append(KeepTogether([
+        Paragraph(_s(lang, "yhteystiedot_h"), st["h2"]),
+        _hr(),
+        yht_tbl,
+    ]))
     story.append(Spacer(1, 4*mm))
 
     # ── Loppumerkintä ─────────────────────────────────────────────────────────
