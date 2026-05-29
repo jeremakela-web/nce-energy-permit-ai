@@ -1845,7 +1845,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yht_hakija":      "Hakija",     "yht_ytunnus":   "Y-tunnus",
         "yht_osoite":      "Osoite",     "yht_lisatietoja": "Lisätietoja",
         "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
-                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
+                            "info@ncenergy.fi"
                             "·  AI-luonnos — vaatii asiantuntijatarkistuksen"),
         "th_lupa":  "Lupa / ilmoitus", "th_viran": "Viranomainen", "th_laki": "Lakiperuste",
         "th_nro":   "Nro",  "th_liite": "Liite",  "th_tila": "Tila",
@@ -1925,7 +1925,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yht_hakija":      "Applicant",  "yht_ytunnus":    "Business ID",
         "yht_osoite":      "Address",    "yht_lisatietoja": "Further information",
         "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
-                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
+                            "info@ncenergy.fi"
                             "·  AI draft — requires expert review"),
         "th_lupa":  "Permit / Notification", "th_viran": "Authority", "th_laki": "Legal Basis",
         "th_nro":   "No.", "th_liite": "Appendix", "th_tila": "Status",
@@ -2001,7 +2001,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yht_hakija":      "Sökande",   "yht_ytunnus":    "Organisationsnummer",
         "yht_osoite":      "Adress",    "yht_lisatietoja": "Mer information",
         "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
-                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
+                            "info@ncenergy.fi"
                             "·  AI-utkast — kräver expertgranskning"),
         "th_lupa":  "Tillstånd / anmälan", "th_viran": "Myndighet", "th_laki": "Rättslig grund",
         "th_nro":   "Nr", "th_liite": "Bilaga", "th_tila": "Status",
@@ -2078,7 +2078,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yht_hakija":      "Ansøger",    "yht_ytunnus":    "CVR-nummer",
         "yht_osoite":      "Adresse",    "yht_lisatietoja": "Yderligere oplysninger",
         "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
-                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
+                            "info@ncenergy.fi"
                             "·  AI-udkast — kræver ekspertgennemgang"),
         "th_lupa":  "Tilladelse / anmeldelse", "th_viran": "Myndighed", "th_laki": "Retsgrundlag",
         "th_nro":   "Nr.", "th_liite": "Bilag", "th_tila": "Status",
@@ -2157,7 +2157,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yht_hakija":      "Søker",      "yht_ytunnus":    "Org.nummer",
         "yht_osoite":      "Adresse",    "yht_lisatietoja": "Ytterligere informasjon",
         "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
-                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
+                            "info@ncenergy.fi"
                             "·  AI-utkast — krever ekspertgjennomgang"),
         "th_lupa":  "Tillatelse / melding", "th_viran": "Myndighet", "th_laki": "Rettsgrunnlag",
         "th_nro":   "Nr.", "th_liite": "Vedlegg", "th_tila": "Status",
@@ -2235,7 +2235,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yht_hakija":      "Wnioskodawca", "yht_ytunnus":    "NIP/KRS",
         "yht_osoite":      "Adres",        "yht_lisatietoja": "Dodatkowe informacje",
         "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
-                            "jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi  "
+                            "info@ncenergy.fi"
                             "·  Szkic AI — wymaga przeglądu eksperta"),
         "th_lupa":  "Zezwolenie / zgłoszenie", "th_viran": "Organ", "th_laki": "Podstawa prawna",
         "th_nro":   "Nr", "th_liite": "Załącznik", "th_tila": "Status",
@@ -3261,7 +3261,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         [_s(lang, "yht_hakija"), inp.hakija],
         *([[_s(lang, "yht_ytunnus"), inp.y_tunnus]] if inp.y_tunnus else []),
         *([[_s(lang, "yht_osoite"),  inp.osoite]]  if inp.osoite  else []),
-        [_s(lang, "yht_lisatietoja"), "NCE Permit AI  ·  ncenergy.fi  ·  jere@ncenergy.fi  ·  jyrki@ncenergy.fi  ·  alex@ncenergy.fi"],
+        [_s(lang, "yht_lisatietoja"), "NCE Permit AI  ·  ncenergy.fi  ·  info@ncenergy.fi"],
     ]
     yht_tbl = Table(
         [[Paragraph(k, ParagraphStyle("yk", fontSize=8.5, textColor=C_GRAY, fontName="Helvetica-Bold")),
