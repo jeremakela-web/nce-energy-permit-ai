@@ -63,7 +63,12 @@ def _latin1_safe(text: str) -> str:
     """Transliterate non-latin-1 chars (e.g. Polish ń→n) so ReportLab's
     built-in Helvetica font never raises a UnicodeEncodeError.
     Finnish ä (0xe4), ö (0xf6) and en-dash (0x96 in CP1252/WinAnsiEncoding)
-    ARE encodable in Latin-1/CP1252 and pass through unchanged."""
+    ARE encodable in Latin-1/CP1252 and pass through unchanged.
+
+    NFC-normalise first: the AI sometimes returns 'a' + U+0308 (combining
+    diaeresis) instead of the precomposed ä (U+00E4).  Without NFC the
+    NFKD path below would drop U+0308 and turn ä into bare 'a'."""
+    text = unicodedata.normalize("NFC", text)
     try:
         text.encode("latin-1")
         return text
@@ -160,12 +165,122 @@ _FI_DIAK = [
     (r"patevyys\b", "pätevyys"),
     (r"loytaa\b", "löytää"),
     (r"loytyi\b", "löytyi"),
+    # työ-
+    (r"tyomaalla\b", "työmaalla"),
+    (r"tyomaan\b", "työmaan"),
+    (r"tyomaa\b", "työmaa"),
+    (r"tyontekijat\b", "työntekijät"),
+    (r"tyontekija\b", "työntekijä"),
+    (r"tyossä\b", "työssä"),
+    (r"tyossa\b", "työssä"),
+    (r"tyohon\b", "työhön"),
+    (r"tyota\b", "työtä"),
+    (r"tyon\b", "työn"),
+    (r"tyo\b", "työ"),
+    # hyödyntää / hyöty
+    (r"hyodyntamiseksi\b", "hyödyntämiseksi"),
+    (r"hyodyntamista\b", "hyödyntämistä"),
+    (r"hyodyntaminen\b", "hyödyntäminen"),
+    (r"hyodyntaa\b", "hyödyntää"),
+    (r"hyotya\b", "hyötyä"),
+    (r"hyodyt\b", "hyödyt"),
+    (r"hyoty\b", "hyöty"),
+    # määrä / säädös
+    (r"maaraysten\b", "määräysten"),
+    (r"maaraykset\b", "määräykset"),
+    (r"maarays\b", "määräys"),
+    (r"maaraan\b", "määrään"),
+    (r"maara\b", "määrä"),
+    (r"saadosten\b", "säädösten"),
+    (r"saadokset\b", "säädökset"),
+    (r"saados\b", "säädös"),
+    (r"saantely\b", "säätely"),
+    # sisältä- / sisältö
+    (r"sisaltavat\b", "sisältävät"),
+    (r"sisaltaa\b", "sisältää"),
+    (r"sisaltoa\b", "sisältöä"),
+    (r"sisalto\b", "sisältö"),
+    # täyttää / täyttö
+    (r"taytettava\b", "täytettävä"),
+    (r"tayttamiseksi\b", "täyttämiseksi"),
+    (r"tayttaminen\b", "täyttäminen"),
+    (r"tayttaa\b", "täyttää"),
+    (r"tayttyy\b", "täyttyy"),
+    (r"taytto\b", "täyttö"),
+    # selvittää / selvitys
+    (r"selvittamiseksi\b", "selvittämiseksi"),
+    (r"selvittaminen\b", "selvittäminen"),
+    (r"selvittaa\b", "selvittää"),
+    # liittää / liittymä
+    (r"liittamiseksi\b", "liittämiseksi"),
+    (r"liittamisesta\b", "liittämisestä"),
+    (r"liittaminen\b", "liittäminen"),
+    (r"liittaa\b", "liittää"),
+    # hyväksyä
+    (r"hyvaksyttava\b", "hyväksyttävä"),
+    (r"hyvaksytaan\b", "hyväksytään"),
+    (r"hyvaksytty\b", "hyväksytty"),
+    (r"hyvaksymista\b", "hyväksymistä"),
+    (r"hyvaksyminen\b", "hyväksyminen"),
+    (r"hyvaksyy\b", "hyväksyy"),
+    # ylläpito
+    (r"yllapitosuunnitelma\b", "ylläpitosuunnitelma"),
+    (r"yllapidon\b", "ylläpidon"),
+    (r"yllapito\b", "ylläpito"),
+    # jäte-
+    (r"jatehuolto\b", "jätehuolto"),
+    (r"jateveden\b", "jäteveden"),
+    (r"jatevesi\b", "jätevesi"),
+    (r"jatteiden\b", "jätteiden"),
+    (r"jatteet\b", "jätteet"),
+    # järjestää / järjestely
+    (r"jarjestelyt\b", "järjestelyt"),
+    (r"jarjestelyn\b", "järjestelyn"),
+    (r"jarjestely\b", "järjestely"),
+    (r"jarjestetaan\b", "järjestetään"),
+    (r"jarjestaa\b", "järjestää"),
+    # käynnistää
+    (r"kaynnistaminen\b", "käynnistäminen"),
+    (r"kaynnistaa\b", "käynnistää"),
+    # näyttää / näköala
+    (r"nayttaminen\b", "näyttäminen"),
+    (r"naytteet\b", "näytteet"),
+    (r"nayttaa\b", "näyttää"),
+    # pääsy / päästö / pääoma
+    (r"paastoja\b", "päästöjä"),
+    (r"paastojen\b", "päästöjen"),
+    (r"paastot\b", "päästöt"),
+    (r"paasylle\b", "pääsylle"),
+    (r"paasy\b", "pääsy"),
+    # sähkö compounds not yet covered
+    (r"sahkonsyoton\b", "sähkönsyötön"),
+    (r"sahkonsyotto\b", "sähkönsyöttö"),
+    (r"sahkoteho\b", "sähköteho"),
+    # lämpö compounds not yet covered
+    (r"lampojarjestelma\b", "lämpöjärjestelmä"),
+    (r"lampoverkko\b", "lämpöverkko"),
+    (r"lampopumppu\b", "lämpöpumppu"),
+    (r"lampoenergia\b", "lämpöenergia"),
+    # häiriönhallinta
+    (r"hairionhallintaa\b", "häiriönhallintaa"),
+    (r"hairionhallinta\b", "häiriönhallinta"),
+    # yhteydessä
+    (r"yhteytta\b", "yhteyttä"),
+    (r"yhteydessa\b", "yhteydessä"),
 ]
 _FI_DIAK_RE = [(re.compile(p, re.IGNORECASE), r) for p, r in _FI_DIAK]
 
 
 def _fix_fi_diacritics(text: str) -> str:
-    """Apply deterministic diacritics repair to Finnish text generated without ä/ö."""
+    """NFC-normalise then apply deterministic diacritics repair.
+
+    Step 1: unicodedata.normalize('NFC') converts combining sequences like
+            a + U+0308 → ä (U+00E4).  This alone fixes most AI-generated
+            broken diacritics before any regex is needed.
+    Step 2: regex patterns catch the remaining cases where the AI simply
+            omitted the diacritic entirely (kaytettavyys → käytettävyys).
+    """
+    text = unicodedata.normalize("NFC", text)
     for rx, repl in _FI_DIAK_RE:
         text = rx.sub(repl, text)
     return text
@@ -394,7 +509,7 @@ def _proofread_sections(sections: dict) -> dict:
     )
     try:
         resp = anthropic.Anthropic().messages.create(
-            model=_MODEL_ID_FAST,
+            model=_MODEL_ID,
             max_tokens=6000,
             messages=[{"role": "user", "content": prompt}],
         )
