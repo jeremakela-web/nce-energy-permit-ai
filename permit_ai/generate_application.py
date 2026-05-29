@@ -72,6 +72,105 @@ def _latin1_safe(text: str) -> str:
         return nfkd.encode("latin-1", errors="ignore").decode("latin-1")
 
 
+# Deterministic repair for Finnish words commonly generated without diacritics.
+# Pattern tuples: (regex_without_diacritics, correct_form). Applied before proofread.
+_FI_DIAK = [
+    # jäähdytys-
+    (r"jaahdytysjarjestelm([aä])", r"jäähdytysjärjestelmä"),
+    (r"jaahdytysteho([na]?)", r"jäähdytysteho\1"),
+    (r"jaahdytykse([nlt]|lle|ltä|stä|llä)?", r"jäähdytyks\1" if False else r"jäähdytykse\1"),
+    (r"jaahdytyksen", "jäähdytyksen"),
+    (r"jaahdytykset", "jäähdytykset"),
+    (r"jaahdytyksia", "jäähdytyksiä"),
+    (r"jaahdytys", "jäähdytys"),
+    # lämpö-
+    (r"hukkalamm([oöön])", r"hukkalämmö\1"),
+    (r"hukkalammost[aä]", "hukkalämmöstä"),
+    (r"hukkalampo([an]?)", r"hukkalämpö\1"),
+    (r"kaukolamm([oöön])", r"kaukolämmö\1"),
+    (r"kaukolammost[aä]", "kaukolämmöstä"),
+    (r"kaukolampo([an]?)", r"kaukolämpö\1"),
+    (r"maalampo([an]?)", r"maalämpö\1"),
+    (r"lampotila([nsa]?)", r"lämpötila\1"),
+    (r"lampo([na]?)\b", r"lämpö\1"),
+    # käyttö-
+    (r"kaytettavyyden", "käytettävyyden"),
+    (r"kaytettavyys", "käytettävyys"),
+    (r"kayttoonotoss[aä]", "käyttöönotossa"),
+    (r"kayttoonoton", "käyttöönoton"),
+    (r"kayttoonotto", "käyttöönotto"),
+    (r"kayttoa\b", "käyttöä"),
+    (r"kayton\b", "käytön"),
+    (r"kaytt[oö]\b", "käyttö"),
+    (r"kayttaa\b", "käyttää"),
+    # ympäristö-
+    (r"ymparistovaikutusten", "ympäristövaikutusten"),
+    (r"ymparistovaikutukset", "ympäristövaikutukset"),
+    (r"ymparistovaikutuksia", "ympäristövaikutuksia"),
+    (r"ymparistoluvasta", "ympäristöluvasta"),
+    (r"ymparistoluvan", "ympäristöluvan"),
+    (r"ymparistolupa", "ympäristölupa"),
+    (r"ympariston\b", "ympäristön"),
+    (r"ymparisto\b", "ympäristö"),
+    # järjestelmä-
+    (r"jarjestelmaan\b", "järjestelmään"),
+    (r"jarjestelmassa\b", "järjestelmässä"),
+    (r"jarjestelmaa\b", "järjestelmää"),
+    (r"jarjestelman\b", "järjestelmän"),
+    (r"jarjestelma\b", "järjestelmä"),
+    # sähkö-
+    (r"sahkoliittyma", "sähköliittymä"),
+    (r"sahkoverkko", "sähköverkko"),
+    (r"sahkoasema", "sähköasema"),
+    (r"sahkoa\b", "sähköä"),
+    (r"sahkon\b", "sähkön"),
+    (r"sahko\b", "sähkö"),
+    # häiriö-
+    (r"hairiotilannetta", "häiriötilannetta"),
+    (r"hairiotilanne", "häiriötilanne"),
+    (r"hairion\b", "häiriön"),
+    (r"hairio\b", "häiriö"),
+    # päätös-
+    (r"paatoksessa", "päätöksessä"),
+    (r"paatokset\b", "päätökset"),
+    (r"paatosten", "päätösten"),
+    (r"paatosta\b", "päätöstä"),
+    (r"paatos\b", "päätös"),
+    # näkökulma-
+    (r"nakokulmat\b", "näkökulmat"),
+    (r"nakokulman\b", "näkökulman"),
+    (r"nakokulma\b", "näkökulma"),
+    # maaperä-
+    (r"maaperaan\b", "maaperään"),
+    (r"maaperassa\b", "maaperässä"),
+    (r"maaperaa\b", "maaperää"),
+    (r"maapera\b", "maaperä"),
+    # käsittely-
+    (r"kasittelyaika", "käsittelyaika"),
+    (r"kasitellaan", "käsitellään"),
+    (r"kasiteltava", "käsiteltävä"),
+    (r"kasittely", "käsittely"),
+    # misc high-frequency
+    (r"tarkea\b", "tärkeä"),
+    (r"tarkeaa\b", "tärkeää"),
+    (r"tarkeimmat\b", "tärkeimmät"),
+    (r"tarkeinta\b", "tärkeintä"),
+    (r"tarkeys\b", "tärkeys"),
+    (r"patevyysvaatimus", "pätevyysvaatimus"),
+    (r"patevyys\b", "pätevyys"),
+    (r"loytaa\b", "löytää"),
+    (r"loytyi\b", "löytyi"),
+]
+_FI_DIAK_RE = [(re.compile(p, re.IGNORECASE), r) for p, r in _FI_DIAK]
+
+
+def _fix_fi_diacritics(text: str) -> str:
+    """Apply deterministic diacritics repair to Finnish text generated without ä/ö."""
+    for rx, repl in _FI_DIAK_RE:
+        text = rx.sub(repl, text)
+    return text
+
+
 # Short display names for the PDF cover title line
 _HANKE_SHORT: dict[str, str] = {
     "BESS":            "BESS",
@@ -218,7 +317,9 @@ def _limit_huom_markers(sections: dict, lang: str, max_count: int = 4) -> dict:
 
 def _proofread_sections(sections: dict) -> dict:
     """Tarkistuta osiot Claudella ennen PDF-rakennusta."""
-    client = anthropic.Anthropic()
+    # Deterministic pass first — fixes common ä/ö omissions reliably
+    sections = {k: (_fix_fi_diacritics(v) if isinstance(v, str) else v)
+                for k, v in sections.items()}
     combined = ""
     for key, text in sections.items():
         if text and isinstance(text, str) and text.strip():
