@@ -316,6 +316,24 @@ def _postprocess_text(text: str, lang: str = "FI") -> str:
     return text
 
 
+def _final_polish(sections: dict, lang: str) -> dict:
+    """Loppu-oikoluku — suoritetaan AINA viimeisenä ennen PDF-rakennusta.
+
+    1. Deterministinen diakriittikorjaus (ä/ö) kaikille suomenkielisille kentille.
+    2. Viranomaistermien ja lakiviitteiden korjaus (_postprocess_text).
+    3. Asiantuntijatarkistus-merkintöjen karsinta enintään 3 kappaleeseen.
+    """
+    result = {}
+    for k, v in sections.items():
+        if not isinstance(v, str):
+            result[k] = v
+            continue
+        v = _fix_fi_diacritics(v)
+        v = _postprocess_text(v, lang)
+        result[k] = v
+    return _limit_huom_markers(result, lang, max_count=3)
+
+
 def _limit_huom_markers(sections: dict, lang: str, max_count: int = 4) -> dict:
     """Rajoita epävarmuusmerkintöjen kokonaismäärä raporttiin (max_count kappaletta)."""
     huom = _HUOM_LABEL.get(lang, "[Note] ")
@@ -346,9 +364,6 @@ def _limit_huom_markers(sections: dict, lang: str, max_count: int = 4) -> dict:
 
 def _proofread_sections(sections: dict) -> dict:
     """Tarkistuta osiot Claudella ennen PDF-rakennusta."""
-    # Deterministic pass first — fixes common ä/ö omissions reliably
-    sections = {k: (_fix_fi_diacritics(v) if isinstance(v, str) else v)
-                for k, v in sections.items()}
     combined = ""
     for key, text in sections.items():
         if text and isinstance(text, str) and text.strip():
@@ -3491,9 +3506,7 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
     else:
         sections = _generate_sections(inp, rag_ctx)
     _lang = inp.lang or "FI"
-    sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
-                for k, v in sections.items()}
-    sections = _limit_huom_markers(sections, _lang, max_count=3)
+    sections = _final_polish(sections, _lang)
     if is_bf:
         pdf_bytes = _generate_bf_pdf(inp, sections, sources)
     else:
@@ -3505,9 +3518,7 @@ def apply_proofread_to_pdf(inp: ApplicationInput, sections: dict, sources: list)
     """Oikolue sections Claudella ja rakenna lopullinen PDF."""
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections)
-    sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
-                for k, v in sections.items()}
-    sections = _limit_huom_markers(sections, _lang, max_count=3)
+    sections = _final_polish(sections, _lang)
     is_bf = inp.hanketyyppi == "business_finland"
     if is_bf:
         return _generate_bf_pdf(inp, sections, sources)
@@ -3534,10 +3545,9 @@ def generate_application(inp: ApplicationInput) -> str:
     print(f"      Osiot: {list(sections.keys())}")
 
     print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
-    sections = _proofread_sections(sections)
     _lang = inp.lang or "FI"
-    sections = {k: _postprocess_text(v, _lang) if isinstance(v, str) else v
-                for k, v in sections.items()}
+    sections = _proofread_sections(sections)
+    sections = _final_polish(sections, _lang)
 
     print("[4/4] Rakennetaan PDF…")
     if is_bf:
