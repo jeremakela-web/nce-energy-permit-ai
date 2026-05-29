@@ -450,6 +450,18 @@ def _postprocess_text(text: str, lang: str = "FI") -> str:
     return text
 
 
+def _limit_expert_reviews(text: str, max_count: int = 3) -> str:
+    """Rajoita 'Asiantuntijatarkistus suositellaan' täsmälleen max_count kertaan."""
+    phrase = "Asiantuntijatarkistus suositellaan"
+    parts = text.split(phrase)
+    if len(parts) <= max_count + 1:
+        return text
+    result = phrase.join(parts[:max_count + 1])
+    for part in parts[max_count + 1:]:
+        result += part
+    return result
+
+
 def _final_polish(sections: dict, lang: str) -> dict:
     """Loppu-oikoluku — suoritetaan AINA viimeisenä ennen PDF-rakennusta.
 
@@ -465,6 +477,15 @@ def _final_polish(sections: dict, lang: str) -> dict:
         v = _fix_fi_diacritics(v)
         v = _postprocess_text(v, lang)
         result[k] = v
+
+    # Globaali rajoitin: laske kaikki osiot yhteen, rajoita, jaa takaisin
+    _SEP = "\x00||SEC||\x00"
+    str_keys = [k for k, v in result.items() if isinstance(v, str)]
+    combined = _SEP.join(result[k] for k in str_keys)
+    combined = _limit_expert_reviews(combined, max_count=3)
+    for k, part in zip(str_keys, combined.split(_SEP)):
+        result[k] = part
+
     return _limit_huom_markers(result, lang, max_count=3)
 
 
@@ -3225,14 +3246,16 @@ def _para_text(text: str, st: dict) -> list:
                     items.append(Paragraph(line, st["bullet"]))
         else:
             clean = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', para)
-            p = Paragraph(clean, st["body"])
-            # [Huom]-kappale pysyy edellisen elementin kanssa samalla sivulla
             is_huom = any(para.startswith(pfx) for pfx in _HUOM_PREFIXES)
             if is_huom and items:
+                # [Huom]-kappale pysyy edellisen elementin kanssa samalla sivulla
+                p = Paragraph(clean, st["body"])
                 prev = items.pop()
                 items.append(KeepTogether([prev, p]))
             else:
-                items.append(p)
+                # keepWithNext=1 estää yksittäisen lauseen jäämisen sivun alaosaan
+                _st = ParagraphStyle("body_kwn", parent=st["body"], keepWithNext=1)
+                items.append(Paragraph(clean, _st))
     return items
 
 
