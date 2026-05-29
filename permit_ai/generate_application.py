@@ -171,6 +171,35 @@ def _fix_fi_diacritics(text: str) -> str:
     return text
 
 
+# Fallback location labels per hanketyyppi when sijainti field is empty / a long sentence
+_HANKETYYPPI_DEFAULT_ALUE: dict[str, str] = {
+    "datakeskus":      "Teollisuusalue",
+    "BESS":            "Teollisuusalue",
+    "aurinkovoima":    "Aurinkoalue",
+    "tuulivoima_maa":  "Hankerajojen alue",
+    "tuulivoima_meri": "Merialue",
+}
+
+
+def _cover_location(kunta: str, sijainti: str, hanketyyppi: str) -> str:
+    """Return 'Kunta[, Alue]' for the cover title meta line.
+
+    Rules:
+    - If sijainti contains a short location label (≤20 chars, first comma-segment),
+      append it: 'Turku, Teollisuusalue'.
+    - Otherwise fall back to the per-hanketyyppi default if one is defined.
+    - Never expose raw long description text in the title.
+    """
+    hint = ""
+    if sijainti:
+        seg = sijainti.split("\n")[0].split(",")[0].strip()
+        if seg and len(seg) <= 20:
+            hint = seg
+    if not hint:
+        hint = _HANKETYYPPI_DEFAULT_ALUE.get(hanketyyppi, "")
+    return f"{kunta}, {hint}" if hint else kunta
+
+
 # Short display names for the PDF cover title line
 _HANKE_SHORT: dict[str, str] = {
     "BESS":            "BESS",
@@ -3241,17 +3270,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     ))
     _meta_kt = _clean_kt(inp.kiinteistotunnus)
     _hanke_short = _HANKE_SHORT.get(inp.hanketyyppi, inp.hanketyyppi.replace("_", " ").title())
-    _location = inp.kunta
-    _sij_hint = ""
-    if inp.sijainti_ymparistovaikutukset:
-        # Take only the first comma-segment; reject if it looks like a full sentence (>20 chars)
-        _seg = inp.sijainti_ymparistovaikutukset.split("\n")[0].split(",")[0].strip()
-        if len(_seg) <= 20:
-            _sij_hint = _seg
-    if not _sij_hint and inp.hanketyyppi == "datakeskus":
-        _sij_hint = "Teollisuusalue"
-    if _sij_hint:
-        _location = f"{inp.kunta}, {_sij_hint}"
+    _location = _cover_location(inp.kunta, inp.sijainti_ymparistovaikutukset or "", inp.hanketyyppi)
     _meta_parts = [f"{inp.teho_mw} MW {_hanke_short}", _location]
     if _meta_kt != "–":
         _meta_parts.append(_meta_kt)
