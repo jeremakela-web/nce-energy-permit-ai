@@ -3568,7 +3568,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         ))
     story.append(Spacer(1, 8*mm))
 
-    _CPB = 7 * cm  # konditionaalinen sivunvaihto: alle 7 cm tilaa -> uusi sivu
+    _CPB = 100 * mm  # konditionaalinen sivunvaihto: alle 100 mm tilaa -> uusi sivu
 
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
     story.append(CondPageBreak(_CPB))
