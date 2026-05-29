@@ -3966,12 +3966,12 @@ const HANKE_FIELDS = {
     title: 'Datakeskus — lupahakemus',
     fields: [
       { id: 'gf-hakija',    apiKey: 'hakija',           label: 'Hakija (yritys)',          type: 'text',   placeholder: 'Yrityksen nimi', required: true },
-      { id: 'gf-kt',        apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',         type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
+      { id: 'gf-kt',        apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',         type: 'text',   placeholder: 'esim. 853-401-1-234 (tai jätä tyhjäksi)' },
       { id: 'gf-kunta',     apiKey: 'kunta',            label: 'Sijaintikunta',            type: 'text',   placeholder: 'Kunta', required: true },
-      { id: 'gf-teho',      apiKey: 'teho_mw',          label: 'Teho (MW)',                type: 'number', min: '0.1', step: '0.1' },
-      { id: 'gf-pintaala',  apiKey: null,               label: 'Pinta-ala (ha)',           type: 'number', min: '0.01', step: '0.01' },
+      { id: 'gf-teho',      apiKey: 'teho_mw',          label: 'IT-kuorma (MW)',           type: 'number', min: '0.1', step: '0.1', required: true },
+      { id: 'gf-pintaala',  apiKey: null,               label: 'Tonttipinta-ala (ha)',     type: 'number', min: '0.01', step: '0.01' },
       { id: 'gf-verkko',    apiKey: null,               label: 'Verkkoliityntä',           type: 'select', options: _VERKKO_OPTS },
-      { id: 'gf-sijainti',  apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
+      { id: 'gf-sijainti',  apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / aluetyyppi', type: 'text', placeholder: 'esim. Teollisuusalue, lähellä satamaa', full: true },
       { id: 'gf-vaihe',     apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',           type: 'select', options: _VAIHE_OPTS },
       { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen', label: 'Kohdeviranomainen',    type: 'select', options: _VIRANOMAINEN_OPTS },
     ]
@@ -3994,7 +3994,7 @@ const HANKETYYPIT = {
   liikerakennus:  { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Pelastuslaitoksen hyväksyntä'] },
   muu:            { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa (mahdollinen)'] },
   ymparistolupa:  { autoFields: { kohdeviranomainen: 'Luova (ympäristölupa/vesilupa)' }, lupatyypit: ['Ympäristölupa (YSL 527/2014)', 'YVA (tarvittaessa)', 'Vesilupa (tarvittaessa)'] },
-  datakeskus:     { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Asemakaavanmuutos (tarvitt.)', 'YVA (≥50 MW)', 'Ympäristölupa (LVV)', 'Verkkoliityntä (Fingrid/DSO)'] },
+  datakeskus:     { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Asemakaavanmuutos (tarvitt.)', 'YVA-harkinta (tapauskohtainen)', 'Ympäristölupa (jäähdytys/melu)', 'Verkkoliityntä Turku Energia (DSO)', 'Verkkoliityntä Fingrid (TSO)'] },
 };
 
 // Inject y_tunnus and osoite fields after hakija in every HANKE_FIELDS entry
