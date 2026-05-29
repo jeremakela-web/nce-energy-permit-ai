@@ -3500,11 +3500,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
 
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
     story.append(CondPageBreak(_CPB))
+    _kuvaus_elems = _para_text(sections.get("kuvaus", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec1"), st["h2"]),
         _hr(),
+        *_kuvaus_elems[:1],   # ensimmäinen kappale pysyy otsikon kanssa
     ]))
-    story.extend(_para_text(sections.get("kuvaus", "–"), st))
+    story.extend(_kuvaus_elems[1:])
     story.append(Paragraph(_s(lang, "esiselvitys_p"), st["body"]))
     if inp.hanketyyppi == "BESS":
         story.append(Paragraph(_s(lang, "bess_pintaala"), st["body"]))
@@ -3513,11 +3515,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
 
     # ── 2. Perustelut ja tarve ────────────────────────────────────────────────
     story.append(CondPageBreak(_CPB))
+    _perust_elems = _para_text(sections.get("perustelut", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec2"), st["h2"]),
         _hr(),
+        *_perust_elems[:1],   # ensimmäinen kappale pysyy otsikon kanssa
     ]))
-    story.extend(_para_text(sections.get("perustelut", "–"), st))
+    story.extend(_perust_elems[1:])
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
@@ -3572,22 +3576,24 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
     story.append(CondPageBreak(_CPB))
+    _liite_tbl = _liitteet_table(inp.hanketyyppi, lang, country)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec5"), st["h2"]),
         _hr(),
         Paragraph(_s(lang, "liitteet_note"), st["body"]),
+        Spacer(1, 3*mm),
+        _liite_tbl,
     ]))
-    story.append(Spacer(1, 3*mm))
-    story.append(_liitteet_table(inp.hanketyyppi, lang, country))
     story.append(Spacer(1, 4*mm))
 
     # ── 6. Seuraavat toimenpiteet ─────────────────────────────────────────────
     story.append(CondPageBreak(_CPB))
+    _toim_elems = _toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec6"), st["h2"]),
         _hr(),
+        *_toim_elems,
     ]))
-    story.extend(_toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang))
     story.append(Spacer(1, 4*mm))
 
     # ── Lähteet (vain RAG-viranomaislähteet; säädösperusta on jo osiossa 4) ───
