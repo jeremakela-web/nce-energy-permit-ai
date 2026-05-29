@@ -24,7 +24,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import cm, mm
 from reportlab.platypus import (
-    HRFlowable, KeepTogether, Paragraph,
+    CondPageBreak, HRFlowable, KeepTogether, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 from reportlab.pdfgen.canvas import Canvas as _CanvasBase
@@ -3177,7 +3177,10 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         ))
     story.append(Spacer(1, 8*mm))
 
+    _CPB = 7 * cm  # konditionaalinen sivunvaihto: alle 7 cm tilaa -> uusi sivu
+
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
+    story.append(CondPageBreak(_CPB))
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec1"), st["h2"]),
         _hr(),
@@ -3190,6 +3193,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 2. Perustelut ja tarve ────────────────────────────────────────────────
+    story.append(CondPageBreak(_CPB))
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec2"), st["h2"]),
         _hr(),
@@ -3198,9 +3202,11 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
+    story.append(CondPageBreak(_CPB))
     _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
-    _luvat_rows = len(_HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
-    if _luvat_rows <= 8:
+    _country_luvat_data = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
+    _luvat_row_count = len(_country_luvat_data or _HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
+    if _luvat_row_count <= 8:
         story.append(KeepTogether([
             Paragraph(_s(lang, "sec3"), st["h2"]),
             _hr(),
@@ -3212,14 +3218,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 5*mm))
     _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
     story.append(Paragraph(_s(lang, _kaava_key), st["body"]))
-
-    # AI:n lupakuvaukset
     luvat_txt = sections.get("luvat_teksti", "")
     if luvat_txt:
         story.extend(_para_text(luvat_txt, st))
     story.append(Spacer(1, 4*mm))
 
     # ── ISO/IEC-standardit ───────────────────────────────────────────────────
+    story.append(CondPageBreak(_CPB))
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec_standards"), st["h2"]),
         _hr(),
@@ -3228,6 +3233,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
+    story.append(CondPageBreak(_CPB))
     country_luvat_override = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     if country_luvat_override:
         laki_set = {laki for _, _, laki in country_luvat_override}
@@ -3236,7 +3242,6 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         laki_set.update(cfg.get("laki_extra", []))
     laki_bullets = [Paragraph(f"• {_t_law(lang, ref)}", st["bullet"])
                     for ref in sorted(laki_set)]
-    # Keep heading + at least 2 bullets together so heading never strands alone
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec4"), st["h2"]),
         _hr(),
@@ -3247,6 +3252,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
+    story.append(CondPageBreak(_CPB))
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec5"), st["h2"]),
         _hr(),
@@ -3257,6 +3263,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 6. Seuraavat toimenpiteet ─────────────────────────────────────────────
+    story.append(CondPageBreak(_CPB))
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec6"), st["h2"]),
         _hr(),
