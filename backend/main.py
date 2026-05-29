@@ -21,7 +21,7 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -71,6 +71,14 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+
+@app.middleware("http")
+async def add_charset(request, call_next):
+    response = await call_next(request)
+    if "application/json" in response.headers.get("content-type", ""):
+        response.headers["content-type"] = "application/json; charset=utf-8"
+    return response
 _BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 _STATIC_DIR  = os.path.join(_BACKEND_DIR, "static")
 app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
@@ -146,16 +154,11 @@ async def health():
 
 @app.get("/api/debug-encoding")
 def debug_encoding():
-    import unicodedata
-    test = "testiäö"
-    nfc = unicodedata.normalize("NFC", test)
-    return {
-        "raw": test,
-        "raw_repr": repr(test),
-        "nfc_repr": repr(nfc),
-        "ae_char": repr("ä"),
-        "oe_char": repr("ö"),
-    }
+    data = {"raw": "testiäö", "ae": "ä", "oe": "ö"}
+    return JSONResponse(
+        content=data,
+        media_type="application/json; charset=utf-8",
+    )
 
 
 @app.get("/api/property/{kiinteistotunnus}")
