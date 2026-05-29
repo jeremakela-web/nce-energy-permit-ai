@@ -453,12 +453,17 @@ def _postprocess_text(text: str, lang: str = "FI") -> str:
 def _limit_expert_reviews(text: str, max_count: int = 3) -> str:
     """Rajoita 'Asiantuntijatarkistus suositellaan' täsmälleen max_count kertaan."""
     phrase = "Asiantuntijatarkistus suositellaan"
+    before = text.count(phrase)
+    print(f"Expert reviews count BEFORE: {before}")
     parts = text.split(phrase)
     if len(parts) <= max_count + 1:
+        print(f"Expert reviews count AFTER:  {before} (ei muutosta)")
         return text
     result = phrase.join(parts[:max_count + 1])
     for part in parts[max_count + 1:]:
         result += part
+    after = result.count(phrase)
+    print(f"Expert reviews count AFTER:  {after}")
     return result
 
 
@@ -1626,6 +1631,9 @@ _SYSTEM = (
     "'⚠️ Asiantuntijatarkistus suositellaan'. Älä koskaan täytä tietopuutteita arvauksilla "
     "tai spekulaatiolla — mieluummin merkitse asia epävarmaksi kuin generoi väärää tietoa. "
     "Kaikki tuottamasi teksti on AI-luonnos joka vaatii asiantuntijatarkistuksen. "
+    "HUOM-LAUSEOHJE: Jokainen ⚠️-merkintä on kirjoitettava täytenä lauseena joka alkaa "
+    "merkinnällä. ÄLÄ KOSKAAN kirjoita irtonaista lausetta joka alkaa pienellä kirjaimella "
+    "tai kesken ajatuksen — merkintä on aina oma itsenäinen virkkeensä. "
     "YHTEYSTIETOSÄÄNTÖ: Älä koskaan generoi hakijan osoitetta, puhelinnumeroa, "
     "sähköpostia tai Y-tunnusta tekstiosioihin — käytä vain luvan sisältöön liittyviä tietoja. "
     "LAUSERAKENNE: Kirjoita lyhyitä, selkeitä virkkeitä (enintään 2 lausetta per kappale). "
