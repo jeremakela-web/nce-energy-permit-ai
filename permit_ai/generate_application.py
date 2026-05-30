@@ -668,6 +668,27 @@ _HANKE_CFG = {
             "Hakijan oikeushenkilön rekisteriote",
             "Valtakirja (jos asiamies edustaa)",
         ],
+        "context_extra": (
+            "BESS (AKKUENERGIAVARASTOHANKE) — PAKOLLISET SISÄLTÖVAATIMUKSET:\n\n"
+            "OSIO 1 — Hankkeen kuvaus: sisällytä KAIKKI seuraavat tiedot:\n"
+            "- Akkukonttien lukumäärä: arvioi 2–4 konttia riippuen toimittajasta "
+            "(esim. CATL, BYD, Wärtsilä); yksittäisen kontin kapasiteetti 2,5–5 MWh\n"
+            "- Palokuormitusluokka: P2 tai P3 (Suomen rakentamismääräyskokoelma E2) — "
+            "mainitse kumpi soveltuu ja perustele lyhyesti\n"
+            "- Viittaa paloturvallisuusselvitykseen täsmälleen näin: "
+            "'ks. Liite 5: Paloturvallisuusselvitys'\n"
+            "- Viittaa sähköliityntäsuunnitelmaan täsmälleen näin: "
+            "'ks. Liite 8: Sähköliitynnän suunnitelma'\n"
+            "- Naapurikuuleminen: mainitse sen status (tehty / kesken / tulossa) "
+            "ja viittaa [Rakentamislaki 751/2023, 44 §]\n\n"
+            "OSIO 3 — Luvat: mainitse erikseen omana kohtanaan:\n"
+            "- Kemikaali-ilmoitusvelvollisuus Tukesille: kynnysarvo on 333 kg litiumia "
+            "(vastaa noin 1,5–2 MWh LFP-teknologialla) — arvioi onko 10 MWh-hanke "
+            "selvästi yli kynnyksen ja edellyttää kemikaaliturvallisuuslain "
+            "(390/2005) mukaista lupaa\n"
+            "- Pelastussuunnitelman hyväksyttäminen pelastuslaitoksella "
+            "[Pelastuslaki 379/2011, 15 §] ennen käyttöönottoa"
+        ),
     },
     "tuulivoima_maa": {
         "nimi_fi":    "Maalle sijoitettava tuulivoimahanke",
@@ -1735,7 +1756,7 @@ _WRITE_INSTRUCTION: dict[str, str] = {
     "FI": ("Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. "
            "Viittaa lakeihin lyhentein hakasulkeissa, esim. [YSL §27] tai [Rakentamislaki 751/2023]. "
            "Kirjoita lyhyitä virkkeitä — enintään kaksi lausetta per kappale, ei pitkiä juridisia luettelolauseita. "
-           "Lisää teksti 'Asiantuntijatarkistus suositellaan' täsmälleen 2–3 kertaa koko vastauksessa — ei enemmää, ei vähemmän. "
+           "Lisää teksti 'Asiantuntijatarkistus suositellaan' täsmälleen 2 kertaa koko vastauksessa — EI KOSKAAN 4 kertaa tai enemmän. "
            "Älä spekuloi äläkä täytä tietopuutteita oletuksilla:"),
     "EN": ("Write the following four sections in English, clearly separated by headings. "
            "Include inline law citations in brackets, e.g. [EIA Act] or [Building Act 751/2023]. "
