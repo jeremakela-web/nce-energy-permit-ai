@@ -1,0 +1,19 @@
+<svg viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="160" fill="#0A1628"/>
+  <circle cx="80" cy="80" r="65" fill="none" stroke="#009B87" stroke-width="1.5" opacity="0.2"/>
+  <circle cx="80" cy="80" r="48" fill="none" stroke="#009B87" stroke-width="2" opacity="0.4"/>
+  <circle cx="80" cy="80" r="30" fill="none" stroke="#00C2A8" stroke-width="2.5" opacity="0.85"/>
+  <circle cx="80" cy="80" r="19" fill="#0D2E2A" opacity="0.95"/>
+  <g transform="translate(80,80) scale(1.9) translate(-12,-12)">
+    <path fill="#00C2A8" d="M9.19 6.35c-2.04 2.29-3.44 5.58-3.57 5.89L2 10.69l4.05-4.05c.47-.47 1.15-.68 1.82-.52l1.32.23zM11.17 17c.31-.13 3.58-1.53 5.87-3.58l.23 1.32c.16.67-.05 1.35-.52 1.82L12.7 20.5l-1.53-3.5zm5.48-9.01c-2.29-2.3-5.28-3.56-7.42-3.51L4.4 9.2 7.6 12.4l1.71-1.71 4 4-1.71 1.71 3.2 3.2 4.72-4.83c.05-2.14-1.21-5.13-3.57-7.78zm-4.24 4.25c-.78-.78-.78-2.05 0-2.83.78-.78 2.05-.78 2.83 0 .78.78.78 2.05 0 2.83-.78.78-2.05.78-2.83 0z"/>
+  </g>
+  <circle cx="80" cy="15" r="4" fill="#009B87" opacity="0.7"/>
+  <circle cx="80" cy="145" r="4" fill="#009B87" opacity="0.7"/>
+  <circle cx="145" cy="80" r="4" fill="#00C2A8" opacity="0.7"/>
+  <circle cx="15" cy="80" r="4" fill="#00C2A8" opacity="0.7"/>
+  <line x1="158" y1="30" x2="158" y2="130" stroke="#1E3A5A" stroke-width="1.5"/>
+  <text x="185" y="68" font-family="Trebuchet MS, sans-serif" font-size="38" font-weight="bold" fill="#FFFFFF" letter-spacing="3">NCE</text>
+  <line x1="185" y1="76" x2="368" y2="76" stroke="#00C2A8" stroke-width="1" opacity="0.5"/>
+  <text x="186" y="95" font-family="Trebuchet MS, sans-serif" font-size="11" fill="#00C2A8" letter-spacing="2.5">NATIVE CLEAN ENERGY</text>
+  <text x="186" y="116" font-family="Trebuchet MS, sans-serif" font-size="9" fill="#94A3B8" letter-spacing="1.5">AI-POWERED ENERGY PERMITTING</text>
+</svg>
