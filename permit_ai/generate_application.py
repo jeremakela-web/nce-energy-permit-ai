@@ -78,13 +78,28 @@ def _clean_kt(kt: str) -> str:
     return "–" if (not kt or kt.upper() in {v.upper() for v in _SENTINEL_VALS}) else kt
 
 
+_LATIN1_CHARMAP: dict[str, str] = {
+    "—": "-", "–": "-",   # em-dash, en-dash
+    "‘": "'", "’": "'",   # left/right single quote
+    "“": '"', "”": '"',   # left/right double quote
+    "…": "...", "•": "-", # ellipsis, bullet
+    "×": "x",  "−": "-", # multiplication sign, minus sign
+    "·": "-",                  # middle dot
+}
+
+
 def _latin1_safe(text: str) -> str:
     """NFC-normalise and return text unchanged.
 
     When PDF_FONT is a TrueType font (DejaVu), ReportLab handles the full
     Unicode range natively — no Latin-1 transliteration needed.  We keep
     the NFC step so combining diacritics (a+U+0308) are collapsed to
-    precomposed ä before they reach the PDF renderer."""
+    precomposed ä before they reach the PDF renderer.
+
+    For Helvetica (Latin-1 font, local macOS), encode character-by-character
+    so that ä/ö (which ARE valid Latin-1) are always preserved. Only truly
+    non-Latin-1 characters (em-dashes, smart quotes, …) are mapped or dropped.
+    """
     text = unicodedata.normalize("NFC", text)
     if PDF_FONT != "Helvetica":
         return text  # TrueType font — pass through unchanged
@@ -92,8 +107,16 @@ def _latin1_safe(text: str) -> str:
         text.encode("latin-1")
         return text
     except (UnicodeEncodeError, UnicodeDecodeError):
-        nfkd = unicodedata.normalize("NFKD", text)
-        return nfkd.encode("latin-1", errors="ignore").decode("latin-1")
+        # Character-by-character: keep anything encodable as Latin-1 (incl. ä/ö),
+        # map known typographic chars, drop the rest.
+        out = []
+        for ch in text:
+            try:
+                ch.encode("latin-1")
+                out.append(ch)
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                out.append(_LATIN1_CHARMAP.get(ch, ""))
+        return "".join(out)
 
 
 # Deterministic repair for Finnish words commonly generated without diacritics.
@@ -252,6 +275,17 @@ _FI_DIAK = [
     (r"jatevesi\b", "jätevesi"),
     (r"jatteiden\b", "jätteiden"),
     (r"jatteet\b", "jätteet"),
+    # järjestelmä — puuttuvat taivutusmuodot
+    (r"jarjestelmalla\b",  "järjestelmällä"),
+    (r"jarjestelmalle\b",  "järjestelmälle"),
+    (r"jarjestelmalta\b",  "järjestelmältä"),
+    (r"jarjestelmia\b",    "järjestelmiä"),
+    (r"jarjestelmissa\b",  "järjestelmissä"),
+    (r"jarjestelmista\b",  "järjestelmistä"),
+    (r"jarjestelmat\b",    "järjestelmät"),
+    (r"jarjestelmia\b",    "järjestelmiä"),
+    # akkujarjestelma / paloilmoitinjarjestelma compounds
+    (r"jarjestelm([aäoö]\w*)\b", r"järjestelm\1"),
     # järjestää / järjestely
     (r"jarjestelyt\b", "järjestelyt"),
     (r"jarjestelyn\b", "järjestelyn"),
@@ -286,6 +320,45 @@ _FI_DIAK = [
     # yhteydessä
     (r"yhteytta\b", "yhteyttä"),
     (r"yhteydessa\b", "yhteydessä"),
+    # BESS-spesifiset: paloturvallisuus-yhdyssanat
+    (r"paloturvallisuusselvityksessa\b", "paloturvallisuusselvityksessä"),
+    (r"paloturvallisuusselvityksen\b",   "paloturvallisuusselvityksen"),
+    (r"paloturvallisuusselvitysta\b",    "paloturvallisuusselvitystä"),
+    (r"paloturvallisuusselvitys\b",      "paloturvallisuusselvitys"),
+    (r"paloturvallisuusvaatimuksista\b", "paloturvallisuusvaatimuksista"),
+    (r"paloturvallisuusvaatimukset\b",   "paloturvallisuusvaatimukset"),
+    (r"paloturvallisuusriskeista\b",     "paloturvallisuusriskeistä"),
+    (r"paloturvallisuusriskit\b",        "paloturvallisuusriskit"),
+    (r"paloturvallisuuteen\b",           "paloturvallisuuteen"),
+    (r"paloturvallisuutta\b",            "paloturvallisuutta"),
+    # sammutusjarjestelma
+    (r"sammutusjarjestelman\b",  "sammutusjarjestelmän"),
+    (r"sammutusjarjestelmaa\b",  "sammutusjarjestelmää"),
+    (r"sammutusjarjestelma\b",   "sammutusjärjestelmä"),
+    # akku- / energia- yhdyssanat
+    (r"akkujarjestelmaan\b",     "akkujärjestelmään"),
+    (r"akkujarjestelman\b",      "akkujärjestelmän"),
+    (r"akkujarjestelma\b",       "akkujärjestelmä"),
+    (r"energiavarastoja\b",      "energiavarastoja"),
+    (r"energiavarastoon\b",      "energiavarastoon"),
+    (r"energiavaraston\b",       "energiavaraston"),
+    (r"energiavarastosta\b",     "energiavarastosta"),
+    # hallinta
+    (r"hallintajarjestelma\b",   "hallintajärjestelmä"),
+    (r"hallintajarjestelman\b",  "hallintajärjestelmän"),
+    # käyttöönotto-taivutus
+    (r"kayttoonottoon\b",        "käyttöönottoon"),
+    (r"kayttoonotolta\b",        "käyttöönotolta"),
+    (r"kayttoonoton\b",          "käyttöönoton"),
+    (r"kayttoonotosta\b",        "käyttöönotosta"),
+    # suunnittelu
+    (r"suunnittelijan\b",        "suunnittelijan"),
+    (r"suunnittelusta\b",        "suunnittelusta"),
+    (r"suunnittelussa\b",        "suunnittelussa"),
+    # tarkastusasiakirja
+    (r"tarkastusasiakirjassa\b", "tarkastusasiakirjassa"),
+    (r"tarkastusasiakirjan\b",   "tarkastusasiakirjan"),
+    (r"tarkastusasiakirjaa\b",   "tarkastusasiakirjaa"),
 ]
 _FI_DIAK_RE = [(re.compile(p, re.IGNORECASE), r) for p, r in _FI_DIAK]
 
@@ -3410,6 +3483,7 @@ _HUOM_PREFIXES = tuple(lbl.strip() for lbl in _HUOM_LABEL.values())
 
 def _para_text(text: str, st: dict) -> list:
     """Muunna AI:n tuottama teksti Paragraph-listaksi (kappalejaot \\n\\n)."""
+    text = _fix_fi_diacritics(text)
     text = _latin1_safe(text)
     _ai_h2 = ParagraphStyle("ai_h2", fontSize=10.5, fontName=PDF_FONT_BOLD,
                              textColor=C_NAVY, spaceBefore=10, spaceAfter=3,
@@ -3505,17 +3579,16 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
             Paragraph(str(row[3]), td_s),
         ])
     tbl = Table(tbl_data, colWidths=[0.9*cm, 7.2*cm, 4.5*cm, 4.0*cm], repeatRows=1)
-    _toim_nosplit = [("NOSPLIT", (0, i), (-1, i + 1)) for i in range(len(tbl_data) - 1)]
     tbl.setStyle(TableStyle([
         ("BACKGROUND",     (0, 0), (-1, 0), C_NAVY),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
         ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
-        ("TOPPADDING",     (0, 0), (-1, -1), 6),
-        ("BOTTOMPADDING",  (0, 0), (-1, -1), 6),
+        ("TOPPADDING",     (0, 0), (-1, -1), 7),
+        ("BOTTOMPADDING",  (0, 0), (-1, -1), 7),
         ("LEFTPADDING",    (0, 0), (-1, -1), 5),
         ("RIGHTPADDING",   (0, 0), (-1, -1), 5),
         ("VALIGN",         (0, 0), (-1, -1), "TOP"),
-        *_toim_nosplit,
+        ("NOSPLIT",        (0, 0), (-1, 1)),   # header stays with first data row
     ]))
     return [tbl]
 
