@@ -47,10 +47,17 @@ from permit_ai import query_permit_ai
 # permit_ai-moduuli on ~/bess_tool/permit_ai/ — lisätään polkuun
 import sys as _sys
 _sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "permit_ai"))
+_sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from generate_application import (
     generate_application, generate_application_draft, apply_proofread_to_pdf,
     ApplicationInput, _get_embed_model, _get_chroma_col,
 )
+try:
+    from optimizer import NCEOptimizer, EnergySite
+    _OPTIMIZER_OK = True
+except ImportError:
+    _OPTIMIZER_OK = False
+    print("[startup] optimizer.py ei löydy — /api/optimize-bess palauttaa 501")
 
 # Warmup: lataa embedding-malli ja ChromaDB heti käynnistyksen yhteydessä,
 # ei ensimmäisen requestin yhteydessä.
@@ -96,6 +103,13 @@ if not MML_API_KEY:
 class PermitAIRequest(BaseModel):
     question: str
     n_results: int = 5
+
+
+class OptimizeRequest(BaseModel):
+    bbox: list          # [lat_min, lon_min, lat_max, lon_max]
+    project_type: str   = "bess"
+    power_mw:     float = 5.0
+    min_area_ha:  float = 2.0
 
 
 class ApplicationRequest(BaseModel):
@@ -459,6 +473,91 @@ async def permit_ai(request: Request, req: PermitAIRequest):
         return result
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Permit AI -virhe: {exc}")
+
+
+# ── Site Optimizer ───────────────────────────────────────────────────────────
+
+def _lcg(s: int) -> int:
+    return (1664525 * s + 1013904223) % (2 ** 32)
+
+
+def _rng01(seed: int, offset: int = 0) -> float:
+    s = seed
+    for _ in range(offset + 1):
+        s = _lcg(s)
+    return s / (2 ** 32)
+
+
+@app.post("/api/optimize-bess")
+@limiter.limit("20/hour")
+async def optimize_sites(request: Request, req: OptimizeRequest):
+    """
+    Sijaintioptimointityökalu — pisteyttää kandidaattisijainteja hanketyypeittäin.
+    Hanketyypit: bess, tuulivoima, aurinkovoima, smr
+    """
+    if not _OPTIMIZER_OK:
+        raise HTTPException(status_code=501, detail="optimizer.py ei löydy")
+
+    _allowed = {"bess", "tuulivoima", "aurinkovoima", "smr"}
+    if req.project_type not in _allowed:
+        raise HTTPException(status_code=400,
+                            detail=f"project_type oltava: {', '.join(sorted(_allowed))}")
+    if len(req.bbox) != 4:
+        raise HTTPException(status_code=400,
+                            detail="bbox: [lat_min, lon_min, lat_max, lon_max]")
+
+    lat_min, lon_min, lat_max, lon_max = req.bbox
+
+    # Generoi 16 kandidaattisijaintia 4×4-gridillä bbox:n sisältä
+    _rows, _cols = 4, 4
+    sites: list = []
+    _col_labels = "ABCDE"
+    for i in range(_rows):
+        for j in range(_cols):
+            lat = lat_min + (lat_max - lat_min) * (i + 0.5) / _rows
+            lon = lon_min + (lon_max - lon_min) * (j + 0.5) / _cols
+            _seed = int(abs(lat * 1e4)) * 99991 + int(abs(lon * 1e4)) * 31337
+            r = lambda off: _rng01(_seed, off)
+            sites.append(EnergySite(
+                site_id      = f"{_col_labels[j]}{i + 1}",
+                lat          = round(lat, 5),
+                lon          = round(lon, 5),
+                solar_irradiance    = 700 + r(1) * 400,
+                wind_resource       = 4.0 + r(2) * 5.0,
+                grid_distance_km    = 0.5 + r(3) * 44.5,
+                land_area_ha        = max(req.min_area_ha, 2 + r(4) * 58),
+                zoning_score        = 0.15 + r(5) * 0.85,
+                protected_area_score= 0.10 + r(6) * 0.90,
+                water_access_score  = 0.30 + r(7) * 0.70,
+                land_cost_eur_ha    = 5000 + r(8) * 30000,
+            ))
+
+    optimizer = NCEOptimizer(req.project_type)
+    result    = optimizer.optimize(sites)
+
+    top5 = [
+        {
+            "site_id":              site.site_id,
+            "lat":                  site.lat,
+            "lon":                  site.lon,
+            "score":                score,
+            "score_pct":            f"{score:.0%}",
+            "grid_distance_km":     round(site.grid_distance_km, 1),
+            "zoning_score":         round(site.zoning_score, 2),
+            "protected_area_score": round(site.protected_area_score, 2),
+            "solar_irradiance":     round(site.solar_irradiance),
+            "wind_resource":        round(site.wind_resource, 1),
+            "land_area_ha":         round(site.land_area_ha, 1),
+        }
+        for site, score in zip(result.ranked_sites[:5], result.scores[:5])
+    ]
+
+    return {
+        "results":          top5,
+        "optimizer_used":   result.optimizer_used,
+        "project_type":     result.project_type,
+        "total_candidates": len(sites),
+    }
 
 
 # ── Sisäinen analyysilogiikka ─────────────────────────────────────────────────

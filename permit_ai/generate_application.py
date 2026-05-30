@@ -74,8 +74,14 @@ _SENTINEL_VALS = frozenset({
 
 
 def _clean_kt(kt: str) -> str:
-    """Replace frontend sentinel 'EI-SOVELLU' / 'N/A' etc. with dash."""
-    return "–" if (not kt or kt.upper() in {v.upper() for v in _SENTINEL_VALS}) else kt
+    """Replace frontend sentinel 'EI-SOVELLU' / 'N/A' etc. with dash.
+    Normalizes to full zero-padded form: KKK-VVV-NNNN-NNNN (e.g. 108-403-1-1 → 108-403-0001-0001)."""
+    if not kt or kt.upper() in {v.upper() for v in _SENTINEL_VALS}:
+        return "–"
+    parts = kt.split("-")
+    if len(parts) == 4:
+        return f"{parts[0]}-{parts[1]}-{parts[2].zfill(4)}-{parts[3].zfill(4)}"
+    return kt
 
 
 _LATIN1_CHARMAP: dict[str, str] = {
@@ -3856,9 +3862,9 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec1"), st["h2"]),
         _hr(),
-        *_kuvaus_elems[:1],   # ensimmäinen kappale pysyy otsikon kanssa
+        *_kuvaus_elems[:2],   # kaksi ensimmäistä kappaletta pysyvät otsikon kanssa
     ]))
-    story.extend(_kuvaus_elems[1:])
+    story.extend(_kuvaus_elems[2:])
     _vaihe_norm = (inp.hankkeen_vaihe or "esiselvitys").lower()
     if _vaihe_norm == "lupavaihe":
         story.append(Paragraph(_s(lang, "lupavaihe_p"), st["body"]))
@@ -3876,24 +3882,20 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec2"), st["h2"]),
         _hr(),
-        *_perust_elems[:1],   # ensimmäinen kappale pysyy otsikon kanssa
+        *_perust_elems[:2],   # kaksi ensimmäistä kappaletta pysyvät otsikon kanssa
     ]))
-    story.extend(_perust_elems[1:])
+    story.extend(_perust_elems[2:])
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
     _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
     _country_luvat_data = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     _luvat_row_count = len(_country_luvat_data or _HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
-    if _luvat_row_count <= 8:
-        story.append(KeepTogether([
-            Paragraph(_s(lang, "sec3"), st["h2"]),
-            _hr(),
-            _luvat_tbl,
-        ]))
-    else:
-        story.append(KeepTogether([Paragraph(_s(lang, "sec3"), st["h2"]), _hr()]))
-        story.append(_luvat_tbl)
+    story.append(KeepTogether([
+        Paragraph(_s(lang, "sec3"), st["h2"]),
+        _hr(),
+        _luvat_tbl,
+    ]))
     story.append(Spacer(1, 5*mm))
     _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
     story.append(Paragraph(_s(lang, _kaava_key), st["body"]))

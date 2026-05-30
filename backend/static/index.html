@@ -665,6 +665,27 @@
     }
     .leaflet-popup-tip { background: #16213e; }
 
+    /* ── Site Optimizer ── */
+    .opt-result-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; border-radius: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 5px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .opt-result-item:hover { background: rgba(0,194,168,0.1); border-color: rgba(0,194,168,0.3); }
+    .opt-score-dot {
+      width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    }
+    .opt-score-green  { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.6); }
+    .opt-score-yellow { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.6); }
+    .opt-score-red    { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+    .opt-result-label { flex: 1; font-size: 0.78rem; color: #c0d4e8; font-weight: 600; }
+    .opt-result-score { font-size: 0.75rem; color: #8899aa; }
+    .opt-draw-hint { font-size: 0.71rem; color: #8899aa; line-height: 1.4; margin: 5px 0 8px; }
+    .opt-no-results { font-size: 0.75rem; color: #8899aa; text-align: center; padding: 10px 0; }
+
     /* Loading spinner */
     .spinner {
       display: inline-block;
@@ -1512,6 +1533,32 @@
               Kohdista kiinteistölle
             </button>
           </div>
+        </div>
+
+        <!-- ── Site Optimizer ── -->
+        <div class="sidebar-section" id="site-optimizer-section">
+          <h3>&#9889; Site Optimizer</h3>
+          <div class="proj-field">
+            <label>Hanketyyppi</label>
+            <select id="opt-project-type">
+              <option value="bess">BESS &#8212; Akkuenergiavarastot</option>
+              <option value="tuulivoima">Tuulivoima</option>
+              <option value="aurinkovoima">Aurinkovoima</option>
+              <option value="smr">SMR &#8212; Pienydinreaktori</option>
+            </select>
+          </div>
+          <div class="opt-draw-hint" id="opt-draw-hint">
+            Piirrä optimointialue kartalle &#8594; paina Optimoi sijainnit.
+          </div>
+          <div class="btn-row">
+            <button class="btn secondary" id="btn-draw-rect" onclick="activateOptDraw()">
+              &#9645; Piirrä alue
+            </button>
+            <button class="btn" id="btn-optimize" onclick="runOptimizer()" disabled>
+              &#9889; Optimoi
+            </button>
+          </div>
+          <div id="opt-results" style="margin-top:10px;"></div>
         </div>
 
         </div><!-- #map-fi-form -->
@@ -5720,6 +5767,198 @@ document.addEventListener('DOMContentLoaded', () => {
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
   });
 });
+
+// ─────────────────────────────────────────────
+// Site Optimizer
+// ─────────────────────────────────────────────
+
+let _optDrawLayer   = null;   // FeatureGroup for drawn rectangle
+let _optDrawControl = null;   // L.Control.Draw instance
+let _optBbox        = null;   // [lat_min, lon_min, lat_max, lon_max]
+let _optMarkers     = L.featureGroup().addTo(map);
+
+function _initOptDraw() {
+  if (_optDrawLayer) return;
+  _optDrawLayer = new L.FeatureGroup().addTo(map);
+  _optDrawControl = new L.Control.Draw({
+    draw: {
+      rectangle:  { shapeOptions: { color: '#00C2A8', weight: 2, fillOpacity: 0.08 } },
+      polyline:   false,
+      polygon:    false,
+      circle:     false,
+      marker:     false,
+      circlemarker: false,
+    },
+    edit: { featureGroup: _optDrawLayer, remove: true },
+  });
+  map.addControl(_optDrawControl);
+
+  map.on(L.Draw.Event.CREATED, function (e) {
+    _optDrawLayer.clearLayers();
+    _optDrawLayer.addLayer(e.layer);
+    const b = e.layer.getBounds();
+    _optBbox = [b.getSouth(), b.getWest(), b.getNorth(), b.getEast()];
+    document.getElementById('btn-optimize').disabled = false;
+    document.getElementById('opt-draw-hint').textContent =
+      `Alue: ${b.getSouth().toFixed(3)}°N – ${b.getNorth().toFixed(3)}°N, ${b.getWest().toFixed(3)}°E – ${b.getEast().toFixed(3)}°E`;
+    log('Optimointialue piirretty — paina Optimoi sijainnit', 'info');
+  });
+
+  map.on(L.Draw.Event.DELETED, function () {
+    _optBbox = null;
+    document.getElementById('btn-optimize').disabled = true;
+    document.getElementById('opt-draw-hint').textContent =
+      'Piirrä optimointialue kartalle → paina Optimoi sijainnit.';
+    _optMarkers.clearLayers();
+    document.getElementById('opt-results').innerHTML = '';
+  });
+}
+
+function activateOptDraw() {
+  _initOptDraw();
+  new L.Draw.Rectangle(map, _optDrawControl.options.draw.rectangle).enable();
+  log('Piirrä suorakaide kartalle hiirellä', 'info');
+}
+
+async function runOptimizer() {
+  if (!_optBbox) { log('Piirrä ensin alue kartalle', 'err'); return; }
+
+  const projectType = document.getElementById('opt-project-type').value;
+  const powerMw     = parseFloat(document.getElementById('proj-power')?.value || '5') || 5;
+  const btn         = document.getElementById('btn-optimize');
+  const resultsDiv  = document.getElementById('opt-results');
+
+  btn.disabled = true;
+  btn.innerHTML = '&#9203; Optimoidaan…';
+  _optMarkers.clearLayers();
+  resultsDiv.innerHTML = '<div class="opt-no-results">&#9203; Lasketaan optimaalisia sijainteja…</div>';
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/optimize-bess`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bbox:         _optBbox,
+        project_type: projectType,
+        power_mw:     powerMw,
+        min_area_ha:  2.0,
+      }),
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({ detail: resp.statusText }));
+      throw new Error(err.detail || resp.statusText);
+    }
+    const data = await resp.json();
+    _renderOptResults(data);
+  } catch (err) {
+    resultsDiv.innerHTML = `<div class="opt-no-results" style="color:#ef4444;">Virhe: ${err.message}</div>`;
+    log(`Optimizer-virhe: ${err.message}`, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '&#9889; Optimoi';
+  }
+}
+
+function _renderOptResults(data) {
+  const results    = data.results || [];
+  const resultsDiv = document.getElementById('opt-results');
+  _optMarkers.clearLayers();
+
+  if (!results.length) {
+    resultsDiv.innerHTML = '<div class="opt-no-results">Ei tuloksia</div>';
+    return;
+  }
+
+  const typeLabels = {
+    bess:        'BESS',
+    tuulivoima:  'Tuulivoima',
+    aurinkovoima:'Aurinkovoima',
+    smr:         'SMR',
+  };
+
+  let html = `<div style="font-size:0.68rem;color:#4a9a8a;margin-bottom:6px;">
+    Top ${results.length} / ${data.total_candidates} kandidaattia &mdash;
+    ${typeLabels[data.project_type] || data.project_type}
+    &mdash; ${data.optimizer_used === 'quantum_inspired' ? '&#127775; Quantum-inspired' : 'Klassinen'}
+  </div>`;
+
+  results.forEach((site, idx) => {
+    const score = site.score;
+    const dotClass = score >= 0.80 ? 'opt-score-green'
+                   : score >= 0.60 ? 'opt-score-yellow'
+                   : 'opt-score-red';
+    const markerColor = score >= 0.80 ? '#22c55e'
+                      : score >= 0.60 ? '#f59e0b'
+                      : '#ef4444';
+
+    html += `
+      <div class="opt-result-item" onclick="_zoomToSite(${site.lat},${site.lon})">
+        <span class="opt-score-dot ${dotClass}"></span>
+        <span class="opt-result-label">#${idx + 1} Sektori ${site.site_id}</span>
+        <span class="opt-result-score">${(score * 100).toFixed(0)}%</span>
+      </div>`;
+
+    // Leaflet circle marker
+    const marker = L.circleMarker([site.lat, site.lon], {
+      radius:      score >= 0.80 ? 14 : score >= 0.60 ? 12 : 10,
+      color:       markerColor,
+      fillColor:   markerColor,
+      fillOpacity: 0.55,
+      weight:      2,
+    });
+
+    const popupHtml = `
+      <div style="min-width:200px;">
+        <b style="color:${markerColor};">#${idx + 1} Sektori ${site.site_id}</b>
+        &mdash; <b>${(score * 100).toFixed(0)}%</b><br>
+        <table style="margin-top:6px;font-size:0.78rem;width:100%;">
+          <tr><td>Verkkoetäisyys</td><td><b>${site.grid_distance_km} km</b></td></tr>
+          <tr><td>Kaavoitus</td><td><b>${(site.zoning_score * 100).toFixed(0)}%</b></td></tr>
+          <tr><td>Luontoarvo</td><td><b>${(site.protected_area_score * 100).toFixed(0)}%</b></td></tr>
+          <tr><td>Pinta-ala</td><td><b>${site.land_area_ha} ha</b></td></tr>
+          <tr><td>Aurinkoirr.</td><td><b>${site.solar_irradiance} W/m²</b></td></tr>
+          <tr><td>Tuuliresurssi</td><td><b>${site.wind_resource} m/s</b></td></tr>
+        </table>
+        <button onclick="_loadSiteForReport(${site.lat},${site.lon})"
+          style="margin-top:8px;width:100%;padding:5px 8px;background:#0f3460;border:1px solid #00C2A8;
+                 color:#00C2A8;border-radius:5px;cursor:pointer;font-size:0.75rem;">
+          &#128196; Analysoi &amp; Lataa raportti
+        </button>
+      </div>`;
+    marker.bindPopup(popupHtml, { maxWidth: 260 });
+    _optMarkers.addLayer(marker);
+  });
+
+  resultsDiv.innerHTML = html;
+  log(`Optimointi valmis — ${results.length} parasta sijaintia näkyvillä kartalla`, 'ok');
+
+  // Fit map to markers
+  if (_optMarkers.getLayers().length > 0) {
+    map.fitBounds(_optMarkers.getBounds().pad(0.3));
+  }
+}
+
+function _zoomToSite(lat, lon) {
+  map.setView([lat, lon], 14);
+  _optMarkers.getLayers().forEach(m => {
+    if (m.getLatLng && Math.abs(m.getLatLng().lat - lat) < 0.0001) {
+      m.openPopup();
+    }
+  });
+}
+
+function _loadSiteForReport(lat, lon) {
+  // Pre-fill kt-input with approximate coords so the user can run the full analysis
+  const ktInput = document.getElementById('kt-input');
+  if (ktInput) {
+    // Use nearest Finnish municipality grid format hint
+    ktInput.value = '';
+    ktInput.placeholder = `${lat.toFixed(4)}, ${lon.toFixed(4)} — anna kiinteistötunnus`;
+    ktInput.focus();
+  }
+  map.setView([lat, lon], 15);
+  log(`Kohteen sijainti: ${lat.toFixed(5)}, ${lon.toFixed(5)} — syötä kiinteistötunnus ja paina Hae`, 'info');
+}
 </script>
 
 <footer style="background:#0a1628;border-top:1px solid #1e2d4a;padding:14px 24px;text-align:center;font-size:0.72rem;color:#4a6a9a;letter-spacing:0.2px;">
