@@ -2274,7 +2274,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "bess_pintaala":   "Laitosalueen arvioitu pinta-ala on 0,4–0,6 ha.",
         "mks_viittaus":    ("Hankealueen maankäyttö on selvitetty NCE:n maankäyttöselvityksessä "
                             "(ks. Liite 0b: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
-                            "kaavatilanteen, suojelualueet sekä pohjavesialuetiedot."),
+                            "kaavatilanteen, suojelualueet sekä pohjavesialuetiedot ja vastaa "
+                            "rakentamislain 61 §:n mukaista selvitystä rakennuspaikan ominaisuuksista."),
         "kaava_BESS":      ("<b>Kaavatilanne (kriittisin esiselvityskohta):</b> BESS-hankkeen sijoituspaikan "
                             "kaavatilanne on selvitettävä ensimmäisenä. Useimmissa kunnissa akkuenergiavaraston "
                             "sijoittaminen edellyttää asemakaavaa tai suunnittelutarveratkaisua. Kaavatilanne "
@@ -2363,7 +2364,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "bess_pintaala":   "The estimated site area is 0.4–0.6 ha.",
         "mks_viittaus":    ("The land use of the project area has been investigated in NCE's "
                             "land use report (see Appendix 0b: Land Use Report PDF). The report includes "
-                            "property information, zoning status, protected areas and groundwater area data."),
+                            "property information, zoning status, protected areas and groundwater area data, "
+                            "and corresponds to the site characteristics report required under "
+                            "Building Act (751/2023) § 61."),
         "kaava_BESS":      ("<b>Zoning status (most critical pre-study item):</b> The zoning status of the "
                             "BESS project site must be determined first. In most municipalities, siting a "
                             "battery energy storage system requires a detailed plan or a planning permit. "
@@ -2446,7 +2449,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "mks_viittaus":    ("Markanvändningen i projektområdet har utretts i NCE:s "
                             "markanvändningsutredning (se Bilaga 0b: Markanvändningsutredning PDF). "
                             "Utredningen innehåller fastighetsuppgifter, planläggningsstatus, "
-                            "skyddsområden och grundvattenuppgifter."),
+                            "skyddsområden och grundvattenuppgifter samt motsvarar utredningen "
+                            "om byggnadsplatsens egenskaper enligt bygglagen (751/2023) 61 §."),
         "kaava_BESS":      ("<b>Planläggningsstatus (viktigaste förundersökningspunkten):</b> "
                             "Planläggningsstatusen för BESS-projektplatsen måste utredas först. I de flesta "
                             "kommuner kräver placering av ett batterienergilager en detaljplan eller "
@@ -2529,7 +2533,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "mks_viittaus":    ("Arealanvendelsen i projektområdet er undersøgt i NCE's "
                             "arealanvendelsesrapport (se Bilag 0b: Arealanvendelsesrapport PDF). "
                             "Rapporten indeholder ejendomsoplysninger, planlægningsstatus, "
-                            "beskyttede områder og grundvandsdata."),
+                            "beskyttede områder og grundvandsdata samt svarer til redegørelsen "
+                            "for byggestedets egenskaber i henhold til byggeloven (751/2023) § 61."),
         "kaava_BESS":      ("<b>Planlægningsstatus (det vigtigste forundersøgelseselement):</b> "
                             "Planlægningsstatusen for BESS-projektstedet skal fastlægges først. I de fleste "
                             "kommuner kræver placering af et batterienergilagringssystem en lokalplan eller "
@@ -2614,7 +2619,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "mks_viittaus":    ("Arealbruken i prosjektområdet er undersøkt i NCE's "
                             "arealbruksrapport (se Vedlegg 0b: Arealbruksrapport PDF). "
                             "Rapporten inneholder eiendomsopplysninger, reguleringstatus, "
-                            "verneområder og grunnvannsdata."),
+                            "verneområder og grunnvannsdata, og tilsvarer redegjørelsen for "
+                            "byggetomtens egenskaper i henhold til byggeloven (751/2023) § 61."),
         "kaava_BESS":      ("<b>Reguleringstatus (viktigste forstudieelement):</b> "
                             "Reguleringsstatusen for BESS-prosjektstedet må fastlegges først. I de fleste "
                             "kommuner krever plassering av et batterienergilagringssystem en reguleringsplan "
@@ -2698,7 +2704,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "mks_viittaus":    ("Zagospodarowanie terenu obszaru projektu zostało zbadane w raporcie NCE "
                             "dotyczącym zagospodarowania terenu (zob. Załącznik 0b: Raport PDF). Raport "
                             "zawiera informacje o nieruchomości, status planistyczny, obszary chronione "
-                            "i dane o wodach gruntowych."),
+                            "i dane o wodach gruntowych, oraz odpowiada opracowaniu cech działki "
+                            "budowlanej zgodnie z ustawą budowlaną (751/2023) § 61."),
         "kaava_BESS":      ("<b>Status planistyczny (najważniejszy element analizy wstępnej):</b> "
                             "Status planistyczny terenu projektu BESS musi zostać ustalony w pierwszej "
                             "kolejności. W większości gmin umiejscowienie systemu magazynowania energii "
