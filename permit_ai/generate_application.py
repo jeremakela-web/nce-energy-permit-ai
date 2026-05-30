@@ -689,6 +689,26 @@ _HANKE_CFG = {
             "- Pelastussuunnitelman hyväksyttäminen pelastuslaitoksella "
             "[Pelastuslaki 379/2011, 15 §] ennen käyttöönottoa"
         ),
+        "context_extra_phases": {
+            "rakentaminen": (
+                "BESS RAKENTAMISVAIHE — LISÄVAATIMUKSET:\n\n"
+                "OSIO 1 — Hankkeen kuvaus: kuvaile rakentamisvaiheen toteutus:\n"
+                "- Aloitusilmoitus rakennusvalvonnalle on jätettävä ennen töiden aloittamista "
+                "[Rakentamislaki 751/2023]\n"
+                "- Vastaava työnjohtaja on nimettävä ja hyväksytettävä rakennusvalvonnassa "
+                "ennen aloitusilmoituksen jättämistä\n"
+                "- Tarkastusasiakirja: pitäjä = vastaava työnjohtaja; asiakirja on oltava "
+                "käytössä koko rakentamisen ajan ja toimitetaan loppukatselmuksessa\n"
+                "- Viittaa myönnettyyn rakentamislupaan ja sen ehtoihin\n\n"
+                "OSIO 6 — Seuraavat toimenpiteet: järjestä katselmusaikataulu:\n"
+                "- Pohjakatselmus ennen perustustöiden aloittamista — rakennusvalvonta\n"
+                "- Rakennekatselmus runkovaiheen jälkeen — rakennusvalvonta\n"
+                "- Loppukatselmus: rakennusvalvonta + sähköturvallisuustarkastus "
+                "(Tukes-valtuutettu laitos) + pelastuslaitoksen hyväksyntä paloturvallisuusjärjestelmille\n"
+                "- Kaupallinen käyttöönotto vasta kaikkien katselmuksien ja loppukatselmuksen "
+                "hyväksynnän jälkeen [Rakentamislaki 751/2023, 87 §]"
+            ),
+        },
     },
     "tuulivoima_maa": {
         "nimi_fi":    "Maalle sijoitettava tuulivoimahanke",
@@ -1786,6 +1806,9 @@ _PHASE_INSTRUCTIONS: dict[str, str] = {
 }
 # Alias so both "Rakentaminen" and "Rakentamisvaihe" (frontend values) resolve correctly
 _PHASE_INSTRUCTIONS["rakentamisvaihe"] = _PHASE_INSTRUCTIONS["rakentaminen"]
+_HANKE_CFG["BESS"]["context_extra_phases"]["rakentamisvaihe"] = (
+    _HANKE_CFG["BESS"]["context_extra_phases"]["rakentaminen"]
+)
 
 
 _WRITE_INSTRUCTION: dict[str, str] = {
@@ -3099,6 +3122,10 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
         context_extra_block = "\n\n" + cfg["context_extra"]
 
     _vaihe_key = (inp.hankkeen_vaihe or "esiselvitys").lower()
+    # Phase-specific context_extra (additive on top of base context_extra)
+    _phase_extra = cfg.get("context_extra_phases", {}).get(_vaihe_key, "")
+    if _phase_extra:
+        context_extra_block += "\n\n" + _phase_extra
     _phase_instr = _PHASE_INSTRUCTIONS.get(
         _vaihe_key,
         _PHASE_INSTRUCTIONS.get("esiselvitys", "")
@@ -3629,6 +3656,16 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[dict])
 
 def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> bytes:
     """Rakenna PDF ja palauta bytes."""
+    # Hard cap: enintään 3 "Asiantuntijatarkistus suositellaan" PDF:ssä
+    _SEC_SEP = "\x00||SEC||\x00"
+    _str_keys = [k for k, v in sections.items() if isinstance(v, str)]
+    if _str_keys:
+        _combined = _SEC_SEP.join(sections[k] for k in _str_keys)
+        _combined = _limit_expert_reviews(_combined, max_count=3)
+        sections = dict(sections)
+        for _k, _part in zip(_str_keys, _combined.split(_SEC_SEP)):
+            sections[_k] = _part
+
     buf    = io.BytesIO()
     now    = datetime.now().strftime("%d.%m.%Y")
     cfg    = _HANKE_CFG[inp.hanketyyppi]
@@ -3782,8 +3819,8 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec_standards"), st["h2"]),
         _hr(),
+        _standards_table(inp.hanketyyppi, country, lang, st),
     ]))
-    story.append(_standards_table(inp.hanketyyppi, country, lang, st))
     story.append(Spacer(1, 4*mm))
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
