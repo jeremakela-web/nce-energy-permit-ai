@@ -1752,11 +1752,45 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
     ),
 }
 
+_PHASE_INSTRUCTIONS: dict[str, str] = {
+    "esiselvitys": (
+        "VAIHEEN KIRJOITUSOHJE — ESISELVITYS:\n"
+        "- Kyse on alustavasta selvityksestä: sijainti, kaava, ympäristövaikutukset\n"
+        "- Ei sitovia hakemuksia vielä — kaikki on selvityksen tasolla\n"
+        "- Viranomaisyhteydet tarkoittavat ennakkoneuvotteluja, ei hakemuksia\n"
+        "- Käytä sävyä: 'selvitetään', 'arvioidaan', 'alustavasti', 'on tarkoitus'\n"
+        "- Tekniset parametrit ovat arvioita, ei lopullisia\n"
+        "- Älä viittaa liitteisiin joita ei ole vielä tehty"
+    ),
+    "lupavaihe": (
+        "VAIHEEN KIRJOITUSOHJE — LUPAVAIHE:\n"
+        "- Käytä konkreettisia teknisiä parametreja (määrät, mitat, luokat) — ei yleistyksiä\n"
+        "- Viittaa liitteisiin nimeltä: 'ks. Liite 5: Paloturvallisuusselvitys', "
+        "'ks. Liite 8: Sähköliitynnän suunnitelma'\n"
+        "- Mainitse naapurikuulemisen status (tehty / kesken / tulossa)\n"
+        "- Mainitse kemikaali-ilmoitusvelvollisuudet ja kynnysarvot numeroin\n"
+        "- Käytä sävyä: 'haetaan', 'toimitetaan', 'vaaditaan', 'edellyttää'\n"
+        "- Kirjoita kattavasti — osiossa 1 vähintään 5 kappaletta, osiossa 2 vähintään 4 kappaletta\n"
+        "- Jokainen lupa selitetään lyhyesti: sisältö, vastuuviranomainen, käsittelyaika"
+    ),
+    "rakentaminen": (
+        "VAIHEEN KIRJOITUSOHJE — RAKENTAMISVAIHE:\n"
+        "- Mainitse aloitusilmoitus rakennusvalvonnalle ennen töiden aloittamista\n"
+        "- Vastaava työnjohtaja on nimitettävä ja hyväksytettävä rakennusvalvonnassa\n"
+        "- Tarkastusasiakirja on oltava käytössä koko rakentamisen ajan\n"
+        "- Katselmusaikataulu: pohjakatselmus, rakennekatselmus, loppukatselmus\n"
+        "- Käyttöönottotarkastus ennen toiminnan aloittamista (sähkö, pelastuslaitos)\n"
+        "- Käytä sävyä: 'toteutetaan', 'tarkastetaan', 'otetaan käyttöön', 'varmistetaan'\n"
+        "- Viittaa myönnettyyn rakentamislupaan ja sen ehtoihin"
+    ),
+}
+
+
 _WRITE_INSTRUCTION: dict[str, str] = {
     "FI": ("Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. "
            "Viittaa lakeihin lyhentein hakasulkeissa, esim. [YSL §27] tai [Rakentamislaki 751/2023]. "
            "Kirjoita lyhyitä virkkeitä — enintään kaksi lausetta per kappale, ei pitkiä juridisia luettelolauseita. "
-           "Lisää teksti 'Asiantuntijatarkistus suositellaan' täsmälleen 2 kertaa koko vastauksessa — EI KOSKAAN 4 kertaa tai enemmän. "
+           "Lisää teksti 'Asiantuntijatarkistus suositellaan' vähintään 2 kertaa ja enintään 3 kertaa koko vastauksessa. "
            "Älä spekuloi äläkä täytä tietopuutteita oletuksilla:"),
     "EN": ("Write the following four sections in English, clearly separated by headings. "
            "Include inline law citations in brackets, e.g. [EIA Act] or [Building Act 751/2023]. "
@@ -3061,6 +3095,13 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     context_extra_block = ""
     if cfg.get("context_extra"):
         context_extra_block = "\n\n" + cfg["context_extra"]
+
+    _vaihe_key = (inp.hankkeen_vaihe or "esiselvitys").lower()
+    _phase_instr = _PHASE_INSTRUCTIONS.get(
+        _vaihe_key,
+        _PHASE_INSTRUCTIONS.get("esiselvitys", "")
+    )
+    phase_block = f"\n\n{_phase_instr}" if _phase_instr else ""
     if inp.hanketyyppi == "datakeskus" and inp.teho_mw:
         _kokon = round(float(inp.teho_mw) * 1.3, 1)
         context_extra_block += (
@@ -3076,7 +3117,7 @@ Kiinteistötunnus: {_clean_kt(inp.kiinteistotunnus)}
 Teho: {inp.teho_mw} MW{kap_lisatieto}
 Kunta: {inp.kunta}
 Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
-Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}{context_extra_block}
+Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}{context_extra_block}{phase_block}
 
 {ph["rag_intro"]}
 {rag_context}
