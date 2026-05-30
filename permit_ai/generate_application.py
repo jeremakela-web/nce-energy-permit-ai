@@ -797,24 +797,25 @@ _HANKE_CFG = {
             "Asukasosallistumisen asiakirjat (suunnittelutarveratkaisussa)",
             "Hakijan rekisteriote",
         ],
-        "context_extra": (
-            "AURINKOVOIMA — PAKOLLISET SISÄLTÖVAATIMUKSET OSIOON 1 (Hankkeen kuvaus):\n\n"
-            "Sisällytä KAIKKI seuraavat tekniset tiedot:\n"
-            "- Paneeliteknologia: monikidepii (mc-Si) vs. ohutkalvopaneelit; "
-            "nykyaikaisten monikidepaneelien hyötysuhde ~20–22 %, ohutkalvon ~12–15 %. "
-            "Mainitse valittu tai harkittu teknologia.\n"
-            "- Suuntaus ja kallistuskulma: etelään suunnattu asennus, optimaalinen "
-            "kallistuskulma Suomessa 30–35 astetta — mainitse nämä arvot.\n"
-            "- Invertterit: keskusinvertteri (string inverter) vs. mikroinvertterit; "
-            "DC/AC-muunto, jännitealue ja mahdollinen MPPT-säätö.\n"
-            "- Maankäyttö: aurinkopuisto vaatii noin 1–1,5 ha per MW; "
-            f"10 MW hanke → noin 10–15 ha kokonaispinta-ala — mainitse tämä luku.\n"
-            "- Häikäisyanalyysi: paneelien heijastus vaikuttaa naapurikiinteistöihin "
-            "ja mahdollisiin liikenneväyliin; häikäisyselvitys on osa rakennuslupaa.\n"
-            "- Seuranta (tracker): yksiakselinen seuranta lisää tuotantoa ~15–25 %, "
-            "kaksiakselinen ~25–35 % — mainitse mahdollisuus ja soveltuvuus hankkeelle.\n\n"
-            "Kirjoita osio 1 laajana (vähintään 4–5 kappaletta) niin että raportti on "
-            "riittävän kattava ennakkoneuvottelua varten."
+        "kuvaus_extra_inst": (
+            "Kirjoita vähintään 5 kappaletta. Sisällytä KAIKKI: "
+            "(1) Paneeliteknologia — monikidepii (mc-Si) ~20–22 % hyötysuhde vs. ohutkalvo ~12–15 %; "
+            "(2) Suuntaus ja kallistuskulma — etelään, 30–35 astetta optimaalinen Suomessa; "
+            "(3) Invertterit — string-invertteri vs. mikroinvertterit, DC/AC-muunto, MPPT-säätö; "
+            "(4) Maankäyttö — noin 1–1,5 ha/MW eli 10–15 ha yhteensä; "
+            "(5) Häikäisyanalyysi — naapurikiinteistöt ja liikenneväylät, selvitys rakennusluvan liite; "
+            "(6) Seurantajärjestelmä (tracker) — yksiakselinen +15–25 %, kaksiakselinen +25–35 % tuotantolisä."
+        ),
+        "perustelut_extra_inst": (
+            " Kirjoita 4–5 kappaletta. Käsittele erikseen: Suomen aurinkoenergiapotentiaali ja "
+            "vuotuinen säteilymäärä Etelä-Suomessa (~1 000 kWh/m²/a), hankkeen vuosituotantoarvio "
+            "(noin 9–11 GWh/a 10 MW laitokselle), CO₂-päästövähennysvaikutus, "
+            "aluetaloudelliset hyödyt rakennusvaiheen aikana sekä sähkömarkkinanäkymät ja PPA-sopimukset."
+        ),
+        "luvat_extra_inst": (
+            " Selitä jokainen lupa 2–3 lauseella sisältäen: hakemuksen sisältövaatimukset, "
+            "käsittelyaika-arvio ja vastuuviranomaiset. Korosta suunnittelutarveratkaisun "
+            "ja häikäisyselvityksen merkitystä aurinkopuistohankkeelle."
         ),
     },
     "SMR": {
@@ -2957,7 +2958,12 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
 
     first_action  = ph["toimenpiteet_first"].format(kunta=inp.kunta)
     kuvaus_inst   = ph["kuvaus_inst"] + (ph["kuvaus_extra"] if inp.sijainti_ymparistovaikutukset else "")
+    if cfg.get("kuvaus_extra_inst"):
+        kuvaus_inst += " " + cfg["kuvaus_extra_inst"]
     luvat_inst    = ph["luvat_inst"] + (ph["luvat_extra"].format(auth=inp.kohdeviranomainen) if inp.kohdeviranomainen else "")
+    if cfg.get("luvat_extra_inst"):
+        luvat_inst += " " + cfg["luvat_extra_inst"]
+    perustelut_inst = ph["perustelut_inst"] + (cfg.get("perustelut_extra_inst", ""))
     toim_inst     = (ph["toimenpiteet_inst"].format(first=first_action)
                      + (ph["toimenpiteet_vaihe"].format(vaihe=_t_vaihe(lang, inp.hankkeen_vaihe)) if inp.hankkeen_vaihe else ""))
 
@@ -3015,7 +3021,7 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
 {kuvaus_inst}
 
 ## {ph["perustelut"]}
-{ph["perustelut_inst"]}
+{perustelut_inst}
 
 ## {ph["luvat"]}
 {luvat_inst}
