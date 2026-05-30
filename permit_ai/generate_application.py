@@ -706,6 +706,24 @@ _HANKE_CFG = {
             "Maanomistaja- ja sopimustiedot",
             "Lentoestekartoitus (Traficom/Finavia)",
         ],
+        "context_extra": (
+            "TUULIVOIMA (MAA) — PAKOLLISET SISÄLTÖVAATIMUKSET:\n\n"
+            "OSIO 1 — Hankkeen kuvaus: sisällytä KAIKKI seuraavat tiedot:\n"
+            "- Turbiinien napakorkeusarvio n. 150–180 m, kokonaiskorkeus (roottorin kärki) n. 220–250 m\n"
+            "- Varjostus (shadow flicker): kuvaa varjostusvaikutukset lähikiinteistöille ja mainitse "
+            "automaattinen varjostuksenhallintajärjestelmä (STF-ohjaus)\n"
+            "- Standardit erikseen: IEC 61400-1 (rakennesuunnittelun kuormat) ja "
+            "IEC 61400-11 (äänitehotason mittaukset) — molemmat nimeltä\n"
+            "- Luontoselvitykset: pesimälinnusto, muuttolinnusto ja lepakoiden "
+            "lentoaktiviteetti — selvitykset tehdään ennen YVA-ohjelman jättämistä\n\n"
+            "OSIO 3 — Luvat: kuvaa YVA-prosessin kulku vaiheistettuna:\n"
+            "Vaihe 1: YVA-ohjelma → ELY-keskus antaa lausunnon → julkinen kuuleminen (45 pv)\n"
+            "Vaihe 2: YVA-selostus → ELY-keskus antaa perustellun päätelmän\n"
+            "Vaihe 3: Osayleiskaava (MRL 132/1999 § 77a) — kulkee yleensä rinnakkain YVA:n kanssa; "
+            "pakollinen edellytys tuulivoimarakentamiselle\n"
+            "Vaihe 4: Rakentamislupa vasta lainvoimaisen kaavan ja YVA-päätelmän jälkeen\n"
+            "Mainitse myös Traficomin lentoestevalolupa (Ilmailulaki 864/2014) omana kohtanaan."
+        ),
     },
     "tuulivoima_meri": {
         "nimi_fi":    "Merelle sijoitettava tuulivoimahanke (offshore)",
@@ -2237,11 +2255,14 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "sijoittaminen edellyttää asemakaavaa tai suunnittelutarveratkaisua. Kaavatilanne "
                             "vaikuttaa eniten lupaprosessin kokonaiskestoon — rakennusvalvonnan "
                             "ennakkoneuvottelu ensitoimenpiteenä."),
-        "kaava_tuuli":     ("<b>Kaavatilanne ja YVA-tarve:</b> Tuulivoimahanke edellyttää lähes aina "
-                            "osayleiskaavaa tai asemakaavaa (MRL 132/1999, 77a §). YVA-menettely "
-                            "(YVA-laki 252/2017) on pakollinen ≥10 MW tai ≥5 voimalan hankkeille — "
-                            "kaava- ja YVA-prosessit kulkevat usein rinnakkain ja kestävät yhteensä "
-                            "3–6 vuotta. Kaavatilanne selvitetään ensimmäisenä ennen muita lupia."),
+        "kaava_tuuli":     ("<b>Kaavatilanne ja YVA-tarve:</b> Tuulivoimahanke edellyttää osayleiskaavaa "
+                            "(MRL 132/1999, 77a §) — se on pakollinen edellytys rakentamisluvalle. "
+                            "YVA-menettely (YVA-laki 252/2017) on pakollinen ≥10 MW tai ≥5 voimalan "
+                            "hankkeille. YVA-prosessin vaiheet: (1) YVA-ohjelma → ELY-keskuksen lausunto "
+                            "→ julkinen kuuleminen; (2) YVA-selostus → ELY-keskuksen perusteltu päätelmä; "
+                            "(3) osayleiskaava kulkee yleensä rinnakkain YVA:n kanssa; "
+                            "(4) rakentamislupa vasta lainvoimaisen kaavan ja YVA-päätelmän jälkeen. "
+                            "Kaava- ja YVA-prosessit kestävät yhteensä 3–6 vuotta."),
         "kaava_SMR":       ("<b>STUK pre-licensing (kriittisin ensimmäinen vaihe):</b> Ydinlaitoshankkeessa "
                             "valtioneuvoston periaatepäätös (ydinenergialaki 990/1987, 11 §) ja STUK:n "
                             "ennakkolupamenettely ovat pakollisia ennen kaikkia muita lupia. STUK:n "
