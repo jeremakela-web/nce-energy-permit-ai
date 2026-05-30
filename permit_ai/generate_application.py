@@ -797,6 +797,25 @@ _HANKE_CFG = {
             "Asukasosallistumisen asiakirjat (suunnittelutarveratkaisussa)",
             "Hakijan rekisteriote",
         ],
+        "context_extra": (
+            "AURINKOVOIMA — PAKOLLISET SISÄLTÖVAATIMUKSET OSIOON 1 (Hankkeen kuvaus):\n\n"
+            "Sisällytä KAIKKI seuraavat tekniset tiedot:\n"
+            "- Paneeliteknologia: monikidepii (mc-Si) vs. ohutkalvopaneelit; "
+            "nykyaikaisten monikidepaneelien hyötysuhde ~20–22 %, ohutkalvon ~12–15 %. "
+            "Mainitse valittu tai harkittu teknologia.\n"
+            "- Suuntaus ja kallistuskulma: etelään suunnattu asennus, optimaalinen "
+            "kallistuskulma Suomessa 30–35 astetta — mainitse nämä arvot.\n"
+            "- Invertterit: keskusinvertteri (string inverter) vs. mikroinvertterit; "
+            "DC/AC-muunto, jännitealue ja mahdollinen MPPT-säätö.\n"
+            "- Maankäyttö: aurinkopuisto vaatii noin 1–1,5 ha per MW; "
+            f"10 MW hanke → noin 10–15 ha kokonaispinta-ala — mainitse tämä luku.\n"
+            "- Häikäisyanalyysi: paneelien heijastus vaikuttaa naapurikiinteistöihin "
+            "ja mahdollisiin liikenneväyliin; häikäisyselvitys on osa rakennuslupaa.\n"
+            "- Seuranta (tracker): yksiakselinen seuranta lisää tuotantoa ~15–25 %, "
+            "kaksiakselinen ~25–35 % — mainitse mahdollisuus ja soveltuvuus hankkeelle.\n\n"
+            "Kirjoita osio 1 laajana (vähintään 4–5 kappaletta) niin että raportti on "
+            "riittävän kattava ennakkoneuvottelua varten."
+        ),
     },
     "SMR": {
         "nimi_fi":    "Pienydinreaktori (SMR) — ennakkolupahakemus",
