@@ -1,0 +1,155 @@
+LAKI VAARALLISTEN KEMIKAALIEN JA RÄJÄHTEIDEN KÄSITTELYN TURVALLISUUDESTA
+(KEMIKAALITURVALLISUUSLAKI) 390/2005
+Annettu Helsingissä 3 päivänä kesäkuuta 2005
+Lähde: finlex.fi/fi/laki/ajantasa/2005/20050390
+
+═══════════════════════════════════════════════
+1 LUKU — YLEISET SÄÄNNÖKSET
+═══════════════════════════════════════════════
+
+1 § — Lain soveltamisala
+Tätä lakia sovelletaan vaarallisten kemikaalien teolliseen käsittelyyn ja varastointiin
+sekä räjähteiden valmistukseen ja käyttöön. Laki koskee myös:
+1) litiumioniakkujen sisältämien vaarallisten kemikaalien (elektrolyytit, liuottimet) käsittelyä;
+2) akkuenergiavarastojen (BESS) rakentamista ja käyttöönottoa;
+3) kemikaaleja sisältävien varastojen ja tuotantolaitosten turvallisuutta.
+
+Akkuenergiavarastoissa lakia sovelletaan, koska litiumioniakut sisältävät vaarallisia
+aineita (mm. orgaaniset liuottimet, elektrolyytti, raskasmetallit) ja niiden palo aiheuttaa
+merkittäviä ympäristö- ja terveysvaaroja.
+
+2 § — Tavoitteet
+Lain tavoitteena on ehkäistä ja torjua vaarallisista kemikaaleista aiheutuvia henkilö-,
+omaisuus- ja ympäristövahinkoja. Tavoitteena on myös edistää kemikaalien turvallista käyttöä.
+
+3 § — Määritelmät
+Tässä laissa tarkoitetaan:
+1) vaarallisella kemikaalilla ainetta tai seosta, joka on luokiteltu vaaralliseksi;
+2) laajamittaisella käsittelyllä teollista käsittelyä tai varastointia, joka ylittää
+   Tukesin määrittelemät kynnysarvot;
+3) vähäisellä käsittelyllä käyttöä, joka alittaa laajamittaisen käsittelyn kynnysarvot.
+
+Litiumioniakut luokitellaan palonaroiksi aineiksi ja niiden käsittelyyn sovelletaan
+laajamittaisen käsittelyn säännöksiä, kun BESS-laitoksen kapasiteetti ylittää:
+- Yleensä 1–5 MWh (tarkat kynnysarvot Tukesin asetuksessa 685/2015).
+
+═══════════════════════════════════════════════
+2 LUKU — LAAJAMITTAINEN KÄSITTELY JA VARASTOINTI
+═══════════════════════════════════════════════
+
+23 § — Lupavaatimus
+Laajamittainen kemikaalien teollinen käsittely ja varastointi vaatii Tukesin myöntämän
+luvan. Lupa on haettava ennen toiminnan aloittamista.
+
+BESS-hankkeen lupamenettely Tukesin kanssa:
+1) Ennakkoneuvottelu: Ennen lupahakemuksen jättämistä käydään neuvottelu Tukesin kanssa
+   hankkeen laajuudesta ja sovellettavista vaatimuksista;
+2) Lupahakemus: Hakemus jätetään Tukesille sisältäen turvallisuusselvityksen;
+3) Tukes tekee tarkastuksen ja antaa lausunnon;
+4) Lupa myönnetään yleensä 3–12 kuukauden käsittelyajalla.
+
+24 § — Turvallisuusselvitys
+Laajamittaista kemikaalien käsittelyä harjoittavan toiminnanharjoittajan on laadittava
+turvallisuusselvitys. Selvitys sisältää:
+1) Toiminnan kuvaus ja käsiteltävät kemikaalit (akustot, elektrolyytit);
+2) Vaarojen tunnistaminen ja riskien arviointi;
+3) Toimenpiteet onnettomuuksien ehkäisemiseksi;
+4) Pelastussuunnitelma ja hätätoimenpiteet;
+5) Ympäristövaikutusten arviointi (pohjavesi, maaperä, ilma).
+
+25 § — Sisäinen pelastussuunnitelma
+Toiminnanharjoittajan on laadittava sisäinen pelastussuunnitelma, joka sisältää:
+1) Yhteyshenkilöt ja vastuuhenkilöt onnettomuustilanteessa;
+2) Hälytys- ja tiedotusjärjestelyt;
+3) Toimenpiteet onnettomuuden rajoittamiseksi;
+4) Sammutusvedet ja niiden hallinta (erityisesti litiumakkupaloissa);
+5) Ensiapujärjestelyt.
+
+26 § — Toimintaperiaateasiakirja
+Laitoksen on laadittava kirjallinen toimintaperiaateasiakirja, jossa kuvataan periaatteet
+suuronnettomuuksien ehkäisemiseksi ja turvallisuusjohtamisjärjestelmä.
+
+═══════════════════════════════════════════════
+3 LUKU — TURVALLISUUSVAATIMUKSET
+═══════════════════════════════════════════════
+
+30 § — Sijoittamisvaatimukset
+Laajamittaista kemikaalien käsittelyä harjoittava laitos on sijoitettava:
+1) Riittävän etäisyyden päähän asutuksesta ja muista toiminnoista;
+2) Pohjavesialueiden ulkopuolelle tai erityisin suojatoimin pohjavesialueilla;
+3) Pelastustoiminnan kannalta saavutettavaan paikkaan.
+
+BESS-hankkeessa erityisvaatimukset:
+- Etäisyys asutuksesta ja muista rakennuksista: yleensä vähintään 10–30 metriä
+  (tarkempi arviointi paloturvallisuusselvityksessä);
+- Pohjavesialue: tehostettu suoja-allas sammutusvedelle;
+- Kulkuyhteydet pelastuslaitokselle: 4 metriä leveä tie lähimmälle sammutuskohteelle.
+
+31 § — Tekniset turvallisuusvaatimukset
+Laajamittaisessa kemikaalien käsittelyssä on käytettävä:
+1) Automaattisia sammutusjärjestelmiä (sprinklerit BESS-tiloissa);
+2) Paloilmaisimia ja automaattisia hälytysjärjestelmiä;
+3) Sammutusvesien keräysjärjestelmiä (valuma-altaat, esteet);
+4) Kemikaalisuojausta estämään aineiden pääsy maaperään tai pohjaveteen.
+
+═══════════════════════════════════════════════
+4 LUKU — TUKESIN VALVONTA
+═══════════════════════════════════════════════
+
+55 § — Valvontatehtävät
+Turvallisuus- ja kemikaalivirasto (Tukes) valvoo tämän lain noudattamista. Tukesin tehtäviin kuuluu:
+1) Lupahakemusten käsittely ja lupien myöntäminen;
+2) Tarkastusten tekeminen lupaehdot täyttymisen varmistamiseksi;
+3) Onnettomuuksien tutkinta;
+4) Ohjeiden ja suositusten antaminen.
+
+Tukes on toimivaltainen viranomainen erityisesti:
+- BESS-hankkeiden kemikaaliturvallisuudessa;
+- Litiumioniakkujen paloturvallisuusselvitysten arvioinnissa;
+- Sähköturvallisuuteen liittyvissä asioissa yhdessä sähköturvallisuuslain kanssa.
+
+56 § — Tarkastukset
+Tukes suorittaa säännöllisiä tarkastuksia laajamittaista kemikaalien käsittelyä harjoittavissa
+laitoksissa. Tarkastukset kattavat:
+1) Turvallisuusselvityksen ajantasaisuuden;
+2) Teknisten turvallisuusjärjestelmien toimintakunnon;
+3) Henkilökunnan koulutuksen ja pätevyyden;
+4) Ympäristösuojelutoimenpiteiden riittävyyden.
+
+═══════════════════════════════════════════════
+5 LUKU — ONNETTOMUUSILMOITUKSET JA SEURAAMUKSET
+═══════════════════════════════════════════════
+
+60 § — Onnettomuusilmoitus
+Toiminnanharjoittajan on ilmoitettava välittömästi Tukesille onnettomuuksista tai
+läheltä piti -tilanteista. Ilmoitusvelvollisuus koskee myös BESS-hankkeissa sattuvia
+akkupaloja tai elektrolyytin vuotoja.
+
+═══════════════════════════════════════════════
+SOVELTAMINEN BESS-HANKKEISSA
+═══════════════════════════════════════════════
+
+Kemikaaliturvallisuuslaki vaikuttaa BESS-hankkeisiin seuraavasti:
+
+1. Tukesin ennakkoneuvottelu: Ennen rakennusluvan hakemista on selvitettävä Tukesin
+   kanssa, tarvitaanko hankkeelle kemikaaliturvallisuuslain mukainen lupa.
+
+2. Kemikaalilupa-prosessi: Jos BESS-kapasiteetti ylittää laajamittaisen käsittelyn
+   kynnysarvon, tarvitaan Tukesin myöntämä lupa ennen toiminnan aloittamista.
+
+3. Turvallisuusselvitys: Lupahakemuksen liitteeksi on laadittava kattava
+   turvallisuusselvitys, jossa arvioidaan litiumakkujen paloriskit, kemikaalivuodot
+   ja niiden ympäristövaikutukset.
+
+4. Pelastussuunnitelma: Laitokselle on laadittava sisäinen pelastussuunnitelma
+   yhteistyössä paikallisen pelastuslaitoksen kanssa.
+
+5. Jatkuva valvonta: Tukes valvoo laitoksen toimintaa koko elinkaaren ajan;
+   muutoksista (kapasiteetin kasvattaminen, teknologiamuutokset) on ilmoitettava Tukesille.
+
+Sovellettavat standardit BESS-hankkeissa:
+- NFPA 855 (Standard for the Installation of Stationary Energy Storage Systems)
+- IEC 62619 (Safety requirements for secondary lithium cells and batteries for use in portable applications)
+- IEC 62933-5-2 (Environmental requirements for grid-integrated energy storage systems)
+- EN 13501-1 (Palo-luokitus rakennustuotteille)
+- SFS-EN 60079 (Räjähdysvaarallisten tilojen sähkölaitteet)

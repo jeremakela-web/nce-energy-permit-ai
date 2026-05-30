@@ -42,11 +42,12 @@ def build() -> None:
     import chromadb
 
     pdfs = sorted(DOCS_DIR.rglob("*.pdf"))
-    if not pdfs:
-        print(f"[build_index] Ei PDF-tiedostoja hakemistossa {DOCS_DIR}")
+    txts = sorted(DOCS_DIR.rglob("*.txt"))
+    if not pdfs and not txts:
+        print(f"[build_index] Ei PDF- tai TXT-tiedostoja hakemistossa {DOCS_DIR}")
         sys.exit(1)
 
-    print(f"[build_index] Löytyi {len(pdfs)} PDF:ää")
+    print(f"[build_index] Löytyi {len(pdfs)} PDF:ää, {len(txts)} TXT-tiedostoa")
 
     # Tyhjennetään vanha FI-indeksi ja rakennetaan uudelleen
     if DB_DIR.exists():
@@ -77,6 +78,22 @@ def build() -> None:
             print(f"  {pdf.name}: {len(chunks)} chunkkia")
         except Exception as exc:
             print(f"  VIRHE {pdf.name}: {exc}")
+
+    for txt in txts:
+        try:
+            text   = txt.read_text(encoding="utf-8", errors="replace")
+            chunks = _chunk(text)
+            for i, chunk in enumerate(chunks):
+                all_docs.append(chunk)
+                all_ids.append(f"{txt.name}_{i}")
+                all_metas.append({
+                    "country": "FI",
+                    "lang":    "fi",
+                    "source":  txt.stem,
+                })
+            print(f"  {txt.name}: {len(chunks)} chunkkia")
+        except Exception as exc:
+            print(f"  VIRHE {txt.name}: {exc}")
 
     if not all_docs:
         print("[build_index] Ei tekstiä indeksoitavaksi — tarkista PDF:t")

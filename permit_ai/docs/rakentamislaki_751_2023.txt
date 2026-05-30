@@ -1,0 +1,195 @@
+RAKENTAMISLAKI 751/2023
+Annettu Helsingissä 16 päivänä kesäkuuta 2023
+Voimaan: 1.1.2025 (siirtymäsäännöksin)
+Lähde: finlex.fi/fi/laki/ajantasa/2023/20230751
+
+═══════════════════════════════════════════════
+1 LUKU — YLEISET SÄÄNNÖKSET
+═══════════════════════════════════════════════
+
+1 § — Lain soveltamisala
+Tätä lakia sovelletaan rakentamiseen ja sen ohjaukseen sekä rakennusten kunnossapitoon.
+Lakia sovelletaan myös purkulupaan ja purkuilmoitukseen.
+Laki korvaa maankäyttö- ja rakennuslain (132/1999) rakentamista koskevat säännökset.
+
+2 § — Lain tavoitteet
+Lain tavoitteena on varmistaa, että rakentaminen täyttää turvallisuuden, terveellisyyden,
+esteettömyyden sekä ympäristövaikutusten kannalta vaaditut edellytykset. Tavoitteena on
+myös edistää hyvän ja kestävän rakentamisen laadun toteutumista.
+
+3 § — Määritelmät
+Tässä laissa tarkoitetaan:
+1) rakentamisella rakennuksen rakentamista tai sen muuttamista;
+2) rakennuksella kiinteää tai tilapäistä, asumiseen, työskentelyyn, varastointiin tai muuhun
+   käyttöön tarkoitettua rakennelmaa;
+3) rakentamisluvalla lupaa, joka vaaditaan rakentamiseen tai rakennuksen oleelliseen muuttamiseen;
+4) toimenpideluvalla lupaa, joka vaaditaan rakennelmaan tai laitteeseen, jota ei pidetä rakennuksena;
+5) rakentamisilmoituksella ilmoitusta, jolla voidaan korvata lupa vähäisessä rakentamisessa.
+
+═══════════════════════════════════════════════
+2 LUKU — RAKENTAMISLUPA
+═══════════════════════════════════════════════
+
+37 § — Rakentamisluvan tarve
+Rakentamiseen tarvitaan rakentamislupa, jollei tässä laissa toisin säädetä.
+Rakentamislupa tarvitaan myös:
+1) rakennuksen korottamiseen tai laajentamiseen;
+2) rakennuksen tai sen osan käyttötarkoituksen olennaiseen muuttamiseen;
+3) teknisten järjestelmien rakentamiseen tai muuttamiseen, jos muutos on oleellinen.
+
+Akkuenergiavarastolle (BESS) tarvitaan rakentamislupa kun:
+- Rakennelma sijoitetaan pysyvästi tontille tai maa-alueelle;
+- Akkukontti tai -rakennus rakennetaan paikan päällä tai pysyvästi kiinnitetään perustuksiin;
+- Laitteisto on osa laajempaa energiavarastointi- tai sähköntuotantohanketta.
+
+38 § — Toimenpidelupa
+Toimenpidelupaa tarvitaan sellaisen rakennelman tai laitteen, jota ei pidetä rakennuksena,
+pystyttämiseen tai sijoittamiseen, jos toimenpiteellä on vaikutusta ympäristöön, naapureihin
+tai yleiseen turvallisuuteen.
+
+Toimenpidelupa soveltuu muun muassa:
+- Tilapäiseen akkukonttiin, joka ei vaadi perustuksia;
+- Pienempiin teknisiin laitteistoihin, joiden pystytyksessä ei rakenneta varsinaista rakennusta.
+
+39 § — Rakentamisilmoitus
+Rakentamisilmoituksella voidaan tietyissä tapauksissa korvata lupa. Rakentamisilmoitus
+riittää vähäiseen rakentamiseen, joka ei edellytä naapurinkuulemista tai laajempaa viranomaisharkintaa.
+
+Suuria akkuenergiavarastohankkeita (esim. 5 MW / 10 MWh) ei voida käsitellä pelkällä
+rakentamisilmoituksella, vaan niille vaaditaan aina rakentamislupa.
+
+40 § — Purkulupa ja purkuilmoitus
+Rakennuksen purkaminen vaatii purkuluvan tai purkuilmoituksen sen mukaan kuin tässä
+laissa säädetään.
+
+═══════════════════════════════════════════════
+3 LUKU — NAAPURIKUULEMINEN JA TIEDOTTAMINEN
+═══════════════════════════════════════════════
+
+44 § — Naapurien ja muiden kuuleminen
+Rakentamislupahakemuksen vireilletulosta on ilmoitettava naapureille ja muille
+osallisille, joiden asumiseen, työntekoon tai muihin oloihin hanke saattaa vaikuttaa.
+Kunnan rakennusvalvontaviranomainen huolehtii kuulemisesta, ellei hakija tee sitä itse.
+
+Kuulemisvelvoite koskee erityisesti:
+1) Viereisiä ja lähikiinteistöjen omistajia ja haltijoita;
+2) Kuntaa, jonka alueella rakentaminen tapahtuu;
+3) Viranomaisia, joiden toimialaan rakentaminen kuuluu (Tukes, pelastuslaitos, ympäristöviranomainen).
+
+BESS-hankkeessa naapurikuuleminen on erityisen tärkeä, koska:
+- Paloturvallisuusriskit voivat vaikuttaa lähikiinteistöihin;
+- Mahdolliset meluhaitat (invertterit, jäähdytyslaitteet) on selvitettävä;
+- Pohjavesialueen läheisyys voi edellyttää laajempaa tiedottamista.
+
+═══════════════════════════════════════════════
+4 LUKU — LUPAHAKEMUS JA SEN KÄSITTELY
+═══════════════════════════════════════════════
+
+49 § — Kevennetty menettely
+Vähäiseen rakentamiseen tai yksinkertaisiin toimenpiteisiin voidaan soveltaa kevennettyä
+menettelyä. Kevennetty menettely ei edellytä rakentamisilmoituksen lisäksi muita asiakirjoja.
+
+Akkuenergiavarastohankkeet, joissa teho ylittää 1 MW, eivät kuulu kevennetyn menettelyn piiriin.
+
+50 § — Lupahakemuksen sisältö
+Rakentamislupahakemuksessa on esitettävä:
+1) Hakijan nimi ja yhteystiedot sekä Y-tunnus;
+2) Hankkeen kuvaus ja tarkoitus;
+3) Sijaintikartta ja rakennuspaikan selvitys;
+4) Asemapiirustus mittakaavassa 1:500 tai tarkemmassa;
+5) Pohjapiirustus ja julkisivupiirustukset;
+6) Rakenne- ja laitossuunnitelmat;
+7) Tarvittavat selvitykset ympäristövaikutuksista;
+8) Paloturvallisuusselvitys (erityisesti BESS-hankkeille);
+9) Naapurien suostumukset tai selvitys kuulemisesta.
+
+BESS-hankkeelle erityiset liitteet:
+- Paloturvallisuusselvitys akkukonteille (NFPA 855 tai vastaava EN-standardi);
+- Sammutusvesien keräyssuunnitelma (pohjavesialueilla pakollinen);
+- Ympäristöriskiarvio (akustot, elektrolyytti, kemikaalit);
+- Sähköliityntäsuunnitelma (jakeluverkkoyhtiön tai Fingridin hyväksyntä);
+- Tukesin kemikaaliturvallisuusselvitys (litiumakkujen osalta).
+
+51 § — Pätevyyden osoittaminen
+Suunnittelijan pätevyys on osoitettava hakemuksen yhteydessä. Vaativan rakentamisen
+suunnittelijalla on oltava asianmukainen koulutus ja kokemus.
+
+52 § — Lupahakemuksen käsittely
+Rakennusvalvontaviranomainen käsittelee hakemuksen ja voi pyytää tarvittavia lisäselvityksiä.
+Käsittelyaika vaihtelee hankkeen monimutkaisuuden mukaan: yksinkertaisissa tapauksissa
+noin 1–3 kuukautta, monimutkaisissa (BESS, teollisuuslaitokset) 3–12 kuukautta.
+
+53 § — Lausuntomenettely
+Rakennusvalvontaviranomainen pyytää tarvittaessa lausuntoja:
+1) Pelastuslaitokselta (paloturvallisuus);
+2) Tukesista (kemikaaliturvallisuus, sähköturvallisuus);
+3) Ympäristöviranomaiselta (ympäristövaikutukset);
+4) ELY-keskukselta (luontoarvot, pohjavesialueet);
+5) Jakeluverkkoyhtiöltä tai Fingridiltä (sähköliityntä).
+
+═══════════════════════════════════════════════
+5 LUKU — LUPAPÄÄTÖS JA VALITUSOIKEUS
+═══════════════════════════════════════════════
+
+64 § — Lupapäätös
+Lupapäätöksessä on mainittava:
+1) Luvan myöntämisen perusteet tai hylkäämisen syyt;
+2) Lupaehdot ja rakentamista koskevat vaatimukset;
+3) Rakentamisen aloittamisaika ja voimassaoloaika;
+4) Mahdolliset lisäselvitysvaatimukset.
+
+65 § — Luvan voimassaolo
+Rakentamislupa on voimassa kolme vuotta. Rakentaminen on aloitettava kolmen vuoden
+kuluessa luvan myöntämisestä. Lupa raukeaa, jos rakentamista ei aloiteta määräajassa.
+
+66 § — Muutoksenhaku
+Lupapäätökseen voi hakea muutosta hallinto-oikeudelta 30 päivän kuluessa tiedoksisaannista.
+Valitusoikeus on hakijalla sekä naapureilla ja muilla osallisilla.
+
+═══════════════════════════════════════════════
+6 LUKU — RAKENTAMISEN VALVONTA
+═══════════════════════════════════════════════
+
+85 § — Rakennusvalvontaviranomaisen tehtävät
+Kuntaan on perustettava rakennusvalvontaviranomainen, joka vastaa rakentamisen valvonnasta.
+Rakennusvalvontaviranomainen voi olla kuntakohtainen tai yhteinen usealle kunnalle.
+
+86 § — Tarkastukset
+Rakentamisen aikana on suoritettava tarkastuksia, joista merkinnät tehdään rakentamisen
+tarkastusasiakirjaan. BESS-hankkeissa tarkastetaan erityisesti:
+1) Perustukset ja rakenteet;
+2) Sähkötekniset asennukset;
+3) Paloturvallisuusjärjestelmät (sprinklerit, palonilmaisimet, sammutusjärjestelmä);
+4) Sammutusvesien keräysjärjestelmä.
+
+87 § — Loppukatselmus
+Ennen rakennuksen tai laitteiston käyttöönottoa on suoritettava loppukatselmus.
+Loppukatselmuksessa todetaan, että rakennus on rakennettu myönnetyn luvan mukaisesti
+ja täyttää turvallisuusvaatimukset. BESS-hankkeelle tarvitaan:
+- Rakennusvalvontaviranomaisen loppukatselmus;
+- Sähköturvallisuustarkastus (Tukes-valtuutettu tarkastuslaitos);
+- Pelastuslaitoksen hyväksyntä (paloturvallisuusjärjestelmät).
+
+═══════════════════════════════════════════════
+7 LUKU — SUOMEN RAKENTAMISMÄÄRÄYSKOKOELMA
+═══════════════════════════════════════════════
+
+7 § — Rakentamismääräyskokoelma
+Ympäristöministeriö antaa Suomen rakentamismääräyskokoelmassa teknisiä vaatimuksia
+rakentamiselle. Kokoelma sisältää muun muassa:
+- E1 Rakennusten paloturvallisuus: Rakentamismääräykset ja ohjeet;
+- E2 Tuotanto- ja varastorakennusten paloturvallisuus;
+- C3 Rakennusten lämmöneristys;
+- D3 Rakennusten energiatehokkuus.
+
+BESS-hankkeissa sovelletaan erityisesti E2:ta (tuotanto- ja varastorakennukset),
+koska akkuenergiavarastot luokitellaan yleensä varastorakennuksiksi tai teollisuuslaitoksiksi.
+
+═══════════════════════════════════════════════
+SIIRTYMÄSÄÄNNÖKSET
+═══════════════════════════════════════════════
+
+Rakentamislaki (751/2023) tuli voimaan 1.1.2025 ja korvasi maankäyttö- ja rakennuslain
+rakentamista koskevat säännökset. Ennen lain voimaantuloa vireille pannut hakemukset
+käsitellään vanhan lain mukaisesti. Kunnilla on siirtymäaikaa tiettyjen säännösten
+toimeenpanossa vuoden 2026 loppuun asti.

@@ -1,0 +1,172 @@
+PELASTUSLAKI 379/2011
+Annettu Helsingissä 29 päivänä huhtikuuta 2011
+Lähde: finlex.fi/fi/laki/ajantasa/2011/20110379
+
+═══════════════════════════════════════════════
+1 LUKU — YLEISET SÄÄNNÖKSET
+═══════════════════════════════════════════════
+
+1 § — Lain tarkoitus
+Tämän lain tarkoituksena on parantaa ihmisten turvallisuutta ja vähentää onnettomuuksia.
+Lain tavoitteena on myös, että onnettomuuden uhatessa tai tapahduttua ihmiset pelastetaan,
+tärkeät toiminnot turvataan ja onnettomuuden seuraukset rajataan mahdollisimman pieniksi.
+
+Pelastuslaki on keskeinen laki BESS-hankkeissa, koska:
+- Akkupalot ovat erittäin vaikeita sammuttaa ja tuottavat myrkyllisiä kaasuja;
+- Paikallinen pelastuslaitos lausuu rakentamislupahakemuksesta;
+- Pelastuslaitoksen hyväksyntä paloturvallisuusjärjestelmille on pakollinen ennen käyttöönottoa.
+
+2 § — Soveltamisala
+Tätä lakia sovelletaan toiminnan harjoittajiin, rakennusten omistajiin ja haltijoihin,
+asuntojen asujiin sekä muihin henkilöihin, joille tässä laissa säädetään tehtäviä tai
+velvollisuuksia.
+
+═══════════════════════════════════════════════
+2 LUKU — OMATOIMINEN VARAUTUMINEN
+═══════════════════════════════════════════════
+
+9 § — Yleinen toimintavelvollisuus
+Jokainen, joka huomaa tai tietää tulipalon syttyneen tai muun onnettomuuden tapahtuneen
+tai uhkaavan eikä pysty itse torjumaan vaaraa, on velvollinen viipymättä ilmoittamaan
+siitä vaarassa oleville, tekemään hätäilmoituksen sekä ryhtymään kykynsä mukaan
+pelastustoimenpiteisiin.
+
+14 § — Toiminnanharjoittajan velvollisuudet
+Toiminnanharjoittajan on:
+1) Ehkäistävä tulipalojen syttymistä ja muiden vaaratilanteiden syntymistä;
+2) Varauduttava henkilöiden, omaisuuden ja ympäristön suojaamiseen vaaratilanteissa;
+3) Varauduttava tulipalojen sammuttamiseen ja muihin pelastustoimenpiteisiin;
+4) Ryhdyttävä toimenpiteisiin poistumisen turvaamiseksi tulipaloissa.
+
+BESS-laitoksen toiminnanharjoittajan velvollisuudet sisältävät erityisesti:
+- Automaattisen palonilmaisujärjestelmän (smoke/heat detectors, BMS-hälytykset) ylläpito;
+- Automaattisen sammutusjärjestelmän (esim. HFC-227ea, CO2 tai FM-200) ylläpito;
+- Henkilökunnan paloturvallisuuskoulutus;
+- Pelastussuunnitelman päivittäminen ja harjoitukset.
+
+15 § — Pelastussuunnitelma
+Rakennuksen omistajan ja haltijan sekä toiminnanharjoittajan on laadittava pelastussuunnitelma
+rakennukseen tai kohteeseen, jossa henkilö- tai paloturvallisuudelle tai ympäristölle
+aiheutuvan vaaran taikka mahdollisen onnettomuuden aiheuttamien vahinkojen voidaan arvioida
+olevan vakavat.
+
+Pelastussuunnitelma on laadittava erityisesti:
+a) Kohteisiin, joissa on palovaarallisia aineita tai prosesseja;
+b) BESS-laitoksiin, joissa on suuria litiumioniakkuja;
+c) Kohteisiin, joissa on yli 50 henkilöä tai joissa voi olla vaikeuksia poistumisessa.
+
+Pelastussuunnitelman sisältö BESS-hankkeelle:
+1) Kohteen yhteystiedot ja vastuuhenkilöt (pelastusturvallisuusvastaava);
+2) Ennakoitavat vaaratilanteet: akkupalo, elektrolyytin vuoto, sähköisku;
+3) Sammutus- ja pelastustoimenpiteet: pelastuslaitos tarvitsee tiedon akkutyypistä ja
+   sijoittelusta ennen sammutusta;
+4) Sammutusvedet: litiumakkupaloissa vaaditaan suuria vesimääriä (vähintään 200 l/min);
+   sammutusvesien keräys estämään ympäristön saastuminen;
+5) Evakuointisuunnitelma ja kokoontumispaikat;
+6) Yhteydenpito pelastuslaitokseen, Tukesiin ja ympäristöviranomaisiin.
+
+Pelastussuunnitelma on toimitettava paikalliselle pelastuslaitokselle hyväksyttäväksi.
+
+16 § — Rakennusten ja muiden kohteiden turvallisuusvaatimukset
+Rakennuksen omistajan on huolehdittava, että:
+1) Rakennuksessa on tarvittavat alkusammutuskalusto ja pelastusreitit;
+2) Poistumisreitit ovat esteettömät ja selkeästi merkityt;
+3) Palonilmaisimet ja sammutusjärjestelmät ovat toimintakunnossa;
+4) Pelastuslaitos pystyy turvallisesti toimimaan kohteessa.
+
+17 § — Automaattinen sammutuslaitteisto
+Toiminnanharjoittajan on asennettava automaattinen sammutuslaitteisto, jos:
+1) Rakennuksen palokuorma tai palo-osasto-koko edellyttää sitä;
+2) Pelastuslaitos ei pysty tehokkaan sammutuksen suorittamiseen riittävän nopeasti;
+3) Ympäristö- tai turvallisuusriskit edellyttävät tehokkaampaa suojausta.
+
+BESS-laitoksissa automaattinen sammutuslaitteisto on erittäin suositeltava tai
+pakollinen seuraavissa tilanteissa:
+- Kun akkujen yhteiskapasiteetti ylittää 1 MWh;
+- Kun laitos sijaitsee lähellä asutusta tai muita rakennuksia;
+- Kun pelastuslaitoksen saapumisaika ylittää 10 minuuttia.
+
+═══════════════════════════════════════════════
+3 LUKU — PELASTUSTOIMINTA
+═══════════════════════════════════════════════
+
+32 § — Pelastustoimen järjestäminen
+Pelastustoimi on kunnan vastuulla. Pelastuslaitokset vastaavat:
+1) Palontorjunnasta;
+2) Pelastustoiminnasta onnettomuuksissa;
+3) Ensivastetoiminnasta.
+
+Paikallinen pelastuslaitos on tärkeä yhteistyökumppani BESS-hankkeessa:
+- Lausuu rakentamislupahakemuksesta;
+- Hyväksyy pelastussuunnitelman;
+- Osallistuu käyttöönottotarkastukseen;
+- Kouluttaa omat henkilönsä BESS-palojen sammuttamiseen.
+
+34 § — Pelastuslaitoksen lausunto
+Rakennusvalvontaviranomainen pyytää pelastuslaitokselta lausunnon, kun:
+1) Rakennettava kohde on paloturvallisuuden kannalta merkittävä;
+2) Kohteessa käsitellään tai varastoidaan suuria määriä palavia aineita;
+3) Kohteen sammuttaminen edellyttää erityiskalustoa tai -osaamista.
+
+BESS-hankkeelle pelastuslaitoksen lausunto on aina tarpeen.
+Lausunnossa pelastuslaitos ottaa kantaa:
+- Tieyhteyksien riittävyyteen sammutuskalustolle;
+- Sammutusvesien saatavuuteen;
+- Akkujärjestelmän sijoitteluun ja suojaukseen;
+- Pelastussuunnitelman riittävyyteen.
+
+═══════════════════════════════════════════════
+4 LUKU — RAKENNUSTEN PALOTURVALLISUUSVAATIMUKSET
+═══════════════════════════════════════════════
+
+42 § — Rakennuksen paloturvallisuus
+Rakennuksen suunnittelussa, rakentamisessa ja kunnossapidossa on noudatettava rakentamismääräyksiä
+(Suomen rakentamismääräyskokoelma E1 ja E2). BESS-laitoksia koskevat erityisesti:
+
+E1 (Rakennusten paloturvallisuus):
+- Paloluokka: BESS-rakennus on yleensä P2 tai P3;
+- Palo-osastointi: Akkukonttien tai -huoneiden välinen palo-osastointi;
+- Kantavuus palotilanteessa: Rakenteiden säilyttäminen riittävän kauan;
+
+E2 (Tuotanto- ja varastorakennukset):
+- Soveltuu akkuenergiavarastoihin, jotka luokitellaan varastorakennuksiksi;
+- Erityisvaatimukset suurille palokuormille (litiumakut: ~2000 MJ/MWh);
+- Sprinklerijärjestelmät pakollisia tietyissä paloluokissa.
+
+═══════════════════════════════════════════════
+BESS-LAITOKSEN PALOTURVALLISUUSVAATIMUKSET (YHTEENVETO)
+═══════════════════════════════════════════════
+
+Pelastuslain, kemikaaliturvallisuuslain ja rakentamismääräysten yhteisvaikutukset
+BESS-hankkeessa:
+
+1. Paloturvallisuusselvitys (rakentamislupahakemuksen liite):
+   - Laadi akkuteknologian (LFP, NMC, LTO) mukainen analyysi;
+   - Arvioi syttymisriskit, palokuorma ja myrkylliset kaasut (HF, CO);
+   - Määritä sammutusvedet ja niiden keräys;
+   - Tarkista pelastustoiminnan edellytykset.
+
+2. Automaattiset turvajärjestelmät:
+   - BMS (Battery Management System): lämpötila- ja jännitehälytykset;
+   - Savuilmaismet ja lämpöantureilla varustettu palonilmaisujärjestelmä;
+   - Automaattinen sammutusjärjestelmä (suositeltu, tietyissä tilanteissa pakollinen);
+   - Sammutusvesien keräysallas (pakollinen pohjavesialueilla ja suurissa laitoksissa).
+
+3. Pelastuslaitos yhteistyö:
+   - Ennakkoneuvottelu ennen lupahakemuksen jättämistä;
+   - Pelastussuunnitelman hyväksyttäminen;
+   - Käyttöönottotarkastus yhdessä pelastuslaitoksen kanssa;
+   - Pelastuslaitoksen henkilökunnan koulutus (akkupalot vaativat erityisosaamista).
+
+4. Litiumakkupalon erityispiirteet sammutuksessa:
+   - Litiumakkupaloa EI pysty sammuttamaan normaalisti — vain jäähdytys estää leviämisen;
+   - Sammutukseen tarvitaan suuria vesimääriä (200–1000 l/min);
+   - Palaessaan akut vapauttavat myrkyllisiä kaasuja (fluorivety HF, CO);
+   - Palon jälkeen akut voivat syttyä uudelleen (thermal runaway -ketjureaktio);
+   - Pelastuslaitoksen on tiedettävä akkutyyppi, kapasiteetti ja sijoittelu ennen sammutusta.
+
+5. Sammutusvesien hallinta:
+   - Sammutusvedet sisältävät litiumia, kobolttia ja muita haitta-aineita;
+   - Sammutusvedet on kerättävä ja käsiteltävä ympäristöluvan mukaisesti;
+   - Keräysallas mitoitetaan vähintään 1–4 tunnin sammutustoiminnan mukaan;
+   - Pohjavesialueilla keräysjärjestelmä on erityisen tärkeä.
