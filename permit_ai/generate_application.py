@@ -2219,6 +2219,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sub_title":       "Rakentamislupahakemusluonnos",
         "esiselvitys_sub": ("Esiselvitys- ja ennakkoneuvottelumateriaali — "
                             "Valmisteltu rakennusvalvonnan ennakkoneuvottelua varten"),
+        "lupavaihe_sub":   "Lupavaihe — Rakentamislupahakemusluonnos",
+        "rakentaminen_sub":"Rakentamisvaihe — Toteutus ja valvonta",
         "disclaimer_h":    "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN",
         "disclaimer_b":    ("Tekoälyavusteinen luonnos — ei juridisesti sitova. "
                             "Tarkistuta asiantuntijalla ennen hakemuksen jättämistä."),
@@ -2265,6 +2267,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_p":   ("Hanke on esiselvitysvaiheessa. Lopulliset tekniset mitoitukset, "
                             "sijaintisuunnitelmat ja ympäristövaikutusten arvioinnit tarkentuvat "
                             "jatkosuunnittelun myötä."),
+        "lupavaihe_p":     ("Hanke on lupavaiheessa. Rakentamislupahakemus ja liitteet "
+                            "valmistellaan viranomaiselle jätettäväksi."),
+        "rakentaminen_p":  ("Hanke on rakentamisvaiheessa. Toteutus etenee hyväksyttyjen lupien "
+                            "ja suunnitelmien mukaisesti viranomaisvalvonnassa."),
         "bess_pintaala":   "Laitosalueen arvioitu pinta-ala on 0,4–0,6 ha.",
         "mks_viittaus":    ("Hankealueen maankäyttö on selvitetty NCE:n maankäyttöselvityksessä "
                             "(ks. Liite 0b: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
@@ -2302,6 +2308,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sub_title":       "Construction Permit Application Draft",
         "esiselvitys_sub": ("Pre-study and Pre-consultation Material — "
                             "Prepared for construction permit pre-consultation"),
+        "lupavaihe_sub":   "Permit Phase — Construction Permit Application Draft",
+        "rakentaminen_sub":"Construction Phase — Execution and Supervision",
         "disclaimer_h":    "AI DRAFT — REQUIRES EXPERT REVIEW",
         "disclaimer_b":    ("AI-assisted draft — not legally binding. "
                             "Review with a qualified expert before submission."),
@@ -2348,6 +2356,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_p":   ("The project is in the pre-study phase. Final technical specifications, "
                             "site plans and environmental impact assessments will be refined "
                             "during further planning."),
+        "lupavaihe_p":     ("The project is in the permit phase. The construction permit application "
+                            "and attachments are being prepared for submission to the authority."),
+        "rakentaminen_p":  ("The project is in the construction phase. Implementation proceeds in "
+                            "accordance with approved permits and plans under regulatory supervision."),
         "bess_pintaala":   "The estimated site area is 0.4–0.6 ha.",
         "mks_viittaus":    ("The land use of the project area has been investigated in NCE's "
                             "land use report (see Appendix 0b: Land Use Report PDF). The report includes "
@@ -2382,6 +2394,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sub_title":       "Bygglovsansökan — utkast",
         "esiselvitys_sub": ("Förundersökning och förkonsultationsmaterial — "
                             "Utarbetat för förkonsultation med byggnadstillsyn"),
+        "lupavaihe_sub":   "Tillståndsfas — Utkast till bygglovsansökan",
+        "rakentaminen_sub":"Byggfas — Genomförande och tillsyn",
         "disclaimer_h":    "AI-UTKAST — KRÄVER EXPERTGRANSKNING",
         "disclaimer_b":    ("AI-assisterat utkast — inte juridiskt bindande. "
                             "Granska med en kvalificerad expert innan inlämning."),
@@ -2424,6 +2438,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_p":   ("Projektet befinner sig i förundersökningsfasen. Slutliga tekniska "
                             "specifikationer, platsplaner och miljökonsekvensbedömningar preciseras "
                             "under den fortsatta planeringen."),
+        "lupavaihe_p":     ("Projektet befinner sig i tillståndsfasen. Bygglovsansökan och bilagor "
+                            "förbereds för inlämning till myndigheten."),
+        "rakentaminen_p":  ("Projektet befinner sig i byggfasen. Genomförandet sker i enlighet med "
+                            "godkända tillstånd och planer under myndighetstillsyn."),
         "bess_pintaala":   "Den uppskattade anläggningsytan är 0,4–0,6 ha.",
         "mks_viittaus":    ("Markanvändningen i projektområdet har utretts i NCE:s "
                             "markanvändningsutredning (se Bilaga 0b: Markanvändningsutredning PDF). "
@@ -2459,6 +2477,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sub_title":       "Byggetilladelsesansøgning — udkast",
         "esiselvitys_sub": ("Forundersøgelses- og forhåndskonsultationsmateriale — "
                             "Udarbejdet til forhåndskonsultation med byggesagsafdelingen"),
+        "lupavaihe_sub":   "Tilladelsefase — Udkast til byggetilladelsesansøgning",
+        "rakentaminen_sub":"Anlægsfase — Udførelse og tilsyn",
         "disclaimer_h":    "AI-UDKAST — KRÆVER EKSPERTGENNEMGANG",
         "disclaimer_b":    ("AI-assisteret udkast — ikke juridisk bindende. "
                             "Gennemgå med en kvalificeret ekspert inden indsendelse."),
@@ -2501,6 +2521,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_p":   ("Projektet befinder sig i forundersøgelsesfasen. Endelige tekniske "
                             "specifikationer, lokalplaner og miljøkonsekvensvurderinger vil blive "
                             "præciseret under den videre planlægning."),
+        "lupavaihe_p":     ("Projektet befinder sig i tilladelsefasen. Byggetilladelsesansøgning og "
+                            "bilag forberedes til indgivelse til myndigheden."),
+        "rakentaminen_p":  ("Projektet befinder sig i anlægsfasen. Gennemførelsen sker i "
+                            "overensstemmelse med godkendte tilladelser og planer under myndighedstilsyn."),
         "bess_pintaala":   "Det anslåede anlægsareal er 0,4–0,6 ha.",
         "mks_viittaus":    ("Arealanvendelsen i projektområdet er undersøgt i NCE's "
                             "arealanvendelsesrapport (se Bilag 0b: Arealanvendelsesrapport PDF). "
@@ -2538,6 +2562,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sub_title":       "Søknad om byggetillatelse — utkast",
         "esiselvitys_sub": ("Forstudie- og forhåndskonsultasjonsmateriale — "
                             "Utarbeidet til forhåndskonsultasjon med byggesaksavdelingen"),
+        "lupavaihe_sub":   "Tillatelsefase — Utkast til byggetillatelsessøknad",
+        "rakentaminen_sub":"Byggefase — Gjennomføring og tilsyn",
         "disclaimer_h":    "AI-UTKAST — KREVER EKSPERTGJENNOMGANG",
         "disclaimer_b":    ("AI-assistert utkast — ikke juridisk bindende. "
                             "Gjennomgå med en kvalifisert ekspert før innsending."),
@@ -2580,6 +2606,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_p":   ("Prosjektet er i forstudiefasen. Endelige tekniske spesifikasjoner, "
                             "stedplaner og miljøkonsekvensutredninger vil bli presisert "
                             "under videre planlegging."),
+        "lupavaihe_p":     ("Prosjektet er i tillatelsefasen. Byggetillatelsessøknad og vedlegg "
+                            "forberedes for innsending til myndighetene."),
+        "rakentaminen_p":  ("Prosjektet er i byggefasen. Gjennomføringen skjer i henhold til "
+                            "godkjente tillatelser og planer under myndighetstilsyn."),
         "bess_pintaala":   "Det anslåtte anleggsarealet er 0,4–0,6 ha.",
         "mks_viittaus":    ("Arealbruken i prosjektområdet er undersøkt i NCE's "
                             "arealbruksrapport (se Vedlegg 0b: Arealbruksrapport PDF). "
@@ -2616,6 +2646,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "sub_title":       "Wniosek o pozwolenie na budowę — szkic",
         "esiselvitys_sub": ("Materiał z analizy wstępnej i konsultacji wstępnych — "
                             "Przygotowany do wstępnej konsultacji z wydziałem budowlanym"),
+        "lupavaihe_sub":   "Faza zezwoleń — Szkic wniosku o pozwolenie na budowę",
+        "rakentaminen_sub":"Faza budowy — Realizacja i nadzór",
         "disclaimer_h":    "SZKIC AI — WYMAGA PRZEGLĄDU EKSPERTA",
         "disclaimer_b":    ("Szkic przygotowany z pomocą AI — nie jest prawnie wiążący. "
                             "Przed złożeniem wniosku sprawdź z wykwalifikowanym ekspertem."),
@@ -2658,6 +2690,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "esiselvitys_p":   ("Projekt jest w fazie analizy wstępnej. Ostateczne specyfikacje techniczne, "
                             "plany lokalizacyjne i oceny oddziaływania na środowisko zostaną doprecyzowane "
                             "w trakcie dalszego planowania."),
+        "lupavaihe_p":     ("Projekt jest w fazie zezwoleń. Wniosek o pozwolenie na budowę i załączniki "
+                            "są przygotowywane do złożenia organowi."),
+        "rakentaminen_p":  ("Projekt jest w fazie budowy. Realizacja przebiega zgodnie z zatwierdzonymi "
+                            "zezwoleniami i planami pod nadzorem organów."),
         "bess_pintaala":   "Szacunkowa powierzchnia instalacji wynosi 0,4–0,6 ha.",
         "mks_viittaus":    ("Zagospodarowanie terenu obszaru projektu zostało zbadane w raporcie NCE "
                             "dotyczącym zagospodarowania terenu (zob. Załącznik 0b: Raport PDF). Raport "
@@ -3542,10 +3578,14 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 6*mm))
     story.append(Paragraph(_s(lang, "sub_title"), st["sub"]))
     story.append(Paragraph(_nimi(lang, inp.hanketyyppi, cfg['nimi_fi']), st["title"]))
-    # Phase-aware subtitle: "Pre-study — …" or "Permit phase — …" etc.
+    # Phase-aware subtitle
     _vaihe_raw = (inp.hankkeen_vaihe or "Esiselvitys").lower()
     if _vaihe_raw in ("esiselvitys", ""):
         _phase_sub_txt = _s(lang, "esiselvitys_sub")
+    elif _vaihe_raw == "lupavaihe":
+        _phase_sub_txt = _s(lang, "lupavaihe_sub")
+    elif _vaihe_raw in ("rakentaminen", "rakentamisvaihe"):
+        _phase_sub_txt = _s(lang, "rakentaminen_sub")
     else:
         _phase_sub_txt = f"{_t_vaihe(lang, inp.hankkeen_vaihe)} — {_s(lang, 'sub_title')}"
     story.append(Paragraph(
@@ -3622,7 +3662,13 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
         *_kuvaus_elems[:1],   # ensimmäinen kappale pysyy otsikon kanssa
     ]))
     story.extend(_kuvaus_elems[1:])
-    story.append(Paragraph(_s(lang, "esiselvitys_p"), st["body"]))
+    _vaihe_norm = (inp.hankkeen_vaihe or "esiselvitys").lower()
+    if _vaihe_norm == "lupavaihe":
+        story.append(Paragraph(_s(lang, "lupavaihe_p"), st["body"]))
+    elif _vaihe_norm in ("rakentaminen", "rakentamisvaihe"):
+        story.append(Paragraph(_s(lang, "rakentaminen_p"), st["body"]))
+    else:
+        story.append(Paragraph(_s(lang, "esiselvitys_p"), st["body"]))
     if inp.hanketyyppi == "BESS":
         story.append(Paragraph(_s(lang, "bess_pintaala"), st["body"]))
     story.append(Paragraph(_s(lang, "mks_viittaus"), st["body"]))
