@@ -1784,6 +1784,8 @@ _PHASE_INSTRUCTIONS: dict[str, str] = {
         "- Viittaa myönnettyyn rakentamislupaan ja sen ehtoihin"
     ),
 }
+# Alias so both "Rakentaminen" and "Rakentamisvaihe" (frontend values) resolve correctly
+_PHASE_INSTRUCTIONS["rakentamisvaihe"] = _PHASE_INSTRUCTIONS["rakentaminen"]
 
 
 _WRITE_INSTRUCTION: dict[str, str] = {
