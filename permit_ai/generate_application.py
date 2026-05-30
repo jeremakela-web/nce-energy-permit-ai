@@ -451,6 +451,14 @@ def _postprocess_text(text: str, lang: str = "FI") -> str:
     return text
 
 
+# Vain sisältöosioiden tekstit lasketaan — kansilehti/disclaimer/footer eivät koskaan
+_CONTENT_SECTION_KEYS: frozenset[str] = frozenset({
+    "kuvaus", "perustelut", "luvat_teksti", "toimenpiteet",
+    # BF-osiot (business_finland)
+    "tk_kuvaus", "budjetti", "tiimi", "aikataulu",
+})
+
+
 def _limit_expert_reviews(text: str, max_count: int = 3) -> str:
     """Rajoita 'Asiantuntijatarkistus suositellaan' täsmälleen max_count kertaan."""
     phrase = "Asiantuntijatarkistus suositellaan"
@@ -484,13 +492,15 @@ def _final_polish(sections: dict, lang: str) -> dict:
         v = _postprocess_text(v, lang)
         result[k] = v
 
-    # Globaali rajoitin: laske kaikki osiot yhteen, rajoita, jaa takaisin
+    # Globaali rajoitin: VAIN sisältöosiot (ei kansilehti/disclaimer/footer)
     _SEP = "\x00||SEC||\x00"
-    str_keys = [k for k, v in result.items() if isinstance(v, str)]
-    combined = _SEP.join(result[k] for k in str_keys)
-    combined = _limit_expert_reviews(combined, max_count=3)
-    for k, part in zip(str_keys, combined.split(_SEP)):
-        result[k] = part
+    str_keys = [k for k, v in result.items()
+                if isinstance(v, str) and k in _CONTENT_SECTION_KEYS]
+    if str_keys:
+        combined = _SEP.join(result[k] for k in str_keys)
+        combined = _limit_expert_reviews(combined, max_count=3)
+        for k, part in zip(str_keys, combined.split(_SEP)):
+            result[k] = part
 
     return _limit_huom_markers(result, lang, max_count=3)
 
@@ -3346,6 +3356,7 @@ def _standards_table(hanketyyppi: str, country: str, lang: str, st: dict) -> Tab
 
     col_w = [3.5*cm, 10.5*cm, 5.0*cm]
     tbl   = Table(rows, colWidths=col_w, repeatRows=1)
+    _nosplit_pairs = [("NOSPLIT", (0, i), (-1, i + 1)) for i in range(len(rows) - 1)]
     tbl.setStyle(TableStyle([
         ("BACKGROUND",    (0, 0), (-1, 0), C_NAVY),
         ("TEXTCOLOR",     (0, 0), (-1, 0), C_WHITE),
@@ -3355,6 +3366,7 @@ def _standards_table(hanketyyppi: str, country: str, lang: str, st: dict) -> Tab
         ("VALIGN",        (0, 0), (-1, -1), "TOP"),
         ("SPAN",          (2, 1), (2, len(standards))),
         ("VALIGN",        (2, 1), (2, len(standards)), "MIDDLE"),
+        *_nosplit_pairs,
     ]))
     return tbl
 
@@ -3493,6 +3505,7 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
             Paragraph(str(row[3]), td_s),
         ])
     tbl = Table(tbl_data, colWidths=[0.9*cm, 7.2*cm, 4.5*cm, 4.0*cm], repeatRows=1)
+    _toim_nosplit = [("NOSPLIT", (0, i), (-1, i + 1)) for i in range(len(tbl_data) - 1)]
     tbl.setStyle(TableStyle([
         ("BACKGROUND",     (0, 0), (-1, 0), C_NAVY),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
@@ -3502,7 +3515,7 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
         ("LEFTPADDING",    (0, 0), (-1, -1), 5),
         ("RIGHTPADDING",   (0, 0), (-1, -1), 5),
         ("VALIGN",         (0, 0), (-1, -1), "TOP"),
-        ("NOSPLIT",        (0, 0), (-1, 0)),
+        *_toim_nosplit,
     ]))
     return [tbl]
 
@@ -3656,9 +3669,10 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[dict])
 
 def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> bytes:
     """Rakenna PDF ja palauta bytes."""
-    # Hard cap: enintään 3 "Asiantuntijatarkistus suositellaan" PDF:ssä
+    # Hard cap: enintään 3 "Asiantuntijatarkistus suositellaan" VAIN sisältöosioissa
     _SEC_SEP = "\x00||SEC||\x00"
-    _str_keys = [k for k, v in sections.items() if isinstance(v, str)]
+    _str_keys = [k for k, v in sections.items()
+                 if isinstance(v, str) and k in _CONTENT_SECTION_KEYS]
     if _str_keys:
         _combined = _SEC_SEP.join(sections[k] for k in _str_keys)
         _combined = _limit_expert_reviews(_combined, max_count=3)
