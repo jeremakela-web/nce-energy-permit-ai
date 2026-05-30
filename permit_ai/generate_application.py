@@ -756,8 +756,8 @@ _HANKE_CFG = {
             "OSIO 1 — Hankkeen kuvaus: sisällytä KAIKKI seuraavat tiedot:\n"
             "- Akkukonttien lukumäärä: arvioi 2–4 konttia riippuen toimittajasta "
             "(esim. CATL, BYD, Wärtsilä); yksittäisen kontin kapasiteetti 2,5–5 MWh\n"
-            "- Palokuormitusluokka: P2 tai P3 (Suomen rakentamismääräyskokoelma E2) — "
-            "mainitse kumpi soveltuu ja perustele lyhyesti\n"
+            "- Palokuormitusluokka: P3 (Suomen rakentamismääräyskokoelma E2) — "
+            "litiumioniakkukontit kuuluvat palokuormitusluokkaan P3\n"
             "- Viittaa paloturvallisuusselvitykseen täsmälleen näin: "
             "'ks. Liite 5: Paloturvallisuusselvitys'\n"
             "- Viittaa sähköliityntäsuunnitelmaan täsmälleen näin: "
@@ -3955,14 +3955,10 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
             _hr(),
         ]))
         story.append(Paragraph(_s(lang, "lahteet_b"), st["body"]))
-        for src in sources:
-            display = src.get("display", src.get("id", "–"))
-            url = src.get("url")
-            if url:
-                line = f'• <a href="{url}" color="#1a56db">{display}</a> — <font color="#1a56db">{url}</font>'
-            else:
-                line = f"• {display}"
-            story.append(Paragraph(line, st["bullet"]))
+        story.append(Paragraph(
+            "Viranomais- ja standardidokumentit: STUK YVL, Fingrid, SYKE, Tukes, NCE RAG-tietokanta.",
+            st["bullet"],
+        ))
         story.append(Spacer(1, 3*mm))
 
     # ── Hakijan yhteystiedot ──────────────────────────────────────────────────
