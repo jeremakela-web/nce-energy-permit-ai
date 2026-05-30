@@ -1715,9 +1715,7 @@ _WRITE_INSTRUCTION: dict[str, str] = {
     "FI": ("Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. "
            "Viittaa lakeihin lyhentein hakasulkeissa, esim. [YSL §27] tai [Rakentamislaki 751/2023]. "
            "Kirjoita lyhyitä virkkeitä — enintään kaksi lausetta per kappale, ei pitkiä juridisia luettelolauseita. "
-           "Jos jokin tieto on epävarma, puuttuu tai vaatii erikoisosaamista, "
-           "lisää merkintä '⚠️ Asiantuntijatarkistus suositellaan' heti kyseisen kohdan jälkeen — "
-           "älä spekuloi eläkä täytä tietopuutteita oletuksilla:"),
+           "Älä spekuloi eläkä täytä tietopuutteita oletuksilla:"),
     "EN": ("Write the following four sections in English, clearly separated by headings. "
            "Include inline law citations in brackets, e.g. [EIA Act] or [Building Act 751/2023]. "
            "If any information is uncertain, missing or requires specialist expertise, "
