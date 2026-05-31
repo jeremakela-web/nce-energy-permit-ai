@@ -29,7 +29,7 @@ from reportlab.lib.units import cm, mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    HRFlowable, KeepTogether, Paragraph,
+    CondPageBreak, HRFlowable, KeepTogether, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 from reportlab.pdfgen.canvas import Canvas as _CanvasBase
@@ -764,6 +764,9 @@ _HANKE_CFG = {
             "(esim. CATL, BYD, Wärtsilä); yksittäisen kontin kapasiteetti 2,5–5 MWh\n"
             "- Palokuormitusluokka: P3 (Suomen rakentamismääräyskokoelma E2) — "
             "litiumioniakkukontit kuuluvat palokuormitusluokkaan P3\n"
+            "- Paloturvallisuus: kirjoita YKSI selkeä kappale jossa mainitaan P3-luokka, "
+            "automaattinen sammutusjärjestelmä ja pelastussuunnitelma — "
+            "ÄLÄ toista samaa paloturvallisuusasiaa useaan kertaan eri kappaleissa\n"
             "- Viittaa paloturvallisuusselvitykseen täsmälleen näin: "
             "'ks. Liite 5: Paloturvallisuusselvitys'\n"
             "- Viittaa sähköliityntäsuunnitelmaan täsmälleen näin: "
@@ -3878,6 +3881,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 2. Perustelut ja tarve ────────────────────────────────────────────────
+    story.append(CondPageBreak(80*mm))
     _perust_elems = _para_text(sections.get("perustelut", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec2"), st["h2"]),
@@ -3888,6 +3892,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
+    story.append(CondPageBreak(80*mm))
     _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
     _country_luvat_data = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     _luvat_row_count = len(_country_luvat_data or _HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
@@ -3913,6 +3918,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
+    story.append(CondPageBreak(60*mm))
     country_luvat_override = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     if country_luvat_override:
         laki_set = {laki for _, _, laki in country_luvat_override}
@@ -3931,6 +3937,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
+    story.append(CondPageBreak(60*mm))
     _liite_tbl = _liitteet_table(inp.hanketyyppi, lang, country)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec5"), st["h2"]),
@@ -3942,6 +3949,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 6. Seuraavat toimenpiteet ─────────────────────────────────────────────
+    story.append(CondPageBreak(60*mm))
     _toim_elems = _toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec6"), st["h2"]),
@@ -3962,6 +3970,38 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
             st["bullet"],
         ))
         story.append(Spacer(1, 3*mm))
+
+    # ── NCE Permit AI -infolaatikko ───────────────────────────────────────────
+    _nce_desc = _s(lang, "nce_info_desc") or (
+        "NCE Permit AI on tekoälypohjainen työkalu energia-alan lupahakemusten "
+        "valmisteluun. Palvelu hyödyntää RAG-teknologiaa (Retrieval-Augmented Generation) "
+        "ja hakee tietoa Fingridin, Tukesin, SYKE:n ja STUK YVL -ohjeistojen "
+        "ajantasaisesta dokumentaatiosta. Luonnos vaatii aina asiantuntijatarkistuksen "
+        "ennen viranomaiskäsittelyä."
+    )
+    _nce_info_rows = [
+        [Paragraph("NCE Permit AI — Tietoja raportista", ParagraphStyle(
+            "nce_ih", fontSize=9, fontName=PDF_FONT_BOLD, textColor=C_NAVY)),
+         Paragraph("ncenergy.fi  ·  info@ncenergy.fi", ParagraphStyle(
+            "nce_ir", fontSize=8.5, textColor=C_GRAY, alignment=TA_RIGHT))],
+        [Paragraph(_nce_desc, ParagraphStyle(
+            "nce_ib", fontSize=8.5, leading=13, textColor=colors.HexColor("#2d3748"))),
+         ""],
+    ]
+    _nce_info_tbl = Table(_nce_info_rows, colWidths=[11.5*cm, 5.0*cm])
+    _nce_info_tbl.setStyle(TableStyle([
+        ("BACKGROUND",   (0, 0), (-1, 0), colors.HexColor("#EBF4F7")),
+        ("BACKGROUND",   (0, 1), (-1, 1), colors.HexColor("#F7FBFD")),
+        ("BOX",          (0, 0), (-1, -1), 0.5, colors.HexColor("#B0D4E0")),
+        ("LINEBELOW",    (0, 0), (-1, 0), 0.5, colors.HexColor("#B0D4E0")),
+        ("SPAN",         (0, 1), (-1, 1)),
+        ("PADDING",      (0, 0), (-1, -1), 7),
+        ("VALIGN",       (0, 0), (-1, -1), "TOP"),
+    ]))
+    story.append(KeepTogether([
+        _nce_info_tbl,
+        Spacer(1, 4*mm),
+    ]))
 
     # ── Hakijan yhteystiedot ──────────────────────────────────────────────────
     yhteystiedot_data = [
