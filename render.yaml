@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free
     rootDir: .
-    buildCommand: pip install -r requirements.txt && python3 permit_ai/build_index.py
+    buildCommand: pip install -r requirements.txt && python3 permit_ai/build_index.py && python3 permit_ai/ingest_countries.py --country PL
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: ANTHROPIC_API_KEY
