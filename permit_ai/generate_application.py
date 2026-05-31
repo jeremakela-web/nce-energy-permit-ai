@@ -29,7 +29,7 @@ from reportlab.lib.units import cm, mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    CondPageBreak, HRFlowable, KeepTogether, Paragraph,
+    CondPageBreak, HRFlowable, KeepTogether, PageBreak, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 from reportlab.pdfgen.canvas import Canvas as _CanvasBase
@@ -3703,22 +3703,27 @@ def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[dict])
     story.append(_disclaimer_box(st, _bf_lang))
     story.append(Spacer(1, 8*mm))
 
+    story.append(PageBreak())
     story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec1"), st["h2"]), _hr()]))
     story.extend(_para_text(sections.get("tk_kuvaus", "–"), st))
     story.append(Spacer(1, 4*mm))
 
+    story.append(PageBreak())
     story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec2"), st["h2"]), _hr()]))
     story.extend(_para_text(sections.get("budjetti", "–"), st))
     story.append(Spacer(1, 4*mm))
 
+    story.append(PageBreak())
     story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec3"), st["h2"]), _hr()]))
     story.extend(_para_text(sections.get("tiimi", "–"), st))
     story.append(Spacer(1, 4*mm))
 
+    story.append(PageBreak())
     story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec4"), st["h2"]), _hr()]))
     story.extend(_para_text(sections.get("aikataulu", "–"), st))
     story.append(Spacer(1, 4*mm))
 
+    story.append(PageBreak())
     story.append(KeepTogether([Paragraph(_s(_bf_lang, "sec5"), st["h2"]), _hr()]))
     story.append(_liitteet_table("business_finland", _bf_lang))
     story.append(Spacer(1, 4*mm))
@@ -3861,6 +3866,9 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 8*mm))
 
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
+    # PageBreak garantoi otsikon aloituksen puhtaalta sivulta — KeepTogether/CondPageBreak
+    # eivät ole luotettavia kun AI-generoitu sisältö vaihtelee pituudeltaan.
+    story.append(PageBreak())
     _kuvaus_elems = _para_text(sections.get("kuvaus", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec1"), st["h2"]),
@@ -3881,7 +3889,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 2. Perustelut ja tarve ────────────────────────────────────────────────
-    story.append(CondPageBreak(80*mm))
+    story.append(PageBreak())
     _perust_elems = _para_text(sections.get("perustelut", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec2"), st["h2"]),
@@ -3892,7 +3900,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
-    story.append(CondPageBreak(80*mm))
+    story.append(PageBreak())
     _luvat_tbl = _luvat_table(inp.hanketyyppi, st, lang, country)
     _country_luvat_data = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     _luvat_row_count = len(_country_luvat_data or _HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
@@ -3918,7 +3926,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 4. Lakiviitteet ───────────────────────────────────────────────────────
-    story.append(CondPageBreak(60*mm))
+    story.append(PageBreak())
     country_luvat_override = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     if country_luvat_override:
         laki_set = {laki for _, _, laki in country_luvat_override}
@@ -3937,7 +3945,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
-    story.append(CondPageBreak(60*mm))
+    story.append(PageBreak())
     _liite_tbl = _liitteet_table(inp.hanketyyppi, lang, country)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec5"), st["h2"]),
@@ -3949,7 +3957,7 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 4*mm))
 
     # ── 6. Seuraavat toimenpiteet ─────────────────────────────────────────────
-    story.append(CondPageBreak(60*mm))
+    story.append(PageBreak())
     _toim_elems = _toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec6"), st["h2"]),
