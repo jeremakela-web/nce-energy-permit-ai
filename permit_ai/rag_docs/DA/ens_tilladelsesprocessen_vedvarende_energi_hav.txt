@@ -1,0 +1,64 @@
+SOURCE: https://ens.dk/ansvarsomraader/vindmoeller-paa-hav/godkendelse-af-vedvarende-energi-anlaeg-paa-havet
+COUNTRY: DA
+
+Tilladelsesprocessen for vedvarende energi-anlæg på havet, som tildeles via udbud
+Gå til hovedindhold
+Tilladelsesprocessen for vedvarende energi-anlæg på havet, som tildeles via udbud
+Det kræver tre forskellige tilladelser, før der kan opstilles et nyt vedvarende energi-anlæg på havet.
+Det kræver tre tilladelser at opstille nye vedvarende energi-anlæg på havet via udbud
+Tilladelse til opstilling af nye vedvarende energi anlæg kræver, at en koncessionshaver har vundet adgang til havarealet via et statsligt udbud.
+Læs mere om kommende havvindmølleparker
+Energistyrelsen skal udstede tre tilladelser ifølge VE-loven, før en koncessionshaver kan opstille og drive et vedvarende energi-anlæg på havet. Tilladelserne er en forundersøgelsestilladelse, en etableringstilladelse, som også udgør en VVM-tilladelse og en tilladelse til udnyttelse af energien (elproduktionstilladelse). Selve miljøvurderingsprocessen skal overholde reglerne i Miljøvurderingslovens afsnit III.
+Forundersøgelsestilladelsen
+Forundersøgelsestilladelsen gives, så der kan laves specifikke undersøgelser af lokaliteten, hvor der ønskes at opstille et vedvarende energianlæg. Energistyrelsen vurderer på baggrund af en ansøgning om forundersøgelsestilladelse fra koncessionshaver, om der kan udstedes en forundersøgelsestilladelse. En forundersøgelsestilladelse vil indeholde en række vilkår, f.eks. om reduktion af undervandsstøj, da en del af det udstyr, der benyttes til f.eks. geofysiske undersøgelser af havbunden, støjer og kan forstyrre havpattedyr.
+Ud over at forundersøgelsestilladelsen giver koncessionshaver ret til at igangsætte konkrete geofysiske, geotekniske og miljømæssige forundersøgelser i områderne, igangsætter forundersøgelsestilladelsen også processen for miljøvurdering af projektet. Efter meddelelse af forundersøgelsestilladelsen indledes afgrænsningsfasen (scoping) i miljøvurderingsprocessen. Her skal der afholdes en offentlig høring, inden Energistyrelsen kan fremsende en afgrænsningsudtalelse til koncessionshaver. Herefter går koncessionshaver i gang med at udarbejde selve miljøkonsekvensrapporten for projektet.
+Modeltilladelse til forundersøgelser
+[Modeltilladelserne opdateres løbende]
+Etableringstilladelsen
+Når Energistyrelsen modtager ansøgning om etableringstilladelse sendes ansøgningen, miljøkonsekvensrapporten med tilhørende bilag samt eventuelle yderligere dokumenter, som Energistyrelsen har inddraget i vurderingen, samt eventuelt et udkast til etableringstilladelse i offentlig høring. Her har alle interesserede mulighed for at komme med deres bemærkninger. Herunder vil der også blive foretaget nødvendige høringer af nabolande ift. eventuelle væsentlige grænseoverskridende miljøpåvirkninger (Espoo-høring). Først efter afslutningen af den offentlige høring kan Energistyrelsen vurdere, om der kan udstedes en etableringstilladelse til projektet. På baggrund af den offentlige høring vil der blive udarbejdet et høringsnotat, som vil blive offentliggjort sammen med den endelige afgørelse om etableringstilladelse. Etableringstilladelsen er nødvendig for, at koncessionshaver kan begynde opførelse af selve anlægget og vil indeholde en række vilkår for at sikre overholdelse af bl.a. tekniske, miljømæssige og sejladssikkerhedsmæssige hensyn. Etableringstilladelsen udgør samtidig §25-tilladelsen efter Miljøvurderingsloven.
+Modeltilladelse til etablering
+[Modeltilladelserne opdateres løbende]
+Bilag 1 - Vejledning ift. afmærkning
+Tilladelsen til udnyttelse af energien
+Energistyrelsen giver en tilladelse til udnyttelses af energien (den såkaldte elproduktionstilladelse) inden anlægget kan sættes i drift. Tilladelsen udstedes, når koncessionshaver har dokumentet overholdelse af de relevante vilkår i etableringstilladelsen. Når elproduktionstilladelsen er udstedt, kan koncessionshaver begynde at levere energi fra projektet.
+Det er nødvendigt at vurdere påvirkningen af miljøet
+Anlæg, der producerer vedvarende energi på havet, kan påvirke miljøet. Hvis Energistyrelsen eller andre myndigheder vurderer, at et anlæg vil påvirke miljøet væsentligt, er det nødvendigt at vurdere de miljømæssige konsekvenser. Havvindmølleparker vil normalt kunne medføre en række miljøpåvirkninger og kræver derfor normalt udarbejdelse af en miljøkonsekvensrapport, før der kan meddeles tilladelse. Miljøkonsekvensrapporten skal dokumentere, at projektet kan overholde national og internationale regler på natur- og miljøområdet.
+Vedvarende energi anlæg på havet kan normalt også påvirke internationale naturbeskyttelsesområder (Natura 2000-områder) og internationalt beskyttede arter. Hvis Energistyrelsen vurderer, at et projekt kan have en væsentlig påvirkning på disse skal der udarbejdes de nødvendige konsekvensvurderinger. Disse udarbejdes normalt i sammenhæng med miljøkonsekvensrapporten og indgår heri.
+Miljøvurdering sker i henhold til reglerne i Miljøvurderingsloven.
+Energistyrelsen har udarbejdet et notat, der forklarer nærmere om forundersøgelses- og miljøvurderingsprocessen for havvindmølleparker, der etableres via udbud.
+Notes om environmental assessment for offshore wind farm tenders
+Katalog over presfaktorer i havmiljøet
+Som et led i Tillægsaftale om udbudsrammer for 6 GW havvind og Energiø Bornholm (maj 2023) blev det bestemt at indføre krav om natur-inkluderende design i to af de kommende udbudsparker, én i Nordsøen og én i de indre danske farvande. Kravet gælder for områderne: Nordsøen I A1 og Kattegat.
+Idet kravet er koblet op på, at foranstaltninger skal modvirke negative virkninger på havmiljøet fra selve havvindmølleparken eller andre presfaktorer har Energistyrelsen fået udarbejdet et katalog over relevante presfaktorer i havmiljøet. Koncessionshaver kan bruge kataloget som reference i udviklingen af de natur-inkluderende tiltag, som vil skulle godkendes af Energistyrelsen.
+Katalog: Assessment of Environmental Pressures and State in Relation to Three Danish Offshore Wind Farms
+Danmarks Havplan
+Generelt om havplanen
+Danmarks Havplan er en digital bekendtgørelse, som dels består af generelle bestemmelser og dels af arealudlæg, som er anført på
+havplanskortet
+. Havplanen gælder for det samlede danske havareal, og dækker dermed både søterritoriet tæt på land og den eksklusive økonomiske zone (EEZ).
+Den digitale udformning af havplanen giver mulighed for at få vist arealudlæg på havet, og hvordan havarealerne anvendes og beskyttes. Havplanen søger at fremme, at et område i bedst muligt omfang kan anvendes til flere formål enten samtidig eller tidsmæssigt forskudt. Derfor indeholder havplanen også områder, der er udlagt til flere zoner med forskellige formål.
+Havplanen har hjemmel i lov om maritim fysisk planlægning (havplanloven), og gennemfører EU-direktivet 2014/89/EU om rammerne for maritim fysisk planlægning, som forpligter EU-lande til at udarbejde en havplan. Danmarks Havplan er koordineret af Søfartsstyrelsen under Erhvervsministeriet.
+Vedtagelse af planer og meddelelse af tilladelser i strid med havplanen
+Der må ikke vedtages planer eller meddeles tilladelser til anlæg eller arealanvendelser efter anden lovgivning, hvis de er i strid med havplanen eller er i strid med et forslag til havplanen eller ændringer af havplanen, der er offentliggjort, jf. havplanloven.
+I områder, der er udlagt til flere udviklings- eller særlige anvendelseszoner er der ikke på forhånd foretaget en prioritering mellem de forskellige formål. Et arealudlæg indebærer ikke i sig selv en ret til udnyttelse af arealet til det pågældende formål, men har til hensigt at sikre, at området kan anvendes til det pågældende formål.
+Er et område udlagt til flere udviklings- eller særlige anvendelseszoner med forskellige formål, skal en myndighed, inden der vedtages planer eller meddeles tilladelse til anlæg eller arealanvendelser, afklare anvendelsen bilateralt via samråd med den/de myndigheder, der også har arealudlæg i området.
+Samrådsproces
+Såfremt den/de myndigheder, der også har arealudlæg i området vurderer, at planen eller tilladelsen er uforenelig med det udlagte formål, eftersom hele eller væsentlige dele af zonen ikke kan anvendes til det udlagte formål, skal der indgås en samrådsaftale mellem de ansvarlige ministre -det gør sig også gældende inden for samme ressortministerium.
+I en samrådsaftale afstår den berørte minister helt eller delvist fra anvendelse af zonen, men området vil fortsat være udlagt til flere formål. Det kan eksempelvis være overlap mellem udviklingszone til råstofindvinding (R) og mellem udviklingszone til vedvarende energi (Ev).
+Såfremt den/de myndigheder, der også har arealudlæg i området vurderer, at planen eller tilladelsen er forenelig med det udlagte formål, da det ikke indebærer, at hele eller væsentlige dele af zonerne ikke kan anvendes til de udlagte formål, kan planen vedtages eller tilladelsen meddeles i overensstemmelse med havplanen.
+Hertil kan der indgås en sameksistensaftale mellem de ansvarlige ministre. I en sameksistensaftale indgås aftale om, at begge formål kan foregå i samme område, evt. på en række vilkår. Det kan eksempelvis være overlap mellem udviklingszone til havbrug (Ah) og udviklingszone til vedvarende energi. Potentialet for sameksistens bør altid overvejes.
+Læs mere om havplanen og havplanens bestemmelser på
+havplan.dk
+Kontakt
+Tobias Grindsted
+Chefkonsulent
+tsgr@ens.dk
+(+45) 3392 6640
+Anja Lundberg
+Specialkonsulent
+anjl@ens.dk
+(+45) 3392 6819
+Anette Norling
+Chefkonsulent
+ano@ens.dk
+(+45) 3392 6735

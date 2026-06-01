@@ -37,7 +37,11 @@ from pathlib import Path
 HERE = Path(__file__).parent
 ROOT = HERE.parent          # bess_tool/
 DB_DIR   = HERE / "embeddings"
-RAG_ROOT = ROOT / "rag_docs"
+# Primary: permit_ai/rag_docs/ (committed to git, available on Render)
+# Fallback: bess_tool/rag_docs/ (local-only manual additions)
+RAG_ROOT_PRIMARY  = HERE / "rag_docs"
+RAG_ROOT_FALLBACK = ROOT / "rag_docs"
+RAG_ROOT = RAG_ROOT_PRIMARY  # used only for legacy reference below
 
 EMBED_MODEL = "all-MiniLM-L6-v2"
 COLLECTION  = "permit_docs"
@@ -106,19 +110,35 @@ def ingest(
     totals: dict[str, int] = {}
 
     for country in countries:
-        country_dir = RAG_ROOT / country
+        # Check primary (permit_ai/rag_docs/, committed to git) then fallback (bess_tool/rag_docs/)
+        country_dir = RAG_ROOT_PRIMARY / country
         if not country_dir.exists():
-            print(f"\n[{country}] Kansio {country_dir} puuttuu — ohitetaan")
+            country_dir = RAG_ROOT_FALLBACK / country
+        if not country_dir.exists():
+            print(f"\n[{country}] Kansio puuttuu molemmista sijainneista — ohitetaan")
             totals[country] = 0
             continue
 
-        pdfs = sorted(country_dir.rglob("*.pdf"))
-        if not pdfs:
-            print(f"\n[{country}] Ei PDF-tiedostoja kansiossa {country_dir}")
+        # Combine files from both locations (dedup by stem)
+        seen_stems: set[str] = set()
+        all_files: list[tuple] = []
+        for search_root in [RAG_ROOT_PRIMARY / country, RAG_ROOT_FALLBACK / country]:
+            if not search_root.exists():
+                continue
+            for p in sorted(search_root.rglob("*.pdf")):
+                if p.stem not in seen_stems:
+                    all_files.append((p, "pdf"))
+                    seen_stems.add(p.stem)
+            for t in sorted(search_root.rglob("*.txt")):
+                if t.stem not in seen_stems:
+                    all_files.append((t, "txt"))
+                    seen_stems.add(t.stem)
+        if not all_files:
+            print(f"\n[{country}] Ei tiedostoja kansiossa {country_dir}")
             totals[country] = 0
             continue
 
-        print(f"\n[{country}] Löytyi {len(pdfs)} PDF:ää")
+        print(f"\n[{country}] Löytyi {len(pdfs)} PDF:ää, {len(txts)} TXT:tä")
         lang = COUNTRY_LANG[country]
 
         # Poista vanhat chunkit jos --reindex
@@ -133,13 +153,16 @@ def ingest(
         new_ids:   list[str]  = []
         new_metas: list[dict] = []
 
-        for pdf in pdfs:
+        for fpath, ftype in all_files:
             try:
-                text   = _read_pdf(pdf)
+                if ftype == "pdf":
+                    text = _read_pdf(fpath)
+                else:
+                    text = fpath.read_text(encoding="utf-8", errors="replace")
                 chunks = _chunk(text)
                 added  = 0
                 for i, chunk in enumerate(chunks):
-                    id_ = _safe_id(country, pdf.stem, i)
+                    id_ = _safe_id(country, fpath.stem, i)
                     if id_ in existing_ids:
                         continue
                     new_docs.append(chunk)
@@ -147,12 +170,12 @@ def ingest(
                     new_metas.append({
                         "country": country,
                         "lang":    lang,
-                        "source":  pdf.stem,
+                        "source":  fpath.stem,
                     })
                     added += 1
-                print(f"  {pdf.name}: {len(chunks)} chunkkia, {added} uutta")
+                print(f"  {fpath.name}: {len(chunks)} chunkkia, {added} uutta")
             except Exception as exc:
-                print(f"  VIRHE {pdf.name}: {exc}")
+                print(f"  VIRHE {fpath.name}: {exc}")
 
         if not new_docs:
             print(f"  → Kaikki chunkit jo indeksoitu")

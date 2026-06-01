@@ -1,0 +1,32 @@
+SOURCE: https://veiledere.nve.no/soknadsveileder-for-batterianlegg/
+COUNTRY: NO
+
+Søknadsveileder for batterianlegg
+Søk i veilederen
+Søknadsveileder batterianlegg
+Endringslogg
+25.3.2026: presisering av definisjon for batterianlegg tilknyttet forbruker
+8.4.2026: presisering av hvordan tiltaket påvirker driften av vannkraftverket
+Dette er en veileder for å søke NVE om tillatelse for å bygge, eie og drive batterianlegg. Behandlingsprosessen avhenger av det planlagte batterianlegget og hvor det er planlagt installert. 
+
+Angi hvor du planlegger å installere batteriet under, for å få veiledning om hvordan gå frem for å søke tillatelse til ditt prosjekt.
+Batterianlegg er i denne veilederen definert som en helhetlig installasjon som inkluderer alle nødvendige komponenter for å drifte anlegget (batteripakke, omformer og ev. transformator). Ledning for å knytte batterianlegget til nettet, en forbruker eller et kraftverk anses ikke som en del av batterianlegget.
+Med batterianlegg tilknyttet et kraftverk menes at batterianlegget planlegges tilknyttet i eller ved et kraftverk, bak kraftverkets tilknytningspunkt mot nettselskapet.
+Med batterianlegg tilknyttet nettet menes at batterianlegget er tilknyttet med eget tilknytningspunkt til nettanlegg tilhørende et nettselskap.
+Med batterianlegg tilknyttet en forbruker menes at batterianlegget tilknyttes i eller ved en uttakskunde (f.eks. en fabrikk), bak kundens tilknytningspunkt mot nettselskapet.
+Velg tilknytning
+TILKNYTNING 1
+Batterianlegg tilknyttet kraftverk
+TILKNYTNING 2
+Batterianlegg tilknyttet kraftnettet
+TILKNYTNING 3
+Batterianlegg tilknyttet forbruker
+Har du spørsmål?
+Denne veilederen dekker de fleste tilfeller av planlagte batterianlegg. Ta kontakt med NVE ved spørsmål.
+For tilknytning av batterianlegg i kraftverk:
+energikonsesjoner@nve.no
+For tilknytning av batterianlegg til nettet eller forbruker:
+nettkonsesjoner@nve.no
+Endringslogg
+25.3.2026: presisering av definisjon for batterianlegg tilknyttet forbruker
+8.4.2026: presisering av hvordan tiltaket påvirker driften av vannkraftverket
