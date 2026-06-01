@@ -31,6 +31,8 @@ rag_docs/**/*.pdf
 # macOS
 .DS_Store
 .AppleDouble
+permit_ai/rag_docs/**/.DS_Store
+permit_ai/docs/**/.DS_Store
 
 # IDE
 .vscode/
