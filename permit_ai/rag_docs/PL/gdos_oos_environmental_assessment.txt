@@ -1,0 +1,52 @@
+SOURCE: https://www.gov.pl/web/gdos
+COUNTRY: PL
+TOPIC: OOŚ environmental impact assessment EIA Poland GDOS energy projects
+
+# Poland Environmental Impact Assessment (OOŚ) — GDOS
+
+## Regulatory Authority
+
+GDOŚ (Generalna Dyrekcja Ochrony Środowiska / General Directorate for Environmental Protection) is Poland's central environmental protection authority, located at Al. Jerozolimskie 136, 02-305 Warszawa.
+
+## Environmental Conditioning Decision (Decyzja o Środowiskowych Uwarunkowaniach, DŚU)
+
+All energy projects in Poland requiring EIA must obtain a DŚU (environmental conditioning decision) before applying for building permits or concessions. This is a prerequisite for:
+- Wind farms
+- Solar power plants (above thresholds)
+- BESS installations (if meeting area/power thresholds)
+- Hydropower plants
+- Nuclear facilities (SMR)
+- Data centres (if large scale)
+
+## Environmental Impact Assessment (OOŚ) Process
+
+GDOŚ manages environmental impact assessments (Oceny Oddziaływania na Środowisko, OOŚ):
+
+1. Screening (kwalifikowanie): Determine if full EIA is required
+2. Scoping (ustalenie zakresu): Define scope of assessment
+3. Prepare EIA Report (Raport OOŚ)
+4. Public consultation
+5. RDOŚ (Regional Director for Environmental Protection) or GDOŚ issues DŚU
+
+## Transboundary Procedures
+
+GDOŚ handles transboundary EIA procedures (procedury transgraniczne OOŚ) for projects that may have cross-border environmental impacts.
+
+## Natura 2000
+
+GDOŚ oversees Poland's Natura 2000 network. Energy projects in or near Natura 2000 areas require additional Habitats Directive assessments (ocena habitatowa).
+
+## Nature Conservation Register
+
+GDOŚ maintains the Central Register of Nature Protection Forms (Centralny Rejestr Form Ochrony Przyrody), which must be consulted before siting energy projects.
+
+## Applicable Legislation
+
+- Ustawa z dnia 3 października 2008 r. o udostępnianiu informacji o środowisku i jego ochronie, udziale społeczeństwa w ochronie środowiska oraz o ocenach oddziaływania na środowisko (EIA Act 2008)
+- Dyrektywa OOŚ (EU EIA Directive) — implemented in Polish law
+- Prawo ochrony środowiska (Environmental Protection Law)
+
+## Contact
+
+GDOŚ: kancelaria@gdos.gov.pl
+Regional offices: RDOŚ (Regionalna Dyrekcja Ochrony Środowiska) in each voivodeship

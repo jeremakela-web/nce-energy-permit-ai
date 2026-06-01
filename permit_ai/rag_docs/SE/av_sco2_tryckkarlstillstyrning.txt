@@ -1,0 +1,38 @@
+SOURCE: https://www.av.se/produktion--teknik/tryckkarlstillsynen/
+COUNTRY: SE
+TOPIC: sCO2 pressure vessel permit Sweden Arbetsmiljöverket
+
+# Tryckbärande Anordningar och sCO₂-Turbiner — Sverige (Arbetsmiljöverket)
+
+## Regelverket
+
+Arbetsmiljöverket (AV) reglerar tryckbärande anordningar i Sverige under:
+- Arbetsmiljölagen (1977:1160)
+- AFS 2017:3 om tryckbärande anordningar (implementerar EU:s PED 2014/68/EU)
+- AFS 2016:1 om tryckbärande anordningar i drift
+
+## sCO₂-Turbiner som Tryckbärande Anordningar
+
+sCO₂ (superkritisk koldioxid) turbiner är tryckbärande anordningar i kategori III–IV:
+- Arbetstryck typiskt 70–300 bar
+- CO₂ klassas som "grupp 2-fluid" (ej hög risk, men högt tryck)
+- Krav på CE-märkning och EU-försäkran om överensstämmelse
+
+## Krav Innan Driftsättning
+
+1. CE-märkt utrustning med teknisk dokumentation
+2. Besiktning av ackrediterat besiktningsorgan (t.ex. Inspecta/SGS, TÜV, Bureau Veritas)
+3. Återkommande besiktning enligt fastlagt program
+4. Anmälan till Arbetsmiljöverket för vissa kategorier
+
+## Kraftverksspecifika Krav
+
+För ett sCO₂-kraftverk tillkommer:
+- Miljötillstånd (Miljöbalken kap. 9) — om mer än 50 MW total installerad effekt
+- Bygglov under Plan- och bygglagen (PBL)
+- Miljökonsekvensbeskrivning (MKB) under Miljöbalken kap. 6
+- Nätanslutning via Svenska kraftnät (>100 MW) eller regionnät
+
+## Kontakt
+
+Arbetsmiljöverket: arbetsmiljoverket@av.se | www.av.se

@@ -1,0 +1,60 @@
+SOURCE: https://www.ure.gov.pl/en/communication/news/389,Electrical-energy-storage-first-report-issued-by-the-President-of-URE.html
+COUNTRY: PL
+TOPIC: BESS battery energy storage licensing regulation Poland URE
+
+# Poland Electrical Energy Storage (BESS) Regulations — URE Report
+
+## Regulatory Framework (Since 2021)
+
+Since July 3, 2021, the storage of electricity in storage facilities with total installed capacity exceeding 10 MW is a regulated activity subject to a licence from URE (Urząd Regulacji Energetyki — Energy Regulatory Office).
+
+Storage facilities with capacity between 50 kW and 10 MW must be registered with network operators but do not require licenses.
+
+## Grid Connection Rules
+
+Distribution system operators (DSOs) face ownership limitations under Polish law:
+- "An electricity system operator is not allowed to own, build, operate or manage energy storage facilities" unless URE President grants special approval
+- Special approval recognizes the facility as a Fully Integrated Network Element (FINE)
+- Between February 2023 and May 2024: 6 distribution operators submitted 41 applications for FINE status
+
+## Grid Connection Conditions (Warunki Przyłączenia)
+
+Recent regulations changed connection condition validity:
+- Validity period shortened from 2 years to 1 year (2024 reform)
+- This compresses the development timeline for BESS investors from 24 months to 12 months
+- Connection conditions (warunki przyłączenia) must be obtained from the relevant network operator (DSO or PSE for transmission level)
+
+## Market Status (May 2024)
+
+- 12 electricity storage facilities registered with total installed capacity of 1,464.5 MW
+- Pumped storage plants: 85% of registered capacity
+- Battery technology: approx. 50% of storage facilities
+- Dominant battery technology: lithium-ion
+
+## Cable Pooling (Cable Pooling) — 2023 Onwards
+
+Energy storage is included in cable pooling, allowing PV + wind + BESS to share a single connection point. From April 2026, storage no longer counts as a separate source occupying connection capacity — this reduces grid connection costs for hybrid projects.
+
+## Capacity Market
+
+- 2028 capacity auction: storage = 15% of contracted capacity (vs. <7% previously)
+- Total contracted capacity 2021-2028: 9.5 GW
+
+## New Rules from 2026
+
+Poland's Grid Act (Ustawa sieciowa) from 2026 changes RES and BESS grid connection rules, including:
+- Simplified connection procedures for storage collocated with renewable installations
+- Updated rules for hybrid RES+BESS projects
+
+## Applicable Legislation
+
+- Prawo energetyczne (Energy Law) — licensing, DSO restrictions
+- Ustawa o odnawialnych źródłach energii (RES Law) — support mechanisms
+- Ustawa sieciowa (Grid Act, 2026) — updated connection rules
+- Rozporządzenie o warunkach przyłączenia — grid connection conditions regulation
+
+## Contact
+
+URE (Urząd Regulacji Energetyki)
+ul. Towarowa 25, 00-869 Warszawa
+urzad@ure.gov.pl | www.ure.gov.pl

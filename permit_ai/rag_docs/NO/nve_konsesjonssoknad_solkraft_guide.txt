@@ -1,0 +1,61 @@
+SOURCE: https://veiledere.nve.no/konsesjonssoknad-solkraft/
+COUNTRY: NO
+TOPIC: Solar power concession application requirements Norway NVE
+
+# Solar Power Concession Application Guide — Norway (NVE)
+
+## Overview
+
+NVE (Norges vassdrags- og energidirektorat) provides a comprehensive digital guide for solar power plant concession applications. Most ground-mounted solar power plants require construction licensing under the Energy Act (energiloven).
+
+## Mandatory Application Components
+
+Applications must include:
+
+1. Introduction section
+2. Project description covering the full installation
+3. Environmental and societal impacts assessment
+4. Required attachments (maps, technical specifications)
+
+## Required Assessment Topics
+
+Applicants must address all of the following:
+
+- Natural hazards and climate adaptation measures
+- Aquatic ecosystems and fish populations
+- Wildlife, invasive species, and plant pests
+- Water and groundwater contamination
+- Network connection and grid capacity
+- Light reflection impacts from solar panels
+- Electronic communication infrastructure effects
+- Land use and component descriptions
+- Summary of key figures
+
+## Key Regulatory Updates
+
+- February 2025: Added references to guidance for power-sensitive information; clarified requirements for wildlife, invasive species, contamination, and climate assessment; required digital map files for grid connection
+- June 1, 2025: Solar power plant notifications became subject to mandatory reporting requirements
+- July/April 2024: Added requirements for key figures summary and descriptions of planning areas, land use, and components
+- April 2026: Public health removed as a distinct assessment category
+
+## Application Process
+
+1. Submit konsesjonssøknad (concession application) to NVE
+2. NVE conducts public consultation (høring)
+3. Assessment of environmental and grid impacts
+4. NVE issues concession (konsesjon) or rejection
+
+## Grid Connection
+
+Applications must address network connection (nettilknytning) including:
+- Connection point and grid capacity
+- Transmission/distribution system requirements
+- Digital map files of proposed connection
+
+## Contact
+
+NVE Energikonsesjoner
+Phone: 40 44 74 59 (weekdays 9:00-11:00 and 12:30-14:00)
+Email: energikonsesjoner@nve.no
+
+License: NLOD / CC BY-SA 4.0

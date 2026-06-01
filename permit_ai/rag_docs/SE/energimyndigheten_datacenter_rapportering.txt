@@ -1,0 +1,65 @@
+SOURCE: https://www.energimyndigheten.se/effektiv-energianvandning/foretag/rapportering-av-datacenters-energiprestanda/
+COUNTRY: SE
+TOPIC: Data centre datacenter energy reporting permit Sweden Energimyndigheten
+
+# Data Centre Energy Performance Reporting — Sweden
+
+## Legal Framework
+
+Sweden's Law 2025:570 mandates annual energy performance disclosure for data centre operators. The framework implements the revised Energy Efficiency Directive (EED, EU).
+
+## Reporting Threshold
+
+Mandatory for facilities with "an installed IT power requirement of at least 500 kW."
+
+Exceptions: Security-sensitive operations, defense, and crisis management facilities.
+
+## Critical Deadlines
+
+- April 27, 2026: Operators must notify Energimyndigheten (Swedish Energy Agency)
+- May 15, 2026: Data submission to the EU database must be completed
+- Reporting period: Calendar year 2025
+
+## Required Data Parameters
+
+Operators report metrics including:
+- Energy consumption
+- Water usage
+- Waste heat recovery
+- Grid services contributions
+
+Parameters specified by Delegated Regulation 2024/1364, Annexes I and II.
+
+## Registration Process
+
+1. Email company details to Energimyndigheten
+2. Create EU Login account
+3. Await registration confirmation
+4. Request data submitter access in EU database
+5. Await authorization verification
+6. Begin reporting in EU platform
+
+## Policy Framework
+
+- Article 12 of revised EED: Transparency requirements
+- Article 12.4: Operators managing facilities >1 MW encouraged to adopt EU Code of Conduct for Data Centre Energy Efficiency
+
+## Voluntary Energy Efficiency Obligations
+
+Under the Energy Efficiency Directive, Sweden requires companies with annual energy consumption over 10 TJ to conduct energy audits or implement certified energy management systems.
+
+## Building Permits
+
+Data centres require building permits (bygglov) under Plan- och bygglagen (PBL). Large installations (typically >5,000 m² or significant impact) require detailed plan (detaljplan) from municipality. Environmental assessment (MKB) under Miljöbalken may be required for particularly large facilities.
+
+## Key Legislation
+
+- Lag 2025:570 om datacenterrapportering (reporting law)
+- EU Energy Efficiency Directive (revised 2023/1791/EU)
+- Plan- och bygglagen (PBL) — building permits
+- Miljöbalken — environmental assessment
+
+## Contact
+
+Energimyndigheten
+datacenter@energimyndigheten.se

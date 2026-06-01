@@ -24,6 +24,7 @@ permit_ai/embeddings/
 # Kansainväliset RAG-PDF:t (lisätään manuaalisesti, ei repoon)
 # Kansiorakenne ja README:t ovat repossa (.gitkeep)
 rag_docs/**/*.pdf
+rag_docs/**/*.txt
 
 # Lokit
 *.log

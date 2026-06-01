@@ -1,0 +1,49 @@
+SOURCE: https://www.udt.gov.pl/dozor-techniczny
+COUNTRY: PL
+TOPIC: Data centre datacenter permits Poland building permit UDT URE
+
+# Centra Danych — Pozwolenia i Wymagania w Polsce
+
+## Pozwolenie na Budowę (Prawo Budowlane)
+
+Centrum danych wymaga pozwolenia na budowę:
+- Organ: Starosta (do 20.000 m² pow. użytkowej) lub Wojewoda (powyżej)
+- Wymagane: projekt budowlany zgodny z warunkami zabudowy lub MPZP
+- Decyzja o warunkach zabudowy (WZ) jeśli brak MPZP
+
+## Decyzja Środowiskowa (DŚU)
+
+Dla dużych centrów danych (znaczący pobór mocy, emisja ciepła, chłodnie) wymagana może być DŚU od RDOŚ:
+- Instalacje chłodnicze (czynniki chłodnicze — F-gazy)
+- Znaczące zużycie wody (chłodnie wodne)
+- Instalacje spalinowe (agregaty UPS/diesel)
+
+## Koncesja URE (Duzi Odbiorcy)
+
+Centrum danych jako odbiorca energii > 5 MW może wymagać:
+- Umowy o świadczenie usług przesyłania (OSD/OSP)
+- Warunki przyłączenia od operatora sieci (OSD — dystrybucja lub PSE — przesył)
+- Instrukcja Ruchu i Eksploatacji Sieci (IRiESD/IRiESP) — zasady bilansowania
+
+## UDT — Nadzór Techniczny
+
+UDT sprawuje nadzór nad urządzeniami w centrum danych:
+- Agregaty prądotwórcze (urządzenia ciśnieniowe — zbiorniki oleju napędowego > 150 l)
+- Instalacje klimatyzacyjne z czynnikami pod ciśnieniem
+- Dźwigi osobowe i towarowe
+
+## Energetyka
+
+URE (Urzad Regulacji Energetyki) nadzoruje:
+- Sprzedaż energii elektrycznej — licencja na obrót (dla Data Centers sprzedających usługi)
+- Efektywność energetyczna — ustawa z dnia 20 maja 2016 r.
+
+## Raportowanie Energetyczne (EU EED)
+
+Centra danych ≥ 500 kW IT raportują do bazy EU Energy Efficiency Directive.
+Polska implementuje EED w 2025–2026 r.
+
+## Kontakt
+
+UDT: udt@udt.gov.pl | www.udt.gov.pl
+URE: urzad@ure.gov.pl | www.ure.gov.pl

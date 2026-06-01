@@ -1,0 +1,58 @@
+SOURCE: https://ym.fi/datakeskukset
+COUNTRY: FI
+TOPIC: Datakeskus rakennuslupa ympäristölupa Finland data centre permits
+
+# Datakeskusten luvat Suomessa — Ympäristöministeriö
+
+## Datakeskukset ja luvitus Suomessa
+
+Datakeskusten rakentaminen edellyttää useita lupia:
+
+### 1. Rakennuslupa (Rakentamislaki 751/2023)
+
+Kaikki datakeskukset tarvitsevat rakennusluvan kunnalta. Hakemuksen liitteiksi tarvitaan:
+- Arkkitehti- ja rakennesuunnitelmat
+- LVIA-suunnitelmat (lämpö, vesi, ilmastointi, automatiikka)
+- Sähkösuunnitelmat (UPS, generaattorit, jäähdytys)
+- Energiaselvitys (energiatehokkuus)
+
+### 2. Ympäristölupa (Ympäristönsuojelulaki 527/2014)
+
+Suuren datakeskuksen (yleensä >1 MW IT-teho tai merkittävä ympäristövaikutus) hankkeeseen voidaan vaatia ympäristölupa. Lupa vaaditaan erityisesti jos:
+- Toiminnasta aiheutuu merkittäviä melupäästöjä (jäähdytyslaitteisto)
+- Käytetään kemikaaleja (kylmäaineet, dieselgeneraattorit)
+- Sijainti lähellä vesistöä tai Natura 2000 -aluetta
+
+### 3. YVA — Ympäristövaikutusten Arviointi
+
+Erittäin suurille datakeskuksille (yleensä sähkönkulutus >200 MW tai merkittävä vaikutusalue) saatetaan vaatia YVA-menettely (Laki ympäristövaikutusten arviointimenettelystä 252/2017).
+
+### 4. Sähköliityntä — Fingrid tai jakeluverkko
+
+Datakeskukset yli 100 MW liittyvät kantaverkkoon (Fingrid). Pienemmät liittyvät paikallisen jakeluverkon kautta:
+- Liittymissopimus sähköverkkoyhtiön kanssa
+- Verkkopalvelusopimus (NBS) tai suunnittelusopimus
+- Kantaverkkoliityntä: Fingrid – liittymishakemus
+
+### 5. Energiatehokkuus — Uusi lainsäädäntö (2025–2026)
+
+EU:n energiatehokkuusdirektiivi (EED) edellyttää:
+- Vähintään 500 kW IT-tehon datakeskukset raportoi energiatehokkuustiedot EU-tietokantaan
+- Suomen kansallinen laki: Laki 2025:570 vastaava velvoite
+- Raportoinnin määräaika: 15.5.2026 (tiedot vuodelta 2025)
+
+### 6. Tietoturva ja toimitilaturvallisuus
+
+Kriittistä infrastruktuuria palvelevat datakeskukset (viranomaistiedot, finanssiala) voivat vaatia:
+- Tietoturvaselvitys (Traficom)
+- Toimitilaturvallisuus KATAKRI-kriteeristön mukaan
+
+## EU:n taksonomia
+
+Datakeskusten ympäristöasioissa sovelletaan EU:n kestävyysluokitusjärjestelmää (taksonomiaa), joka edellyttää selvitystä ilmastovaikutuksista, vedenkäytöstä ja kiertotaloudesta.
+
+## Lisätietoa
+
+Ympäristöministeriö: kirjaamo.ym@gov.fi
+Energiavirasto (datakeskusraportointi): kirjaamo@energiavirasto.fi
+Fingrid (kantaverkkoliityntä): liittyminen@fingrid.fi

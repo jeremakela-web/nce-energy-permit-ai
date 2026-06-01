@@ -1,0 +1,57 @@
+SOURCE: https://www.havochvatten.se/en/eu-and-international/towards-sustainable-hydropower-in-sweden.html
+COUNTRY: SE
+TOPIC: Hydropower water permit tillstånd vattenkraft Sweden environmental court
+
+# Hydropower Water Permits in Sweden
+
+## Overview
+
+All hydropower operations in Sweden require water use permits (tillstånd för vattenverksamhet) under the Environmental Code (Miljöbalken). New hydropower projects and significant modifications require applications to the Land and Environmental Court (Mark- och miljödomstol).
+
+## National Plan for Hydropower Permit Review (NAP)
+
+Over approximately 20 years, all Swedish hydropower owners that signed up to the NAP (Nationell plan för omprövning av vattenkraft) must apply for new permits with modern environmental provisions. The first wave of applications — covering hydropower installations in 17 river basins — was submitted to the Land and Environmental Court starting February 1, 2022.
+
+## Responsible Institutions
+
+- **HaV** (Havs- och vattenmyndigheten / Swedish Agency for Marine and Water Management): National coordinator for water management
+- **Energimyndigheten** (Swedish Energy Agency): Energy aspects of hydropower
+- **Svenska kraftnät**: Grid operator perspective
+- **Mark- och miljödomstol**: Issues water use permits
+- **Kammarkollegiet**: Historically handled some water-related matters
+
+## Modern Environmental Requirements
+
+The new legislation introduced:
+- Time-limited environmental requirements (maximum 40 years)
+- Obligation to update the licence when requirements become outdated
+- Minimum flow requirements (minimitappning) for ecological flow
+- Fish passage requirements (fiskpassager)
+- Sediment management requirements
+
+## Water Framework Directive (EU)
+
+Sweden must implement the EU Water Framework Directive (WFD) environmental objectives in hydropower permits. This requires balancing renewable energy production with:
+- Good ecological status in water bodies
+- Fish migration and habitat protection
+- Downstream sediment transport
+
+## Application Process
+
+1. Contact HaV and relevant authority for pre-consultation
+2. Prepare environmental impact assessment (MKB, Miljökonsekvensbeskrivning) under Miljöbalken Chapter 6
+3. Submit application to Mark- och miljödomstol
+4. Public consultation period
+5. Court hearing and decision
+
+## Key Legislation
+
+- Miljöbalken (Environmental Code), Chapter 11 (water activities)
+- Vattenverksamhetsförordningen (Water Activities Regulation)
+- EU Water Framework Directive (2000/60/EC)
+- Ellagen (Electricity Act) for grid connection
+
+## Contact
+
+HaV: havochvatten@havochvatten.se
+Mark- och miljödomstol (applies by region — main courts in Umeå, Sundsvall, Nacka, Vänersborg, Växjö)

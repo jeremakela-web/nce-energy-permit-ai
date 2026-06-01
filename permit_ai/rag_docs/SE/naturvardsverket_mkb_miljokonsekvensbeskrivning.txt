@@ -1,0 +1,56 @@
+SOURCE: https://www.naturvardsverket.se/vagledning-och-stod/miljobedomning/
+COUNTRY: SE
+TOPIC: MKB environmental impact assessment energy projects Sweden Naturvårdsverket
+
+# Environmental Impact Assessment (MKB) in Sweden — Naturvårdsverket
+
+## Overview
+
+Under Miljöbalken (Environmental Code) Chapter 6, most energy production projects require a Miljökonsekvensbeskrivning (MKB — Environmental Impact Assessment report) before permits can be granted.
+
+## Scope — Which Projects Require MKB
+
+Projects with potentially significant environmental impact require MKB. Typically:
+- Wind power plants (vindkraftverk) — all large-scale installations
+- Solar power plants (solkraftverk) — above certain size thresholds
+- Battery energy storage (batterilager) — larger installations near sensitive areas
+- Hydropower installations (vattenkraftverk)
+- Nuclear facilities (kärntekniska anläggningar) — mandatory full EIA
+
+## MKB Contents (Miljöbalken Chapter 6, § 35)
+
+The MKB must describe:
+1. Alternative sites and project alternatives
+2. Current environmental conditions (nollalternativ)
+3. Significant impacts on humans, fauna, flora, soil, water, air, climate, landscape, material assets, and cultural heritage
+4. Interactions between factors
+5. Short-term, long-term, temporary and permanent impacts
+6. Mitigation measures (skyddsåtgärder)
+7. Impact monitoring plan (kontrollprogram)
+8. Non-technical summary
+
+## Process
+
+1. Samråd (consultation): Developer notifies affected parties and authorities; public and stakeholder input collected
+2. Undersökning (screening): Authority decides if significant environmental impact likely
+3. Prepare MKB
+4. Submit application with MKB to permitting authority (Länsstyrelse or Mark- och miljödomstol)
+5. Review and decision
+
+## For Energy Projects
+
+Wind power: MKB submitted as part of the application to Mark- och miljödomstol (for concession under Miljöbalken or Ellagen)
+Solar power: MKB may be required for installations above Natura 2000 or protected areas thresholds
+BESS: MKB required if sited in sensitive areas or combined with other significant installations
+Nuclear: Full EIA under Kärntekniklagen with SSM oversight
+
+## Key Legislation
+
+- Miljöbalken (Environmental Code), Chapter 6
+- Förordning (1998:905) om miljökonsekvensbeskrivningar
+- EU EIA Directive (2011/92/EU as amended by 2014/52/EU)
+
+## Contact
+
+Naturvårdsverket: naturvardsverket@naturvardsverket.se
+Länsstyrelse (county level) for regional assessment guidance

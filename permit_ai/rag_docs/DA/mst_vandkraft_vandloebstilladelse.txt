@@ -1,0 +1,48 @@
+SOURCE: https://mst.dk/natur-vand/vand-i-hverdagen/vandloeb/
+COUNTRY: DA
+TOPIC: Hydropower water permit vandkraft vandløbstilladelse Denmark
+
+# Vandkraft og Vandløbstilladelse — Danmark (Miljøstyrelsen / SGAV)
+
+## Vandkraft i Danmark
+
+Danmark har begrænset potentiale for vandkraft på grund af fladt terræn. Dog findes mindre vandkraftanlæg langs vandløb, der kræver særlige tilladelser.
+
+## Tilladelser til Vandkraftanlæg
+
+Vandkraftanlæg kræver:
+
+### 1. Vandindvindingstilladelse (Vandforsyningsloven)
+Tilladelse til at udnytte vandets energi fra vandlovsgrundlaget.
+
+### 2. Vandløbsregulering (Vandløbsloven)
+Ændringer af vandløb (opstemning, kanalisation, sænkning) kræver tilladelse fra kommunen eller vandlopsnævnet.
+
+### 3. Miljøvurdering (VVM)
+Vandkraftanlæg over tærskelværdierne kræver VVM-screening og eventuelt fuld miljøvurdering under Miljøvurderingsloven.
+
+### 4. Habitatdirektivet
+Anlæg nær Natura 2000-områder kræver habitatvurdering (Naturbeskyttelseslovens § 6).
+
+## EU Vandrammedirektiv
+
+Danmark er forpligtet af EU's Vandrammedirektiv (2000/60/EF) til at opnå god økologisk tilstand i vandløb. Nye vandkraftanlæg må ikke forringe vandmiljøets tilstand, herunder:
+- Fiskepassage (faunapassager)
+- Sedimenttransport
+- Vandføring (minimumsvandføring)
+
+## Elproduktionsregulering
+
+Vandkraft > 25 MW kræver tilladelse til elproduktion fra Energistyrelsen (elproduktionsbekendtgørelsen). Mindre anlæg < 5 MW er undtaget.
+
+## Relevante Myndigheder
+
+- Kommunen: vandløbsregulering, byggetilladelse
+- SGAV/Miljøstyrelsen: habitatvurdering, miljøgodkendelse
+- Energistyrelsen: elproduktionsbestemmelserne
+- Energinet: nettilslutning
+
+## Kontakt
+
+Styrelsen for Grøn Arealomlægning og Vandmiljø (SGAV): info@sgav.dk
+Energistyrelsen: ens@ens.dk

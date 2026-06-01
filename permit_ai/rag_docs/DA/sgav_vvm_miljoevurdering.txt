@@ -1,0 +1,55 @@
+SOURCE: https://sgavmst.dk/natur-og-jagt/miljoevurdering/om-miljoevurdering
+COUNTRY: DA
+TOPIC: VVM environmental impact assessment EIA Denmark energy projects
+
+# Environmental Assessment (Miljøvurdering / VVM) in Denmark
+
+## Purpose and Scope
+
+Environmental assessments must generally be conducted before decisions significantly affecting the environment ("Der skal som udgangspunkt altid gennemføres miljøvurderinger forud for beslutninger, der kan påvirke miljøet væsentligt").
+
+These assessments apply to plans, programs, and projects including:
+- Regulatory measures (decrees, national plans)
+- Regional and municipal planning
+- Infrastructure and construction projects
+- Energy installations (wind turbines, solar parks, BESS, power plants)
+
+## What is Assessed
+
+Environmental assessments evaluate impacts on:
+- Population and human health
+- Biological diversity (especially protected species and Natura 2000 habitats)
+- Land, soil, water, air, and climate
+- Material assets, cultural heritage, and landscape
+- Interactions between these factors
+
+## Process
+
+1. Project screening: Determine if full VVM assessment is required
+2. If required: Prepare environmental consequences report (miljøkonsekvensrapport)
+3. Describe and assess all relevant environmental impacts including noise
+4. Public consultation (høring) — mandatory
+5. Authority decision
+
+## Wind Turbines
+
+Individual wind turbines with total height up to 25 m (household turbines) in rural zones are generally exempt from VVM requirements. All larger wind projects require VVM screening.
+
+## Legal Framework
+
+- Primary law: Act on Environmental Assessment of Plans, Programs, and Concrete Projects (VVM)
+- Environmental Assessment Ordinance (2024)
+- EU VVM Directive (implemented in Danish law)
+- EU Council Regulation (December 2022) on renewable energy processing timelines
+
+## Guidance Documents
+
+Styrelsen for Grøn Arealomlægning og Vandmiljø (SGAV, formerly Miljøstyrelsen) provides two guidance documents:
+1. Guidance on environmental assessment of concrete projects
+2. Guidance on environmental assessment of plans and programs
+
+The guidance document on wind turbine planning and permit issuance (vejledning om planlægning for og tilladelse til opstilling af vindmøller, January 2022) provides comprehensive requirements for noise, landscape, biodiversity, and planning.
+
+## Note on Agency Reorganization
+
+As of 2025, environmental assessment responsibilities were moved from Miljøstyrelsen (MST) to the new Styrelsen for Grøn Arealomlægning og Vandmiljø (SGAV). URLs may have changed accordingly.

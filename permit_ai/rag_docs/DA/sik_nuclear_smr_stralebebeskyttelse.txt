@@ -1,0 +1,46 @@
+SOURCE: https://www.sik.dk/stralebeskyttelse
+COUNTRY: DA
+TOPIC: Nuclear SMR atomic energy radiation protection Denmark SIK
+
+# Atom- og Strålebeskyttelse i Danmark — SIK (Sikkerhedsstyrelsen)
+
+## Lovgivning
+
+Den primære lovgivning om nuklear sikkerhed og strålebeskyttelse i Danmark:
+- Lov om nukleare anlæg (Lov nr. 170 af 16. marts 1972 med ændringer)
+- Barsebäck-aftalen (historisk — ophørt da svenske anlæg lukkede)
+- EU-direktiver: Rådets direktiv 2013/59/Euratom (strålebeskyttelse)
+- Lov om sikkerhed m.v. ved atomanlæg
+
+## SIK's Rolle
+
+Sikkerhedsstyrelsen (SIK) er Beredskabsstyrelsens og Energistyrelsens myndighed for:
+- Strålebeskyttelse (ioniserende stråling)
+- Tilsyn med radioaktivt materiale og anlæg
+- Regulering af nuklear sikkerhed
+- Beredskab ved nukleare hændelser
+
+## Danmark og Kerneenergi
+
+Danmark har ikke egne kernekraftværker og forbudt i Folketing (nej til kernekraft 1985). Men:
+- SMR-teknologi rejser spørgsmål om ny lovramme
+- Intet forbud i selve lovgivningen — men politisk konsensus mod kernekraft
+- Interesserede parter (Seaborg Technologies, m.fl.) driver SMR-lobbyisme og forskning
+
+## SMR-Regulering (Forventet Framework)
+
+Hvis Danmark åbner for SMR-anlæg:
+1. Kræver ændring af lovgivningen og politisk vedtagelse
+2. SIK vil regulere strålebeskyttelse og nuklear sikkerhed
+3. Energistyrelsen vil stå for elproduktionsaspekter
+4. VVM-vurdering (miljøvurdering) under Miljøvurderingsloven
+5. Kommunalt plangrundlag og byggetilladelse
+
+## Beredskab
+
+SIK koordinerer nukleart beredskab i Danmark (selv uden egne anlæg) grundet nærhed til svenske og finske kernekraftværker. Beredskabsplaner administreres i samarbeid med Beredskabsstyrelsen.
+
+## Kontakt
+
+Sikkerhedsstyrelsen: sik@sik.dk | www.sik.dk
+Energistyrelsen (el): ens@ens.dk

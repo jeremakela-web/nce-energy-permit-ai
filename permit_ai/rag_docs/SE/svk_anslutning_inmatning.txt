@@ -1,0 +1,53 @@
+SOURCE: https://www.svk.se/om-kraftsystemet/
+COUNTRY: SE
+
+Svenska kraftnät använder kakor (cookies) för att förbättra och anpassa ditt besök på vår webbplats. Genom att använda webbplatsen accepterar du användandet av dessa kakor.
+Läs mer om kakor och hur du avaktiverar dem
+Acceptera endast nödvändiga kakor
+Acceptera alla kakor
+Anpassa vilka kakor du vill acceptera
+keyboard_arrow_down
+Inställningar för kakor du godkänner
+Nödvändiga
+Jag godkänner att kakor nödvändiga för att webbplatsen ska fungera används
+Statistik
+Jag godkänner att kakor som används för att samla in användarstatistik används
+Funktion
+Jag godkänner att kakor som används för att möjliggöra funktionalitet används
+Spara inställningar
+Om kraftsystemet
+El är idag en självklarhet för ett modernt demokratiskt samhälle. Det är en förutsättning för nästan allt runt omkring oss: belysning, värme, sjukvård, IT, matproduktion, underhållning och vårt dagliga arbete. Men användning av el är en fråga om fysik, teknik, IT och omfattande riskanalyser. För att vi som samhälle ska kunna använda el krävs hårt arbete, omfattande planering samt många som samarbetar. Svenska kraftnät är en viktig kugge i det maskineriet.
+Översikt av kraftsystemet
+Kraftsystemet består av många olika delar och aktörer. För att förstå hur allt samverkar kan man dela in det i två delar efter vad det hanterar - ett fysiskt för själva elen, och ett ekonomiskt för den finansiella hanteringen.
+Läs mer om kraftsystemet
+arrow_forward
+Om systemansvaret
+Att vara systemansvarig innebär att säkerställa överföring och distribution av el inom givna ramar. Överföring och distribution av el kan endast göras när produktion, nät och förbrukning samverkar driftssäkert.
+Läs mer om systemansvaret
+arrow_forward
+Om transmissionsnätet
+Transmissionsnätet för el är grunden för Sveriges elförsörjning. Det består av cirka 16 000 km kraftledningar, drygt 175 transformator- och kopplingsstationer samt utlandsförbindelser med både växel- och likström.
+Läs mer om transmissionsnätet
+arrow_forward
+Om elmarknaden
+Elmarknaden bygger på konceptet att det ska finnas planerade fysiska elleveranser för att täcka all förbrukning. Detta är en förutsättning för att bland annat balanseringen av kraftsystemet ska fungera så effektivt som möjligt.
+Läs mer om elmarknaden
+arrow_forward
+Om olika energikällor
+Vi har många olika kraftslag i det svenska elsystemet. Sol, vind, vatten, kärnkraft och övrig värmekraft ger oss en mix av energikällor som är viktiga för att reglera balansen mellan produktion och förbrukning.
+Läs mer om energikällor
+arrow_forward
+Legalt ramverk
+Förutom svenska lagar, förordningar och föreskrifter omfattas vi även av EU-lagstiftning i form av direktiv och förordningar. Här är de viktigaste lagarna och förordningarna som avser el och som berör kraftsystemet och elmarknaden.
+Läs mer om de olika lagarna
+arrow_forward
+Kontrollrummet
+För att kraftsystemet ska fungera måste det hela tiden vara balans mellan produktion och förbrukning av el. På sidan "Kontrollrummet" hittar du översiktlig. Här får du en överskådlig inblick av fenomen i elsystemet.
+Till kontrollrummet
+arrow_forward
+Kraftsystemdata
+Ta del av statistik och data för kraftsystemet, exempelvis uppmätta timvärden för förbrukning, produktion och import/export.
+Till kraftsystemdata
+arrow_forward
+Granskad
+6 februari 2025

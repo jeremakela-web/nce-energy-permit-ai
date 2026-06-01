@@ -1,0 +1,41 @@
+SOURCE: https://www.dsb.no/lover-og-forskrifter/trykkpaavirket-utstyr/
+COUNTRY: NO
+TOPIC: sCO2 pressure equipment modular power plant Norway DSB
+
+# Trykkpåvirket Utstyr og Modulære Kraftverk — Norge (DSB)
+
+## Direktoratet for samfunnssikkerhet og beredskap (DSB)
+
+DSB regulerer trykkpåvirket utstyr i Norge under:
+- Trykkpåvirktet utstyr-direktivet (EU PED 2014/68/EU), implementert i norsk rett
+- Forskrift om trykkpåvirket utstyr (FOR-2017-06-27-985)
+
+## sCO₂-Turbiner
+
+sCO₂ (superkritisk CO₂) turbiner klassifiseres som trykkpåvirket utstyr, kategori tilsvarende:
+- Dampturbin-installasjoner
+- Høytrykks prosessanlegg
+- PED-kategori III eller IV
+
+## Krav
+
+Produsent leverer:
+- CE-merking
+- EU-samsvarserklæring
+- Teknisk dokumentasjon
+- Sertifikat fra teknisk kontrollorgan (NoBo) for kategori III–IV
+
+## Kraftverk/Energianlegg Over Terskelverdi
+
+Et sCO₂-kraftverk krever konsesjon fra NVE (Norges vassdrags- og energidirektorat) under energiloven dersom:
+- Produksjonskapasitet > 1 MW (småkraftavgrensning) eller > 10 MW (konsesjonsplikt)
+- Nettilknytning koordineres med Statnett (>100 MW) eller lokal DSO
+
+## Konsesjonsutredning
+
+Konsekvensutredning (KU) etter plan- og bygningsloven § 14 krevs for kraftverk med vesentlig miljøpåvirkning.
+
+## Kontakt
+
+DSB: postmottak@dsb.no | www.dsb.no
+NVE (konsesjon): energikonsesjoner@nve.no

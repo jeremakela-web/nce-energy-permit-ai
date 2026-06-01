@@ -138,7 +138,9 @@ def ingest(
             totals[country] = 0
             continue
 
-        print(f"\n[{country}] Löytyi {len(pdfs)} PDF:ää, {len(txts)} TXT:tä")
+        n_pdf = sum(1 for _, ft in all_files if ft == "pdf")
+        n_txt = sum(1 for _, ft in all_files if ft == "txt")
+        print(f"\n[{country}] Löytyi {n_pdf} PDF:ää, {n_txt} TXT:tä")
         lang = COUNTRY_LANG[country]
 
         # Poista vanhat chunkit jos --reindex

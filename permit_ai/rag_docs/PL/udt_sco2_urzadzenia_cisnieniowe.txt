@@ -1,0 +1,47 @@
+SOURCE: https://www.udt.gov.pl/dozor-techniczny/urzadzenia-techniczne/
+COUNTRY: PL
+TOPIC: sCO2 pressure vessels industrial power plant UDT Poland
+
+# Urządzenia Ciśnieniowe i sCO₂ Turbiny — Polska (UDT)
+
+## Urząd Dozoru Technicznego (UDT)
+
+UDT (Urząd Dozoru Technicznego) sprawuje dozór techniczny nad urządzeniami technicznymi, w tym ciśnieniowymi. Podstawa prawna:
+- Ustawa o dozorze technicznym (z dnia 21 grudnia 2000 r.)
+- Dyrektywa UE PED (2014/68/UE) — urządzenia ciśnieniowe
+
+## Zastosowanie do sCO₂ Turbin
+
+Turbiny sCO₂ (superkrytyczny dwutlenek węgla) jako instalacje wysokociśnieniowe podlegają przepisom o urządzeniach ciśnieniowych. Wymagania analogiczne jak dla:
+- Turbin parowych wysokociśnieniowych
+- Przemysłowych instalacji procesowych
+- Zbiorników ciśnieniowych klasy III i IV (wg PED)
+
+## Klasyfikacja Ryzyka (PED)
+
+Urządzenia ciśnieniowe klasyfikuje się do grup I–IV w zależności od:
+- Ciśnienia roboczego (w barach)
+- Objętości (w litrach)
+- Właściwości medium (CO₂ = "fluidum grupy 2")
+
+Duże systemy sCO₂ należą zazwyczaj do grupy III lub IV.
+
+## Wymagania Formalne
+
+1. Certyfikat CE + deklaracja zgodności od producenta
+2. Weryfikacja przez jednostkę notyfikowaną (Notified Body) dla klas III–IV
+3. Rejestracja urządzenia w UDT przed uruchomieniem
+4. Odbiór techniczny przez inspektora UDT
+5. Badania kontrolne w cyklu wyznaczonym przez UDT
+
+## Pozwolenie na Budowę Siłowni
+
+Dla całej siłowni sCO₂ jako instalacji energetycznej wymagane są:
+- Pozwolenie na budowę (Prawo budowlane) — Starosta lub Wojewoda
+- Decyzja środowiskowa (DŚU / OOŚ) — RDOŚ lub GDOŚ
+- Warunki przyłączenia do sieci (URE / PSE / DSO)
+- Koncesja na wytwarzanie energii elektrycznej (URE) — dla instalacji > 1 MW
+
+## Kontakt
+
+UDT: udt@udt.gov.pl | www.udt.gov.pl

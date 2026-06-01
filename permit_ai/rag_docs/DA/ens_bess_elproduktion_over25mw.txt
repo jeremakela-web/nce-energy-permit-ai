@@ -1,0 +1,62 @@
+SOURCE: https://ens.dk/ansvarsomraader/el/vejledninger-om-el/vil-du-producere-el-fra-et-anlaeg-over-25-mw
+COUNTRY: DA
+TOPIC: BESS battery storage electricity production permit Denmark
+
+# Electricity Production Permit Requirements for Installations Over 25 MW in Denmark
+
+## Overview
+Companies operating electricity production facilities exceeding 25 MW on land must obtain authorization from Energistyrelsen (Danish Energy Agency).
+
+## Authorization Requirements
+
+Permit Types:
+- Electricity Production Permits (Tilladelse til elproduktion): Required for solar, wind, wave, and hydroelectric installations over 25 MW, received from January 1, 2022 onward, governed by the electricity production regulation (elproduktionsbekendtgørelsen).
+- Concessions (Bevillinger): Required for power plants under section 10 of the Electricity Supply Act (elforsyningsloven).
+
+Applicant Qualifications:
+Applicants must demonstrate sufficient technical and financial capacity. This is verified annually through oversight letters and inspections conducted by Energistyrelsen.
+
+## Battery Energy Storage Systems (BESS) in Denmark
+
+Energistyrelsen applies the following principle: "it is the agency's practice that an energy storage facility on land qualifies as requiring an electricity production permit when it functions, characterizes itself, and affects the electricity system identically to a production installation."
+
+This means: a BESS (battery energy storage system) that operates like a production installation (charging/discharging to the electricity grid) requires the same electricity production permit (tilladelse til elproduktion) as solar or wind installations above the capacity thresholds.
+
+## Capacity Thresholds for New Installations
+
+- Under 5 MW: Exempt from permit requirements
+- VE (renewable) 10-25 MW: Notification only required (not full permit)
+- Over 25 MW: Formal prior authorization required from Energistyrelsen
+
+## Network Connection Requirements
+
+Applications must include a statement from Energinet (the system operator) addressing:
+- Advantages and disadvantages for the collective electricity supply network
+- Connection costs
+- Comparative benefits versus alternatives like flexible consumption or energy storage
+
+The assessment follows the EU RfG Regulation (Commission Regulation 2016/631), classifying installations Type A-D based on connection voltage and maximum output.
+
+## Coupled Installation Assessment (Combined BESS+VE)
+
+When determining if interconnected installations (e.g., solar + BESS) constitute a single facility, Energistyrelsen evaluates:
+- Combined capacity at connection point
+- Geographic location
+- Operational and physical linkage
+- Network connection agreement
+
+## Authorization Process (VE-tilladelsesprocesbekendtgørelsen)
+
+The VE authorization process regulation came into force May 25, 2025, containing rules on time limits for the authorization process for projects both inside and outside areas designated for acceleration of renewable energy (fremskyndelsesområder).
+
+## Technology Catalog Reference
+
+Energistyrelsen publishes a technology catalog (Teknologikatalog for energilagring) covering data for various energy storage technologies including battery systems, heat storage, and gas storage. Battery technologies include lithium-ion, flow batteries, and Carnot batteries.
+
+## Supervision and Fees
+
+Permit holders pay annual fees covering administrative review and compliance monitoring costs, regulated under Electricity Supply Act § 51a.
+
+## Contact
+Energistyrelsen — tilsyn-elproduktion@ens.dk
+Phone: +45 33 92 67 00

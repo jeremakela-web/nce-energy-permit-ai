@@ -1,0 +1,51 @@
+SOURCE: https://energynews.pro/en/norway-launches-assessment-process-for-two-nuclear-projects/
+COUNTRY: NO
+TOPIC: SMR nuclear small modular reactor regulatory framework Norway DSA NVE
+
+# Norway SMR Nuclear Regulatory Framework (2024–2026)
+
+## Current Status
+
+Norway has no operating nuclear power plants but is actively developing its regulatory framework for SMR (Small Modular Reactor) technologies.
+
+## Key Regulatory Event (2024)
+
+Nuclear project developer Norsk Kjernekraft submitted a proposal to Norway's Ministry of Energy in November 2023 for an SMR plant in the municipalities of Aure and Heim. Norway's Ministry of Energy published a notification with a proposal for an EIA assessment programme in May 2024, with public consultation.
+
+## Responsible Authorities
+
+Three authorities jointly set the framework for nuclear EIA assessment in Norway:
+- **DSA** (Direktoratet for strålevern og atomsikkerhet / Norwegian Radiation and Nuclear Safety Authority) — radiation and nuclear safety
+- **NVE** (Norges vassdrags- og energidirektorat) — energy licensing under the Energy Act
+- **DSB** (Direktoratet for samfunnssikkerhet og beredskap) — civil protection
+
+## Legal Basis
+
+- **Atomenergiloven** (Atomic Energy Act) — DSA issues licenses with conditions
+- **Energiloven** (Energy Act) — NVE handles concession for power plant construction
+- **Plan- og bygningsloven** — municipal planning requirements
+
+## DSA Licensing Conditions
+
+DSA has prepared a booklet with general terms and conditions for licences under the Atomic Energy Act. A guide elaborates on these terms, based on IAEA framework. DSA's guidelines are not legally binding in themselves but can be made binding through conditions in the license.
+
+## Government Review (2024–2026)
+
+In June 2024, the Norwegian government appointed a committee for a broad review of nuclear power establishment in Norway. The committee's report was due April 1, 2026. A new National Strategy for Radiation Protection and Nuclear Safety was adopted in 2025.
+
+## IAEA Recognition
+
+IAEA has recognized Norway's commitment to strengthen nuclear and radiation safety through DSA's regulatory framework.
+
+## SMR Authorization Process (Proposed)
+
+For SMR projects, the anticipated process involves:
+1. Proposal to Ministry of Energy
+2. Environmental Impact Assessment (konsekvensutredning) under DSA/NVE/DSB framework
+3. Concession under Energiloven (NVE)
+4. Nuclear facility license under Atomenergiloven (DSA)
+5. Building permit under Plan- og bygningsloven
+
+## Contact
+
+DSA: dsa@dsa.no | nve@nve.no | postmottak@dsb.no

@@ -1,0 +1,44 @@
+SOURCE: https://ens.dk/ansvarsomraader/energikrav-til-produkter/produkter-med-energikrav/datacentre
+COUNTRY: DA
+TOPIC: Data centre datacenter energy requirements permits Denmark
+
+# Data Centre Regulations in Denmark
+
+## Regulatory Framework
+
+Data centres in Denmark are not subject to mandatory EU ecodesign regulations or energy labeling requirements. The European Commission is developing a labeling system focused on energy and water consumption, expected to launch in 2027.
+
+## EU Code of Conduct (Voluntary)
+
+The primary voluntary framework is the EU Code of Conduct for Data Centres. Participation is optional for operators. The framework establishes requirements for maximum annual energy consumption (krav til maksimalt årligt energiforbrug for datacentre).
+
+Documentation available from Energistyrelsen:
+- 2025 Best Practice Guidelines for EU Code of Conduct on Data Centre Energy Efficiency
+- Introductory guide for Code of Conduct applicants
+- Assessment framework for data centres under EU Taxonomy regulations
+
+## Energy Management Requirements
+
+Companies with annual energy consumption over 10 TJ are subject to mandatory rules on energy management, energy audits and climate audits, with requirements entering into force October 11, 2025 (implementing EU Energy Efficiency Directive).
+
+## Why Denmark for Data Centres
+
+Denmark is considered an attractive location:
+- Good international data connections
+- Stable business environment
+- High supply security and high share of renewable energy
+- Low ambient temperatures reducing cooling requirements
+
+## Building Permits
+
+Data centres require standard building permits (byggetilladelse) under the Building Regulations (Bygningsreglementet BR18). Large installations also require environmental approval and possibly VVM/EIA screening.
+
+## Electricity Connection
+
+Large data centres (>25 MW) connecting to the transmission network require coordination with Energinet. Smaller installations connect via distribution system operators.
+
+## Contact
+
+Energistyrelsen
+ecodesign@ens.dk
+Phone: +45 33 92 67 00

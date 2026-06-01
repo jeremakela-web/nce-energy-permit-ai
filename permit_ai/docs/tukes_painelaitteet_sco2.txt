@@ -1,0 +1,61 @@
+SOURCE: https://tukes.fi/teollisuus/painelaitteet/
+COUNTRY: FI
+TOPIC: Painelaite lupa sCO2 turbine industrial pressure equipment Finland Tukes
+
+# Painelaitteiden turvallisuus ja luvitus — Tukes
+
+## Painelaitelainsäädäntö
+
+Painelaitteet kuuluvat Tukesin (Turvallisuus- ja kemikaalivirasto) valvonnan piiriin. Keskeinen lainsäädäntö:
+- Painelaitelaki (1144/2016)
+- EU:n painelaitedirektiivi (PED 2014/68/EU)
+- Yksinkertaisten painesäiliöiden direktiivi (SPVD)
+
+## sCO₂-turbiineille Soveltuvat Määräykset
+
+sCO₂ (supercritical CO₂) -turbiinit ovat uusi teknologia, johon sovelletaan painelaitteita koskevia vaatimuksia. Vastaavat määräykset kuin:
+- Höyryturbiineille (korkea paine + lämpötila)
+- Teollisuuden prosessilaitteistoille
+- Voimalaitoksen painejärjestelmille
+
+### Luokkamääritys (PED)
+
+Painelaite luokitellaan riskiluokkaan (I–IV) perustuen:
+- Käyttöpaineeseen (bar)
+- Tilavuuteen (litres)
+- Aineen vaarallisuuteen (CO₂ on "ryhmä 2" — ei erityisen vaarallinen kaasu)
+
+Suuret sCO₂-turbiinijärjestelmät kuuluvat tyypillisesti luokkaan III tai IV.
+
+## Vaatimustenmukaisuus
+
+CE-merkityt painelaitteet (PED):
+- Valmistajalta CE-merkintä + EY-vaatimustenmukaisuusvakuutus
+- Ilmoitettu laitos (Notified Body, NB) tarkastaa luokkien III–IV laitteet
+- Tekninen tiedosto säilytettävä 10 vuotta
+
+## Käyttöönottotarkastus
+
+Ennen käyttöönottoa:
+1. Painelaitteen rekisteröinti Tukesin rekisteriin (tarvittaessa)
+2. Käyttöönottotarkastus tarkastuslaitoksen (Inspecta, SGS, TÜV jne.) toimesta
+3. Turvalaitteiden (varoventtiilit, paineensäätimet) tarkastus
+
+## Voimalaitoslupa
+
+sCO₂-voimalaitokselle (power plant) vaaditaan:
+- Sähköntuotantoluvan hakeminen Energiavirastolta (> 1 MW)
+- Ympäristölupa (jos voimalaitoksella ympäristövaikutuksia)
+- Rakennuslupa kunnalta
+- Mahdollinen YVA jos laitos on riittävän suuri
+
+## Tarkastuslaitokset Suomessa
+
+- Inspecta (nykyään SGS Inspecta Oy)
+- TÜV SÜD Finland
+- Bureau Veritas Finland
+
+## Yhteystiedot
+
+Tukes: kirjaamo@tukes.fi | puh. 029 5052 000
+Painelaitteet: painelaitteet@tukes.fi

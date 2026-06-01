@@ -1,0 +1,44 @@
+SOURCE: https://www.dibk.no/byggeregler/
+COUNTRY: NO
+TOPIC: Data centre datasenter building permit Norway DiBK
+
+# Datasenter — Byggetillatelse og Krav i Norge
+
+## Ansvarlig Myndighet
+
+DiBK (Direktoratet for byggkvalitet) forvalter plan- og bygningsloven og tekniske byggforskrifter (TEK17).
+
+## Byggetillatelse (Byggesøknad)
+
+Alle datasentre krever byggetillatelse fra kommunen under Plan- og bygningsloven:
+- Mindre installasjoner: Søknad etter PBL § 20-1 med ansvarlig søker
+- Store bygg: Komplett rammesøknad med reguleringsplan og KU
+
+## Teknisk Forskrift TEK17
+
+Teknisk Forskrift (TEK17) stiller krav til datasentre om:
+- Energikrav: datasentre er unntatt fra krav om minimum energikarakter (§ 14-2 unntak) men underlagt energieffektivitetskrav
+- Brannkrav: serverrom og kritisk infrastruktur — særlige brannceller og deteksjonssystemer
+- Klimaskjerm: isolasjon, kjølesystem, lufttetthet
+
+## Energirapportering (EU EED)
+
+Datasentre med IT-effektbehov ≥ 500 kW rapporterer til EU-databasen (Energy Efficiency Directive):
+- Norge er EØS-land og er bundet av EED
+- Rapporteringsplikt etter norsk forskrift implementert 2025–2026
+
+## Nettilknytning for Store Datasentre
+
+Datasentre med effektbehov > 100 MW: Tilknytning til Statnetts sentralnett
+Middels store (10–100 MW): Koordinering med regionalt nett
+Alle: Nettselskapet utarbeider nettilknytningsavtale
+
+## Konsekvensutredning
+
+Store datasentre (særlig i uberørte naturområder eller nærheten av verneområder) kan utløse krav om konsekvensutredning under Plan- og bygningsloven.
+
+## Kontakt
+
+DiBK: post@dibk.no | www.dibk.no
+Kommunen: byggesaksavdeling for lokal behandling
+NVE: nettilknytning (store forbrukere)

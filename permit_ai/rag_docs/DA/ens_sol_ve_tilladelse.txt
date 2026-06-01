@@ -1,0 +1,50 @@
+SOURCE: https://ens.dk/ansvarsomraader/el/vejledninger-om-el/vil-du-etablere-nyt-eller-aendre-et-anlaeg
+COUNTRY: DA
+TOPIC: Solar power solar cell VE permit authorization Denmark
+
+# New or Changed Energy Installations — Permit Requirements in Denmark
+
+## Permit Requirements
+
+According to Denmark's Electricity Supply Act (elforsyningsloven § 11), establishing new electricity production facilities or making substantial modifications to existing ones requires prior authorization from the Danish Energy Agency (Energistyrelsen).
+
+## Capacity Thresholds
+
+- Under 5 MW: "Alle anlæg med en el-kapacitet på under 5 MW er undtaget fra bekendtgørelsens regler" (exempt from permit requirements)
+- Renewable energy (VE) under 10 MW: Similar exemptions apply
+- VE installations 10-25 MW: Notification to Energistyrelsen; automatically exempt upon notification
+- Over 25 MW: Formal prior authorization required
+
+## Solar Power Applications (Solenergianlæg)
+
+Solar installations above 25 MW require electricity production permits (tilladelse til elproduktion). Applications must be submitted to Energistyrelsen under Decree No. 548 (May 29, 2024), containing:
+- Project description
+- Documentation of technical and financial capacity
+- Greenhouse gas emission impact
+- Grid connection statement from Energinet
+
+## VE-tilladelsesprocesbekendtgørelsen (2025)
+
+The Renewable Energy Authorization Process Regulation entered into force May 25, 2025. It sets time limits for the permit authorization process for VE projects — both inside acceleration areas (fremskyndelsesområder) designated by parliament for faster renewable expansion, and outside these areas.
+
+## Key Legislation
+
+- Elforsyningsloven (Electricity Supply Act), especially §§ 10-11
+- Elproduktionsbekendtgørelsen (Electricity Production Regulation)
+- VE-tilladelsesprocesbekendtgørelsen (2025)
+- Decree No. 548 of May 29, 2024
+
+## Acceleration Areas (Fremskyndelsesområder)
+
+Parliamentary agreement from December 2024 designates specific areas for faster grid expansion and renewable energy installation. In these areas, streamlined authorization processes apply.
+
+## Battery Add-on to Solar
+
+Installing a battery solution (BESS) alongside an approved solar installation is permitted, but the battery addition must not expand the installation's installed capacity if the installation is approved for net settlement or price premium support.
+
+## Contact
+
+Energistyrelsen
+tilsyn-elproduktion@ens.dk
+ens@ens.dk
+Phone: +45 33 92 67 00

@@ -1,0 +1,51 @@
+SOURCE: https://www.wody.gov.pl/nasze-dzialania/pozwolenia-wodnoprawne
+COUNTRY: PL
+TOPIC: Hydropower water law permit pozwolenie wodnoprawne Poland mała elektrownia wodna
+
+# Małe Elektrownie Wodne — Pozwolenia w Polsce (Wody Polskie)
+
+## Organ Regulacyjny
+
+Wody Polskie (Państwowe Gospodarstwo Wodne Wody Polskie) wydaje pozwolenia wodnoprawne. Podstawa prawna:
+- Prawo wodne (ustawa z dnia 20 lipca 2017 r., Dz.U. poz. 1566 ze zm.)
+
+## Pozwolenie Wodnoprawne
+
+Budowa i eksploatacja małej elektrowni wodnej wymaga pozwolenia wodnoprawnego na:
+- Piętrzenie wód powierzchniowych (budowa jazu/zapory)
+- Korzystanie z wód do celów energetycznych (korzystanie szczególne)
+- Regulację koryta rzeki
+
+### Wymagania Wniosku
+
+Wniosek do Wód Polskich (regionalny zarząd) musi zawierać:
+1. Operat wodnoprawny (dokumentacja techniczno-prawna)
+2. Opis wpływu na wody, środowisko, innych użytkowników
+3. Ocena oddziaływania na obszary Natura 2000
+
+## Koncesja na Wytwarzanie Energii
+
+Elektrownie > 1 MW: koncesja na wytwarzanie energii elektrycznej z URE
+Elektrownie < 1 MW: wpis do rejestru wytwórców energii z OZE
+
+## Decyzja Środowiskowa (DŚU)
+
+Przed budową wymagana Decyzja o środowiskowych uwarunkowaniach (DŚU) od RDOŚ, obejmująca:
+- Ocena wpływu na ichtiofaunę (ryby) i ekosystem wodny
+- Zapewnienie przepływu nienaruszalnego (minimalne natężenie przepływu)
+- Budowa przepławki (pas rybny, drabinka rybna) jeśli bariera migracji
+
+## Ramowa Dyrektywa Wodna (RDW)
+
+Polska realizuje wymogi unijnej Ramowej Dyrektywy Wodnej (2000/60/WE):
+- Nowe MEW nie mogą pogarszać stanu jednolitej części wód
+- Wymagane jest utrzymanie ciągłości ekologicznej rzeki
+
+## Pozwolenie na Budowę
+
+Po uzyskaniu DŚU i pozwolenia wodnoprawnego — standardowe pozwolenie na budowę (Starosta lub Wojewoda) pod Prawem budowlanym.
+
+## Kontakt
+
+Wody Polskie: biuro@wody.gov.pl | www.wody.gov.pl
+Właściwy Regionalny Zarząd Gospodarki Wodnej (RZGW) według lokalizacji inwestycji

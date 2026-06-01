@@ -1,0 +1,53 @@
+SOURCE: https://www.statsforvalteren.no/nn/stat-og-styring/statsforvalterens-oppgaver/miljooppgaver/
+COUNTRY: NO
+TOPIC: Konsekvensutredning environmental permit energy Norway Statsforvalteren
+
+# Konsekvensutredning (KU) og Miljøtillatelse — Energianlegg i Norge
+
+## Statsforvalteren og Miljødirektoratet
+
+Statsforvalteren (statsforvalteren.no) håndterer regionale miljøsaker og klager på kommunale vedtak. Miljødirektoratet (miljodirektoratet.no) er nasjonal myndighet for industriutslipp.
+
+## Konsekvensutredning (KU)
+
+For energianlegg med vesentlige virkninger på miljø kreves konsekvensutredning (KU) etter Plan- og bygningsloven kapittel 14 og Forskrift om konsekvensutredninger (FOR-2017-06-21-854).
+
+Anlegg som alltid krever KU (Vedlegg I):
+- Vindkraftanlegg med installert ytelse > 10 MW (Energiloven)
+- Kraftlinjer og transformatorstasjoner > 20 kV og > 15 km
+- Store vannkraftanlegg (reguleringsinngrep > angitte terskler)
+
+Anlegg som kan kreve KU (Vedlegg II — screening):
+- Solkraftanlegg av vesentlig størrelse
+- Batterianlegg (BESS) i sensitive områder
+- Industrielle anlegg inkl. modulære kraftverk
+
+## Innhold i Konsekvensutredningen
+
+KU skal belyse virkninger for:
+- Naturmiljø (biologisk mangfold, Natura 2000)
+- Landskap og friluftsliv
+- Kulturminner og kulturmiljø
+- Forurensning og støy
+- Naturressurser (vann, jord, mineraler)
+- Klimagassutslipp og energibruk
+- Samfunnsmessige virkninger (sysselsetting, infrastruktur)
+
+## Forholdet til NVEs Konsesjonsbehandling
+
+NVE er konsesjonsmyndighet for energianlegg. NVEs konsesjonsbehandling integrerer ofte KU:
+- Vindkraft: NVE gjennomfører samordnet KU og konsesjonsbehandling
+- Solkraft: NVE-prosessen inkluderer KU-krav
+- BESS: KU-plikt avhenger av størrelse og beliggenhet
+
+## Industriutslippstillatelse
+
+For anlegg med utslipp til luft/vann > visse terskler kreves utslippstillatelse fra Statsforvalteren/Miljødirektoratet:
+- Utslipp av NOx, SO₂, partikler fra generatorer
+- Avrenning fra anleggsarbeid
+
+## Kontakt
+
+Statsforvalteren: Kontaktes via regionalt statsforvalterembete
+Miljødirektoratet: post@miljodir.no | www.miljodirektoratet.no
+NVE (konsesjon): energikonsesjoner@nve.no

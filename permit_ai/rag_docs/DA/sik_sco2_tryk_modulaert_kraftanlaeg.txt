@@ -1,0 +1,38 @@
+SOURCE: https://www.sik.dk/erhverv/produkter/trykbaerende-udstyr/
+COUNTRY: DA
+TOPIC: sCO2 pressure equipment modular power plant Denmark Sikkerhedsstyrelsen
+
+# Trykbærende Udstyr og sCO₂-Anlæg — Danmark (SIK)
+
+## Sikkerhedsstyrelsen (SIK)
+
+Sikkerhedsstyrelsen regulerer trykbærende udstyr i Danmark under:
+- EU's trykudstyrsdirektiv (PED, 2014/68/EU)
+- Bekendtgørelse om trykbærende udstyr
+
+## sCO₂-Turbiner som Trykbærende Udstyr
+
+sCO₂ (superkritisk CO₂) turbineanlæg klassificeres som trykbærende udstyr med krav svarende til:
+- Dampturbiner (højtryks- og højtemperaturanlæg)
+- Industrielle procesanlæg
+- Gruppe III–IV trykbærende udstyr under PED
+
+## Krav til CE-mærkning
+
+Producenten skal levere:
+- CE-mærkning på udstyret
+- EU-overensstemmelseserklæring
+- Teknisk dokumentation (gemmes 10 år)
+- Bemyndiget organs certifikat (for gruppe III–IV)
+
+## Anlæg Over 25 MW
+
+Et sCO₂-kraftanlæg over 25 MW kræver yderligere:
+- Tilladelse til elproduktion fra Energistyrelsen (elproduktionsbekendtgørelsen)
+- Miljøvurdering (VVM-screening) under Miljøvurderingsloven
+- Byggetilladelse fra kommunen
+- Nettilslutningsaftale med Energinet
+
+## Kontakt
+
+Sikkerhedsstyrelsen: sik@sik.dk | www.sik.dk
