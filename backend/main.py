@@ -508,14 +508,52 @@ async def optimize_sites(request: Request, req: OptimizeRequest):
 
     lat_min, lon_min, lat_max, lon_max = req.bbox
 
+    # Suomen maa-alueen karkea bounding box (manner + saaret, ei Itämeri/ulkomaat)
+    _FI_LAT_MIN, _FI_LAT_MAX = 59.5, 70.1
+    _FI_LON_MIN, _FI_LON_MAX = 19.5, 31.6
+
+    # Tarkista että bbox on Suomen sisällä — hylkää jos täysin ulkopuolella
+    if (lat_max < _FI_LAT_MIN or lat_min > _FI_LAT_MAX or
+            lon_max < _FI_LON_MIN or lon_min > _FI_LON_MAX):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "bbox on Suomen maa-alueen ulkopuolella. "
+                f"Sallittu alue: lat {_FI_LAT_MIN}–{_FI_LAT_MAX}, "
+                f"lon {_FI_LON_MIN}–{_FI_LON_MAX}."
+            ),
+        )
+
+    # Leikkaa bbox Suomen rajoihin (jos käyttäjä antoi osittain ulkopuolisen alueen)
+    lat_min = max(lat_min, _FI_LAT_MIN)
+    lat_max = min(lat_max, _FI_LAT_MAX)
+    lon_min = max(lon_min, _FI_LON_MIN)
+    lon_max = min(lon_max, _FI_LON_MAX)
+
+    def _inside_finland(lat: float, lon: float) -> bool:
+        """Karkea maa-alue-check Suomelle. Hylkää ilmiselvästi meren tai ulkomaan pisteet."""
+        if not (_FI_LAT_MIN <= lat <= _FI_LAT_MAX and _FI_LON_MIN <= lon <= _FI_LON_MAX):
+            return False
+        # Poista Suomenlahden eteläinen meri-alue (Viro/Latvia): lat<59.8 + lon<27
+        if lat < 59.8 and lon < 27.0:
+            return False
+        # Poista Ruotsin puoli (Merenkurkku + Pohjanlahti): lon<20.5 ja lat<65
+        if lon < 20.5 and lat < 65.0:
+            return False
+        return True
+
     # Generoi 16 kandidaattisijaintia 4×4-gridillä bbox:n sisältä
     _rows, _cols = 4, 4
     sites: list = []
+    skipped_sea: list = []
     _col_labels = "ABCDE"
     for i in range(_rows):
         for j in range(_cols):
             lat = lat_min + (lat_max - lat_min) * (i + 0.5) / _rows
             lon = lon_min + (lon_max - lon_min) * (j + 0.5) / _cols
+            if not _inside_finland(lat, lon):
+                skipped_sea.append(f"{_col_labels[j]}{i + 1}")
+                continue
             _seed = int(abs(lat * 1e4)) * 99991 + int(abs(lon * 1e4)) * 31337
             r = lambda off: _rng01(_seed, off)
             sites.append(EnergySite(
@@ -531,6 +569,12 @@ async def optimize_sites(request: Request, req: OptimizeRequest):
                 water_access_score  = 0.30 + r(7) * 0.70,
                 land_cost_eur_ha    = 5000 + r(8) * 30000,
             ))
+
+    if not sites:
+        raise HTTPException(
+            status_code=400,
+            detail="Kaikki kandidaattisijannit osuivat meri- tai ulkomaa-alueelle. Tarkista bbox.",
+        )
 
     optimizer = NCEOptimizer(req.project_type)
     result    = optimizer.optimize(sites)
@@ -552,12 +596,15 @@ async def optimize_sites(request: Request, req: OptimizeRequest):
         for site, score in zip(result.ranked_sites[:5], result.scores[:5])
     ]
 
-    return {
+    resp: dict = {
         "results":          top5,
         "optimizer_used":   result.optimizer_used,
         "project_type":     result.project_type,
         "total_candidates": len(sites),
     }
+    if skipped_sea:
+        resp["skipped_outside_finland"] = skipped_sea
+    return resp
 
 
 # ── Sisäinen analyysilogiikka ─────────────────────────────────────────────────
