@@ -3878,16 +3878,18 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(Spacer(1, 8*mm))
 
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
-    # PageBreak garantoi otsikon aloituksen puhtaalta sivulta — KeepTogether/CondPageBreak
-    # eivät ole luotettavia kun AI-generoitu sisältö vaihtelee pituudeltaan.
+    # PageBreak takaa puhtaan aloituksen. KeepTogether sisältää vain otsikon + HR +
+    # ensimmäisen kappaleen — [:2] ylitti sivun korkeuden pitkällä AI-sisällöllä ja
+    # aiheutti otsikon jäämisen yksin sivulle.
     story.append(PageBreak())
     _kuvaus_elems = _para_text(sections.get("kuvaus", "–"), st)
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec1"), st["h2"]),
         _hr(),
-        *_kuvaus_elems[:2],   # kaksi ensimmäistä kappaletta pysyvät otsikon kanssa
+        Spacer(1, 2*mm),
+        *_kuvaus_elems[:1],
     ]))
-    story.extend(_kuvaus_elems[2:])
+    story.extend(_kuvaus_elems[1:])
     _vaihe_norm = (inp.hankkeen_vaihe or "esiselvitys").lower()
     if _vaihe_norm == "lupavaihe":
         story.append(Paragraph(_s(lang, "lupavaihe_p"), st["body"]))
@@ -3906,9 +3908,10 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     story.append(KeepTogether([
         Paragraph(_s(lang, "sec2"), st["h2"]),
         _hr(),
-        *_perust_elems[:2],   # kaksi ensimmäistä kappaletta pysyvät otsikon kanssa
+        Spacer(1, 2*mm),
+        *_perust_elems[:1],
     ]))
-    story.extend(_perust_elems[2:])
+    story.extend(_perust_elems[1:])
     story.append(Spacer(1, 4*mm))
 
     # ── 3. Tarvittavat luvat ja viranomaiset ─────────────────────────────────
