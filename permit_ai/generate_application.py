@@ -2477,6 +2477,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "jättämistä. Kaavatilanne vaikuttaa suoraan lupaprosessin kestoon ja "
                             "vaatimuksiin — rakentaminen edellyttää usein asemakaavaa tai sen muutosta "
                             "taikka suunnittelutarveratkaisua."),
+        "nce_info_desc":   ("NCE Permit AI on tekoälypohjainen työkalu energiahankkeiden "
+                            "lupaprosessien automatisointiin."),
     },
     "EN": {
         "sub_title":       "Construction Permit Application Draft",
@@ -2565,6 +2567,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "permit application is submitted. Zoning directly affects the duration and "
                             "requirements of the permit process — construction often requires a detailed "
                             "plan, an amendment to one, or a planning permit."),
+        "nce_info_desc":   ("NCE Permit AI is an AI-powered tool for automating permit processes "
+                            "in energy projects."),
     },
     "SE": {
         "sub_title":       "Bygglovsansökan — utkast",
@@ -2649,6 +2653,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "tillståndsansökan lämnas in. Planläggning påverkar direkt varaktigheten och "
                             "kraven i tillståndsprocessen — byggande kräver ofta en detaljplan, en ändring "
                             "av en sådan eller ett planeringstillstånd."),
+        "nce_info_desc":   ("NCE Permit AI är ett AI-drivet verktyg för att automatisera "
+                            "tillståndsprocesser inom energiprojekt."),
     },
     "DA": {
         "sub_title":       "Byggetilladelsesansøgning — udkast",
@@ -2735,6 +2741,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "inden tilladelsesansøgningen indsendes. Planlægning påvirker direkte "
                             "varigheden og kravene i tilladelsesprocessen — byggeri kræver ofte en "
                             "lokalplan, en ændring heraf eller en planlægningstilladelse."),
+        "nce_info_desc":   ("NCE Permit AI er et AI-drevet værktøj til automatisering af "
+                            "tilladelsesprocesser i energiprojekter."),
     },
     "NO": {
         "sub_title":       "Søknad om byggetillatelse — utkast",
@@ -2820,6 +2828,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "før tillatelsessøknaden sendes inn. Regulering påvirker direkte varigheten "
                             "og kravene i tillatelsesprosessen — bygging krever ofte en reguleringsplan, "
                             "en endring av denne eller dispensasjon."),
+        "nce_info_desc":   ("NCE Permit AI er et AI-drevet verktøy for automatisering av "
+                            "tillatelsesprosesser i energiprosjekter."),
     },
     "PL": {
         "sub_title":       "Wniosek o pozwolenie na budowę — szkic",
@@ -2910,6 +2920,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "trwania i wymagania procesu uzyskiwania zezwoleń — budowa często wymaga "
                             "miejscowego planu zagospodarowania, jego zmiany lub decyzji o warunkach "
                             "zabudowy."),
+        "nce_info_desc":   ("NCE Permit AI to narzędzie oparte na sztucznej inteligencji do automatyzacji "
+                            "procesów uzyskiwania zezwoleń dla projektów energetycznych."),
     },
 }
 
