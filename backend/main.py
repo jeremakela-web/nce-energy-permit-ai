@@ -126,6 +126,7 @@ class ApplicationRequest(BaseModel):
     kohdeviranomainen:            Optional[str]   = None
     lang:                         Optional[str]   = "FI"
     country:                      Optional[str]   = "FI"
+    session_id:                   Optional[str]   = ""
     # IFC esitäyttö (valinnainen)
     ifc_floor_area:               Optional[float] = 0.0
     ifc_building_height:          Optional[float] = 0.0
@@ -388,6 +389,12 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
                             detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
+
+    # Phase-Lock: tarkista onko edellinen vaihe suoritettu
+    if _PHASE_LOCK_OK and req.session_id and req.hankkeen_vaihe:
+        ok, err = _check_phase(req.session_id, req.hanketyyppi, req.hankkeen_vaihe)
+        if not ok:
+            raise HTTPException(status_code=400, detail=err)
 
     inp = ApplicationInput(
         hanketyyppi                   = req.hanketyyppi,
@@ -1194,6 +1201,17 @@ def _render_static_map(
     return buf.getvalue()
 
 
+# ── Phase-Lock ───────────────────────────────────────────────────────────────
+try:
+    from phase_lock import (
+        check_phase_allowed as _check_phase,
+        get_phase_status as _get_phase_status,
+        unlock_next_phase as _unlock_next_phase,
+    )
+    _PHASE_LOCK_OK = True
+except Exception as _pl_err:
+    _PHASE_LOCK_OK = False
+
 # ── IFC parser imports (optional — graceful if missing) ───────────────────────
 # sys.path already has bess_tool/ root (line 50 above), so permit_ai namespace works
 try:
@@ -1264,6 +1282,43 @@ async def parse_ifc(
         "ifc_schema":        ifc_data.get("ifc_schema"),
         "filename":          file.filename,
     })
+
+
+# ── Phase-Lock endpointit ─────────────────────────────────────────────────────
+
+@app.get("/api/phase-status")
+async def phase_status(
+    session_id: str = Query(...),
+    hanketyyppi: str = Query(...),
+):
+    """Palauttaa vaiheen tilan sessiolle ja hanketyypille."""
+    if not _PHASE_LOCK_OK:
+        return JSONResponse({"completed_phase": 0, "next_phase": 1, "phases": [
+            {"name": "esiselvitys",  "phase": 1, "state": "active"},
+            {"name": "lupavaihe",    "phase": 2, "state": "locked"},
+            {"name": "rakentaminen", "phase": 3, "state": "locked"},
+        ]})
+    if not session_id or not hanketyyppi:
+        raise HTTPException(status_code=400, detail="session_id ja hanketyyppi vaaditaan")
+    return JSONResponse(_get_phase_status(session_id, hanketyyppi))
+
+
+class CompletePhaseRequest(BaseModel):
+    session_id:  str
+    hanketyyppi: str
+    phase:       int   # 1 | 2 | 3
+
+
+@app.post("/api/complete-phase")
+@limiter.limit("60/hour")
+async def complete_phase(request: Request, req: CompletePhaseRequest):
+    """Merkitsee vaiheen valmiiksi ja avaa seuraavan."""
+    if not _PHASE_LOCK_OK:
+        return JSONResponse({"ok": True, "next_phase": req.phase + 1})
+    if req.phase not in (1, 2, 3):
+        raise HTTPException(status_code=400, detail="phase oltava 1, 2 tai 3")
+    status = _unlock_next_phase(req.session_id, req.hanketyyppi, req.phase)
+    return JSONResponse({"ok": True, **status})
 
 
 class IFCApprovalRequest(BaseModel):

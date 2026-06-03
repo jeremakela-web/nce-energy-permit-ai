@@ -41,3 +41,4 @@ permit_ai/docs/**/.DS_Store
 
 # Claude Code -asetukset
 .claude/
+phase_sessions.json
