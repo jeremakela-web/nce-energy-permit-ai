@@ -4463,9 +4463,6 @@ function _updatePermitNotice() {
   if (formSection) formSection.style.display = unavailable ? 'none' : (selectedProjectType ? '' : 'none');
 }
 
-// Maakohtainen oletuskieli
-const _COUNTRY_DEFAULT_LANG = { FI:'FI', SE:'SE', DA:'DA', NO:'NO', PL:'PL' };
-
 function setCountry(code) {
   selectedCountry  = code;
   countryConfirmed = true;
@@ -4482,13 +4479,6 @@ function setCountry(code) {
 
   const hint = document.getElementById('gen-country-hint');
   if (hint) hint.style.display = 'none';
-
-  // Auto-switch UI language to match country (unless user has overridden)
-  const defaultLang = _COUNTRY_DEFAULT_LANG[code];
-  if (defaultLang && TRANSLATIONS[defaultLang]) {
-    setLang(defaultLang);
-    closeLangMenu();
-  }
 
   // Re-render form if project type already chosen
   if (selectedProjectType) {
