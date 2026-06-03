@@ -572,6 +572,13 @@
       margin-bottom: 10px;
     }
 
+    .arch-tool-btn {
+      width: 100%; padding: 5px 8px; border-radius: 6px; cursor: pointer;
+      background: rgba(255,255,255,0.04); border: 1px solid #1e3a5a;
+      color: #8899aa; font-size: 0.72rem; text-align: left; transition: all 0.15s;
+    }
+    .arch-tool-btn:hover { background: rgba(255,255,255,0.08); color: #c0d0e8; }
+    .arch-tool-btn.active { background: rgba(74,159,212,0.12); border-color: rgba(74,159,212,0.4); color: #4a9fd4; }
     .kt-input-row {
       display: flex;
       gap: 6px;
@@ -1634,6 +1641,41 @@
           <div id="ai-strategy-text" style="font-size:0.8rem;line-height:1.5;color:#e0e0e0;white-space:pre-wrap;"></div>
         </div>
 
+        <!-- ── Arkkitehtuuripiirtotyökalu ── -->
+        <div class="sidebar-section" id="arch-section">
+          <h3 data-i18n="h3_arch">Arkkitehtuuripiirto</h3>
+          <p style="font-size:0.73rem;color:#6a8aaa;margin:0 0 8px;" data-i18n="arch_desc">Piirrä rakennuksen ääriviivat, pääsytiet ja tekniset alueet kartalle.</p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <button class="arch-tool-btn active" id="arch-btn-polygon" onclick="archSetTool('polygon')" title="Piirrä alue">
+              ⬡ <span data-i18n="arch_tool_polygon">Rakennusalue</span>
+            </button>
+            <button class="arch-tool-btn" id="arch-btn-polyline" onclick="archSetTool('polyline')" title="Piirrä reitti">
+              ➡ <span data-i18n="arch_tool_polyline">Pääsytie / reitti</span>
+            </button>
+            <button class="arch-tool-btn" id="arch-btn-marker" onclick="archSetTool('marker')" title="Merkitse piste">
+              📍 <span data-i18n="arch_tool_marker">Tekninen alue</span>
+            </button>
+            <button class="arch-tool-btn" onclick="archStartDraw()" id="arch-draw-start" style="background:rgba(0,194,168,0.15);border-color:rgba(0,194,168,0.4);color:#00C2A8;">
+              ✏️ <span data-i18n="arch_start">Aloita piirtäminen</span>
+            </button>
+            <button class="arch-tool-btn" onclick="archStopDraw()" id="arch-draw-stop" style="display:none;">
+              ⏹ <span data-i18n="arch_stop">Lopeta</span>
+            </button>
+            <button class="arch-tool-btn" onclick="archClear()" style="border-color:#e94560;color:#e94560;">
+              🗑 <span data-i18n="arch_clear">Tyhjennä kaikki</span>
+            </button>
+          </div>
+          <div id="arch-stats" style="margin-top:8px;font-size:0.7rem;color:#4a9fd4;display:none;">
+            <div id="arch-area-info"></div>
+            <div id="arch-perimeter-info"></div>
+          </div>
+          <div id="arch-export-wrap" style="margin-top:8px;display:none;">
+            <button class="arch-tool-btn" onclick="archExportJson()" style="background:rgba(0,194,168,0.1);border-color:rgba(0,194,168,0.3);color:#00C2A8;font-size:0.7rem;">
+              💾 <span data-i18n="arch_export">Tallenna GeoJSON</span>
+            </button>
+          </div>
+        </div>
+
         <div class="sidebar-section">
           <h3 data-i18n="h3_loki">Loki</h3>
           <div id="status-log" data-i18n="lbl_status_idle">Odottaa toimintoa…</div>
@@ -1810,6 +1852,7 @@ const TRANSLATIONS = {
     lbl_market:     'Tavoitemarkkinat',
     map_select_hint:'— Valitse hanketyyppi —',
     map_fi_only:    'Tällä hetkellä saatavilla vain Suomessa — muut maat tulossa pian.',
+    gen_country_partial_rag: 'Osittainen RAG-kattavuus',
     gen_country_coming_soon: '🌍 Asiakirjapalvelu on tällä hetkellä saatavilla vain Suomelle (FI) sekä Puolalle (PL) SMR-hankkeiden osalta. SE, DA ja NO tulevat pian.',
     badge_coming_soon:       'Tulossa',
     sco2_coming_soon:        '🌀 sCO₂ Turbine — Tulossa pian. Ylikriittinen hiilidioksiditurbiini: 10× pienempi kuin perinteinen höyryturbiini, hyötysuhde jopa 50%. Soveltuu SMR-, aurinkolämpö- ja BESS-hankkeisiin.',
@@ -2106,6 +2149,7 @@ const TRANSLATIONS = {
     lbl_market:     'Target market',
     map_select_hint:'— Select project type —',
     map_fi_only:    'Currently available for Finland only — other countries coming soon.',
+    gen_country_partial_rag: 'Partial RAG coverage',
     gen_country_coming_soon: '🌍 Permit Document Service is currently available for Finland (FI) and Poland (PL, SMR projects only). SE, DA and NO coming soon.',
     badge_coming_soon:       'Coming soon',
     sco2_coming_soon:        '🌀 sCO₂ Turbine — Coming soon. Supercritical CO₂ turbine: 10× smaller than a conventional steam turbine, up to 50% efficiency. Suitable for SMR, solar-thermal, and BESS projects.',
@@ -2393,6 +2437,7 @@ const TRANSLATIONS = {
     lbl_market:     'Målmarknad',
     map_select_hint:'— Välj projekttyp —',
     map_fi_only:    'Tillgänglig för Finland just nu — fler länder kommer snart.',
+    gen_country_partial_rag: 'Delvis RAG-täckning',
     gen_country_coming_soon: '🌍 Tillståndsdokumenttjänsten är för närvarande tillgänglig för Finland (FI) och Polen (PL, endast SMR-projekt). SE, DA och NO kommer snart.',
     badge_coming_soon:       'Kommer snart',
     sco2_coming_soon:        '🌀 sCO₂ Turbine — Kommer snart. Superkritisk CO₂-turbin: 10× mindre än konventionell ångturbin, upp till 50% verkningsgrad. Passar för SMR-, soltermi- och BESS-projekt.',
@@ -2668,6 +2713,7 @@ const TRANSLATIONS = {
     gen_done_note:  'AI-udkast — kræver ekspertgennemgang inden indsendelse',
     map_select_hint:'— Vælg projekttype —',
     map_fi_only:    'Tilgængelig for Finland i øjeblikket — andre lande kommer snart.',
+    gen_country_partial_rag: 'Delvis RAG-dækning',
     gen_country_coming_soon: '🌍 Tilladelsesdokumenttjenesten er i øjeblikket tilgængelig for Finland (FI) og Polen (PL, kun SMR-projekter). SE, DA og NO kommer snart.',
     badge_coming_soon:       'Kommer snart',
     sco2_coming_soon:        '🌀 sCO₂ Turbine — Kommer snart. Superkritisk CO₂-turbin: 10× mindre end konventionel dampturbin, op til 50% virkningsgrad. Egnet til SMR-, soltermiske og BESS-projekter.',
@@ -2961,6 +3007,7 @@ const TRANSLATIONS = {
     gen_done_note:  'AI-utkast — krever ekspertgjennomgang før innlevering',
     map_select_hint:'— Velg prosjekttype —',
     map_fi_only:    'Tilgjengelig for Finland nå — andre land kommer snart.',
+    gen_country_partial_rag: 'Delvis RAG-dekning',
     gen_country_coming_soon: '🌍 Tillatelsesdokumenttjenesten er for øyeblikket tilgjengelig for Finland (FI) og Polen (PL, kun SMR-prosjekter). SE, DA og NO kommer snart.',
     badge_coming_soon:       'Kommer snart',
     sco2_coming_soon:        '🌀 sCO₂ Turbine — Kommer snart. Superkritisk CO₂-turbin: 10× mindre enn konvensjonell dampturbin, opptil 50% virkningsgrad. Egnet for SMR-, solvarme- og BESS-prosjekter.',
@@ -3254,6 +3301,7 @@ const TRANSLATIONS = {
     gen_done_note:  'Szkic AI — wymaga przeglądu eksperta przed złożeniem',
     map_select_hint:'— Wybierz typ projektu —',
     map_fi_only:    'Obecnie dostępne tylko dla Finlandii — inne kraje wkrótce.',
+    gen_country_partial_rag: 'Częściowe pokrycie RAG',
     gen_country_coming_soon: '🌍 Usługa dokumentów pozwoleń jest dostępna dla Finlandii (FI) i Polski (PL, tylko projekty SMR). SE, DA i NO — wkrótce.',
     badge_coming_soon:       'Wkrótce',
     sco2_coming_soon:        '🌀 sCO₂ Turbine — Wkrótce. Turbina nadkrytyczna CO₂: 10× mniejsza niż konwencjonalna turbina parowa, sprawność do 50%. Nadaje się do projektów SMR, termalnej energii słonecznej i BESS.',
@@ -3555,6 +3603,7 @@ const TRANSLATIONS = {
     gen_proofread_err:     'Korrektur fehlgeschlagen',
     map_select_hint:'— Projekttyp wählen —',
     map_fi_only:    'Derzeit nur für Finnland verfügbar — andere Länder folgen bald.',
+    gen_country_partial_rag: 'Partielle RAG-Abdeckung',
     gen_country_coming_soon: '🌍 Der Dokumentendienst ist derzeit für Finnland (FI) und Polen (PL, nur SMR-Projekte) verfügbar. SE, DA und NO folgen bald.',
     badge_coming_soon:       'Demnächst',
     sco2_coming_soon:        '🌀 sCO₂-Turbine — Demnächst. Überkritische CO₂-Turbine: 10× kleiner als herkömmliche Dampfturbine, Wirkungsgrad bis 50%.',
@@ -3650,6 +3699,58 @@ const TRANSLATIONS = {
     lbl_contact_dst:    'Kontaktieren Sie Ihren lokalen Netzbetreiber',
     lbl_pinta_ala_manuaali: 'Eingetragene Fläche (ha)',
     lbl_mml_no_value:   'API hat keinen Wert zurückgegeben',
+    // Lomakekentät — puuttuvat käännökset (korjattu 2026-06-03)
+    gf_lbl_kt:             'Grundstücksnummer',
+    gf_lbl_kt_meri:        'Offshore-Referenz',
+    gf_lbl_kap:            'Kapazität (MWh)',
+    gf_lbl_kaytto:         'Verwendungszweck',
+    gf_lbl_kayttotarkoitus:'Verwendungszweck',
+    gf_lbl_kerrokset:      'Stockwerke (Anz.)',
+    gf_lbl_huoneistoala:   'Wohnfläche (m²)',
+    gf_lbl_kunta_meri:     'Standortgebiet (nächste Gemeinde)',
+    gf_lbl_liiketilaala:   'Gewerbefläche (m²)',
+    gf_lbl_pintaala:       'Grundfläche (ha)',
+    gf_lbl_raktilavuus:    'Bauvolumen (m³)',
+    gf_lbl_reaktori:       'Reaktortyp',
+    gf_lbl_teho_kokonais:  'Gesamtleistung (MW)',
+    gf_lbl_teho_lampoteho: 'Wärmeleistung (MW)',
+    gf_lbl_teho_mwp:       'Leistung (MWp)',
+    gf_lbl_turbiinimi:     'Turbinenanzahl',
+    gf_lbl_verkko:         'Netzanschluss',
+    gf_lbl_vesisto:        'Gewässer',
+    gf_lbl_yva:            'UVP erforderlich',
+    gf_lbl_etaisyys:       'Entfernung zur Küste (km)',
+    gf_lbl_elainpaikat:    'Tierplätze (Anz.)',
+    gf_ph_kt:              'z.B. 091-001-0001-0001',
+    gf_ph_kt_meri:         '61°N 21°E',
+    gf_ph_kunta_meri:      'Gemeinde',
+    gf_ph_vesisto:         'Gewässername',
+    opt_kaytto_sahko:      'Stromerzeugung',
+    opt_kaytto_lampo:      'Fernwärme + Strom',
+    opt_kaytto_teoll:      'Industrieprozesswärme',
+    opt_kaytto_vety:       'Wasserstoffproduktion',
+    phase_esiselvitys:     'Voruntersuchungsphase',
+    phase_lupavaihe:       'Genehmigungsphase',
+    phase_rakentaminen:    'Bauphase',
+    opt_vir_valitse:       '— Auswählen —',
+    opt_vir_kunta:         'Gemeinde (Baugenehmigung)',
+    opt_vir_ely:           'ELY-Zentrum (UVP)',
+    opt_vir_stuk:          'STUK (Kernkraft)',
+    opt_vir_fingrid:       'Fingrid (Netzanschluss)',
+    opt_vir_avi:           'Luova (Umwelt-/Wasserlizenz)',
+    opt_vir_tem:           'TEM (Grundsatzentscheidung)',
+    opt_vir_muu:           'Sonstiges',
+    opt_vir_paa:           'PAA (Kernkraftlizenz)',
+    gf_title_smr_bess:     'SMR+BESS — Kleinreaktor + Speicher',
+    gf_title_vesivoima:    'Wasserkraft',
+    gf_title_ymparistolupa:'Umweltgenehmigung',
+    ei_sovellu:            'Nicht zutreffend',
+    country_fi:            'Finnland',
+    country_se:            'Schweden',
+    country_da:            'Dänemark',
+    country_no:            'Norwegen',
+    country_pl:            'Polen',
+    country_detected:      'Land erkannt:',
   },
 };
 
@@ -4454,17 +4555,26 @@ function _rebuildMapGrid() {
   updateGridLink();
 }
 
+// Coverage levels per country — informs soft warning banner only, never blocks
+const _COUNTRY_COVERAGE = {
+  FI: { level: 'full',    label: 'FI — täysi kattavuus' },
+  SE: { level: 'partial', label: 'SE — osittainen kattavuus (1 350 chunkkia)' },
+  DA: { level: 'partial', label: 'DA — osittainen kattavuus (265 chunkkia)' },
+  NO: { level: 'partial', label: 'NO — osittainen kattavuus (1 029 chunkkia)' },
+  PL: { level: 'partial', label: 'PL — SMR/BESS kattavuus (2 186 chunkkia)' },
+};
+
 function _isPermitAvailable(country, hanketyyppi) {
-  if (country === 'FI') return true;
-  const PL_ENABLED = new Set(['smr', 'bess', 'tuulivoima_maa', 'aurinkovoima']);
-  if (country === 'PL' && PL_ENABLED.has(hanketyyppi)) return true;
-  return false;
+  // All countries allowed — coverage warning is shown as soft banner, not a blocker
+  return true;
 }
 
 function _updatePermitNotice() {
   const notice = document.getElementById('gen-country-notice');
   const formSection = document.getElementById('gen-form-section');
   if (!notice) return;
+
+  // sCO₂ coming soon — still a hard block (no RAG data at all)
   if (selectedProjectType) {
     const pt = PROJECT_TYPES.find(p => p.id === selectedProjectType);
     if (pt && pt.comingSoon) {
@@ -4474,10 +4584,17 @@ function _updatePermitNotice() {
       return;
     }
   }
-  const unavailable = selectedProjectType && !_isPermitAvailable(selectedCountry, selectedProjectType);
-  notice.style.display = unavailable ? 'block' : 'none';
-  notice.textContent   = unavailable ? t('gen_country_coming_soon') : '';
-  if (formSection) formSection.style.display = unavailable ? 'none' : (selectedProjectType ? '' : 'none');
+
+  // Soft coverage warning for non-FI countries
+  const cov = _COUNTRY_COVERAGE[selectedCountry];
+  if (cov && cov.level !== 'full' && selectedProjectType) {
+    notice.style.cssText = 'display:block;background:rgba(74,159,212,0.07);border:1px solid rgba(74,159,212,0.25);border-radius:7px;padding:8px 12px;font-size:0.73rem;color:#4a9fd4;margin-bottom:8px;';
+    notice.innerHTML = `ℹ️ <strong>${selectedCountry}</strong>: ${t('gen_country_partial_rag')} — ${cov.label}. FI-regulaatiot täydentävät kontekstin.`;
+  } else {
+    notice.style.display = 'none';
+    notice.textContent = '';
+  }
+  if (formSection) formSection.style.display = selectedProjectType ? '' : 'none';
 }
 
 function setCountry(code) {
@@ -6218,6 +6335,168 @@ function _loadSiteForReport(lat, lon) {
   map.setView([lat, lon], 15);
   log(`Kohteen sijainti: ${lat.toFixed(5)}, ${lon.toFixed(5)} — syötä kiinteistötunnus ja paina Hae`, 'info');
 }
+
+// ─────────────────────────────────────────────
+// Arkkitehtuuripiirtotyökalu (Leaflet.draw)
+// ─────────────────────────────────────────────
+let _archDrawLayer = null;     // L.FeatureGroup
+let _archDrawCtrl  = null;     // Aktiivinen draw handler
+let _archTool      = 'polygon';
+let _archGeoJson   = { type: 'FeatureCollection', features: [] };
+
+const _ARCH_COLORS = {
+  polygon:  { color: '#00C2A8', fillColor: '#00C2A8', fillOpacity: 0.1 },
+  polyline: { color: '#4a9fd4', weight: 3 },
+  marker:   {},
+};
+
+function _archInit() {
+  if (_archDrawLayer) return;
+  _archDrawLayer = new L.FeatureGroup().addTo(map);
+
+  _archDrawLayer.on('layeradd', () => _archUpdateStats());
+}
+
+function archSetTool(tool) {
+  _archTool = tool;
+  document.querySelectorAll('.arch-tool-btn[id^="arch-btn-"]').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('arch-btn-' + tool);
+  if (btn) btn.classList.add('active');
+}
+
+function archStartDraw() {
+  _archInit();
+  if (_archDrawCtrl) { _archDrawCtrl.disable(); _archDrawCtrl = null; }
+
+  const opts = _ARCH_COLORS[_archTool] || {};
+
+  if (_archTool === 'polygon') {
+    _archDrawCtrl = new L.Draw.Polygon(map, { shapeOptions: opts });
+  } else if (_archTool === 'polyline') {
+    _archDrawCtrl = new L.Draw.Polyline(map, { shapeOptions: opts });
+  } else {
+    _archDrawCtrl = new L.Draw.Marker(map);
+  }
+  _archDrawCtrl.enable();
+
+  document.getElementById('arch-draw-start').style.display = 'none';
+  document.getElementById('arch-draw-stop').style.display  = 'block';
+
+  map.once(L.Draw.Event.CREATED, (e) => {
+    const layer = e.layer;
+    layer.feature = layer.feature || { type: 'Feature', properties: {} };
+    layer.feature.properties.tool = _archTool;
+    layer.feature.properties.label = _archTool === 'polygon' ? 'Rakennusalue' : _archTool === 'polyline' ? 'Pääsytie' : 'Tekninen alue';
+    _archDrawLayer.addLayer(layer);
+    _archSyncGeoJson();
+    _archUpdateStats();
+    archStopDraw();
+    document.getElementById('arch-export-wrap').style.display = 'block';
+  });
+}
+
+function archStopDraw() {
+  if (_archDrawCtrl) { _archDrawCtrl.disable(); _archDrawCtrl = null; }
+  document.getElementById('arch-draw-start').style.display = 'block';
+  document.getElementById('arch-draw-stop').style.display  = 'none';
+}
+
+function archClear() {
+  if (_archDrawLayer) _archDrawLayer.clearLayers();
+  _archGeoJson = { type: 'FeatureCollection', features: [] };
+  const stats = document.getElementById('arch-stats');
+  if (stats) stats.style.display = 'none';
+  const expWrap = document.getElementById('arch-export-wrap');
+  if (expWrap) expWrap.style.display = 'none';
+  archStopDraw();
+}
+
+function _archSyncGeoJson() {
+  if (!_archDrawLayer) return;
+  _archGeoJson = _archDrawLayer.toGeoJSON();
+}
+
+function _archUpdateStats() {
+  if (!_archDrawLayer) return;
+  const stats = document.getElementById('arch-stats');
+  const areaEl = document.getElementById('arch-area-info');
+  const perimEl = document.getElementById('arch-perimeter-info');
+  if (!stats) return;
+
+  let totalAreaM2 = 0;
+  let polygonCount = 0;
+  let lineCount = 0;
+  let markerCount = 0;
+
+  _archDrawLayer.eachLayer(layer => {
+    if (layer instanceof L.Polygon) {
+      polygonCount++;
+      // Shoelace formula approximation in lat/lon → m²
+      const latlngs = layer.getLatLngs()[0];
+      if (latlngs && latlngs.length > 2) {
+        let area = 0;
+        const R = 6371000;
+        for (let i = 0; i < latlngs.length; i++) {
+          const j = (i + 1) % latlngs.length;
+          const xi = latlngs[i].lng * Math.PI / 180 * R * Math.cos(latlngs[i].lat * Math.PI / 180);
+          const yi = latlngs[i].lat * Math.PI / 180 * R;
+          const xj = latlngs[j].lng * Math.PI / 180 * R * Math.cos(latlngs[j].lat * Math.PI / 180);
+          const yj = latlngs[j].lat * Math.PI / 180 * R;
+          area += xi * yj - xj * yi;
+        }
+        totalAreaM2 += Math.abs(area / 2);
+      }
+    } else if (layer instanceof L.Polyline) {
+      lineCount++;
+    } else if (layer instanceof L.Marker) {
+      markerCount++;
+    }
+  });
+
+  const totalAreaHa = (totalAreaM2 / 10000).toFixed(3);
+  let infoText = [];
+  if (polygonCount) infoText.push(`Rakennusalueet: ${polygonCount} kpl · ${totalAreaHa} ha`);
+  if (lineCount)    infoText.push(`Reitit: ${lineCount} kpl`);
+  if (markerCount)  infoText.push(`Pisteet: ${markerCount} kpl`);
+
+  if (infoText.length > 0) {
+    stats.style.display = 'block';
+    areaEl.textContent = infoText.join(' · ');
+    perimEl.textContent = `Pinta-ala yhteensä: ${totalAreaHa} ha (${Math.round(totalAreaM2)} m²)`;
+  }
+}
+
+function archExportJson() {
+  _archSyncGeoJson();
+  const blob = new Blob([JSON.stringify(_archGeoJson, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `arkkitehtuuri_${Date.now()}.geojson`;
+  a.click();
+  URL.revokeObjectURL(url);
+  log('GeoJSON tallennettu: ' + _archGeoJson.features.length + ' kohdetta', 'ok');
+}
+
+// Lisätään käännösavaimet sivupalkin arch-osioon dynaamisesti
+(function _archI18n() {
+  const archKeys = {
+    h3_arch:          { FI:'Arkkitehtuuripiirto', EN:'Architecture Drawing', SE:'Arkitekturritning', DA:'Arkitekturtyrkening', NO:'Arkitekturjegning', PL:'Rysunek architektoniczny', DE:'Architekturzeichnung' },
+    arch_desc:        { FI:'Piirrä rakennuksen ääriviivat, pääsytiet ja tekniset alueet kartalle.', EN:'Draw building outline, access routes and technical areas on the map.', SE:'Rita byggnadens kontur, tillfartsvägar och tekniska områden på kartan.', DA:'Tegn bygningens kontur, adgangsveje og tekniske områder på kortet.', NO:'Tegn bygningens kontur, adkomstveier og tekniske områder på kartet.', PL:'Narysuj zarys budynku, drogi dojazdowe i obszary techniczne na mapie.', DE:'Zeichnen Sie Gebäudekonturen, Zufahrtswege und technische Bereiche auf der Karte.' },
+    arch_tool_polygon:{ FI:'Rakennusalue', EN:'Building area', SE:'Byggnadsyta', DA:'Bygningsareal', NO:'Bygningsareal', PL:'Obszar budynku', DE:'Gebäudebereich' },
+    arch_tool_polyline:{ FI:'Pääsytie / reitti', EN:'Access route', SE:'Tillfartsväg', DA:'Adgangsvej', NO:'Adkomstvei', PL:'Droga dojazdowa', DE:'Zufahrtsweg' },
+    arch_tool_marker: { FI:'Tekninen alue', EN:'Technical area', SE:'Tekniskt område', DA:'Teknisk område', NO:'Teknisk område', PL:'Obszar techniczny', DE:'Technischer Bereich' },
+    arch_start:       { FI:'Aloita piirtäminen', EN:'Start drawing', SE:'Börja rita', DA:'Start tegning', NO:'Start tegning', PL:'Zacznij rysować', DE:'Zeichnen starten' },
+    arch_stop:        { FI:'Lopeta', EN:'Stop', SE:'Stopp', DA:'Stop', NO:'Stopp', PL:'Zatrzymaj', DE:'Stoppen' },
+    arch_clear:       { FI:'Tyhjennä kaikki', EN:'Clear all', SE:'Rensa allt', DA:'Ryd alt', NO:'Tøm alt', PL:'Wyczyść wszystko', DE:'Alles löschen' },
+    arch_export:      { FI:'Tallenna GeoJSON', EN:'Save GeoJSON', SE:'Spara GeoJSON', DA:'Gem GeoJSON', NO:'Lagre GeoJSON', PL:'Zapisz GeoJSON', DE:'GeoJSON speichern' },
+  };
+  for (const [lang, block] of Object.entries(TRANSLATIONS)) {
+    for (const [key, vals] of Object.entries(archKeys)) {
+      if (!block[key]) block[key] = vals[lang] || vals.FI;
+    }
+  }
+})();
 </script>
 
 <!-- ── Hanketyyppi-modal ───────────────────────────────────────────── -->
