@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tietosuojaseloste — NCE Permit AI</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background: #07111f;
+      color: #c0d0e8;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.93rem;
+      line-height: 1.7;
+    }
+    header {
+      background: #0a1628;
+      border-bottom: 1px solid #1e2d4a;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    header a { color: #00C2A8; text-decoration: none; font-size: 0.82rem; }
+    header a:hover { text-decoration: underline; }
+    .logo { font-size: 1rem; font-weight: 700; color: #e0ecf8; }
+    main {
+      max-width: 760px;
+      margin: 48px auto;
+      padding: 0 24px 60px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      color: #e0ecf8;
+      border-bottom: 1px solid #1e3a5a;
+      padding-bottom: 14px;
+      margin-bottom: 28px;
+    }
+    h2 {
+      font-size: 1rem;
+      color: #00C2A8;
+      margin-top: 32px;
+      margin-bottom: 8px;
+    }
+    p { margin: 0 0 14px; color: #a8bcd4; }
+    ul { margin: 0 0 14px; padding-left: 22px; color: #a8bcd4; }
+    li { margin-bottom: 5px; }
+    .highlight {
+      background: #0d1929;
+      border: 1px solid #1e3a5a;
+      border-left: 3px solid #00C2A8;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 20px 0;
+    }
+    .highlight p { margin: 0; }
+    a { color: #4a9fd4; }
+    footer {
+      background: #0a1628;
+      border-top: 1px solid #1e2d4a;
+      padding: 14px 24px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #4a6a9a;
+    }
+    .date { font-size: 0.78rem; color: #4a6a9a; margin-bottom: 28px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo">NCE Permit AI</span>
+  <a href="/">← Takaisin sovellukseen</a>
+</header>
+
+<main>
+  <h1>Tietosuojaseloste</h1>
+  <p class="date">Voimassa: 2026-06-01 &nbsp;·&nbsp; Rekisterinpitäjä: Native Clean Energy (NCE Energy)</p>
+
+  <div class="highlight">
+    <p><strong>Lyhyt yhteenveto:</strong> Kerätään vain välttämättömät hanketiedot hakemusluonnoksen generointia varten. Tietoja ei myydä eikä luovuteta kolmansille osapuolille. Ei evästeitä, ei käyttäjäseurantaa.</p>
+  </div>
+
+  <h2>1. Rekisterinpitäjä</h2>
+  <p>
+    Native Clean Energy (NCE Energy)<br>
+    Sähköposti: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>
+    Verkkosivusto: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a>
+  </p>
+
+  <h2>2. Mitä tietoja kerätään</h2>
+  <p>NCE Permit AI käsittelee ainoastaan käyttäjän itse syöttämiä hanketietoja hakemusluonnoksen generointia varten:</p>
+  <ul>
+    <li><strong>Kiinteistötunnus</strong> — haetaan MML:n WFS-rajapinnasta sijaintitietojen täydentämiseksi</li>
+    <li><strong>Y-tunnus</strong> — vapaaehtoinen, lisätään hakemuslomakkeeseen</li>
+    <li><strong>Hakijan nimi ja yhteystiedot</strong> — lisätään hakemusluonnokseen</li>
+    <li><strong>Hankkeen tekniset tiedot</strong> (teho, kapasiteetti, kunta, hanketyyppi)</li>
+    <li><strong>Sijainti- ja ympäristötiedot</strong> — käyttäjän syöttämät tai MML/SYKE-rajapinnoista haetut</li>
+  </ul>
+  <p>Palvelu <strong>ei kerää</strong> eikä tallenna henkilötunnuksia, maksukorttitietoja tai kirjautumistietoja. Käyttäjätiliä ei vaadita.</p>
+
+  <h2>3. Mihin tietoja käytetään</h2>
+  <ul>
+    <li>Lupahakemusluonnoksen generointiin Anthropic Claude -tekoälyllä (RAG-pohjainen)</li>
+    <li>PDF-dokumentin muodostamiseen ReportLab-kirjastolla</li>
+    <li>Sijaintianalyysiin (MML, SYKE, Fingrid, OSM -rajapinnat)</li>
+  </ul>
+  <p>Syötettyjä tietoja <strong>ei säilytetä</strong> palvelimen pysyvässä tallennuksessa generointiistunnon jälkeen. Tieto elää muistissa vain generoinnin ajan (enintään ~5 minuuttia).</p>
+
+  <h2>4. Kolmannet osapuolet</h2>
+  <p>Hakemusluonnoksen generoimiseksi hanketiedot välitetään <strong>Anthropic Claude API:lle</strong> (yhdysvaltalaiselle tekoälypalvelulle). Anthropic käsittelee tietoja oman tietosuojakäytäntönsä mukaisesti.</p>
+  <p>Tietoja välitetään myös seuraaville julkisille rajapinnoille sijainti- ja kartatietojen hakemiseksi:</p>
+  <ul>
+    <li>Maanmittauslaitos (MML) — kiinteistö- ja kaavatieto</li>
+    <li>Suomen ympäristökeskus (SYKE) — pohjavesi- ja luontoalueet</li>
+    <li>Fingrid — sähköverkkodata</li>
+    <li>OpenStreetMap (OSM) — tieverkko ja rakennukset</li>
+  </ul>
+  <p>Tietoja <strong>ei myydä, vuokrata eikä luovuteta</strong> muille kolmansille osapuolille.</p>
+
+  <h2>5. Evästeet ja seuranta</h2>
+  <p>NCE Permit AI ei käytä evästeitä, seurantapikseleitä, Google Analyticsia tai muita käyttäjäseurantapalveluita. Ainoa selaimessa tallennettu tieto on kielivalinta (<code>nce_lang</code>), joka tallennetaan <code>localStorage</code>-mekanismilla paikallisesti käyttäjän selaimeen.</p>
+
+  <h2>6. Tietojen säilytysaika</h2>
+  <p>Palvelin ei säilytä hanketietoja pysyvästi. Generoitu PDF toimitetaan suoraan käyttäjän selaimeen eikä sitä tallenneta palvelimelle. Palvelinlokit (pyyntömetadata ilman henkilötietoja) säilytetään enintään 30 päivää Render-palvelualustan oletusasetusten mukaisesti.</p>
+
+  <h2>7. Rekisteröidyn oikeudet (GDPR)</h2>
+  <p>EU:n yleisen tietosuoja-asetuksen (GDPR, 2016/679) mukaisesti sinulla on oikeus:</p>
+  <ul>
+    <li>Saada tietää, mitä tietojasi käsitellään</li>
+    <li>Pyytää tietojen oikaisemista tai poistamista</li>
+    <li>Vastustaa tietojen käsittelyä</li>
+    <li>Tehdä valitus tietosuojaviranomaiselle (Suomi: <a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a>)</li>
+  </ul>
+  <p>Koska palvelu ei säilytä tietoja, rekisteröidyn pyynnöt käsitellään tapauskohtaisesti. Ota yhteyttä: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>
+
+  <h2>8. Tietoturva</h2>
+  <p>Palvelu toimii HTTPS-yhteyden yli. API-kutsut Anthropicille ja MML:lle käyttävät TLS-salattuja yhteyksiä. Palvelin sijaitsee Render-palvelualustalla (Virginia, USA / EU-vaihtoehto saatavilla).</p>
+
+  <h2>9. Muutokset tietosuojaselosteeseen</h2>
+  <p>Tätä tietosuojaselostetta voidaan päivittää. Oleelliset muutokset ilmoitetaan sovelluksen etusivulla. Päivämäärä sivun yläosassa ilmaisee viimeisimmän päivityksen.</p>
+
+  <h2>10. Yhteydenotot</h2>
+  <p>
+    Tietosuojaan liittyvät kysymykset: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>
+    NCE Permit AI — Native Clean Energy · <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a>
+  </p>
+</main>
+
+<footer>
+  <strong style="color:#8899aa;">NCE Permit AI</strong> &mdash; Native Clean Energy &nbsp;|&nbsp;
+  <a href="mailto:info@ncenergy.fi" style="color:#4a9fd4;text-decoration:none;">info@ncenergy.fi</a> &nbsp;|&nbsp;
+  <a href="/" style="color:#4a9fd4;text-decoration:none;">Takaisin sovellukseen</a>
+</footer>
+
+</body>
+</html>

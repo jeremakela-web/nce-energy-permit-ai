@@ -265,6 +265,58 @@
     .gen-card.coming-soon { opacity: 0.6; }
     .gen-card-badge.badge-soon { background: rgba(255,180,0,0.15); color: #ffb400; }
 
+    /* ── Hanketyyppi-modal ─────────────────────────────── */
+    .hanke-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,12,25,0.75);
+      z-index: 900;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(3px);
+      animation: fadeInOverlay 0.18s ease;
+    }
+    @keyframes fadeInOverlay { from { opacity:0 } to { opacity:1 } }
+    .hanke-modal {
+      background: #0d1929;
+      border: 1px solid #1e3a5a;
+      border-radius: 16px;
+      padding: 28px 30px 24px;
+      max-width: 700px;
+      width: 95vw;
+      max-height: 88vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 12px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,194,168,0.08);
+      animation: slideUpModal 0.22s cubic-bezier(.22,.68,0,1.2);
+    }
+    @keyframes slideUpModal { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:none } }
+    .hanke-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; border-bottom: 1px solid #1a2e48; padding-bottom: 12px;
+    }
+    .hanke-modal-title { font-size: 0.9rem; font-weight: 700; color: #c0d0e8; }
+    .hanke-modal-close {
+      background: none; border: none; color: #6a8aaa;
+      font-size: 1.25rem; cursor: pointer; line-height: 1;
+      padding: 4px 8px; border-radius: 6px; transition: color 0.15s, background 0.15s;
+    }
+    .hanke-modal-close:hover { color: #e0ecf8; background: rgba(255,255,255,0.08); }
+
+    /* ── Maavalinta-dropdown ───────────────────────────── */
+    .country-select-wrap {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 18px;
+    }
+    .country-select-label { font-size: 0.72rem; color: #6a8aaa; white-space: nowrap; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .country-select {
+      background: #0d1929; border: 1px solid #2a3a5e; color: #c0d0e8;
+      border-radius: 8px; padding: 5px 28px 5px 10px; font-size: 0.8rem;
+      cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a6a9a'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+      transition: border-color 0.15s;
+    }
+    .country-select:hover, .country-select:focus { border-color: #00C2A8; outline: none; }
+
     /* ── Mobiilikorjaukset ───────────────────────────── */
     .tab-label-short { display: none; }
     .pai-short-label { display: none; }
@@ -1222,6 +1274,7 @@
           <button class="lang-dropdown-item" id="lang-item-DA" onclick="setLang('DA');closeLangMenu();">🇩🇰 Dansk</button>
           <button class="lang-dropdown-item" id="lang-item-NO" onclick="setLang('NO');closeLangMenu();">🇳🇴 Norsk</button>
           <button class="lang-dropdown-item" id="lang-item-PL" onclick="setLang('PL');closeLangMenu();">🇵🇱 Polski</button>
+          <button class="lang-dropdown-item" id="lang-item-DE" onclick="setLang('DE');closeLangMenu();">🇩🇪 Deutsch</button>
         </div>
       </div>
       <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
@@ -1245,28 +1298,22 @@
         Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.
       </div>
 
+      <!-- Maavalinta-dropdown (aina näkyvissä) -->
+      <div class="country-select-wrap">
+        <span class="country-select-label" data-i18n="country_label">Maa</span>
+        <select class="country-select" id="gen-country-select" onchange="setCountry(this.value)">
+          <option value="FI">🇫🇮 Suomi (FI)</option>
+          <option value="SE">🇸🇪 Sverige (SE)</option>
+          <option value="DA">🇩🇰 Danmark (DA)</option>
+          <option value="NO">🇳🇴 Norge (NO)</option>
+          <option value="PL">🇵🇱 Polska (PL)</option>
+        </select>
+      </div>
+
       <div class="gen-section-label" data-i18n="h3_hanketyyppi">Hanketyyppi</div>
       <div class="gen-cards" id="gen-cards-grid">
         <!-- Cards rendered by JS -->
       </div>
-
-      <!-- Country selector (shown after project type selected) -->
-      <div id="gen-country-bar" style="display:none;margin:10px 0 4px;">
-        <div style="font-size:0.72rem;color:#8899aa;margin-bottom:6px;" data-i18n="country_label">Maa / sääntelyjärjestelmä</div>
-        <div class="lang-switcher" style="display:inline-flex;gap:2px;">
-          <button class="lang-btn active" id="country-btn-FI" onclick="setCountry('FI')">🇫🇮 FI</button>
-          <button class="lang-btn" id="country-btn-SE" onclick="setCountry('SE')">🇸🇪 SE</button>
-          <button class="lang-btn" id="country-btn-DA" onclick="setCountry('DA')">🇩🇰 DA</button>
-          <button class="lang-btn" id="country-btn-NO" onclick="setCountry('NO')">🇳🇴 NO</button>
-          <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
-        </div>
-        <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
-        <div id="gen-country-hint" class="gen-country-hint" style="display:none;" data-i18n="country_hint">Valitse ensin kohdemaasi</div>
-        <div id="gen-country-notice" style="display:none;margin-top:10px;padding:10px 14px;background:#0d1f38;border:1px solid #1e3a5a;border-radius:8px;font-size:0.78rem;color:#8899aa;" data-i18n="gen_country_coming_soon"></div>
-      </div>
-
-      <!-- Form section (hidden until card selected) -->
-      <div id="gen-form-section" style="display:none;"></div>
     </div>
   </div>
 
@@ -3459,6 +3506,134 @@ const TRANSLATIONS = {
     lbl_tarjous:              'Poproś o ofertę →',
     lbl_contact_dst:          'Skontaktuj się z lokalnym operatorem sieci dystrybucyjnej',
   },
+  DE: {
+    tab_generator:        'Genehmigungsdokumentendienst',
+    tab_generator_short:  'Genehmigungen',
+    tab_map:              'Flächennutzungsanalyse',
+    tab_map_short:        'Standort',
+    subtitle:             'Genehmigungsprozessanalyse für Energieprojekte',
+    gen_desc:       'Wählen Sie den Projekttyp und füllen Sie die Grunddaten aus — KI erstellt einen RAG-basierten Genehmigungsantragsentwurf als PDF (~60 s). Der Entwurf muss vor der Einreichung von einem Experten geprüft werden.',
+    gen_form_title: 'Genehmigungsantragsentwurf — PDF',
+    lbl_hanketyyppi:'Projekttyp',
+    h3_hanketyyppi: 'Projekttyp',
+    lbl_teho_mw:    'Leistung (MW)',
+    lbl_kt:         'Grundstücksnummer',
+    lbl_kunta:      'Gemeinde',
+    lbl_hakija:     'Antragsteller (Unternehmen)',
+    ph_kt:          'z.B. 091-001-0001-0001',
+    ph_kunta:       'Gemeinde',
+    ph_hakija:      'Unternehmensname',
+    btn_generate_pdf: 'PDF generieren',
+    btn_cancel:     'Abbrechen',
+    btn_generate_hakemus: 'Antrag generieren',
+    btn_calculate:  'Eignung berechnen',
+    gen_wait_msg:   'Genehmigungsantragsentwurf wird generiert',
+    gen_wait_sub:   'RAG-Suche + Claude KI + PDF-Generierung',
+    gen_done_title: 'Genehmigungsantragsentwurf fertig!',
+    gen_done_note:  'KI-Entwurf — muss vor der Einreichung von einem Experten geprüft werden',
+    gen_proofread_pending: 'Geprüfte Version wird vorbereitet',
+    gen_proofread_sub:     'KI-Korrektur läuft im Hintergrund (60–90 s)',
+    gen_proofread_done:    'Geprüfte Version fertig!',
+    gen_proofread_dl:      'Geprüfte Version herunterladen',
+    gen_proofread_err:     'Korrektur fehlgeschlagen',
+    map_select_hint:'— Projekttyp wählen —',
+    map_fi_only:    'Derzeit nur für Finnland verfügbar — andere Länder folgen bald.',
+    gen_country_coming_soon: '🌍 Der Dokumentendienst ist derzeit für Finnland (FI) und Polen (PL, nur SMR-Projekte) verfügbar. SE, DA und NO folgen bald.',
+    badge_coming_soon:       'Demnächst',
+    sco2_coming_soon:        '🌀 sCO₂-Turbine — Demnächst. Überkritische CO₂-Turbine: 10× kleiner als herkömmliche Dampfturbine, Wirkungsgrad bis 50%.',
+    gen_timing_smr: 'Dies kann bei SMR/Offshore-Anträgen 60–90 Sekunden dauern.',
+    gen_timing_std: 'Bitte ca. 30–60 s warten.',
+    h3_hanke_tiedot:  'Projektdaten',
+    lbl_owner:        'Projektinhaber',
+    lbl_proj_name:    'Projektname',
+    ph_owner:         'Unternehmensname',
+    ph_proj_name:     'Projektname',
+    h3_kiinteisto:       'Grundstück',
+    btn_fetch:           'Abrufen',
+    h3_kiinteistotiedot: 'Grundstücksdaten',
+    lbl_tunnus:          'Kennung',
+    lbl_pinta_ala:       'Fläche',
+    lbl_kunta_info:      'Gemeinde',
+    lbl_kyla:            'Ortsteil',
+    h3_manuaali:      'Manuelle Daten',
+    manual_hint:      'Felder ausfüllen, die die Schnittstelle nicht liefert. Beeinflusst die Bewertung.',
+    lbl_kaavoitus:    'Bebauungsplan',
+    lbl_tulvavaara:   'Hochwasserrisiko',
+    lbl_maapera:      'Bodentyp',
+    btn_apply_manual: 'Punkte mit manuellen Daten aktualisieren',
+    h3_soveltuvuus:   'Eignungsanalyse',
+    lbl_grid_dist:    'Netzentfernung',
+    lbl_zoning:       'Bebauungsplan',
+    lbl_natura:       'Natura / Schutzgeb.',
+    lbl_groundwater:  'Grundwassergebiet',
+    lbl_building:     'Nächstes Gebäude',
+    lbl_landuse:      'Flächennutzung',
+    lbl_heritage:     'Kulturdenkmäler',
+    lbl_road:         'Straßenschutzzone',
+    lbl_soil:         'Bodentyp (GTK)',
+    lbl_flood:        'Hochwasserrisiko (SYKE)',
+    lbl_substation:   'Nächste Umspannstation',
+    lbl_score:        'Eignungsindex',
+    h3_karttatasot:   'Kartenebenen',
+    lbl_lyr_property: 'Grundstücksgrenzen',
+    lbl_lyr_grid:     'Stromleitungen (OSM/Fingrid)',
+    lbl_lyr_gw:       'Grundwassergebiete (SYKE)',
+    lbl_lyr_natura:   'Natura 2000 (SYKE)',
+    lbl_lyr_bldg:     'Gebäude 1 km (OSM)',
+    lbl_lyr_zoning:   'Bebauungspläne (MML WMS)',
+    lbl_lyr_heritage: 'Kulturdenkmäler (MV)',
+    lbl_lyr_solar:    'Sonneneinstrahlung (PVGIS)',
+    lbl_lyr_flood:    'Hochwasserrisiko (SYKE)',
+    lbl_lyr_substations: 'Umspannstationen (OSM)',
+    lbl_lyr_highways: 'Straßen (OSM)',
+    h3_grid_info:     'Netzinformationen',
+    lbl_logbar_ready: 'Bereit — Projekttyp wählen',
+    lbl_logbar_fetching: 'Grundstücksdaten werden abgerufen…',
+    lbl_score_unit:   'Punkte',
+    h3_ai_strategy:   'KI-Genehmigungsprozess-Strategie',
+    ai_strategy_sub:  'Claude KI — keine Rechtsberatung',
+    country_label:    'Land / Regelwerk',
+    country_hint:     'Wählen Sie zuerst Ihr Zielland',
+    lbl_country:      'Land',
+    gf_title_bess:      'BESS — Batteriespeicher',
+    gf_title_tuulivoima_maa: 'Windkraft — Onshore',
+    gf_title_tuulivoima_meri: 'Windkraft — Offshore',
+    gf_title_aurinkovoima: 'Solarenergie',
+    gf_title_smr:       'SMR — Kleinreaktor',
+    gf_title_datakeskus: 'Rechenzentrum',
+    gf_title_vesivoima: 'Wasserkraft',
+    gf_form_sub:        'Füllen Sie die Grunddaten aus. Die KI generiert einen Antragsentwurf.',
+    gf_luvat_heading:   'Erforderliche Genehmigungen:',
+    gf_submit_btn:      'Antrag generieren (PDF)',
+    gf_disclaimer:      'KI-Entwurf — muss vor der Einreichung von einem Experten geprüft werden.',
+    gf_auto_info:       'Automatisch ausgefüllt',
+    gf_lbl_kunta:       'Gemeinde',
+    gf_lbl_hakija:      'Antragsteller (Unternehmen)',
+    gf_lbl_ytunnus:     'Handelsregisternummer',
+    gf_lbl_osoite:      'Adresse',
+    gf_lbl_kiinteistotunnus: 'Grundstücksnummer',
+    gf_lbl_teho:        'Leistung (MW)',
+    gf_lbl_kapasiteetti: 'Kapazität (MWh)',
+    gf_lbl_vaihe:       'Projektphase',
+    gf_lbl_viranomainen: 'Zielbehörde',
+    gf_lbl_sijainti:    'Standort und Umweltauswirkungen',
+    gf_ph_kunta:        'z.B. Berlin',
+    gf_ph_hakija:       'Unternehmensname',
+    gf_ph_ytunnus:      'z.B. HRB 12345',
+    gf_ph_osoite:       'Straße, PLZ Ort',
+    gf_ph_kiinteistotunnus: 'Grundstücksnummer',
+    gf_ph_sijainti:     'Standortbeschreibung und Umweltauswirkungen',
+    opt_vaihe_valitse:  '— Auswählen —',
+    opt_vaihe_esiselvitys: 'Voruntersuchung',
+    opt_vaihe_lupavaihe: 'Genehmigungsphase',
+    opt_vaihe_rakentaminen: 'Bau',
+    opt_vaihe_kaytto:   'Betrieb',
+    lbl_osm_note:       'OSM-Daten unvollständig —',
+    lbl_tarjous:        'Angebot anfordern →',
+    lbl_contact_dst:    'Kontaktieren Sie Ihren lokalen Netzbetreiber',
+    lbl_pinta_ala_manuaali: 'Eingetragene Fläche (ha)',
+    lbl_mml_no_value:   'API hat keinen Wert zurückgegeben',
+  },
 };
 
 function t(key) {
@@ -3473,6 +3648,7 @@ const LANG_META = {
   DA: { flag: '🇩🇰', label: 'DA' },
   NO: { flag: '🇳🇴', label: 'NO' },
   PL: { flag: '🇵🇱', label: 'PL' },
+  DE: { flag: '🇩🇪', label: 'DE' },
 };
 
 const LUPA_I18N = {
@@ -4225,7 +4401,7 @@ _rebuildMapTypeSelect();
 // Country selection
 // ─────────────────────────────────────────────
 let selectedCountry   = 'FI';
-let countryConfirmed  = false;
+let countryConfirmed  = true; // Dropdown always visible — country is always pre-selected
 
 const COUNTRY_HINTS = {
   FI: ['pöytyä','espoo','tampere','turku','oulu','jyväskylä','lahti','kuopio',
@@ -4287,46 +4463,41 @@ function _updatePermitNotice() {
   if (formSection) formSection.style.display = unavailable ? 'none' : (selectedProjectType ? '' : 'none');
 }
 
+// Maakohtainen oletuskieli
+const _COUNTRY_DEFAULT_LANG = { FI:'FI', SE:'SE', DA:'DA', NO:'NO', PL:'PL' };
+
 function setCountry(code) {
-  const firstConfirm = !countryConfirmed;
   selectedCountry  = code;
   countryConfirmed = true;
 
+  // Sync top dropdown
+  const topSel = document.getElementById('gen-country-select');
+  if (topSel && topSel.value !== code) topSel.value = code;
+
+  // Sync modal button bar
   ['FI','SE','DA','NO','PL'].forEach(c => {
     const btn = document.getElementById('country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
 
-  // Hide hint
   const hint = document.getElementById('gen-country-hint');
   if (hint) hint.style.display = 'none';
 
-  // Render / re-render generator form
+  // Auto-switch UI language to match country (unless user has overridden)
+  const defaultLang = _COUNTRY_DEFAULT_LANG[code];
+  if (defaultLang && TRANSLATIONS[defaultLang]) {
+    setLang(defaultLang);
+    closeLangMenu();
+  }
+
+  // Re-render form if project type already chosen
   if (selectedProjectType) {
     const savedVals = _saveFormValues();
     selectProjectType(selectedProjectType);
     _restoreFormValues(savedVals);
-    // Fade-in on first country confirmation
-    if (firstConfirm) {
-      const formSection = document.getElementById('gen-form-section');
-      if (formSection) {
-        formSection.classList.remove('form-reveal');
-        void formSection.offsetWidth; // force reflow
-        formSection.classList.add('form-reveal');
-      }
-    }
-    // Scroll inside #tab-generator (overflow-y: auto) — body is overflow:hidden
-    const tabGen = document.getElementById('tab-generator');
-    const formEl = document.getElementById('gen-form-section');
-    if (tabGen && formEl) {
-      const relTop = formEl.getBoundingClientRect().top - tabGen.getBoundingClientRect().top + tabGen.scrollTop;
-      tabGen.scrollTo({ top: relTop - 16, behavior: 'smooth' });
-    }
   }
 
   _updatePermitNotice();
-
-  // Re-populate map-tab grid select
   _rebuildMapGrid();
 }
 
@@ -4356,6 +4527,21 @@ function setMapCountry(code) {
 // ─────────────────────────────────────────────
 let selectedProjectType = null;
 
+function openHankeModal() {
+  const overlay = document.getElementById('hanke-modal-overlay');
+  if (overlay) { overlay.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+}
+
+function closeHankeModal() {
+  const overlay = document.getElementById('hanke-modal-overlay');
+  if (overlay) { overlay.style.display = 'none'; document.body.style.overflow = ''; }
+  // Deselect card visually but keep selectedProjectType so country change can reopen
+  document.querySelectorAll('.gen-card').forEach(c => c.classList.remove('selected'));
+}
+
+// Close modal on ESC
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHankeModal(); });
+
 function selectProjectType(typeId) {
   selectedProjectType = typeId;
 
@@ -4363,27 +4549,26 @@ function selectProjectType(typeId) {
     card.classList.toggle('selected', card.dataset.type === typeId);
   });
 
+  // Update modal title with project name
+  const _pt = PROJECT_TYPES.find(p => p.id === typeId);
+  const titleEl = document.getElementById('hanke-modal-title');
+  if (titleEl && _pt) titleEl.textContent = `${_pt.icon || ''} ${ptName(_pt)}`;
+
   const countryBar = document.getElementById('gen-country-bar');
 
-  const _pt = PROJECT_TYPES.find(p => p.id === typeId);
   if (_pt && _pt.comingSoon) {
     if (countryBar) countryBar.style.display = 'none';
     const hint = document.getElementById('gen-country-hint');
     if (hint) hint.style.display = 'none';
     _updatePermitNotice();
+    openHankeModal();
     return;
   }
 
   if (countryBar) countryBar.style.display = 'block';
 
-  // Gate: wait for explicit country selection before showing form
-  if (!countryConfirmed) {
-    const hint = document.getElementById('gen-country-hint');
-    if (hint) { hint.style.display = 'block'; hint.textContent = t('country_hint'); }
-    const fs = document.getElementById('gen-form-section');
-    if (fs) fs.style.display = 'none';
-    return;
-  }
+  // Country is now always confirmed via the top dropdown (countryConfirmed defaults true)
+  const fs = document.getElementById('gen-form-section');
 
   const fieldDef = HANKE_FIELDS[typeId];
   if (!fieldDef) return;
@@ -4490,24 +4675,8 @@ function selectProjectType(typeId) {
     _hankePhaseChanged(typeId, vaiheSel.value);
   }
 
-  // Scroll to form after reflow — desktop scrolls #tab-generator,
-  // mobile scrolls window (tab has overflow:visible at ≤768 px).
-  requestAnimationFrame(() => {
-    const formEl = document.getElementById('gen-form-section');
-    if (!formEl) return;
-    const tabGen = document.getElementById('tab-generator');
-    if (tabGen && tabGen.scrollHeight > tabGen.clientHeight) {
-      // Desktop: scroll the tab container
-      const relTop = formEl.getBoundingClientRect().top
-                   - tabGen.getBoundingClientRect().top
-                   + tabGen.scrollTop;
-      tabGen.scrollTo({ top: relTop - 16, behavior: 'smooth' });
-    } else {
-      // Mobile: scroll the window
-      const absTop = formEl.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: absTop - 16, behavior: 'smooth' });
-    }
-  });
+  // Open modal (form is now inside the modal overlay)
+  openHankeModal();
 }
 
 // ─────────────────────────────────────────────
@@ -5960,10 +6129,38 @@ function _loadSiteForReport(lat, lon) {
 }
 </script>
 
+<!-- ── Hanketyyppi-modal ───────────────────────────────────────────── -->
+<div id="hanke-modal-overlay" style="display:none;" class="hanke-modal-overlay"
+     onclick="if(event.target===this)closeHankeModal()">
+  <div class="hanke-modal" id="hanke-modal" role="dialog" aria-modal="true">
+    <div class="hanke-modal-header">
+      <div class="hanke-modal-title" id="hanke-modal-title">Lupahakemus</div>
+      <button class="hanke-modal-close" onclick="closeHankeModal()" aria-label="Sulje">&#x2715;</button>
+    </div>
+    <!-- Country bar inside modal (shown after project type is set) -->
+    <div id="gen-country-bar" style="display:none;margin:0 0 14px;">
+      <div style="font-size:0.72rem;color:#8899aa;margin-bottom:6px;" data-i18n="country_label">Maa / sääntelyjärjestelmä</div>
+      <div class="lang-switcher" style="display:inline-flex;gap:2px;">
+        <button class="lang-btn active" id="country-btn-FI" onclick="setCountry('FI')">🇫🇮 FI</button>
+        <button class="lang-btn" id="country-btn-SE" onclick="setCountry('SE')">🇸🇪 SE</button>
+        <button class="lang-btn" id="country-btn-DA" onclick="setCountry('DA')">🇩🇰 DA</button>
+        <button class="lang-btn" id="country-btn-NO" onclick="setCountry('NO')">🇳🇴 NO</button>
+        <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
+      </div>
+      <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
+      <div id="gen-country-hint" class="gen-country-hint" style="display:none;" data-i18n="country_hint">Valitse ensin kohdemaasi</div>
+      <div id="gen-country-notice" style="display:none;margin-top:10px;padding:10px 14px;background:#0d1f38;border:1px solid #1e3a5a;border-radius:8px;font-size:0.78rem;color:#8899aa;" data-i18n="gen_country_coming_soon"></div>
+    </div>
+    <!-- Form rendered here by selectProjectType() -->
+    <div id="gen-form-section" style="display:none;"></div>
+  </div>
+</div>
+
 <footer style="background:#0a1628;border-top:1px solid #1e2d4a;padding:14px 24px;text-align:center;font-size:0.72rem;color:#4a6a9a;letter-spacing:0.2px;">
   <strong style="color:#8899aa;">NCE Permit AI</strong> &mdash; Native Clean Energy &nbsp;|&nbsp;
   <a href="mailto:info@ncenergy.fi" style="color:#4a9fd4;text-decoration:none;">info@ncenergy.fi</a> &nbsp;|&nbsp;
-  <a href="https://ncenergy.fi" style="color:#4a9fd4;text-decoration:none;" target="_blank">ncenergy.fi</a>
+  <a href="https://ncenergy.fi" style="color:#4a9fd4;text-decoration:none;" target="_blank">ncenergy.fi</a> &nbsp;|&nbsp;
+  <a href="/privacy" style="color:#4a9fd4;text-decoration:none;">Tietosuoja</a>
 </footer>
 </body>
 </html>

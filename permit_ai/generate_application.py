@@ -2923,6 +2923,81 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "nce_info_desc":   ("NCE Permit AI to narzędzie oparte na sztucznej inteligencji do automatyzacji "
                             "procesów uzyskiwania zezwoleń dla projektów energetycznych."),
     },
+    "DE": {
+        "sub_title":       "Genehmigungsantragsentwurf",
+        "esiselvitys_sub": ("Voruntersuchungs- und Vorbesprechungsmaterial — "
+                            "Vorbereitet für die Vorbesprechung mit der Baugenehmigungsbehörde"),
+        "lupavaihe_sub":   "Genehmigungsphase — Genehmigungsantragsentwurf",
+        "rakentaminen_sub":"Bauphase — Durchführung und Überwachung",
+        "disclaimer_h":    "KI-ENTWURF — EXPERTENPRÜFUNG ERFORDERLICH",
+        "disclaimer_b":    ("KI-gestützter Entwurf — rechtlich nicht bindend. "
+                            "Vor der Einreichung des Antrags von einem Experten prüfen lassen."),
+        "nce_speed_note":  ("NCE Permit AI erstellt eine Antragsvorlage in ~60 Sekunden. "
+                            "Die Bearbeitungszeit der Behörde ist ein separater Prozess und variiert "
+                            "je nach Projekttyp (siehe unten)."),
+        "arviointiviive_lbl": "Bearbeitungszeit der Behörde",
+        "m_hakija":        "Antragsteller",   "m_ytunnus":    "Handelsreg.-Nr.",
+        "m_hanketyyppi":   "Projekttyp",      "m_teho":       "Leistung / Kapazität",
+        "m_kunta":         "Standortgemeinde","m_kt":         "Grundstücksnummer",
+        "m_maa":           "Land",
+        "m_laadittu":      "Erstellt",        "m_laatinut_lbl": "Erstellt von",
+        "m_laatinut":      "NCE Permit AI (KI-gestützt)",
+        "sec1": "1. Projektbeschreibung",            "sec2": "2. Begründung und Bedarf",
+        "sec3": "3. Erforderliche Genehmigungen",    "sec4": "4. Rechtsgrundlagen",
+        "sec5": "5. Anlagenverzeichnis",             "sec6": "6. Nächste Schritte",
+        "sec_standards": "Geltende Normen (EU/international)",
+        "th_std_code": "Norm", "th_std_scope": "Anwendungsbereich",
+        "th_std_supervisor": "Aufsichtsbehörde",
+        "liite_standards": "Normkonformitätserklärung",
+        "liitteet_note":   ("Die folgenden Anlagen müssen zusammen mit dem Antrag eingereicht werden. "
+                            "Setzen Sie ein Häkchen, wenn die Anlage fertig ist."),
+        "lahteet_h":       "Quellen und Referenzen",
+        "lahteet_laki_h":  "Rechtsgrundlage",
+        "lahteet_rag_h":   "Behördliche Quellen",
+        "lahteet_b":       "Bei der Erstellung dieses Entwurfs wurden folgende offizielle Dokumente verwendet:",
+        "yhteystiedot_h":  "Kontaktdaten des Antragstellers",
+        "yht_hakija":      "Antragsteller",  "yht_ytunnus":    "Handelsreg.-Nr.",
+        "yht_osoite":      "Adresse",        "yht_lisatietoja": "Weitere Informationen",
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "info@ncenergy.fi  ·  KI-Entwurf — Expertenprüfung erforderlich"),
+        "th_lupa":  "Genehmigung / Meldung", "th_viran": "Behörde", "th_laki": "Rechtsgrundlage",
+        "th_nro":   "Nr", "th_liite": "Anlage", "th_tila": "Status",
+        "liite_toimitettu": "[ ] Eingereicht",
+        "toim_nro": "Nr", "toim_toimenpide": "Maßnahme",
+        "toim_vastuutaho": "Verantwortlich", "toim_aikataulu": "Zeitplan",
+        "hdr_draft": "Genehmigungsantrag — Entwurf", "hdr_right": "ncenergy.fi  |  KI-Entwurf",
+        "ftr_ai":    "KI-Entwurf — Prüfung erforderlich", "ftr_sivu": "Seite",
+        "esiselvitys_p":   ("Das Projekt befindet sich in der Voruntersuchungsphase. Endgültige technische "
+                            "Spezifikationen, Standortpläne und Umweltverträglichkeitsprüfungen werden im "
+                            "Laufe der weiteren Planung konkretisiert."),
+        "lupavaihe_p":     ("Das Projekt befindet sich in der Genehmigungsphase. Der Bauantrag und die "
+                            "Anlagen werden zur Einreichung bei der Behörde vorbereitet."),
+        "rakentaminen_p":  ("Das Projekt befindet sich in der Bauphase. Die Ausführung erfolgt gemäß den "
+                            "genehmigten Genehmigungen und Plänen unter behördlicher Aufsicht."),
+        "bess_pintaala":   "Die geschätzte Installationsfläche beträgt 0,4–0,6 ha.",
+        "kaava_BESS":      ("<b>Bebauungsplanstatus (wichtigster Aspekt der Voruntersuchung):</b> "
+                            "Der Bebauungsplanstatus des BESS-Projektgeländes muss zuerst geklärt werden. "
+                            "In den meisten Gemeinden erfordert die Aufstellung eines Batteriespeichers "
+                            "einen Bebauungsplan oder eine Baugenehmigung. Der Planungsstatus hat den "
+                            "größten Einfluss auf die Gesamtdauer des Genehmigungsverfahrens."),
+        "kaava_tuuli":     ("<b>Bebauungsplanstatus und UVP-Pflicht:</b> Windparkprojekte erfordern fast "
+                            "immer einen Bebauungsplan. Das UVP-Verfahren ist für Projekte ab 50 MW "
+                            "oder ab 50 m Nabenhöhe obligatorisch. Plan- und UVP-Verfahren laufen "
+                            "oft parallel und dauern zusammen 3–6 Jahre."),
+        "kaava_SMR":       ("<b>Vorläufige Genehmigung (wichtigster erster Schritt):</b> Für eine "
+                            "Kernkraftanlage ist ein Grundsatzbeschluss der Regierung und das "
+                            "vorläufige Genehmigungsverfahren der Atomsicherheitsbehörde vor allen "
+                            "anderen Genehmigungen obligatorisch."),
+        "kaava_aurinkovoima": ("<b>Baugenehmigung oder Bauanzeige — und Planung:</b> Für kleine "
+                            "Solaranlagen (unter ca. 1 ha) ist oft eine Bauanzeige statt einer "
+                            "vollständigen Baugenehmigung ausreichend. UVP ist für Projekte unter "
+                            "50 ha nicht erforderlich."),
+        "kaava_generic":   ("<b>Bebauungsplanstatus:</b> Der geltende Bebauungsplanstatus des "
+                            "Projektgeländes muss in einer Beratung mit der Baubehörde vor der "
+                            "Einreichung des Genehmigungsantrags überprüft werden."),
+        "nce_info_desc":   ("NCE Permit AI ist ein KI-gestütztes Werkzeug zur Automatisierung von "
+                            "Genehmigungsverfahren für Energieprojekte."),
+    },
 }
 
 _KAAVA_KEY: dict[str, str] = {

@@ -161,6 +161,11 @@ async def root():
     return FileResponse(os.path.join(_STATIC_DIR, "index.html"))
 
 
+@app.get("/privacy")
+async def privacy():
+    return FileResponse(os.path.join(_STATIC_DIR, "privacy.html"))
+
+
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "mml_key_set": bool(MML_API_KEY)}
