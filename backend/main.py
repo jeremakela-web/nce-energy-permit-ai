@@ -19,7 +19,7 @@ import uuid
 from threading import Thread
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -126,6 +126,13 @@ class ApplicationRequest(BaseModel):
     kohdeviranomainen:            Optional[str]   = None
     lang:                         Optional[str]   = "FI"
     country:                      Optional[str]   = "FI"
+    # IFC esitäyttö (valinnainen)
+    ifc_floor_area:               Optional[float] = 0.0
+    ifc_building_height:          Optional[float] = 0.0
+    ifc_fire_rating:              Optional[str]   = ""
+    ifc_materials:                Optional[str]   = ""
+    ifc_storeys:                  Optional[int]   = 0
+    ifc_compliance_flags:         Optional[str]   = ""
 
 
 # ── Oikolukutehtävien in-memory-varasto ──────────────────────────────────────
@@ -396,6 +403,12 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         kohdeviranomainen             = req.kohdeviranomainen or "",
         lang                          = req.lang or "FI",
         country                       = req.country or "FI",
+        ifc_floor_area                = req.ifc_floor_area or 0.0,
+        ifc_building_height           = req.ifc_building_height or 0.0,
+        ifc_fire_rating               = req.ifc_fire_rating or "",
+        ifc_materials                 = req.ifc_materials or "",
+        ifc_storeys                   = req.ifc_storeys or 0,
+        ifc_compliance_flags          = req.ifc_compliance_flags or "",
     )
 
     job_id = uuid.uuid4().hex[:10]
@@ -1179,6 +1192,170 @@ def _render_static_map(
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return buf.getvalue()
+
+
+# ── IFC parser imports (optional — graceful if missing) ───────────────────────
+# sys.path already has bess_tool/ root (line 50 above), so permit_ai namespace works
+try:
+    from ifc_parser import extract_ifc_data as _extract_ifc_data
+    from ifc_to_permit import map_to_permit as _map_to_permit
+    _IFC_OK = True
+except Exception as _ifc_err:
+    _IFC_OK = False
+    _ifc_err_msg = str(_ifc_err)
+
+_IFC_MAX_BYTES = 50 * 1024 * 1024  # 50 MB
+
+
+@app.post("/api/parse-ifc")
+@limiter.limit("20/hour")
+async def parse_ifc(
+    request: Request,
+    file: UploadFile = File(...),
+    project_type: str = Query(default="BESS"),
+    country: str = Query(default="FI"),
+):
+    """
+    Parse an IFC file and return permit-relevant fields, missing fields,
+    and compliance flags. Accepts multipart/form-data, max 50 MB.
+    """
+    if not _IFC_OK:
+        raise HTTPException(status_code=501, detail=f"ifcopenshell ei saatavilla: {_ifc_err_msg}")
+
+    if not file.filename or not file.filename.lower().endswith(".ifc"):
+        raise HTTPException(status_code=400, detail="Tiedoston tulee olla .ifc-muodossa")
+
+    content = await file.read()
+    if len(content) > _IFC_MAX_BYTES:
+        raise HTTPException(status_code=413, detail="Tiedosto liian suuri (max 50 MB)")
+    if not content:
+        raise HTTPException(status_code=400, detail="Tyhjä tiedosto")
+
+    allowed_project_types = {
+        "BESS", "AURINKO", "TUULI", "SMR", "DATAKESKUS",
+        "SCO2", "VESIVOIMA", "YVA", "VERKKO",
+    }
+    if project_type not in allowed_project_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"project_type oltava: {', '.join(sorted(allowed_project_types))}",
+        )
+    if country not in {"FI", "SE", "DA", "NO", "PL"}:
+        raise HTTPException(status_code=400, detail="country oltava: FI, SE, DA, NO, PL")
+
+    ifc_data = _extract_ifc_data(content)
+    permit_map = _map_to_permit(ifc_data, project_type=project_type, country=country)
+
+    # Add confidence score per field to response
+    prefilled_with_conf = {
+        field: {
+            "value": info["value"],
+            "confidence": info["confidence"],
+        }
+        for field, info in permit_map["prefilled_fields"].items()
+    }
+
+    return JSONResponse({
+        "prefilled_fields":  prefilled_with_conf,
+        "missing_fields":    permit_map["missing_fields"],
+        "compliance_flags":  permit_map["compliance_flags"],
+        "summary":           permit_map["summary"],
+        "parse_errors":      ifc_data.get("parse_errors", []),
+        "ifc_schema":        ifc_data.get("ifc_schema"),
+        "filename":          file.filename,
+    })
+
+
+class IFCApprovalRequest(BaseModel):
+    """Insinöörin hyväksymät IFC-kentät + hakemuksen perustiedot."""
+    # Hakemuksen perustiedot
+    hanketyyppi:       str
+    kiinteistotunnus:  str
+    teho_mw:           float = 0.0
+    kapasiteetti_mwh:  float = 0.0
+    kunta:             str
+    hakija:            str
+    lang:              str = "FI"
+    country:           str = "FI"
+    hankkeen_vaihe:    str = ""
+    kohdeviranomainen: str = ""
+    # Hyväksytyt IFC-kentät (insinööri on tarkistanut)
+    approved_fields:   dict = {}
+    # Audit trail
+    reviewer_name:     str
+    review_notes:      Optional[str] = None
+
+
+@app.post("/api/approve-ifc")
+@limiter.limit("10/hour")
+async def approve_ifc(request: Request, req: IFCApprovalRequest):
+    """
+    Insinööri lähettää hyväksytyt IFC-kentät → generoi final PDF + audit trail.
+    Palauttaa PDF binäärinä (application/pdf).
+    """
+    import datetime
+
+    approved = req.approved_fields
+
+    # Rakenna ApplicationInput IFC-esitäyttöarvoilla
+    inp = ApplicationInput(
+        hanketyyppi                   = req.hanketyyppi,
+        kiinteistotunnus              = req.kiinteistotunnus,
+        teho_mw                       = req.teho_mw,
+        kapasiteetti_mwh              = req.kapasiteetti_mwh,
+        kunta                         = req.kunta,
+        hakija                        = req.hakija,
+        lang                          = req.lang,
+        country                       = req.country,
+        hankkeen_vaihe                = req.hankkeen_vaihe,
+        kohdeviranomainen             = req.kohdeviranomainen,
+        ifc_floor_area                = float(approved.get("floor_area_total") or 0),
+        ifc_building_height           = float(approved.get("building_height") or 0),
+        ifc_fire_rating               = str(approved.get("fire_rating_walls") or ""),
+        ifc_materials                 = ", ".join(approved.get("materials") or []),
+        ifc_storeys                   = len(approved.get("storeys") or []),
+        ifc_compliance_flags          = "\n".join(approved.get("compliance_flags") or []),
+    )
+
+    # Generoi PDF taustasäikeessä (blocking — approve on harvinainen operaatio)
+    loop = asyncio.get_event_loop()
+    try:
+        draft_bytes, sections, sources = await loop.run_in_executor(
+            None, generate_application_draft, inp
+        )
+        pdf_bytes = await loop.run_in_executor(
+            None, lambda: apply_proofread_to_pdf(inp, sections, sources)
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"PDF-generointi epäonnistui: {e}")
+
+    # Audit trail — lisätään PDF:n metatietoihin (ei sisältöön)
+    timestamp = datetime.datetime.utcnow().isoformat() + "Z"
+    audit = {
+        "timestamp":        timestamp,
+        "reviewer_name":    req.reviewer_name,
+        "review_notes":     req.review_notes or "",
+        "approved_fields":  list(approved.keys()),
+        "hanketyyppi":      req.hanketyyppi,
+        "country":          req.country,
+    }
+
+    filename = (
+        f"NCE_{req.hanketyyppi}_{req.kunta}_approved_"
+        f"{timestamp[:10].replace('-','')}.pdf"
+    )
+
+    resp = Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "X-NCE-Audit-Timestamp":    audit["timestamp"],
+            "X-NCE-Audit-Reviewer":     audit["reviewer_name"],
+            "X-NCE-Audit-Fields":       ",".join(audit["approved_fields"]),
+        },
+    )
+    return resp
 
 
 if __name__ == "__main__":

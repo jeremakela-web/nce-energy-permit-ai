@@ -715,6 +715,13 @@ class ApplicationInput:
     kapasiteetti_mwh:             float = 0.0
     y_tunnus:                     str = ""
     osoite:                       str = ""
+    # IFC-esitäyttö (valinnainen) — täyttää generate_pdf:n sections-diktiin
+    ifc_floor_area:               float = 0.0   # m²
+    ifc_building_height:          float = 0.0   # m
+    ifc_fire_rating:              str = ""
+    ifc_materials:                str = ""      # pilkulla erotettu lista
+    ifc_storeys:                  int = 0
+    ifc_compliance_flags:         str = ""      # rivinvaihdolla erotettu lista
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -3260,6 +3267,27 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
     if inp.kapasiteetti_mwh and inp.kapasiteetti_mwh > 0:
         kap_lisatieto = f"\nKapasiteetti: {inp.kapasiteetti_mwh} MWh"
 
+    ifc_block = ""
+    if inp.ifc_floor_area or inp.ifc_building_height or inp.ifc_materials or inp.ifc_compliance_flags:
+        parts = ["\n[IFC-malli — esitäytetyt rakennustiedot]"]
+        if inp.ifc_floor_area:
+            parts.append(f"  Kerrosala: {inp.ifc_floor_area:.0f} m²")
+        if inp.ifc_building_height:
+            parts.append(f"  Rakennuksen korkeus: {inp.ifc_building_height:.1f} m")
+        if inp.ifc_storeys:
+            parts.append(f"  Kerroksia: {inp.ifc_storeys}")
+        if inp.ifc_fire_rating:
+            parts.append(f"  Palosuojausluokka (seinät): {inp.ifc_fire_rating}")
+        if inp.ifc_materials:
+            parts.append(f"  Materiaalit: {inp.ifc_materials}")
+        if inp.ifc_compliance_flags:
+            parts.append("  Vaatimushavainnot:")
+            for flag in inp.ifc_compliance_flags.splitlines():
+                if flag.strip():
+                    parts.append(f"    - {flag.strip()}")
+        parts.append("  Käytä yllä olevia tietoja kuvaus- ja perustelut-osioissa.")
+        ifc_block = "\n".join(parts)
+
     first_action  = ph["toimenpiteet_first"].format(kunta=inp.kunta)
     kuvaus_inst   = ph["kuvaus_inst"] + (ph["kuvaus_extra"] if inp.sijainti_ymparistovaikutukset else "")
     if cfg.get("kuvaus_extra_inst"):
@@ -3324,7 +3352,7 @@ Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
 Kiinteistötunnus: {_clean_kt(inp.kiinteistotunnus)}
 Teho: {inp.teho_mw} MW{kap_lisatieto}
 Kunta: {inp.kunta}
-Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}
+Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}{ifc_block}
 Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}{context_extra_block}{phase_block}
 
 {ph["rag_intro"]}
