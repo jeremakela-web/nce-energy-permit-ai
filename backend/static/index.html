@@ -1333,6 +1333,7 @@
           <option value="PL">🇵🇱 Polska (PL)</option>
         </select>
       </div>
+      <!-- country option texts are updated by _rebuildCountrySelect() on language change -->
 
       <div class="gen-section-label" data-i18n="h3_hanketyyppi">Hanketyyppi</div>
       <div class="gen-cards" id="gen-cards-grid">
@@ -2112,6 +2113,17 @@ const TRANSLATIONS = {
     lbl_osm_note:         'OSM-data puutteellinen —',
     lbl_tarjous:          'Pyydä tarjous →',
     lbl_contact_dst:      'Ota yhteyttä paikalliseen jakeluverkkoyhtiöön',
+    // Environmental permit activity types
+    permits_kasittelyaika: 'Viranomaisen arviointiviive',
+    gf_lbl_toiminta:      'Toiminnan tyyppi',
+    opt_toiminta_energia: 'Energiantuotanto (>50 MW)',
+    opt_toiminta_bess:    'BESS / akkuvarasto',
+    opt_toiminta_teoll:   'Teollisuuslaitos',
+    opt_toiminta_jate:    'Jätteen käsittely',
+    opt_toiminta_poltto:  'Polttoaineiden varastointi',
+    opt_toiminta_kaivos:  'Kaivostoiminta',
+    opt_toiminta_kotiel:  'Kotieläintalous (suuri)',
+    opt_toiminta_muu:     'Muu toiminta',
   },
   EN: {
     tab_generator:        'Permit Document Service',
@@ -2400,6 +2412,16 @@ const TRANSLATIONS = {
     lbl_osm_note:         'OSM data incomplete —',
     lbl_tarjous:          'Request a quote →',
     lbl_contact_dst:      'Contact your local distribution network operator',
+    permits_kasittelyaika: 'Authority processing time',
+    gf_lbl_toiminta:      'Activity type',
+    opt_toiminta_energia: 'Energy production (>50 MW)',
+    opt_toiminta_bess:    'BESS / battery storage',
+    opt_toiminta_teoll:   'Industrial facility',
+    opt_toiminta_jate:    'Waste treatment',
+    opt_toiminta_poltto:  'Fuel storage',
+    opt_toiminta_kaivos:  'Mining',
+    opt_toiminta_kotiel:  'Livestock (large)',
+    opt_toiminta_muu:     'Other activity',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
@@ -2688,6 +2710,16 @@ const TRANSLATIONS = {
     lbl_osm_note:         'OSM-data ofullständig —',
     lbl_tarjous:          'Begär offert →',
     lbl_contact_dst:      'Kontakta lokalt distributionsnätbolag',
+    permits_kasittelyaika: 'Myndighetens handläggningstid',
+    gf_lbl_toiminta:      'Verksamhetstyp',
+    opt_toiminta_energia: 'Energiproduktion (>50 MW)',
+    opt_toiminta_bess:    'BESS / batterilagring',
+    opt_toiminta_teoll:   'Industrianläggning',
+    opt_toiminta_jate:    'Avfallsbehandling',
+    opt_toiminta_poltto:  'Bränslelagring',
+    opt_toiminta_kaivos:  'Gruvdrift',
+    opt_toiminta_kotiel:  'Djurhållning (stor)',
+    opt_toiminta_muu:     'Annan verksamhet',
   },
   DA: {
     tab_generator:        'Tilladelsesdokumentservice',
@@ -2982,6 +3014,16 @@ const TRANSLATIONS = {
     lbl_osm_note:             'OSM-data ufuldstændig —',
     lbl_tarjous:              'Anmod om tilbud →',
     lbl_contact_dst:          'Kontakt dit lokale distributionsnetselskab',
+    permits_kasittelyaika:    'Myndighedens sagsbehandlingstid',
+    gf_lbl_toiminta:          'Aktivitetstype',
+    opt_toiminta_energia:     'Energiproduktion (>50 MW)',
+    opt_toiminta_bess:        'BESS / batterilagring',
+    opt_toiminta_teoll:       'Industrianlæg',
+    opt_toiminta_jate:        'Affaldsbehandling',
+    opt_toiminta_poltto:      'Brændstoflagring',
+    opt_toiminta_kaivos:      'Minedrift',
+    opt_toiminta_kotiel:      'Husdyrhold (stor)',
+    opt_toiminta_muu:         'Anden aktivitet',
   },
   NO: {
     tab_generator:        'Tillatelsesdokumentservice',
@@ -3276,6 +3318,16 @@ const TRANSLATIONS = {
     lbl_osm_note:             'OSM-data ufullstendig —',
     lbl_tarjous:              'Be om tilbud →',
     lbl_contact_dst:          'Kontakt ditt lokale distribusjonsnettselskap',
+    permits_kasittelyaika:    'Myndighetens saksbehandlingstid',
+    gf_lbl_toiminta:          'Typ aktivitet',
+    opt_toiminta_energia:     'Energiproduksjon (>50 MW)',
+    opt_toiminta_bess:        'BESS / batterilagring',
+    opt_toiminta_teoll:       'Industrianlegg',
+    opt_toiminta_jate:        'Avfallsbehandling',
+    opt_toiminta_poltto:      'Drivstofflagring',
+    opt_toiminta_kaivos:      'Gruvedrift',
+    opt_toiminta_kotiel:      'Husdyrhold (stort)',
+    opt_toiminta_muu:         'Annen aktivitet',
   },
   PL: {
     tab_generator:        'Serwis dokumentów zezwoleń',
@@ -3570,6 +3622,16 @@ const TRANSLATIONS = {
     lbl_osm_note:             'Dane OSM niekompletne —',
     lbl_tarjous:              'Poproś o ofertę →',
     lbl_contact_dst:          'Skontaktuj się z lokalnym operatorem sieci dystrybucyjnej',
+    permits_kasittelyaika:    'Czas przetwarzania przez organ',
+    gf_lbl_toiminta:          'Typ działalności',
+    opt_toiminta_energia:     'Produkcja energii (>50 MW)',
+    opt_toiminta_bess:        'BESS / magazyn energii',
+    opt_toiminta_teoll:       'Zakład przemysłowy',
+    opt_toiminta_jate:        'Przetwarzanie odpadów',
+    opt_toiminta_poltto:      'Magazynowanie paliw',
+    opt_toiminta_kaivos:      'Górnictwo',
+    opt_toiminta_kotiel:      'Hodowla zwierząt (duża)',
+    opt_toiminta_muu:         'Inna działalność',
   },
   DE: {
     tab_generator:        'Genehmigungsdokumentendienst',
@@ -3751,6 +3813,147 @@ const TRANSLATIONS = {
     country_no:            'Norwegen',
     country_pl:            'Polen',
     country_detected:      'Land erkannt:',
+    // Map sidebar
+    lbl_map_type:          'Projekttyp',
+    lbl_map_power:         'Leistung (MW)',
+    lbl_grid:              'Netzanschluss',
+    lbl_market:            'Zielmärkte',
+    lbl_lyr_buffer:        '500 m Pufferzone',
+    h3_toiminnot:          'Funktionen',
+    btn_report:            'PDF-Bericht',
+    btn_zoom:              'Zum Grundstück zoomen',
+    h3_loki:               'Protokoll',
+    lbl_status_idle:       'Wartet auf Aktion…',
+    lbl_logbar_fetching:   'Grundstücksdaten werden abgerufen…',
+    lbl_score_unit:        'Punkte',
+    // Form titles — building types
+    gf_title_asuinrakennus:  'Wohngebäude — Baugenehmigungsantrag',
+    gf_title_teollisuus:     'Industriegebäude — Baugenehmigungsantrag',
+    gf_title_maatalous:      'Landwirtschaftsgebäude — Baugenehmigungsantrag',
+    gf_title_liikerakennus:  'Gewerbegebäude — Baugenehmigungsantrag',
+    gf_title_muu:            'Sonstiges Projekt — Baugenehmigungsantrag',
+    // Criteria
+    crit_bess:           'Netzanschluss · Grundwasser · Bebauungsplan · Fläche',
+    crit_tuulivoima_maa: 'Abstand Bebauung (min 500 m) · Bebauungsplan · Natura · Bodentyp',
+    crit_tuulivoima_meri:'Natura/Schutzgebiete · Abstand Bebauung · Hochwasserrisiko',
+    crit_aurinkovoima:   'Netzanschluss · Bebauungsplan · Hochwasserrisiko · Grundwasser',
+    crit_smr:            'Schutzzone Bebauung (min 1 km) · Natura · Bebauungsplan',
+    crit_vesivoima:      'Natura · Bebauungsplan · Hochwasserrisiko · Straßenschutzzone',
+    crit_asuinrakennus:  'Bebauungsplan · Grundwasser · Hochwasserrisiko · Kulturdenkmäler · Straßenverkehr',
+    crit_teollisuus:     'Bebauungsplan · Abstand Bebauung · Netzanschluss · Straßenschutzzone',
+    crit_maatalous:      'Grundwasser · Natura · Bebauungsplan · Hochwasserrisiko · Straßenanbindung',
+    crit_liikerakennus:  'Bebauungsplan · Straßenschutzzone/Verkehrsanbindung · Hochwasserrisiko',
+    crit_muu:            'Bebauungsplan · Grundwasser · Natura',
+    crit_ymparistolupa:  'Grundwasser · Natura/Schutzgebiete · Bebauungsplan · Abstand Bebauung',
+    crit_datakeskus:     'Bebauungsplan · Netzanschluss (Fingrid) · Grundwasser · Abstand Bebauung',
+    lbl_settlement_km:   'Bebauung min',
+    lbl_settlement_m:    'Bebauung min',
+    // Log messages
+    log_gen_start:       'Antragsentwurf wird generiert',
+    log_gen_done:        'Antragsentwurf fertig',
+    log_gen_error:       'Generatorfehler',
+    log_permit_done:     'Genehmigungsantragsentwurf generiert',
+    log_enter_kt:        'Grundstücksnummer eingeben',
+    log_enter_kt_first:  'Zuerst Grundstücksnummer eingeben',
+    log_fetching:        'Wird abgerufen',
+    log_kt_not_found:    'Grundstück nicht gefunden – Nummer prüfen',
+    log_kt_loaded:       'Grundstück geladen',
+    log_fetch_lines:     'Stromleitungen werden abgerufen (OSM/Fingrid)…',
+    log_lines_loaded:    'Stromleitungen geladen',
+    log_fetch_gw:        'Grundwassergebiete werden abgerufen (SYKE)…',
+    log_gw_loaded:       'Grundwassergebiete geladen',
+    log_fetch_first:     'Zuerst Grundstück abrufen',
+    log_fetch_bldg:      'Gebäude im 1-km-Radius werden abgerufen (OSM)…',
+    log_bldg_loaded:     'Gebäude geladen',
+    log_fetch_natura:    'Natura-2000-Gebiete werden abgerufen…',
+    log_natura_loaded:   'Natura-Gebiete geladen',
+    log_analysis_start:  'Flächennutzungsanalyse wird durchgeführt…',
+    log_analysis_done:   'Flächennutzungsanalyse abgeschlossen – Eignungsindex',
+    log_run_first:       'Analyse zuerst ausführen, bevor manuelle Daten aktualisiert werden',
+    log_manual_updated:  'Manuelle Daten aktualisiert – Eignungsindex',
+    log_manual_none:     'Keine aktiven manuellen Felder',
+    log_report_start:    'PDF-Bericht wird generiert…',
+    log_report_done:     'PDF-Bericht heruntergeladen',
+    log_fetch_first_rep: 'Zuerst Grundstück abrufen, bevor der Bericht generiert wird',
+    log_map_init:        'Karte initialisiert. Standardgrundstück wird abgerufen…',
+    // Button states
+    btn_gen_loading:     'Wird generiert…',
+    btn_gen_done:        'PDF heruntergeladen!',
+    btn_gen_retry:       'Erneut versuchen',
+    btn_download_pdf:    'PDF herunterladen',
+    btn_map_loading:     'Lädt…',
+    // Progress steps
+    progress_rag:        'RAG-Kontext wird abgerufen…',
+    progress_claude:     'Text wird generiert (Claude)…',
+    progress_pdf:        'PDF wird erstellt…',
+    progress_final:      'Wird abgeschlossen…',
+    progress_done:       'Fertig – PDF herunterladen',
+    progress_proofread:  'Korrektur läuft…',
+    // Proofread / errors
+    proof_running:       '🔄 Korrektur läuft im Hintergrund…',
+    proof_running_sub:   'Die geprüfte Version wird in wenigen Minuten zum Download angeboten.',
+    proof_done_title:    'Korrektur abgeschlossen',
+    proof_dl:            'Geprüfte Version herunterladen',
+    proof_failed:        '⚠️ Korrektur fehlgeschlagen',
+    err_timeout:         'Zeitüberschreitung (>300s) — erneut versuchen',
+    err_gen_failed:      'Generierung fehlgeschlagen',
+    // Permits info box
+    permits_viranomaiset:'Behörden &amp; Genehmigungen',
+    permits_luvat:       'Erforderliche Genehmigungen:',
+    // Authority options
+    opt_vir_bf:          'Business Finland (Förderantrag)',
+    // Teollisuus usage type
+    opt_kt_kevyt:        'Leichtindustrie',
+    opt_kt_raskas:       'Schwerindustrie',
+    opt_kt_varasto:      'Lager / Logistik',
+    opt_kt_konesali:     'Rechenzentrum / Datacenter',
+    opt_kt_muu:          'Sonstiges',
+    // Grid connection
+    opt_verkko_caruna:   'Verteilnetz 20 kV (Caruna)',
+    opt_verkko_elenia:   'Verteilnetz 20 kV (Elenia)',
+    opt_verkko_muu:      'Verteilnetz 20 kV (sonstige)',
+    opt_verkko_110:      'Fingrid 110 kV (Übertragungsnetz)',
+    opt_verkko_400:      'Fingrid 400 kV (Übertragungsnetz)',
+    // EIA / YVA
+    opt_yva_kylla:       'Ja (≥10 Turbinen oder ≥45 MW)',
+    opt_yva_ei:          'Nein',
+    opt_yva_unknown:     'Unbekannt',
+    // SMR reactor type
+    opt_rx_pwr:          'PWR (Druckwasserreaktor)',
+    opt_rx_bwr:          'BWR (Siedewasserreaktor)',
+    opt_rx_htgr:         'HTGR (gasgekühlt)',
+    opt_rx_msr:          'MSR (Flüssigsalzreaktor)',
+    opt_rx_muu:          'Sonstiges / nicht definiert',
+    // Market
+    opt_mkt_arb:         'Arbitrage',
+    // Map manual select options
+    opt_kaava_notset:    '– nicht gesetzt –',
+    opt_kaava_asema:     'Bebauungsplan',
+    opt_kaava_yleis:     'Flächennutzungsplan',
+    opt_kaava_ei:        'Kein Plan',
+    opt_kaava_eiti:      'Unbekannt',
+    opt_tulva_notset:    '– nicht gesetzt –',
+    opt_tulva_ei:        'Nein',
+    opt_tulva_kylla:     'Ja',
+    opt_tulva_eiti:      'Unbekannt',
+    opt_maa_notset:      '– nicht gesetzt –',
+    opt_maa_kallio:      'Fels',
+    opt_maa_moreeni:     'Moräne',
+    opt_maa_hiekka:      'Sand',
+    opt_maa_savi:        'Ton',
+    opt_maa_turve:       'Torf',
+    opt_maa_eiti:        'Unbekannt',
+    permits_kasittelyaika: 'Behördliche Bearbeitungszeit',
+    // Environmental permit activity types
+    gf_lbl_toiminta:     'Aktivitätstyp',
+    opt_toiminta_energia:'Energieerzeugung (>50 MW)',
+    opt_toiminta_bess:   'BESS / Batteriespeicher',
+    opt_toiminta_teoll:  'Industrieanlage',
+    opt_toiminta_jate:   'Abfallbehandlung',
+    opt_toiminta_poltto: 'Kraftstofflagerung',
+    opt_toiminta_kaivos: 'Bergbau',
+    opt_toiminta_kotiel: 'Nutztierhaltung (groß)',
+    opt_toiminta_muu:    'Sonstige Aktivität',
   },
 };
 
@@ -3770,28 +3973,28 @@ const LANG_META = {
 };
 
 const LUPA_I18N = {
-  'Rakentamislupa':                         { EN: 'Construction permit',                   SE: 'Bygglov',                           DA: 'Byggetilladelse',                     NO: 'Byggetillatelse',                  PL: 'Pozwolenie na budowę' },
-  'Rakentamislupa (mahdollinen)':           { EN: 'Construction permit (possible)',         SE: 'Bygglov (möjligt)',                  DA: 'Byggetilladelse (mulig)',             NO: 'Byggetillatelse (mulig)',           PL: 'Pozwolenie na budowę (możliwe)' },
-  'Rakentamislupa (offshore)':             { EN: 'Construction permit (offshore)',          SE: 'Bygglov (offshore)',                 DA: 'Byggetilladelse (offshore)',          NO: 'Byggetillatelse (offshore)',        PL: 'Pozwolenie na budowę (offshore)' },
-  'Rakentamislupa (tuulivoimala)':         { EN: 'Construction permit (wind turbine)',      SE: 'Bygglov (vindkraftverk)',            DA: 'Byggetilladelse (vindmølle)',          NO: 'Byggetillatelse (vindturbin)',      PL: 'Pozwolenie na budowę (turbina wiatrowa)' },
-  'Rakentamislupa (PV + BESS)':            { EN: 'Construction permit (PV + BESS)',         SE: 'Bygglov (PV + BESS)',               DA: 'Byggetilladelse (PV + BESS)',          NO: 'Byggetillatelse (PV + BESS)',       PL: 'Pozwolenie na budowę (PV + BESS)' },
-  'Toimenpidelupa':                         { EN: 'Action permit',                         SE: 'Åtgärdstillstånd',                  DA: 'Handlingstilladelse',                 NO: 'Tiltakstillatelse',                PL: 'Zezwolenie na działanie' },
-  'Toimenpidelupa (mahdollinen)':           { EN: 'Action permit (possible)',               SE: 'Åtgärdstillstånd (möjligt)',         DA: 'Handlingstilladelse (mulig)',         NO: 'Tiltakstillatelse (mulig)',         PL: 'Zezwolenie na działanie (możliwe)' },
-  'Toimenpidelupa (pienet)':               { EN: 'Action permit (small)',                  SE: 'Åtgärdstillstånd (litet)',           DA: 'Handlingstilladelse (lille)',         NO: 'Tiltakstillatelse (liten)',         PL: 'Zezwolenie na działanie (małe)' },
-  'Ympäristölupa':                         { EN: 'Environmental permit',                   SE: 'Miljötillstånd',                     DA: 'Miljøtilladelse',                     NO: 'Miljøtillatelse',                  PL: 'Zezwolenie środowiskowe' },
-  'Ympäristölupa (mahdollinen)':           { EN: 'Environmental permit (possible)',        SE: 'Miljötillstånd (möjligt)',            DA: 'Miljøtilladelse (mulig)',             NO: 'Miljøtillatelse (mulig)',           PL: 'Zezwolenie środowiskowe (możliwe)' },
-  'Ympäristölupa (suuri hanke)':           { EN: 'Environmental permit (large project)',   SE: 'Miljötillstånd (stort projekt)',      DA: 'Miljøtilladelse (stort projekt)',     NO: 'Miljøtillatelse (stort prosjekt)', PL: 'Zezwolenie środowiskowe (duży projekt)' },
-  'Ympäristölupa (suuri kotieläintalous)': { EN: 'Environmental permit (large livestock)', SE: 'Miljötillstånd (stor djurhållning)', DA: 'Miljøtilladelse (stor husdyrdrift)',  NO: 'Miljøtillatelse (stor husdyrhold)', PL: 'Zezwolenie środowiskowe (duża hodowla)' },
-  'Kemikaalilupa (Tukes)':                 { EN: 'Chemical permit (Tukes)',                SE: 'Kemikalietillstånd (Tukes)',          DA: 'Kemikalietilladelse (Tukes)',         NO: 'Kjemikalietillatelse (Tukes)',      PL: 'Zezwolenie chemiczne (Tukes)' },
-  'Verkkoliityntä (Fingrid/jakelu)':       { EN: 'Grid connection (Fingrid/dist.)',        SE: 'Nätanslutning (Fingrid/dist.)',       DA: 'Nettilslutning (Fingrid/dist.)',      NO: 'Nettilkobling (Fingrid/dist.)',     PL: 'Przyłączenie do sieci (Fingrid/dist.)' },
-  'YVA (≥10 voimalaa / ≥45MW)':           { EN: 'EIA (≥10 turbines / ≥45 MW)',            SE: 'MKB (≥10 turbiner / ≥45 MW)',        DA: 'VVM (≥10 vindmøller / ≥45 MW)',      NO: 'KU (≥10 turbiner / ≥45 MW)',       PL: 'OOŚ (≥10 turbin / ≥45 MW)' },
-  'Kaavakohde':                            { EN: 'Zoning area',                            SE: 'Planområde',                         DA: 'Planområde',                          NO: 'Reguleringsplanområde',             PL: 'Obszar planu zagospodarowania' },
-  'Vesilupa (Luova)':                      { EN: 'Water permit (Luova)',                   SE: 'Vattentillstånd (Luova)',             DA: 'Vandtilladelse (Luova)',              NO: 'Vanntillatelse (Luova)',            PL: 'Pozwolenie wodnoprawne (Luova)' },
-  'YVA':                                   { EN: 'EIA',                                    SE: 'MKB',                                DA: 'VVM',                                 NO: 'KU',                               PL: 'OOŚ' },
-  'Periaatepäätös (TEM)':                  { EN: 'Principle decision (TEM)',               SE: 'Principbeslut (TEM)',                 DA: 'Principbeslutning (TEM)',             NO: 'Prinsippavgjørelse (OED)',          PL: 'Decyzja zasadnicza (Min. Klimatu)' },
-  'Rakentamislupa (STUK)':                 { EN: 'Construction licence (STUK)',            SE: 'Byggnadstillstånd (STUK)',            DA: 'Byggetilladelse (Sik)',               NO: 'Byggetillatelse (DSB)',             PL: 'Zezwolenie na budowę (PAA)' },
-  'Käyttölupa (STUK)':                     { EN: 'Operating licence (STUK)',               SE: 'Drifttillstånd (STUK)',               DA: 'Driftstilladelse (Sik)',              NO: 'Driftstillatelse (DSB)',            PL: 'Zezwolenie na eksploatację (PAA)' },
-  'Pelastuslaitoksen hyväksyntä':          { EN: 'Fire authority approval',                SE: 'Räddningsverkets godkännande',        DA: 'Brandmyndighedens godkendelse',       NO: 'Brannmyndighetens godkjenning',    PL: 'Zgoda straży pożarnej' },
+  'Rakentamislupa':                         { EN: 'Construction permit',                   SE: 'Bygglov',                           DA: 'Byggetilladelse',                     NO: 'Byggetillatelse',                  PL: 'Pozwolenie na budowę',                DE: 'Baugenehmigung' },
+  'Rakentamislupa (mahdollinen)':           { EN: 'Construction permit (possible)',         SE: 'Bygglov (möjligt)',                  DA: 'Byggetilladelse (mulig)',             NO: 'Byggetillatelse (mulig)',           PL: 'Pozwolenie na budowę (możliwe)',      DE: 'Baugenehmigung (möglich)' },
+  'Rakentamislupa (offshore)':             { EN: 'Construction permit (offshore)',          SE: 'Bygglov (offshore)',                 DA: 'Byggetilladelse (offshore)',          NO: 'Byggetillatelse (offshore)',        PL: 'Pozwolenie na budowę (offshore)',     DE: 'Baugenehmigung (Offshore)' },
+  'Rakentamislupa (tuulivoimala)':         { EN: 'Construction permit (wind turbine)',      SE: 'Bygglov (vindkraftverk)',            DA: 'Byggetilladelse (vindmølle)',          NO: 'Byggetillatelse (vindturbin)',      PL: 'Pozwolenie na budowę (turbina wiatrowa)', DE: 'Baugenehmigung (Windkraftanlage)' },
+  'Rakentamislupa (PV + BESS)':            { EN: 'Construction permit (PV + BESS)',         SE: 'Bygglov (PV + BESS)',               DA: 'Byggetilladelse (PV + BESS)',          NO: 'Byggetillatelse (PV + BESS)',       PL: 'Pozwolenie na budowę (PV + BESS)',   DE: 'Baugenehmigung (PV + BESS)' },
+  'Toimenpidelupa':                         { EN: 'Action permit',                         SE: 'Åtgärdstillstånd',                  DA: 'Handlingstilladelse',                 NO: 'Tiltakstillatelse',                PL: 'Zezwolenie na działanie',            DE: 'Maßnahmengenehmigung' },
+  'Toimenpidelupa (mahdollinen)':           { EN: 'Action permit (possible)',               SE: 'Åtgärdstillstånd (möjligt)',         DA: 'Handlingstilladelse (mulig)',         NO: 'Tiltakstillatelse (mulig)',         PL: 'Zezwolenie na działanie (możliwe)',  DE: 'Maßnahmengenehmigung (möglich)' },
+  'Toimenpidelupa (pienet)':               { EN: 'Action permit (small)',                  SE: 'Åtgärdstillstånd (litet)',           DA: 'Handlingstilladelse (lille)',         NO: 'Tiltakstillatelse (liten)',         PL: 'Zezwolenie na działanie (małe)',     DE: 'Maßnahmengenehmigung (klein)' },
+  'Ympäristölupa':                         { EN: 'Environmental permit',                   SE: 'Miljötillstånd',                     DA: 'Miljøtilladelse',                     NO: 'Miljøtillatelse',                  PL: 'Zezwolenie środowiskowe',            DE: 'Umweltgenehmigung' },
+  'Ympäristölupa (mahdollinen)':           { EN: 'Environmental permit (possible)',        SE: 'Miljötillstånd (möjligt)',            DA: 'Miljøtilladelse (mulig)',             NO: 'Miljøtillatelse (mulig)',           PL: 'Zezwolenie środowiskowe (możliwe)', DE: 'Umweltgenehmigung (möglich)' },
+  'Ympäristölupa (suuri hanke)':           { EN: 'Environmental permit (large project)',   SE: 'Miljötillstånd (stort projekt)',      DA: 'Miljøtilladelse (stort projekt)',     NO: 'Miljøtillatelse (stort prosjekt)', PL: 'Zezwolenie środowiskowe (duży projekt)', DE: 'Umweltgenehmigung (großes Projekt)' },
+  'Ympäristölupa (suuri kotieläintalous)': { EN: 'Environmental permit (large livestock)', SE: 'Miljötillstånd (stor djurhållning)', DA: 'Miljøtilladelse (stor husdyrdrift)',  NO: 'Miljøtillatelse (stor husdyrhold)', PL: 'Zezwolenie środowiskowe (duża hodowla)', DE: 'Umweltgenehmigung (große Tierhaltung)' },
+  'Kemikaalilupa (Tukes)':                 { EN: 'Chemical permit (Tukes)',                SE: 'Kemikalietillstånd (Tukes)',          DA: 'Kemikalietilladelse (Tukes)',         NO: 'Kjemikalietillatelse (Tukes)',      PL: 'Zezwolenie chemiczne (Tukes)',       DE: 'Chemikaliengenehmigung (Tukes)' },
+  'Verkkoliityntä (Fingrid/jakelu)':       { EN: 'Grid connection (Fingrid/dist.)',        SE: 'Nätanslutning (Fingrid/dist.)',       DA: 'Nettilslutning (Fingrid/dist.)',      NO: 'Nettilkobling (Fingrid/dist.)',     PL: 'Przyłączenie do sieci (Fingrid/dist.)', DE: 'Netzanschluss (Fingrid/Verteil.)' },
+  'YVA (≥10 voimalaa / ≥45MW)':           { EN: 'EIA (≥10 turbines / ≥45 MW)',            SE: 'MKB (≥10 turbiner / ≥45 MW)',        DA: 'VVM (≥10 vindmøller / ≥45 MW)',      NO: 'KU (≥10 turbiner / ≥45 MW)',       PL: 'OOŚ (≥10 turbin / ≥45 MW)',        DE: 'UVP (≥10 Turbinen / ≥45 MW)' },
+  'Kaavakohde':                            { EN: 'Zoning area',                            SE: 'Planområde',                         DA: 'Planområde',                          NO: 'Reguleringsplanområde',             PL: 'Obszar planu zagospodarowania',     DE: 'Plangebiet' },
+  'Vesilupa (Luova)':                      { EN: 'Water permit (Luova)',                   SE: 'Vattentillstånd (Luova)',             DA: 'Vandtilladelse (Luova)',              NO: 'Vanntillatelse (Luova)',            PL: 'Pozwolenie wodnoprawne (Luova)',    DE: 'Wassergenehmigung (Luova)' },
+  'YVA':                                   { EN: 'EIA',                                    SE: 'MKB',                                DA: 'VVM',                                 NO: 'KU',                               PL: 'OOŚ',                              DE: 'UVP' },
+  'Periaatepäätös (TEM)':                  { EN: 'Principle decision (TEM)',               SE: 'Principbeslut (TEM)',                 DA: 'Principbeslutning (TEM)',             NO: 'Prinsippavgjørelse (OED)',          PL: 'Decyzja zasadnicza (Min. Klimatu)', DE: 'Grundsatzentscheidung (TEM)' },
+  'Rakentamislupa (STUK)':                 { EN: 'Construction licence (STUK)',            SE: 'Byggnadstillstånd (STUK)',            DA: 'Byggetilladelse (Sik)',               NO: 'Byggetillatelse (DSB)',             PL: 'Zezwolenie na budowę (PAA)',        DE: 'Bauerlaubnis (STUK)' },
+  'Käyttölupa (STUK)':                     { EN: 'Operating licence (STUK)',               SE: 'Drifttillstånd (STUK)',               DA: 'Driftstilladelse (Sik)',              NO: 'Driftstillatelse (DSB)',            PL: 'Zezwolenie na eksploatację (PAA)', DE: 'Betriebserlaubnis (STUK)' },
+  'Pelastuslaitoksen hyväksyntä':          { EN: 'Fire authority approval',                SE: 'Räddningsverkets godkännande',        DA: 'Brandmyndighedens godkendelse',       NO: 'Brannmyndighetens godkjenning',    PL: 'Zgoda straży pożarnej',             DE: 'Feuerwehrgenehmigung' },
 };
 
 function tLupa(fi) {
@@ -3858,6 +4061,8 @@ function setLang(lang) {
   });
   // Re-render project type cards so names/subs update
   renderCards();
+  // Rebuild country dropdown with translated country names
+  _rebuildCountrySelect();
   // Rebuild map type select and grid with translated names
   _rebuildMapTypeSelect();
   _rebuildMapGrid();
@@ -3923,61 +4128,61 @@ function switchTab(tabId) {
 const PROJECT_TYPES = [
   { id: 'asuinrakennus',
     icon: '🏠',
-    name: { FI: 'Asuinrakennus',      EN: 'Residential Building',  SE: 'Bostadsbyggnad',    DA: 'Beboelsesbygning',      NO: 'Boligbygg',         PL: 'Budynek mieszkalny'    },
-    sub:  { FI: 'Asuinrakennushanke', EN: 'Residential project',   SE: 'Bostadsprojekt',    DA: 'Boligprojekt',          NO: 'Boligprosjekt',     PL: 'Projekt mieszkaniowy'  } },
+    name: { FI: 'Asuinrakennus',      EN: 'Residential Building',  SE: 'Bostadsbyggnad',    DA: 'Beboelsesbygning',      NO: 'Boligbygg',         PL: 'Budynek mieszkalny',    DE: 'Wohngebäude'           },
+    sub:  { FI: 'Asuinrakennushanke', EN: 'Residential project',   SE: 'Bostadsprojekt',    DA: 'Boligprojekt',          NO: 'Boligprosjekt',     PL: 'Projekt mieszkaniowy',  DE: 'Wohnbauprojekt'        } },
   { id: 'teollisuus',
     icon: '🏭',
-    name: { FI: 'Teollisuusrakennus',      EN: 'Industrial Building', SE: 'Industribyggnad',   DA: 'Industribyggeri',       NO: 'Industribygg',      PL: 'Budynek przemysłowy'   },
-    sub:  { FI: 'Teollisuusrakennushanke', EN: 'Industrial project',  SE: 'Industriproject',   DA: 'Industrielt projekt',   NO: 'Industriprosjekt',  PL: 'Projekt przemysłowy'   } },
+    name: { FI: 'Teollisuusrakennus',      EN: 'Industrial Building', SE: 'Industribyggnad',   DA: 'Industribyggeri',       NO: 'Industribygg',      PL: 'Budynek przemysłowy',   DE: 'Industriegebäude'      },
+    sub:  { FI: 'Teollisuusrakennushanke', EN: 'Industrial project',  SE: 'Industriproject',   DA: 'Industrielt projekt',   NO: 'Industriprosjekt',  PL: 'Projekt przemysłowy',   DE: 'Industrieprojekt'      } },
   { id: 'bess',
     icon: '🔋',
-    name: { FI: 'BESS',                    EN: 'BESS',                       SE: 'BESS',                       DA: 'BESS',                       NO: 'BESS',                       PL: 'BESS'                          },
-    sub:  { FI: 'Akkuenergiavarastohanke', EN: 'Battery storage project',    SE: 'Batterilagringsprojekt',     DA: 'Batterienergioplagring',     NO: 'Batterienergilagring',       PL: 'Magazynowanie energii'         } },
+    name: { FI: 'BESS',                    EN: 'BESS',                       SE: 'BESS',                       DA: 'BESS',                       NO: 'BESS',                       PL: 'BESS',                       DE: 'BESS'                          },
+    sub:  { FI: 'Akkuenergiavarastohanke', EN: 'Battery storage project',    SE: 'Batterilagringsprojekt',     DA: 'Batterienergioplagring',     NO: 'Batterienergilagring',       PL: 'Magazynowanie energii',      DE: 'Batteriespeicherprojekt'       } },
   { id: 'tuulivoima_maa',
     icon: '🌬️',
-    name: { FI: 'Tuulivoima (maa)',           EN: 'Wind Power (onshore)',        SE: 'Vindkraft (land)',           DA: 'Vindkraft (land)',            NO: 'Vindkraft (land)',           PL: 'Energia wiatrowa (ląd)'        },
-    sub:  { FI: 'Maalle sijoitettava hanke',  EN: 'Onshore wind project',        SE: 'Landbaserat vindprojekt',    DA: 'Landbaseret vindprojekt',     NO: 'Landbasert vindprosjekt',    PL: 'Lądowy projekt wiatrowy'       } },
+    name: { FI: 'Tuulivoima (maa)',           EN: 'Wind Power (onshore)',        SE: 'Vindkraft (land)',           DA: 'Vindkraft (land)',            NO: 'Vindkraft (land)',           PL: 'Energia wiatrowa (ląd)',      DE: 'Windkraft (Onshore)'           },
+    sub:  { FI: 'Maalle sijoitettava hanke',  EN: 'Onshore wind project',        SE: 'Landbaserat vindprojekt',    DA: 'Landbaseret vindprojekt',     NO: 'Landbasert vindprosjekt',    PL: 'Lądowy projekt wiatrowy',    DE: 'Onshore-Windprojekt'           } },
   { id: 'tuulivoima_meri',
     icon: '⛵',
-    name: { FI: 'Tuulivoima (meri)',         EN: 'Wind Power (offshore)',       SE: 'Vindkraft (hav)',            DA: 'Vindkraft (hav)',             NO: 'Vindkraft (hav)',            PL: 'Energia wiatrowa (morze)'      },
-    sub:  { FI: 'Offshore-tuulivoimahanke',  EN: 'Offshore wind project',       SE: 'Havsbaserat vindprojekt',    DA: 'Offshorevindprojekt',         NO: 'Offshore vindprosjekt',      PL: 'Projekt wiatrowy offshore'     } },
+    name: { FI: 'Tuulivoima (meri)',         EN: 'Wind Power (offshore)',       SE: 'Vindkraft (hav)',            DA: 'Vindkraft (hav)',             NO: 'Vindkraft (hav)',            PL: 'Energia wiatrowa (morze)',    DE: 'Windkraft (Offshore)'          },
+    sub:  { FI: 'Offshore-tuulivoimahanke',  EN: 'Offshore wind project',       SE: 'Havsbaserat vindprojekt',    DA: 'Offshorevindprojekt',         NO: 'Offshore vindprosjekt',      PL: 'Projekt wiatrowy offshore',  DE: 'Offshore-Windprojekt'          } },
   { id: 'aurinkovoima',
     icon: '☀️',
-    name: { FI: 'Aurinkovoima',        EN: 'Solar Power',          SE: 'Solenergi',          DA: 'Solenergi',           NO: 'Solkraft',          PL: 'Energia słoneczna'   },
-    sub:  { FI: 'Aurinkopaneelihanke', EN: 'Solar panel project',  SE: 'Solpanelsprojekt',   DA: 'Solpanelsprojekt',    NO: 'Solpanelprosjekt',  PL: 'Projekt fotowoltaiczny'} },
+    name: { FI: 'Aurinkovoima',        EN: 'Solar Power',          SE: 'Solenergi',          DA: 'Solenergi',           NO: 'Solkraft',          PL: 'Energia słoneczna',   DE: 'Solarenergie'          },
+    sub:  { FI: 'Aurinkopaneelihanke', EN: 'Solar panel project',  SE: 'Solpanelsprojekt',   DA: 'Solpanelsprojekt',    NO: 'Solpanelprosjekt',  PL: 'Projekt fotowoltaiczny', DE: 'Solarprojekt'         } },
   { id: 'smr',
     icon: '⚛️',
-    name: { FI: 'SMR',                   EN: 'SMR',                           SE: 'SMR',                           DA: 'SMR',                           NO: 'SMR',                           PL: 'SMR'                             },
-    sub:  { FI: 'Pienydinreaktorihanke', EN: 'Small modular reactor project', SE: 'Liten modulär reaktor',         DA: 'Lille modulær reaktor',         NO: 'Lite modulært reaktorprosjekt', PL: 'Mały reaktor modułowy'           } },
+    name: { FI: 'SMR',                   EN: 'SMR',                           SE: 'SMR',                           DA: 'SMR',                           NO: 'SMR',                           PL: 'SMR',                           DE: 'SMR'                            },
+    sub:  { FI: 'Pienydinreaktorihanke', EN: 'Small modular reactor project', SE: 'Liten modulär reaktor',         DA: 'Lille modulær reaktor',         NO: 'Lite modulært reaktorprosjekt', PL: 'Mały reaktor modułowy',         DE: 'Kleiner modularer Reaktor'      } },
   { id: 'vesivoima',
     icon: '💧',
-    name: { FI: 'Vesivoima',        EN: 'Hydropower',          SE: 'Vattenkraft',          DA: 'Vandkraft',          NO: 'Vannkraft',         PL: 'Energia wodna'       },
-    sub:  { FI: 'Vesivoimalahanke', EN: 'Hydropower project',  SE: 'Vattenkraftsprojekt',  DA: 'Vandkraftprojekt',   NO: 'Vannkraftprosjekt', PL: 'Projekt hydroelektrowni'} },
+    name: { FI: 'Vesivoima',        EN: 'Hydropower',          SE: 'Vattenkraft',          DA: 'Vandkraft',          NO: 'Vannkraft',         PL: 'Energia wodna',         DE: 'Wasserkraft'           },
+    sub:  { FI: 'Vesivoimalahanke', EN: 'Hydropower project',  SE: 'Vattenkraftsprojekt',  DA: 'Vandkraftprojekt',   NO: 'Vannkraftprosjekt', PL: 'Projekt hydroelektrowni', DE: 'Wasserkraftprojekt'    } },
   { id: 'maatalous',
     icon: '🌾',
-    name: { FI: 'Maatalousrakennus',     EN: 'Agricultural Building', SE: 'Jordbruksbyggnad',   DA: 'Landbrugsbygning',  NO: 'Landbruksbygg',     PL: 'Budynek rolniczy'     },
-    sub:  { FI: 'Maatalousrakennushanke',EN: 'Agricultural project',  SE: 'Jordbruksprojekt',   DA: 'Landbrugsprojekt',  NO: 'Landbruksprosjekt', PL: 'Projekt rolniczy'     } },
+    name: { FI: 'Maatalousrakennus',     EN: 'Agricultural Building', SE: 'Jordbruksbyggnad',   DA: 'Landbrugsbygning',  NO: 'Landbruksbygg',     PL: 'Budynek rolniczy',      DE: 'Landwirtschaftsgebäude'},
+    sub:  { FI: 'Maatalousrakennushanke',EN: 'Agricultural project',  SE: 'Jordbruksprojekt',   DA: 'Landbrugsprojekt',  NO: 'Landbruksprosjekt', PL: 'Projekt rolniczy',      DE: 'Landwirtschaftsprojekt'} },
   { id: 'liikerakennus',
     icon: '🏬',
-    name: { FI: 'Liikerakennus',     EN: 'Commercial Building', SE: 'Affärsbyggnad',   DA: 'Erhvervsbygning',  NO: 'Næringsbygg',     PL: 'Budynek komercyjny'   },
-    sub:  { FI: 'Liikerakennushanke',EN: 'Commercial project',  SE: 'Affärsprojekt',   DA: 'Erhvervsprojekt',  NO: 'Næringsprosjekt', PL: 'Projekt komercyjny'   } },
+    name: { FI: 'Liikerakennus',     EN: 'Commercial Building', SE: 'Affärsbyggnad',   DA: 'Erhvervsbygning',  NO: 'Næringsbygg',     PL: 'Budynek komercyjny',    DE: 'Gewerbegebäude'        },
+    sub:  { FI: 'Liikerakennushanke',EN: 'Commercial project',  SE: 'Affärsprojekt',   DA: 'Erhvervsprojekt',  NO: 'Næringsprosjekt', PL: 'Projekt komercyjny',    DE: 'Gewerbeprojekt'        } },
   { id: 'muu',
     icon: '📋',
-    name: { FI: 'Muu hanke',        EN: 'Other Project',       SE: 'Annat projekt',     DA: 'Andet projekt',     NO: 'Annet prosjekt',    PL: 'Inny projekt'         },
-    sub:  { FI: 'Muut hanketyypit', EN: 'Other project types', SE: 'Andra projekttyper',DA: 'Andre projekttyper', NO: 'Andre prosjekttyper',PL: 'Inne typy projektów'  } },
+    name: { FI: 'Muu hanke',        EN: 'Other Project',       SE: 'Annat projekt',     DA: 'Andet projekt',     NO: 'Annet prosjekt',    PL: 'Inny projekt',          DE: 'Sonstiges Projekt'     },
+    sub:  { FI: 'Muut hanketyypit', EN: 'Other project types', SE: 'Andra projekttyper',DA: 'Andre projekttyper', NO: 'Andre prosjekttyper',PL: 'Inne typy projektów',  DE: 'Andere Projekttypen'   } },
   { id: 'ymparistolupa',
     icon: '🌿',
-    name: { FI: 'Ympäristölupa',            EN: 'Environmental Permit',    SE: 'Miljötillstånd',       DA: 'Miljøtilladelse',      NO: 'Miljøtillatelse',      PL: 'Pozwolenie środowiskowe' },
-    sub:  { FI: 'Ympäristönsuojelulaki 527/2014', EN: 'Environmental Protection Act 527/2014', SE: 'Miljöskyddslagen 527/2014', DA: 'Miljøbeskyttelsesloven', NO: 'Miljøvernloven', PL: 'Ustawa o ochronie środowiska' } },
+    name: { FI: 'Ympäristölupa',            EN: 'Environmental Permit',    SE: 'Miljötillstånd',       DA: 'Miljøtilladelse',      NO: 'Miljøtillatelse',      PL: 'Pozwolenie środowiskowe', DE: 'Umweltgenehmigung'     },
+    sub:  { FI: 'Ympäristönsuojelulaki 527/2014', EN: 'Environmental Protection Act 527/2014', SE: 'Miljöskyddslagen 527/2014', DA: 'Miljøbeskyttelsesloven', NO: 'Miljøvernloven', PL: 'Ustawa o ochronie środowiska', DE: 'Umweltschutzgesetz' } },
   { id: 'datakeskus',
     icon: '🖥️',
-    name: { FI: 'Datakeskus',        EN: 'Data Centre',         SE: 'Datacenter',          DA: 'Datacenter',          NO: 'Datasenter',          PL: 'Centrum danych'        },
-    sub:  { FI: 'Datakeskushanke',   EN: 'Data centre project', SE: 'Datacenterprojekt',   DA: 'Datacenterprojekt',   NO: 'Datasenterprojekt',   PL: 'Projekt centrum danych'} },
+    name: { FI: 'Datakeskus',        EN: 'Data Centre',         SE: 'Datacenter',          DA: 'Datacenter',          NO: 'Datasenter',          PL: 'Centrum danych',        DE: 'Rechenzentrum'         },
+    sub:  { FI: 'Datakeskushanke',   EN: 'Data centre project', SE: 'Datacenterprojekt',   DA: 'Datacenterprojekt',   NO: 'Datasenterprojekt',   PL: 'Projekt centrum danych', DE: 'Rechenzentrumsprojekt' } },
   { id: 'sco2',
     icon: '🌀',
     comingSoon: true,
-    name: { FI: 'sCO₂ Turbine',              EN: 'sCO₂ Turbine',              SE: 'sCO₂ Turbin',               DA: 'sCO₂ Turbin',               NO: 'sCO₂ Turbin',               PL: 'Turbina sCO₂'              },
-    sub:  { FI: 'Ylikriittinen CO₂-turbiini', EN: 'Supercritical CO₂ turbine', SE: 'Superkritisk CO₂-turbin',   DA: 'Superkritisk CO₂-turbin',   NO: 'Superkritisk CO₂-turbin',   PL: 'Turbina nadkrytyczna CO₂'  } },
+    name: { FI: 'sCO₂ Turbine',              EN: 'sCO₂ Turbine',              SE: 'sCO₂ Turbin',               DA: 'sCO₂ Turbin',               NO: 'sCO₂ Turbin',               PL: 'Turbina sCO₂',              DE: 'sCO₂-Turbine'              },
+    sub:  { FI: 'Ylikriittinen CO₂-turbiini', EN: 'Supercritical CO₂ turbine', SE: 'Superkritisk CO₂-turbin',   DA: 'Superkritisk CO₂-turbin',   NO: 'Superkritisk CO₂-turbin',   PL: 'Turbina nadkrytyczna CO₂',  DE: 'Überkritische CO₂-Turbine'  } },
 ];
 
 function ptName(pt) {
@@ -4285,16 +4490,16 @@ const HANKE_FIELDS = {
       { id: 'gf-hakija',    apiKey: 'hakija',           label: 'Hakija (yritys/henkilö)',  type: 'text', placeholder: 'Yrityksen tai henkilön nimi', required: true },
       { id: 'gf-kt',        apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',         type: 'text', placeholder: 'esim. 091-001-0001-0001', required: true },
       { id: 'gf-kunta',     apiKey: 'kunta',            label: 'Sijaintikunta',            type: 'text', placeholder: 'Kunta', required: true },
-      { id: 'gf-toiminta',  apiKey: null,               label: 'Toiminnan tyyppi',         type: 'select', options: () => [
+      { id: 'gf-toiminta',  apiKey: null,               label: 'Toiminnan tyyppi', labelKey: 'gf_lbl_toiminta', type: 'select', options: () => [
           { value: '— Valitse —',              label: t('opt_vaihe_valitse') },
-          { value: 'Energiantuotanto (>50 MW)', label: 'Energiantuotanto (>50 MW)' },
-          { value: 'BESS / akkuvarasto',        label: 'BESS / akkuvarasto' },
-          { value: 'Teollisuuslaitos',          label: 'Teollisuuslaitos' },
-          { value: 'Jätteen käsittely',         label: 'Jätteen käsittely' },
-          { value: 'Polttoaineiden varastointi',label: 'Polttoaineiden varastointi' },
-          { value: 'Kaivostoiminta',            label: 'Kaivostoiminta' },
-          { value: 'Kotieläintalous (suuri)',   label: 'Kotieläintalous (suuri)' },
-          { value: 'Muu toiminta',              label: 'Muu toiminta' },
+          { value: 'Energiantuotanto (>50 MW)', label: t('opt_toiminta_energia') },
+          { value: 'BESS / akkuvarasto',        label: t('opt_toiminta_bess') },
+          { value: 'Teollisuuslaitos',          label: t('opt_toiminta_teoll') },
+          { value: 'Jätteen käsittely',         label: t('opt_toiminta_jate') },
+          { value: 'Polttoaineiden varastointi',label: t('opt_toiminta_poltto') },
+          { value: 'Kaivostoiminta',            label: t('opt_toiminta_kaivos') },
+          { value: 'Kotieläintalous (suuri)',   label: t('opt_toiminta_kotiel') },
+          { value: 'Muu toiminta',              label: t('opt_toiminta_muu') },
         ]
       },
       { id: 'gf-sijainti',  apiKey: 'sijainti_ymparistovaikutukset', label: 'Toiminnan kuvaus ja ympäristövaikutukset', type: 'text', placeholder: 'Kuvaa toiminta ja sen ympäristövaikutukset (päästöt, melu, pohjavesi…)', full: true },
@@ -4503,6 +4708,24 @@ function renderCards() {
 }
 renderCards();
 
+function _rebuildCountrySelect() {
+  const sel = document.getElementById('gen-country-select');
+  if (!sel) return;
+  const current = sel.value;
+  const countries = [
+    { code: 'FI', flag: '🇫🇮', key: 'country_fi' },
+    { code: 'SE', flag: '🇸🇪', key: 'country_se' },
+    { code: 'DA', flag: '🇩🇰', key: 'country_da' },
+    { code: 'NO', flag: '🇳🇴', key: 'country_no' },
+    { code: 'PL', flag: '🇵🇱', key: 'country_pl' },
+  ];
+  sel.innerHTML = countries.map(c =>
+    `<option value="${c.code}">${c.flag} ${t(c.key)} (${c.code})</option>`
+  ).join('');
+  sel.value = current || 'FI';
+}
+_rebuildCountrySelect();
+
 function _rebuildMapTypeSelect() {
   const sel = document.getElementById('map-hanketyyppi');
   if (!sel) return;
@@ -4695,7 +4918,7 @@ async function _markPhaseComplete(hanketyyppi, phase) {
 function _renderVaihepolku(hanketyyppi, status) {
   const el = document.getElementById('phase-lock-bar');
   if (!el || !status) return;
-  const labels = { esiselvitys: 'Esiselvitys', lupavaihe: 'Lupavaihe', rakentaminen: 'Rakentaminen' };
+  const labels = { esiselvitys: t('opt_vaihe_esiselvitys'), lupavaihe: t('opt_vaihe_lupavaihe'), rakentaminen: t('opt_vaihe_rakentaminen') };
   const icons  = { done: '✓', active: '●', locked: '🔒' };
   const html = status.phases.map((p, i) => {
     const cls = `pl-step pl-${p.state}`;
@@ -4938,11 +5161,11 @@ function _hankePhaseChanged(typeId, phase) {
     `<span class="gf-permits-lupa-tag" style="background:rgba(0,194,168,0.18);color:#00C2A8;">${v}</span>`
   ).join('');
   const lupaHtml = cfg.luvat.map(l =>
-    `<span class="gf-permits-lupa-tag">${l}</span>`
+    `<span class="gf-permits-lupa-tag">${tLupa(l)}</span>`
   ).join('');
   const kasittelyaika = (PERMITS_CFG[typeId] || {}).kasittelyaika;
   const aikaHtml = kasittelyaika
-    ? `<div class="gf-permits-viranomaiset" style="margin-top:6px;">Viranomaisen arviointiviive</div><div class="gf-permits-luvat"><span class="gf-permits-lupa-tag" style="background:rgba(255,200,0,0.15);color:#b8860b;">${kasittelyaika}</span></div>`
+    ? `<div class="gf-permits-viranomaiset" style="margin-top:6px;">${t('permits_kasittelyaika')}</div><div class="gf-permits-luvat"><span class="gf-permits-lupa-tag" style="background:rgba(255,200,0,0.15);color:#b8860b;">${kasittelyaika}</span></div>`
     : '';
   box.innerHTML = `
     <div class="gf-permits-heading">${t('permits_viranomaiset')} — ${phaseLabel}</div>
@@ -6386,7 +6609,7 @@ function archStartDraw() {
     const layer = e.layer;
     layer.feature = layer.feature || { type: 'Feature', properties: {} };
     layer.feature.properties.tool = _archTool;
-    layer.feature.properties.label = _archTool === 'polygon' ? 'Rakennusalue' : _archTool === 'polyline' ? 'Pääsytie' : 'Tekninen alue';
+    layer.feature.properties.label = _archTool === 'polygon' ? t('arch_tool_polygon') : _archTool === 'polyline' ? t('arch_tool_polyline') : t('arch_tool_marker');
     _archDrawLayer.addLayer(layer);
     _archSyncGeoJson();
     _archUpdateStats();
