@@ -1479,7 +1479,7 @@
           </div>
           <div class="proj-field" id="manual-pinta-ala-wrap" style="display:none;">
             <label><span data-i18n="lbl_pinta_ala_manuaali">Rekisteripinta-ala (ha)</span> <span style="color:#8899aa;font-size:0.7em;" data-i18n="lbl_mml_no_value">MML ei palauttanut arvoa</span></label>
-            <input type="number" id="manual-pinta-ala" placeholder="esim. 4.50" min="0.01" step="0.01" />
+            <input type="number" id="manual-pinta-ala" placeholder="esim. 4.50" data-i18n-ph="ph_esim_ha" min="0.01" step="0.01" />
           </div>
           <div style="margin-top:8px;">
             <button class="btn secondary" id="btn-apply-manual" style="width:100%;">
@@ -1647,13 +1647,13 @@
           <h3 data-i18n="h3_arch">Arkkitehtuuripiirto</h3>
           <p style="font-size:0.73rem;color:#6a8aaa;margin:0 0 8px;" data-i18n="arch_desc">Piirrä rakennuksen ääriviivat, pääsytiet ja tekniset alueet kartalle.</p>
           <div style="display:flex;flex-direction:column;gap:5px;">
-            <button class="arch-tool-btn active" id="arch-btn-polygon" onclick="archSetTool('polygon')" title="Piirrä alue">
+            <button class="arch-tool-btn active" id="arch-btn-polygon" onclick="archSetTool('polygon')" title="Rakennusalue" data-i18n-title="arch_tool_polygon">
               ⬡ <span data-i18n="arch_tool_polygon">Rakennusalue</span>
             </button>
-            <button class="arch-tool-btn" id="arch-btn-polyline" onclick="archSetTool('polyline')" title="Piirrä reitti">
+            <button class="arch-tool-btn" id="arch-btn-polyline" onclick="archSetTool('polyline')" title="Pääsytie / reitti" data-i18n-title="arch_tool_polyline">
               ➡ <span data-i18n="arch_tool_polyline">Pääsytie / reitti</span>
             </button>
-            <button class="arch-tool-btn" id="arch-btn-marker" onclick="archSetTool('marker')" title="Merkitse piste">
+            <button class="arch-tool-btn" id="arch-btn-marker" onclick="archSetTool('marker')" title="Tekninen alue" data-i18n-title="arch_tool_marker">
               📍 <span data-i18n="arch_tool_marker">Tekninen alue</span>
             </button>
             <button class="arch-tool-btn" onclick="archStartDraw()" id="arch-draw-start" style="background:rgba(0,194,168,0.15);border-color:rgba(0,194,168,0.4);color:#00C2A8;">
@@ -1719,7 +1719,7 @@
       <h2>&#x1F4CB; Permit AI</h2>
       <p>NCE (Native Clean Energy) &mdash; Fingrid &middot; Pelastusopisto &middot; Tukes &middot; STUK YVL</p>
     </div>
-    <button class="pai-close" onclick="togglePermitAI()" title="Sulje">&#x2715;</button>
+    <button class="pai-close" onclick="togglePermitAI()" title="Sulje" data-i18n-title="btn_close">&#x2715;</button>
   </div>
 
   <div class="pai-chips">
@@ -1790,8 +1790,9 @@
 
   <div class="pai-input-area">
     <textarea id="pai-textarea"
-      placeholder="Kysy lupaprosessista, Fingrid-vaatimuksista, STUK YVL-ohjeista… (Ctrl+Enter lähettää)"></textarea>
-    <button class="pai-send" id="pai-send" onclick="sendPermitMessage()">L&auml;het&auml;</button>
+      placeholder="Kysy lupaprosessista, Fingrid-vaatimuksista, STUK YVL-ohjeista… (Ctrl+Enter lähettää)"
+      data-i18n-ph="pai_placeholder"></textarea>
+    <button class="pai-send" id="pai-send" onclick="sendPermitMessage()"><span data-i18n="btn_send">Lähetä</span></button>
   </div>
 
 </div>
@@ -2105,6 +2106,7 @@ const TRANSLATIONS = {
     country_pl:       'Puola',
     country_detected: 'Maa tunnistettu automaattisesti:',
     country_hint:     'Valitse ensin kohdemaasi',
+    lbl_country:      'Maa',
     // Map tab — puuttuvat käännökset
     h3_ai_strategy:       'AI-lupaprosessistrategia',
     ai_strategy_sub:      'Claude AI — ei juridinen neuvo',
@@ -2125,6 +2127,12 @@ const TRANSLATIONS = {
     opt_toiminta_kotiel:  'Kotieläintalous (suuri)',
     opt_toiminta_muu:     'Muu toiminta',
     privacy_link:         'Tietosuoja',
+    btn_close:            'Sulje',
+    btn_send:             'Lähetä',
+    pai_placeholder:      'Kysy lupaprosessista, Fingrid-vaatimuksista, STUK YVL-ohjeista… (Ctrl+Enter lähettää)',
+    ph_esim_ha:           'esim. 4,50',
+    alert_fill_required:  'Täytä kiinteistötunnus, kunta ja hakija.',
+    err_prefix:           'Virhe',
   },
   EN: {
     tab_generator:        'Permit Document Service',
@@ -2406,6 +2414,7 @@ const TRANSLATIONS = {
     country_pl:       'Poland',
     country_detected: 'Country detected automatically:',
     country_hint:     'Select your target country first',
+    lbl_country:      'Country',
     h3_ai_strategy:       'AI Permit Process Strategy',
     ai_strategy_sub:      'Claude AI — not legal advice',
     lbl_pinta_ala_manuaali: 'Registered area (ha)',
@@ -2424,6 +2433,12 @@ const TRANSLATIONS = {
     opt_toiminta_kotiel:  'Livestock (large)',
     opt_toiminta_muu:     'Other activity',
     privacy_link:         'Privacy Policy',
+    btn_close:            'Close',
+    btn_send:             'Send',
+    pai_placeholder:      'Ask about permit processes, Fingrid requirements, STUK YVL guidelines… (Ctrl+Enter sends)',
+    ph_esim_ha:           'e.g. 4.50',
+    alert_fill_required:  'Fill in property ID, municipality and applicant.',
+    err_prefix:           'Error',
   },
   SE: {
     tab_generator:        'Tillståndsdokumentservice',
@@ -2705,6 +2720,7 @@ const TRANSLATIONS = {
     country_pl:       'Polen',
     country_detected: 'Land identifierat automatiskt:',
     country_hint:     'Välj målland först',
+    lbl_country:      'Land',
     h3_ai_strategy:       'AI-tillståndsprocessstrategi',
     ai_strategy_sub:      'Claude AI — inte juridisk rådgivning',
     lbl_pinta_ala_manuaali: 'Registrerat areal (ha)',
@@ -2723,6 +2739,12 @@ const TRANSLATIONS = {
     opt_toiminta_kotiel:  'Djurhållning (stor)',
     opt_toiminta_muu:     'Annan verksamhet',
     privacy_link:         'Integritetspolicy',
+    btn_close:            'Stäng',
+    btn_send:             'Skicka',
+    pai_placeholder:      'Fråga om tillståndsprocesser, Fingrid-krav, STUK YVL-riktlinjer… (Ctrl+Enter skickar)',
+    ph_esim_ha:           't.ex. 4,50',
+    alert_fill_required:  'Fyll i fastighetsbeteckning, kommun och sökande.',
+    err_prefix:           'Fel',
   },
   DA: {
     tab_generator:        'Tilladelsesdokumentservice',
@@ -2791,6 +2813,7 @@ const TRANSLATIONS = {
     country_pl:     'Polen',
     country_detected: 'Land registreret automatisk:',
     country_hint:   'Vælg dit målland først',
+    lbl_country:    'Land',
     lbl_logbar_ready: 'Klar — vælg projekttype for at begynde',
     // Proofread
     gen_proofread_pending: 'Korrekturlæst version under forberedelse',
@@ -3028,6 +3051,12 @@ const TRANSLATIONS = {
     opt_toiminta_kotiel:      'Husdyrhold (stor)',
     opt_toiminta_muu:         'Anden aktivitet',
     privacy_link:             'Privatlivspolitik',
+    btn_close:                'Luk',
+    btn_send:                 'Send',
+    pai_placeholder:          'Spørg om tilladelsesprocesser, Fingrid-krav, STUK YVL-retningslinjer… (Ctrl+Enter sender)',
+    ph_esim_ha:               'f.eks. 4,50',
+    alert_fill_required:      'Udfyld ejendomsidentifikator, kommune og ansøger.',
+    err_prefix:               'Fejl',
   },
   NO: {
     tab_generator:        'Tillatelsesdokumentservice',
@@ -3096,6 +3125,7 @@ const TRANSLATIONS = {
     country_pl:     'Polen',
     country_detected: 'Land registrert automatisk:',
     country_hint:   'Velg ditt målland først',
+    lbl_country:    'Land',
     lbl_logbar_ready: 'Klar — velg prosjekttype for å starte',
     // Proofread
     gen_proofread_pending: 'Korrekturlest versjon under forberedelse',
@@ -3333,6 +3363,12 @@ const TRANSLATIONS = {
     opt_toiminta_kotiel:      'Husdyrhold (stort)',
     opt_toiminta_muu:         'Annen aktivitet',
     privacy_link:             'Personvernerklæring',
+    btn_close:                'Lukk',
+    btn_send:                 'Send',
+    pai_placeholder:          'Spør om tillatelsesp rosesser, Fingrid-krav, STUK YVL-retningslinjer… (Ctrl+Enter sender)',
+    ph_esim_ha:               'f.eks. 4,50',
+    alert_fill_required:      'Fyll inn eiendomsidentifikator, kommune og søker.',
+    err_prefix:               'Feil',
   },
   PL: {
     tab_generator:        'Serwis dokumentów zezwoleń',
@@ -3401,6 +3437,7 @@ const TRANSLATIONS = {
     country_pl:     'Polska',
     country_detected: 'Kraj wykryty automatycznie:',
     country_hint:   'Najpierw wybierz kraj docelowy',
+    lbl_country:    'Kraj',
     lbl_logbar_ready: 'Gotowy — wybierz typ projektu, aby rozpocząć',
     // Proofread
     gen_proofread_pending: 'Wersja po korekcie w przygotowaniu',
@@ -3638,6 +3675,12 @@ const TRANSLATIONS = {
     opt_toiminta_kotiel:      'Hodowla zwierząt (duża)',
     opt_toiminta_muu:         'Inna działalność',
     privacy_link:             'Polityka prywatności',
+    btn_close:                'Zamknij',
+    btn_send:                 'Wyślij',
+    pai_placeholder:          'Zapytaj o procesy zezwoleń, wymagania Fingrid, wytyczne STUK YVL… (Ctrl+Enter wysyła)',
+    ph_esim_ha:               'np. 4,50',
+    alert_fill_required:      'Uzupełnij identyfikator nieruchomości, gminę i wnioskodawcę.',
+    err_prefix:               'Błąd',
   },
   DE: {
     tab_generator:        'Genehmigungsdokumentendienst',
@@ -3722,8 +3765,6 @@ const TRANSLATIONS = {
     lbl_lyr_highways: 'Straßen (OSM)',
     h3_grid_info:     'Netzinformationen',
     lbl_logbar_ready: 'Bereit — Projekttyp wählen',
-    lbl_logbar_fetching: 'Grundstücksdaten werden abgerufen…',
-    lbl_score_unit:   'Punkte',
     h3_ai_strategy:   'KI-Genehmigungsprozess-Strategie',
     ai_strategy_sub:  'Claude KI — keine Rechtsberatung',
     country_label:    'Land / Regelwerk',
@@ -3735,7 +3776,6 @@ const TRANSLATIONS = {
     gf_title_aurinkovoima: 'Solarenergie',
     gf_title_smr:       'SMR — Kleinreaktor',
     gf_title_datakeskus: 'Rechenzentrum',
-    gf_title_vesivoima: 'Wasserkraft',
     gf_form_sub:        'Füllen Sie die Grunddaten aus. Die KI generiert einen Antragsentwurf.',
     gf_luvat_heading:   'Erforderliche Genehmigungen:',
     gf_submit_btn:      'Antrag generieren (PDF)',
@@ -3961,6 +4001,12 @@ const TRANSLATIONS = {
     opt_toiminta_kotiel: 'Nutztierhaltung (groß)',
     opt_toiminta_muu:    'Sonstige Aktivität',
     privacy_link:        'Datenschutz',
+    btn_close:           'Schließen',
+    btn_send:            'Senden',
+    pai_placeholder:     'Fragen zu Genehmigungsprozessen, Fingrid-Anforderungen, STUK YVL-Richtlinien… (Ctrl+Enter sendet)',
+    ph_esim_ha:          'z.B. 4,50',
+    alert_fill_required: 'Bitte Grundstücksidentifikator, Gemeinde und Antragsteller ausfüllen.',
+    err_prefix:          'Fehler',
   },
 };
 
@@ -4065,6 +4111,10 @@ function setLang(lang) {
   // Apply data-i18n-ph placeholders
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
     el.placeholder = t(el.dataset.i18nPh);
+  });
+  // Apply data-i18n-title tooltips
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.title = t(el.dataset.i18nTitle);
   });
   // Re-render project type cards so names/subs update
   renderCards();
@@ -5362,7 +5412,7 @@ async function submitGeneratorForm() {
     const msg = err.name === 'AbortError' ? t('err_timeout') : err.message;
     console.error('[Generator] virhe:', err);
     log(`${t('log_gen_error')}: ${msg}`, 'err');
-    alert(`Virhe: ${msg}`);
+    alert(`${t('err_prefix')}: ${msg}`);
   }
 }
 
@@ -6158,9 +6208,7 @@ async function generateApplication() {
   const hakija         = document.getElementById('gen-hakija').value.trim();
 
   if (!kt || !kunta || !hakija) {
-    alert(activeLang === 'EN' ? 'Fill in property ID, municipality and applicant.'
-        : activeLang === 'SE' ? 'Fyll i fastighetsbeteckning, kommun och sökande.'
-        : 'Täytä kiinteistötunnus, kunta ja hakija.');
+    alert(t('alert_fill_required'));
     return;
   }
 
