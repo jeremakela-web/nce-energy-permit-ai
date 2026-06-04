@@ -2,60 +2,74 @@
 <html lang="fi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tietosuojaseloste — NCE Permit AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tietosuoja — NCE Permit AI</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0; padding: 0;
-      background: #07111f;
-      color: #c0d0e8;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      font-size: 0.93rem;
-      line-height: 1.7;
-    }
-    header {
       background: #0a1628;
+      color: #c8d8e8;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+    nav {
+      background: #0d1e36;
       border-bottom: 1px solid #1e2d4a;
-      padding: 14px 32px;
+      padding: 12px 24px;
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 14px;
+      flex-wrap: wrap;
     }
-    header a { color: #00C2A8; text-decoration: none; font-size: 0.82rem; }
-    header a:hover { text-decoration: underline; }
-    .logo { font-size: 1rem; font-weight: 700; color: #e0ecf8; }
-    main {
-      max-width: 760px;
-      margin: 48px auto;
-      padding: 0 24px 60px;
+    .nav-brand { font-size: 1rem; font-weight: 700; color: #00C2A8; text-decoration: none; letter-spacing: 0.5px; flex-shrink: 0; }
+    .nav-back  { color: #4a9fd4; text-decoration: none; font-size: 0.82rem; margin-left: auto; white-space: nowrap; }
+    .nav-back:hover { color: #00C2A8; }
+    .lang-switcher { display: flex; gap: 5px; flex-wrap: wrap; }
+    .lang-btn {
+      background: none;
+      border: 1px solid #1e3050;
+      color: #6a8aaa;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      transition: all 0.15s;
     }
-    h1 {
-      font-size: 1.5rem;
-      color: #e0ecf8;
-      border-bottom: 1px solid #1e3a5a;
-      padding-bottom: 14px;
-      margin-bottom: 28px;
+    .lang-btn:hover { border-color: #00C2A8; color: #00C2A8; }
+    .lang-btn.active { background: #00C2A8; border-color: #00C2A8; color: #0a1628; font-weight: 700; }
+    main { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+    h1 { font-size: 1.55rem; color: #e8f4ff; margin-bottom: 6px; font-weight: 700; }
+    .doc-meta { color: #00C2A8; font-size: 0.82rem; margin-bottom: 4px; }
+    .doc-updated { color: #4a6a8a; font-size: 0.76rem; margin-bottom: 30px; }
+    .notice {
+      background: rgba(0,194,168,0.07);
+      border-left: 3px solid #00C2A8;
+      padding: 12px 16px;
+      border-radius: 0 4px 4px 0;
+      margin: 0 0 28px;
+      font-size: 0.84rem;
+      color: #a0c8e0;
     }
     h2 {
-      font-size: 1rem;
+      font-size: 0.97rem;
       color: #00C2A8;
-      margin-top: 32px;
-      margin-bottom: 8px;
+      font-weight: 600;
+      margin: 30px 0 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #1a2d46;
     }
-    p { margin: 0 0 14px; color: #a8bcd4; }
-    ul { margin: 0 0 14px; padding-left: 22px; color: #a8bcd4; }
+    p { margin-bottom: 10px; }
+    ul, ol { margin: 8px 0 10px 22px; }
     li { margin-bottom: 5px; }
-    .highlight {
-      background: #0d1929;
-      border: 1px solid #1e3a5a;
-      border-left: 3px solid #00C2A8;
-      border-radius: 8px;
-      padding: 14px 18px;
-      margin: 20px 0;
-    }
-    .highlight p { margin: 0; }
-    a { color: #4a9fd4; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.82rem; }
+    th { background: #0d1e36; color: #00C2A8; padding: 8px 12px; text-align: left; border-bottom: 1px solid #1e2d4a; font-weight: 600; font-size: 0.8rem; }
+    td { padding: 7px 12px; border-bottom: 1px solid #131f33; color: #b0c8e0; vertical-align: top; }
+    tr:hover td { background: rgba(0,194,168,0.03); }
+    a { color: #4a9fd4; text-decoration: none; }
+    a:hover { color: #00C2A8; }
+    strong { color: #d8eaf8; }
     footer {
       background: #0a1628;
       border-top: 1px solid #1e2d4a;
@@ -64,95 +78,253 @@
       font-size: 0.72rem;
       color: #4a6a9a;
     }
-    .date { font-size: 0.78rem; color: #4a6a9a; margin-bottom: 28px; }
+    footer a { color: #4a9fd4; }
   </style>
 </head>
 <body>
 
-<header>
-  <span class="logo">NCE Permit AI</span>
-  <a href="/">← Takaisin sovellukseen</a>
-</header>
+<nav>
+  <a href="/" class="nav-brand">NCE Permit AI</a>
+  <div class="lang-switcher" id="langSwitcher"></div>
+  <a href="/" class="nav-back" id="navBack">← Takaisin</a>
+</nav>
 
 <main>
-  <h1>Tietosuojaseloste</h1>
-  <p class="date">Voimassa: 2026-06-01 &nbsp;·&nbsp; Rekisterinpitäjä: Native Clean Energy (NCE Energy)</p>
-
-  <div class="highlight">
-    <p><strong>Lyhyt yhteenveto:</strong> Kerätään vain välttämättömät hanketiedot hakemusluonnoksen generointia varten. Tietoja ei myydä eikä luovuteta kolmansille osapuolille. Ei evästeitä, ei käyttäjäseurantaa.</p>
-  </div>
-
-  <h2>1. Rekisterinpitäjä</h2>
-  <p>
-    Native Clean Energy (NCE Energy)<br>
-    Sähköposti: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>
-    Verkkosivusto: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a>
-  </p>
-
-  <h2>2. Mitä tietoja kerätään</h2>
-  <p>NCE Permit AI käsittelee ainoastaan käyttäjän itse syöttämiä hanketietoja hakemusluonnoksen generointia varten:</p>
-  <ul>
-    <li><strong>Kiinteistötunnus</strong> — haetaan MML:n WFS-rajapinnasta sijaintitietojen täydentämiseksi</li>
-    <li><strong>Y-tunnus</strong> — vapaaehtoinen, lisätään hakemuslomakkeeseen</li>
-    <li><strong>Hakijan nimi ja yhteystiedot</strong> — lisätään hakemusluonnokseen</li>
-    <li><strong>Hankkeen tekniset tiedot</strong> (teho, kapasiteetti, kunta, hanketyyppi)</li>
-    <li><strong>Sijainti- ja ympäristötiedot</strong> — käyttäjän syöttämät tai MML/SYKE-rajapinnoista haetut</li>
-  </ul>
-  <p>Palvelu <strong>ei kerää</strong> eikä tallenna henkilötunnuksia, maksukorttitietoja tai kirjautumistietoja. Käyttäjätiliä ei vaadita.</p>
-
-  <h2>3. Mihin tietoja käytetään</h2>
-  <ul>
-    <li>Lupahakemusluonnoksen generointiin Anthropic Claude -tekoälyllä (RAG-pohjainen)</li>
-    <li>PDF-dokumentin muodostamiseen ReportLab-kirjastolla</li>
-    <li>Sijaintianalyysiin (MML, SYKE, Fingrid, OSM -rajapinnat)</li>
-  </ul>
-  <p>Syötettyjä tietoja <strong>ei säilytetä</strong> palvelimen pysyvässä tallennuksessa generointiistunnon jälkeen. Tieto elää muistissa vain generoinnin ajan (enintään ~5 minuuttia).</p>
-
-  <h2>4. Kolmannet osapuolet</h2>
-  <p>Hakemusluonnoksen generoimiseksi hanketiedot välitetään <strong>Anthropic Claude API:lle</strong> (yhdysvaltalaiselle tekoälypalvelulle). Anthropic käsittelee tietoja oman tietosuojakäytäntönsä mukaisesti.</p>
-  <p>Tietoja välitetään myös seuraaville julkisille rajapinnoille sijainti- ja kartatietojen hakemiseksi:</p>
-  <ul>
-    <li>Maanmittauslaitos (MML) — kiinteistö- ja kaavatieto</li>
-    <li>Suomen ympäristökeskus (SYKE) — pohjavesi- ja luontoalueet</li>
-    <li>Fingrid — sähköverkkodata</li>
-    <li>OpenStreetMap (OSM) — tieverkko ja rakennukset</li>
-  </ul>
-  <p>Tietoja <strong>ei myydä, vuokrata eikä luovuteta</strong> muille kolmansille osapuolille.</p>
-
-  <h2>5. Evästeet ja seuranta</h2>
-  <p>NCE Permit AI ei käytä evästeitä, seurantapikseleitä, Google Analyticsia tai muita käyttäjäseurantapalveluita. Ainoa selaimessa tallennettu tieto on kielivalinta (<code>nce_lang</code>), joka tallennetaan <code>localStorage</code>-mekanismilla paikallisesti käyttäjän selaimeen.</p>
-
-  <h2>6. Tietojen säilytysaika</h2>
-  <p>Palvelin ei säilytä hanketietoja pysyvästi. Generoitu PDF toimitetaan suoraan käyttäjän selaimeen eikä sitä tallenneta palvelimelle. Palvelinlokit (pyyntömetadata ilman henkilötietoja) säilytetään enintään 30 päivää Render-palvelualustan oletusasetusten mukaisesti.</p>
-
-  <h2>7. Rekisteröidyn oikeudet (GDPR)</h2>
-  <p>EU:n yleisen tietosuoja-asetuksen (GDPR, 2016/679) mukaisesti sinulla on oikeus:</p>
-  <ul>
-    <li>Saada tietää, mitä tietojasi käsitellään</li>
-    <li>Pyytää tietojen oikaisemista tai poistamista</li>
-    <li>Vastustaa tietojen käsittelyä</li>
-    <li>Tehdä valitus tietosuojaviranomaiselle (Suomi: <a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a>)</li>
-  </ul>
-  <p>Koska palvelu ei säilytä tietoja, rekisteröidyn pyynnöt käsitellään tapauskohtaisesti. Ota yhteyttä: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>
-
-  <h2>8. Tietoturva</h2>
-  <p>Palvelu toimii HTTPS-yhteyden yli. API-kutsut Anthropicille ja MML:lle käyttävät TLS-salattuja yhteyksiä. Palvelin sijaitsee Render-palvelualustalla (Virginia, USA / EU-vaihtoehto saatavilla).</p>
-
-  <h2>9. Muutokset tietosuojaselosteeseen</h2>
-  <p>Tätä tietosuojaselostetta voidaan päivittää. Oleelliset muutokset ilmoitetaan sovelluksen etusivulla. Päivämäärä sivun yläosassa ilmaisee viimeisimmän päivityksen.</p>
-
-  <h2>10. Yhteydenotot</h2>
-  <p>
-    Tietosuojaan liittyvät kysymykset: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>
-    NCE Permit AI — Native Clean Energy · <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a>
-  </p>
+  <h1 id="pageTitle">Tietosuojaseloste</h1>
+  <div class="doc-meta">NCE Permit AI &mdash; Kansallisvaranto Oy</div>
+  <div class="doc-updated" id="docUpdated">Päivitetty: 4.6.2026 | GDPR art. 13&ndash;14</div>
+  <div class="notice" id="introNotice"></div>
+  <h2 id="s1h"></h2><div id="s1b"></div>
+  <h2 id="s2h"></h2><div id="s2b"></div>
+  <h2 id="s3h"></h2><div id="s3b"></div>
+  <h2 id="s4h"></h2><div id="s4b"></div>
+  <h2 id="s5h"></h2><div id="s5b"></div>
+  <h2 id="s6h"></h2><div id="s6b"></div>
+  <h2 id="s7h"></h2><div id="s7b"></div>
+  <h2 id="s8h"></h2><div id="s8b"></div>
+  <h2 id="s9h"></h2><div id="s9b"></div>
+  <h2 id="s10h"></h2><div id="s10b"></div>
 </main>
 
 <footer>
-  <strong style="color:#8899aa;">NCE Permit AI</strong> &mdash; Native Clean Energy &nbsp;|&nbsp;
-  <a href="mailto:info@ncenergy.fi" style="color:#4a9fd4;text-decoration:none;">info@ncenergy.fi</a> &nbsp;|&nbsp;
-  <a href="/" style="color:#4a9fd4;text-decoration:none;">Takaisin sovellukseen</a>
+  <strong style="color:#8899aa;">NCE Permit AI</strong> &mdash; Kansallisvaranto Oy &nbsp;|&nbsp;
+  <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a> &nbsp;|&nbsp;
+  <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a>
 </footer>
 
+<script>
+const LANGS = ['FI','EN','SE','DA','NO','PL','DE'];
+const FLAGS = {FI:'🇫🇮',EN:'🇬🇧',SE:'🇸🇪',DA:'🇩🇰',NO:'🇳🇴',PL:'🇵🇱',DE:'🇩🇪'};
+const TITLES = {FI:'Tietosuojaseloste',EN:'Privacy Policy',SE:'Integritetspolicy',DA:'Privatlivspolitik',NO:'Personvernerklæring',PL:'Polityka prywatności',DE:'Datenschutzerklärung'};
+
+const T = {
+FI: {
+  nav_back:  '← Takaisin sovellukseen',
+  updated:   'Päivitetty: 4.6.2026 | GDPR art. 13–14',
+  notice:    'Tämä seloste kuvaa, miten NCE Permit AI -palvelussa (Kansallisvaranto Oy) käsitellään henkilötietoja EU:n yleisen tietosuoja-asetuksen (GDPR, 2016/679) mukaisesti.',
+  s1h:'1. Rekisterinpitäjä',
+  s1b:'<p><strong>Kansallisvaranto Oy</strong><br>Y-tunnus: 3354898-5<br>Sähköposti: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>Verkkopalvelu: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a></p><p>Tietosuoja-asioita koskevat yhteydenotot: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s2h:'2. Käsittelyn tarkoitus ja oikeusperuste',
+  s2b:'<table><tr><th>Tarkoitus</th><th>Oikeusperuste (GDPR art. 6)</th></tr><tr><td>Lupa-asiakirjaluonnosten generointi</td><td>6(1)(b) sopimus</td></tr><tr><td>Palvelun tekninen tuottaminen ja ylläpito</td><td>6(1)(f) oikeutettu etu</td></tr><tr><td>Laskutus ja kirjanpito</td><td>6(1)(c) lakisääteinen velvoite</td></tr><tr><td>Palvelun kehittäminen</td><td>6(1)(f) oikeutettu etu</td></tr></table>',
+  s3h:'3. Käsiteltävät henkilötiedot',
+  s3b:'<ul><li>Hakijan nimi ja yrityksen nimi</li><li>Y-tunnus</li><li>Sijaintitiedot: kunta, osoite, kiinteistötunnus</li><li>Hanketiedot: teho (MW), hanketyyppi, lupavaihe</li><li>IP-osoite (automaattinen tekninen kirjaus)</li><li>Sähköpostiosoite (asiakasviestintä)</li><li>Laskutus- ja maksutiedot</li></ul>',
+  s4h:'4. Tietojen vastaanottajat',
+  s4b:'<table><tr><th>Osapuoli</th><th>Rooli</th><th>Sijainti</th><th>Suojatoimenpide</th></tr><tr><td>Anthropic Inc.</td><td>Claude API (tekoäly)</td><td>USA</td><td>SCC (komission päätös 2021/914)</td></tr><tr><td>Render Services Inc.</td><td>Hosting</td><td>Frankfurt, EU</td><td>EU-alue</td></tr><tr><td>Google LLC</td><td>Google Workspace</td><td>EU / USA</td><td>SCC</td></tr><tr><td>Maanmittauslaitos</td><td>MML INSPIRE API</td><td>Suomi, EU</td><td>EU-alue</td></tr></table>',
+  s5h:'5. Tietojen siirrot EU:n ulkopuolelle',
+  s5b:'<p>Anthropic Inc. (USA) ja Google LLC (USA) käsittelevät tietoja EU:n ulkopuolella. Siirrot perustuvat Euroopan komission hyväksymiin vakiosopimuslausekkeisiin (SCC, täytäntöönpanopäätös 2021/914).</p><p>Render Services Inc. (Frankfurt) käsittelee tietoja EU:ssa &mdash; siirtoja EU:n ulkopuolelle ei tehdä.</p>',
+  s6h:'6. Säilytysajat',
+  s6b:'<table><tr><th>Tieto</th><th>Säilytysaika</th></tr><tr><td>Generoidut PDF-asiakirjat</td><td>Ei tallenneta palvelimelle</td></tr><tr><td>Sähköpostiviestit</td><td>12 kuukautta</td></tr><tr><td>IP-osoitteet (lokitiedot)</td><td>Enintään 24 tuntia</td></tr><tr><td>Laskutustiedot</td><td>7 vuotta (kirjanpitolaki 1336/1997)</td></tr></table>',
+  s7h:'7. Rekisteröidyn oikeudet (GDPR art. 15–22)',
+  s7b:'<ul><li><strong>Art. 15 &mdash; Oikeus saada pääsy tietoihin:</strong> Voit pyytää jäljennöstä sinua koskevista henkilötiedoista.</li><li><strong>Art. 16 &mdash; Oikeus oikaista tietoja:</strong> Voit vaatia virheellisten tai puutteellisten tietojen korjaamista.</li><li><strong>Art. 17 &mdash; Oikeus tulla unohdetuksi:</strong> Voit pyytää tietojesi poistamista, kun käsittelylle ei ole enää perustetta.</li><li><strong>Art. 18 &mdash; Oikeus rajoittaa käsittelyä:</strong> Voit vaatia käsittelyn rajoittamista tietyissä tilanteissa.</li><li><strong>Art. 20 &mdash; Oikeus siirtää tiedot:</strong> Voit pyytää tietojesi siirtämistä koneluettavassa muodossa.</li><li><strong>Art. 21 &mdash; Oikeus vastustaa käsittelyä:</strong> Voit vastustaa oikeutettuun etuun perustuvaa käsittelyä.</li><li><strong>Suostumuksen peruuttaminen:</strong> Jos käsittely perustuu suostumukseen, voit peruuttaa sen milloin tahansa.</li><li><strong>Art. 77 &mdash; Oikeus tehdä valitus:</strong> Voit tehdä valituksen tietosuojavaltuutetulle (art. 77).</li></ul><p>Lähetä oikeuksiasi koskevat pyynnöt: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s8h:'8. Automaattinen päätöksenteko',
+  s8b:'<p>NCE Permit AI tuottaa tekoälyavusteisia lupa-asiakirjaluonnoksia. <strong>Nämä luonnokset eivät ole automaattisia oikeudellisesti sitovia päätöksiä</strong> GDPR art. 22 tarkoittamassa mielessä. Kaikki asiakirjat on tarkistettava asiantuntijalla ennen virallista käyttöä.</p>',
+  s9h:'9. Valvontaviranomainen',
+  s9b:'<p><strong>Tietosuojavaltuutetun toimisto</strong><br>PL 800, 00531 Helsinki<br>Puh: +358 29 566 6700<br><a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a> &nbsp;|&nbsp; <a href="mailto:tietosuoja@om.fi">tietosuoja@om.fi</a></p>',
+  s10h:'10. Tietojen antamisen pakollisuus',
+  s10b:'<p>Lupa-asiakirjaluonnoksen generoimiseksi tarvittavat tiedot (hakijan nimi, kunta, hanketyyppi, kiinteistötunnus) ovat palvelun toiminnalle välttämättömiä. Niiden antamatta jättäminen estää palvelun käytön. IP-osoitteen kirjaus on automaattinen tekninen toimenpide.</p>',
+},
+EN: {
+  nav_back:  '← Back to application',
+  updated:   'Updated: 4 June 2026 | GDPR Art. 13–14',
+  notice:    'This notice describes how NCE Permit AI (Kansallisvaranto Oy) processes personal data in accordance with the EU General Data Protection Regulation (GDPR, 2016/679).',
+  s1h:'1. Data Controller',
+  s1b:'<p><strong>Kansallisvaranto Oy</strong><br>Business ID: 3354898-5<br>Email: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>Website: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a></p><p>Data protection enquiries: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s2h:'2. Purposes and Legal Basis',
+  s2b:'<table><tr><th>Purpose</th><th>Legal Basis (GDPR Art. 6)</th></tr><tr><td>Generating permit document drafts</td><td>6(1)(b) Contract</td></tr><tr><td>Technical service delivery and maintenance</td><td>6(1)(f) Legitimate interests</td></tr><tr><td>Invoicing and accounting</td><td>6(1)(c) Legal obligation</td></tr><tr><td>Service development</td><td>6(1)(f) Legitimate interests</td></tr></table>',
+  s3h:'3. Personal Data Processed',
+  s3b:'<ul><li>Applicant name and company name</li><li>Business ID</li><li>Location data: municipality, address, property identifier</li><li>Project data: power (MW), project type, permit phase</li><li>IP address (automatic technical logging)</li><li>Email address (customer communications)</li><li>Billing and payment information</li></ul>',
+  s4h:'4. Recipients of Data',
+  s4b:'<table><tr><th>Party</th><th>Role</th><th>Location</th><th>Safeguard</th></tr><tr><td>Anthropic Inc.</td><td>Claude API (AI)</td><td>USA</td><td>SCC (Commission Decision 2021/914)</td></tr><tr><td>Render Services Inc.</td><td>Hosting</td><td>Frankfurt, EU</td><td>EU territory</td></tr><tr><td>Google LLC</td><td>Google Workspace</td><td>EU / USA</td><td>SCC</td></tr><tr><td>National Land Survey (MML)</td><td>INSPIRE API</td><td>Finland, EU</td><td>EU territory</td></tr></table>',
+  s5h:'5. International Data Transfers',
+  s5b:'<p>Anthropic Inc. (USA) and Google LLC (USA) process data outside the EU/EEA. Transfers are based on Standard Contractual Clauses (SCC) approved by the European Commission (Implementing Decision 2021/914).</p><p>Render Services Inc. (Frankfurt) processes data within the EU &mdash; no transfers outside the EU/EEA.</p>',
+  s6h:'6. Retention Periods',
+  s6b:'<table><tr><th>Data</th><th>Retention period</th></tr><tr><td>Generated PDF documents</td><td>Not stored on server</td></tr><tr><td>Email communications</td><td>12 months</td></tr><tr><td>IP addresses (log data)</td><td>Maximum 24 hours</td></tr><tr><td>Billing records</td><td>7 years (Accounting Act)</td></tr></table>',
+  s7h:'7. Your Rights (GDPR Art. 15–22)',
+  s7b:'<ul><li><strong>Art. 15 &mdash; Right of access:</strong> You may request a copy of your personal data.</li><li><strong>Art. 16 &mdash; Right to rectification:</strong> You may request correction of inaccurate or incomplete data.</li><li><strong>Art. 17 &mdash; Right to erasure:</strong> You may request deletion when there is no longer a basis for processing.</li><li><strong>Art. 18 &mdash; Right to restriction:</strong> You may request restriction of processing in certain circumstances.</li><li><strong>Art. 20 &mdash; Right to portability:</strong> You may request your data in a machine-readable format.</li><li><strong>Art. 21 &mdash; Right to object:</strong> You may object to processing based on legitimate interests.</li><li><strong>Withdrawal of consent:</strong> Where processing is based on consent, you may withdraw it at any time.</li><li><strong>Art. 77 &mdash; Right to lodge a complaint:</strong> You may file a complaint with the supervisory authority.</li></ul><p>Send rights requests to: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s8h:'8. Automated Decision-Making',
+  s8b:'<p>NCE Permit AI produces AI-assisted permit document drafts. <strong>These drafts do not constitute automated legally binding decisions</strong> within the meaning of GDPR Art. 22. All AI-generated content requires expert review before official use.</p>',
+  s9h:'9. Supervisory Authority',
+  s9b:'<p><strong>Office of the Data Protection Ombudsman (Finland)</strong><br>PO Box 800, 00531 Helsinki<br>Tel: +358 29 566 6700<br><a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a> &nbsp;|&nbsp; <a href="mailto:tietosuoja@om.fi">tietosuoja@om.fi</a></p>',
+  s10h:'10. Obligation to Provide Data',
+  s10b:'<p>The data required to generate permit document drafts (applicant name, municipality, project type, property identifier) are necessary for the service to function. Failing to provide them prevents use of the service. IP address logging is an automatic technical measure.</p>',
+},
+SE: {
+  nav_back:  '← Tillbaka till applikationen',
+  updated:   'Uppdaterad: 4 juni 2026 | GDPR art. 13–14',
+  notice:    'Detta meddelande beskriver hur NCE Permit AI (Kansallisvaranto Oy) behandlar personuppgifter i enlighet med EU:s allmänna dataskyddsförordning (GDPR, 2016/679).',
+  s1h:'1. Personuppgiftsansvarig',
+  s1b:'<p><strong>Kansallisvaranto Oy</strong><br>Org.nr: 3354898-5<br>E-post: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>Webbplats: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a></p><p>Dataskyddsfrågor: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s2h:'2. Ändamål och rättslig grund',
+  s2b:'<table><tr><th>Ändamål</th><th>Rättslig grund (GDPR art. 6)</th></tr><tr><td>Generera tillståndsdokumentutkast</td><td>6(1)(b) Avtal</td></tr><tr><td>Teknisk tjänsteleverans och underhåll</td><td>6(1)(f) Berättigat intresse</td></tr><tr><td>Fakturering och bokföring</td><td>6(1)(c) Rättslig förpliktelse</td></tr><tr><td>Tjänsteutveckling</td><td>6(1)(f) Berättigat intresse</td></tr></table>',
+  s3h:'3. Behandlade personuppgifter',
+  s3b:'<ul><li>Sökandens namn och företagsnamn</li><li>Organisationsnummer</li><li>Platsuppgifter: kommun, adress, fastighetsbeteckning</li><li>Projektdata: effekt (MW), projekttyp, tillståndsfas</li><li>IP-adress (automatisk teknisk loggning)</li><li>E-postadress (kundkommunikation)</li><li>Fakturerings- och betalningsinformation</li></ul>',
+  s4h:'4. Mottagare av uppgifter',
+  s4b:'<table><tr><th>Part</th><th>Roll</th><th>Plats</th><th>Skyddsåtgärd</th></tr><tr><td>Anthropic Inc.</td><td>Claude API (AI)</td><td>USA</td><td>SCC (kommissionens beslut 2021/914)</td></tr><tr><td>Render Services Inc.</td><td>Hosting</td><td>Frankfurt, EU</td><td>EU-område</td></tr><tr><td>Google LLC</td><td>Google Workspace</td><td>EU / USA</td><td>SCC</td></tr><tr><td>Lantmäteriverket (MML)</td><td>INSPIRE API</td><td>Finland, EU</td><td>EU-område</td></tr></table>',
+  s5h:'5. Internationella dataöverföringar',
+  s5b:'<p>Anthropic Inc. (USA) och Google LLC (USA) behandlar uppgifter utanför EU/EES. Överföringar baseras på standardavtalsklausuler (SCC) godkända av Europeiska kommissionen (genomförandebeslut 2021/914).</p><p>Render Services Inc. (Frankfurt) behandlar uppgifter inom EU &mdash; inga överföringar utanför EU/EES.</p>',
+  s6h:'6. Lagringstider',
+  s6b:'<table><tr><th>Uppgift</th><th>Lagringstid</th></tr><tr><td>Genererade PDF-dokument</td><td>Lagras inte på servern</td></tr><tr><td>E-postkommunikation</td><td>12 månader</td></tr><tr><td>IP-adresser (loggdata)</td><td>Högst 24 timmar</td></tr><tr><td>Faktureringsuppgifter</td><td>7 år (bokföringslagen)</td></tr></table>',
+  s7h:'7. Dina rättigheter (GDPR art. 15–22)',
+  s7b:'<ul><li><strong>Art. 15 &mdash; Rätt till tillgång:</strong> Du kan begära en kopia av dina personuppgifter.</li><li><strong>Art. 16 &mdash; Rätt till rättelse:</strong> Du kan begära rättelse av felaktiga uppgifter.</li><li><strong>Art. 17 &mdash; Rätt till radering:</strong> Du kan begära radering när det inte längre finns grund för behandling.</li><li><strong>Art. 18 &mdash; Rätt till begränsning:</strong> Du kan begära begränsning av behandlingen i vissa situationer.</li><li><strong>Art. 20 &mdash; Rätt till dataportabilitet:</strong> Du kan begära dina uppgifter i maskinläsbart format.</li><li><strong>Art. 21 &mdash; Rätt att invända:</strong> Du kan invända mot behandling baserad på berättigat intresse.</li><li><strong>Återkallande av samtycke:</strong> Om behandling baseras på samtycke kan du återkalla det när som helst.</li><li><strong>Art. 77 &mdash; Rätt att klaga:</strong> Du kan lämna in ett klagomål till tillsynsmyndigheten.</li></ul><p>Skicka förfrågningar till: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s8h:'8. Automatiserat beslutsfattande',
+  s8b:'<p>NCE Permit AI producerar AI-assisterade utkast till tillståndsdokument. <strong>Dessa utkast utgör inte automatiserade rättsligt bindande beslut</strong> i den mening som avses i GDPR art. 22. Allt AI-genererat innehåll kräver expertgranskning innan officiell användning.</p>',
+  s9h:'9. Tillsynsmyndighet',
+  s9b:'<p><strong>Dataombudsmannens byrå (Finland)</strong><br>PB 800, 00531 Helsingfors<br>Tel: +358 29 566 6700<br><a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a> &nbsp;|&nbsp; <a href="mailto:tietosuoja@om.fi">tietosuoja@om.fi</a></p>',
+  s10h:'10. Skyldighet att tillhandahålla uppgifter',
+  s10b:'<p>De uppgifter som krävs för att generera tillståndsdokumentutkast (sökandens namn, kommun, projekttyp, fastighetsbeteckning) är nödvändiga för att tjänsten ska fungera. IP-adressloggning är en automatisk teknisk åtgärd.</p>',
+},
+DA: {
+  nav_back:  '← Tilbage til applikationen',
+  updated:   'Opdateret: 4. juni 2026 | GDPR art. 13–14',
+  notice:    "Denne meddelelse beskriver, hvordan NCE Permit AI (Kansallisvaranto Oy) behandler personoplysninger i overensstemmelse med EU's generelle databeskyttelsesforordning (GDPR, 2016/679).",
+  s1h:'1. Dataansvarlig',
+  s1b:'<p><strong>Kansallisvaranto Oy</strong><br>CVR: 3354898-5<br>E-mail: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>Hjemmeside: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a></p><p>Databeskyttelseshenvendelser: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s2h:'2. Formål og retsgrundlag',
+  s2b:'<table><tr><th>Formål</th><th>Retsgrundlag (GDPR art. 6)</th></tr><tr><td>Generering af tilladelsesdokumentudkast</td><td>6(1)(b) Kontrakt</td></tr><tr><td>Teknisk servicelevering og vedligeholdelse</td><td>6(1)(f) Legitim interesse</td></tr><tr><td>Fakturering og regnskab</td><td>6(1)(c) Retlig forpligtelse</td></tr><tr><td>Serviceudvikling</td><td>6(1)(f) Legitim interesse</td></tr></table>',
+  s3h:'3. Behandlede personoplysninger',
+  s3b:'<ul><li>Ansøgerens navn og virksomhedsnavn</li><li>CVR-nummer</li><li>Stedsdata: kommune, adresse, ejendomsidentifikator</li><li>Projektdata: effekt (MW), projekttype, tilladelsestrin</li><li>IP-adresse (automatisk teknisk logning)</li><li>E-mailadresse (kundekommunikation)</li><li>Fakturerings- og betalingsoplysninger</li></ul>',
+  s4h:'4. Modtagere af oplysninger',
+  s4b:'<table><tr><th>Part</th><th>Rolle</th><th>Placering</th><th>Sikkerhedsforanstaltning</th></tr><tr><td>Anthropic Inc.</td><td>Claude API (AI)</td><td>USA</td><td>SCC (Kommissionens afgørelse 2021/914)</td></tr><tr><td>Render Services Inc.</td><td>Hosting</td><td>Frankfurt, EU</td><td>EU-område</td></tr><tr><td>Google LLC</td><td>Google Workspace</td><td>EU / USA</td><td>SCC</td></tr><tr><td>Landinspektørvæsenet (MML)</td><td>INSPIRE API</td><td>Finland, EU</td><td>EU-område</td></tr></table>',
+  s5h:'5. Internationale dataoverførsler',
+  s5b:'<p>Anthropic Inc. (USA) og Google LLC (USA) behandler oplysninger uden for EU/EØS. Overførsler er baseret på standardkontraktbestemmelser (SCC) godkendt af Europa-Kommissionen (gennemførelsesafgørelse 2021/914).</p><p>Render Services Inc. (Frankfurt) behandler oplysninger inden for EU &mdash; ingen overførsler uden for EU/EØS.</p>',
+  s6h:'6. Opbevaringsperioder',
+  s6b:'<table><tr><th>Oplysning</th><th>Opbevaringsperiode</th></tr><tr><td>Genererede PDF-dokumenter</td><td>Gemmes ikke på server</td></tr><tr><td>E-mailkorrespondance</td><td>12 måneder</td></tr><tr><td>IP-adresser (logdata)</td><td>Højst 24 timer</td></tr><tr><td>Faktureringsoplysninger</td><td>7 år (bogføringsloven)</td></tr></table>',
+  s7h:'7. Dine rettigheder (GDPR art. 15–22)',
+  s7b:'<ul><li><strong>Art. 15 &mdash; Ret til indsigt:</strong> Du kan anmode om en kopi af dine personoplysninger.</li><li><strong>Art. 16 &mdash; Ret til berigtigelse:</strong> Du kan anmode om rettelse af unøjagtige oplysninger.</li><li><strong>Art. 17 &mdash; Ret til sletning:</strong> Du kan anmode om sletning, når der ikke længere er grundlag for behandling.</li><li><strong>Art. 18 &mdash; Ret til begrænsning:</strong> Du kan anmode om begrænsning af behandlingen i visse situationer.</li><li><strong>Art. 20 &mdash; Ret til dataportabilitet:</strong> Du kan anmode om dine oplysninger i maskinlæsbart format.</li><li><strong>Art. 21 &mdash; Ret til indsigelse:</strong> Du kan gøre indsigelse mod behandling baseret på legitim interesse.</li><li><strong>Tilbagetrækning af samtykke:</strong> Hvis behandling er baseret på samtykke, kan du til enhver tid trække det tilbage.</li><li><strong>Art. 77 &mdash; Ret til at klage:</strong> Du kan indgive en klage til tilsynsmyndigheden.</li></ul><p>Send anmodninger til: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s8h:'8. Automatiseret beslutningstagning',
+  s8b:'<p>NCE Permit AI producerer AI-assisterede udkast til tilladelsesdokumenter. <strong>Disse udkast udgør ikke automatiserede retligt bindende afgørelser</strong> i den forstand, der er omhandlet i GDPR art. 22. Alt AI-genereret indhold kræver ekspertgennemgang inden officiel brug.</p>',
+  s9h:'9. Tilsynsmyndighed',
+  s9b:'<p><strong>Datatilsynet (Finland)</strong><br>Postboks 800, 00531 Helsinki<br>Tlf: +358 29 566 6700<br><a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a> &nbsp;|&nbsp; <a href="mailto:tietosuoja@om.fi">tietosuoja@om.fi</a></p>',
+  s10h:'10. Pligt til at give oplysninger',
+  s10b:'<p>De oplysninger, der kræves for at generere udkast til tilladelsesdokumenter (ansøgerens navn, kommune, projekttype, ejendomsidentifikator), er nødvendige for, at tjenesten fungerer. IP-adresselogning er en automatisk teknisk foranstaltning.</p>',
+},
+NO: {
+  nav_back:  '← Tilbake til applikasjonen',
+  updated:   'Oppdatert: 4. juni 2026 | GDPR art. 13–14',
+  notice:    'Denne erklæringen beskriver hvordan NCE Permit AI (Kansallisvaranto Oy) behandler personopplysninger i samsvar med EUs personvernforordning (GDPR, 2016/679).',
+  s1h:'1. Behandlingsansvarlig',
+  s1b:'<p><strong>Kansallisvaranto Oy</strong><br>Org.nr: 3354898-5<br>E-post: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>Nettsted: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a></p><p>Personvernhenvendelser: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s2h:'2. Formål og rettslig grunnlag',
+  s2b:'<table><tr><th>Formål</th><th>Rettslig grunnlag (GDPR art. 6)</th></tr><tr><td>Generering av tillatelsesdokumentutkast</td><td>6(1)(b) Kontrakt</td></tr><tr><td>Teknisk tjenesteleveranse og vedlikehold</td><td>6(1)(f) Berettiget interesse</td></tr><tr><td>Fakturering og regnskap</td><td>6(1)(c) Rettslig forpliktelse</td></tr><tr><td>Tjenesteutvikling</td><td>6(1)(f) Berettiget interesse</td></tr></table>',
+  s3h:'3. Behandlede personopplysninger',
+  s3b:'<ul><li>Søkerens navn og bedriftsnavn</li><li>Organisasjonsnummer</li><li>Stedsdata: kommune, adresse, eiendomsidentifikator</li><li>Prosjektdata: effekt (MW), prosjekttype, tillatelsestrinn</li><li>IP-adresse (automatisk teknisk logging)</li><li>E-postadresse (kundekommunikasjon)</li><li>Fakturerings- og betalingsinformasjon</li></ul>',
+  s4h:'4. Mottakere av opplysninger',
+  s4b:'<table><tr><th>Part</th><th>Rolle</th><th>Plassering</th><th>Sikkerhetstiltak</th></tr><tr><td>Anthropic Inc.</td><td>Claude API (AI)</td><td>USA</td><td>SCC (Kommisjonens beslutning 2021/914)</td></tr><tr><td>Render Services Inc.</td><td>Hosting</td><td>Frankfurt, EU</td><td>EU-område</td></tr><tr><td>Google LLC</td><td>Google Workspace</td><td>EU / USA</td><td>SCC</td></tr><tr><td>Maanmittauslaitos (MML)</td><td>INSPIRE API</td><td>Finland, EU</td><td>EU-område</td></tr></table>',
+  s5h:'5. Internasjonale dataoverføringer',
+  s5b:'<p>Anthropic Inc. (USA) og Google LLC (USA) behandler opplysninger utenfor EU/EØS. Overføringer er basert på standardkontraktsbestemmelser (SCC) godkjent av EU-kommisjonen (gjennomføringsbeslutning 2021/914).</p><p>Render Services Inc. (Frankfurt) behandler opplysninger innenfor EU &mdash; ingen overføringer utenfor EU/EØS.</p>',
+  s6h:'6. Oppbevaringsperioder',
+  s6b:'<table><tr><th>Opplysning</th><th>Oppbevaringsperiode</th></tr><tr><td>Genererte PDF-dokumenter</td><td>Lagres ikke på server</td></tr><tr><td>E-postkommunikasjon</td><td>12 måneder</td></tr><tr><td>IP-adresser (loggdata)</td><td>Maksimalt 24 timer</td></tr><tr><td>Faktureringsopplysninger</td><td>7 år (regnskapsloven)</td></tr></table>',
+  s7h:'7. Dine rettigheter (GDPR art. 15–22)',
+  s7b:'<ul><li><strong>Art. 15 &mdash; Rett til innsyn:</strong> Du kan be om en kopi av dine personopplysninger.</li><li><strong>Art. 16 &mdash; Rett til retting:</strong> Du kan be om retting av unøyaktige opplysninger.</li><li><strong>Art. 17 &mdash; Rett til sletting:</strong> Du kan be om sletting når det ikke lenger er grunnlag for behandling.</li><li><strong>Art. 18 &mdash; Rett til begrensning:</strong> Du kan be om begrensning av behandlingen i visse situasjoner.</li><li><strong>Art. 20 &mdash; Rett til dataportabilitet:</strong> Du kan be om dine opplysninger i maskinlesbart format.</li><li><strong>Art. 21 &mdash; Rett til å protestere:</strong> Du kan protestere mot behandling basert på berettiget interesse.</li><li><strong>Tilbaketrekning av samtykke:</strong> Hvis behandling er basert på samtykke, kan du trekke det tilbake når som helst.</li><li><strong>Art. 77 &mdash; Rett til å klage:</strong> Du kan sende inn en klage til tilsynsmyndigheten.</li></ul><p>Send forespørsler til: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s8h:'8. Automatisert beslutningstaking',
+  s8b:'<p>NCE Permit AI produserer AI-assisterte utkast til tillatelsesdokumenter. <strong>Disse utkastene utgjør ikke automatiserte rettslig bindende avgjørelser</strong> i den forstand som er omtalt i GDPR art. 22. Alt AI-generert innhold krever ekspertgjennomgang før offisiell bruk.</p>',
+  s9h:'9. Tilsynsmyndighet',
+  s9b:'<p><strong>Datatilsynet (Finland)</strong><br>Postboks 800, 00531 Helsinki<br>Tlf: +358 29 566 6700<br><a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a> &nbsp;|&nbsp; <a href="mailto:tietosuoja@om.fi">tietosuoja@om.fi</a></p>',
+  s10h:'10. Plikt til å gi opplysninger',
+  s10b:'<p>Opplysningene som kreves for å generere utkast til tillatelsesdokumenter (søkerens navn, kommune, prosjekttype, eiendomsidentifikator), er nødvendige for at tjenesten skal fungere. IP-adresselogging er et automatisk teknisk tiltak.</p>',
+},
+PL: {
+  nav_back:  '← Powrót do aplikacji',
+  updated:   'Aktualizacja: 4 czerwca 2026 | RODO art. 13–14',
+  notice:    'Niniejsza informacja opisuje, w jaki sposób NCE Permit AI (Kansallisvaranto Oy) przetwarza dane osobowe zgodnie z ogólnym rozporządzeniem UE o ochronie danych (RODO, 2016/679).',
+  s1h:'1. Administrator danych',
+  s1b:'<p><strong>Kansallisvaranto Oy</strong><br>NIP: 3354898-5<br>E-mail: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>Strona: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a></p><p>Zapytania dotyczące ochrony danych: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s2h:'2. Cele i podstawa prawna',
+  s2b:'<table><tr><th>Cel</th><th>Podstawa prawna (RODO art. 6)</th></tr><tr><td>Generowanie projektów dokumentów zezwolenia</td><td>6(1)(b) Umowa</td></tr><tr><td>Świadczenie i utrzymanie usług technicznych</td><td>6(1)(f) Uzasadniony interes</td></tr><tr><td>Fakturowanie i księgowość</td><td>6(1)(c) Obowiązek prawny</td></tr><tr><td>Rozwój usług</td><td>6(1)(f) Uzasadniony interes</td></tr></table>',
+  s3h:'3. Przetwarzane dane osobowe',
+  s3b:'<ul><li>Imię i nazwisko wnioskodawcy oraz nazwa firmy</li><li>Numer NIP/KRS</li><li>Dane lokalizacyjne: gmina, adres, identyfikator nieruchomości</li><li>Dane projektu: moc (MW), typ projektu, faza zezwolenia</li><li>Adres IP (automatyczne rejestrowanie techniczne)</li><li>Adres e-mail (komunikacja z klientem)</li><li>Dane do fakturowania i płatności</li></ul>',
+  s4h:'4. Odbiorcy danych',
+  s4b:'<table><tr><th>Podmiot</th><th>Rola</th><th>Lokalizacja</th><th>Zabezpieczenie</th></tr><tr><td>Anthropic Inc.</td><td>Claude API (AI)</td><td>USA</td><td>SCC (decyzja Komisji 2021/914)</td></tr><tr><td>Render Services Inc.</td><td>Hosting</td><td>Frankfurt, UE</td><td>Terytorium UE</td></tr><tr><td>Google LLC</td><td>Google Workspace</td><td>UE / USA</td><td>SCC</td></tr><tr><td>Maanmittauslaitos (MML)</td><td>INSPIRE API</td><td>Finlandia, UE</td><td>Terytorium UE</td></tr></table>',
+  s5h:'5. Międzynarodowe przekazywanie danych',
+  s5b:'<p>Anthropic Inc. (USA) i Google LLC (USA) przetwarzają dane poza UE/EOG. Przekazywanie odbywa się na podstawie standardowych klauzul umownych (SCC) zatwierdzonych przez Komisję Europejską (decyzja wykonawcza 2021/914).</p><p>Render Services Inc. (Frankfurt) przetwarza dane w UE &mdash; brak przekazywania poza UE/EOG.</p>',
+  s6h:'6. Okresy przechowywania',
+  s6b:'<table><tr><th>Dane</th><th>Okres przechowywania</th></tr><tr><td>Wygenerowane dokumenty PDF</td><td>Nie przechowywane na serwerze</td></tr><tr><td>Korespondencja e-mail</td><td>12 miesięcy</td></tr><tr><td>Adresy IP (dane dziennika)</td><td>Maksymalnie 24 godziny</td></tr><tr><td>Dane do fakturowania</td><td>7 lat (ustawa o rachunkowości)</td></tr></table>',
+  s7h:'7. Prawa podmiotu danych (RODO art. 15–22)',
+  s7b:'<ul><li><strong>Art. 15 &mdash; Prawo dostępu:</strong> Możesz zażądać kopii swoich danych osobowych.</li><li><strong>Art. 16 &mdash; Prawo do sprostowania:</strong> Możesz zażądać poprawienia nieprawidłowych danych.</li><li><strong>Art. 17 &mdash; Prawo do usunięcia:</strong> Możesz zażądać usunięcia danych, gdy nie ma już podstawy do ich przetwarzania.</li><li><strong>Art. 18 &mdash; Prawo do ograniczenia:</strong> Możesz zażądać ograniczenia przetwarzania w określonych sytuacjach.</li><li><strong>Art. 20 &mdash; Prawo do przenoszenia danych:</strong> Możesz zażądać swoich danych w formacie maszynowym.</li><li><strong>Art. 21 &mdash; Prawo do sprzeciwu:</strong> Możesz wnieść sprzeciw wobec przetwarzania opartego na uzasadnionym interesie.</li><li><strong>Wycofanie zgody:</strong> Jeśli przetwarzanie opiera się na zgodzie, możesz ją wycofać w dowolnym momencie.</li><li><strong>Art. 77 &mdash; Prawo do skargi:</strong> Możesz złożyć skargę do organu nadzorczego.</li></ul><p>Wnioski wysyłaj na: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s8h:'8. Zautomatyzowane podejmowanie decyzji',
+  s8b:'<p>NCE Permit AI tworzy wspomagane przez AI projekty dokumentów zezwolenia. <strong>Projekty te nie stanowią zautomatyzowanych prawnie wiążących decyzji</strong> w rozumieniu art. 22 RODO. Wszelkie treści AI wymagają weryfikacji eksperta przed oficjalnym użyciem.</p>',
+  s9h:'9. Organ nadzorczy',
+  s9b:'<p><strong>Urząd Rzecznika Ochrony Danych (Finlandia)</strong><br>Skrytka pocztowa 800, 00531 Helsinki<br>Tel: +358 29 566 6700<br><a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a> &nbsp;|&nbsp; <a href="mailto:tietosuoja@om.fi">tietosuoja@om.fi</a></p>',
+  s10h:'10. Obowiązek podania danych',
+  s10b:'<p>Dane wymagane do wygenerowania projektów dokumentów zezwolenia (imię wnioskodawcy, gmina, typ projektu, identyfikator nieruchomości) są niezbędne do funkcjonowania usługi. Rejestrowanie adresów IP jest automatycznym środkiem technicznym.</p>',
+},
+DE: {
+  nav_back:  '← Zurück zur Anwendung',
+  updated:   'Aktualisiert: 4. Juni 2026 | DSGVO Art. 13–14',
+  notice:    'Diese Erklärung beschreibt, wie NCE Permit AI (Kansallisvaranto Oy) personenbezogene Daten gemäß der Datenschutz-Grundverordnung der EU (DSGVO, 2016/679) verarbeitet.',
+  s1h:'1. Verantwortlicher',
+  s1b:'<p><strong>Kansallisvaranto Oy</strong><br>Unternehmens-ID: 3354898-5<br>E-Mail: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a><br>Webseite: <a href="https://ncenergy.fi" target="_blank">ncenergy.fi</a></p><p>Datenschutzanfragen: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s2h:'2. Zwecke und Rechtsgrundlage',
+  s2b:'<table><tr><th>Zweck</th><th>Rechtsgrundlage (DSGVO Art. 6)</th></tr><tr><td>Erstellung von Genehmigungsdokumententwürfen</td><td>6(1)(b) Vertrag</td></tr><tr><td>Technische Dienstleistungserbringung und Wartung</td><td>6(1)(f) Berechtigte Interessen</td></tr><tr><td>Rechnungsstellung und Buchhaltung</td><td>6(1)(c) Rechtliche Verpflichtung</td></tr><tr><td>Serviceentwicklung</td><td>6(1)(f) Berechtigte Interessen</td></tr></table>',
+  s3h:'3. Verarbeitete personenbezogene Daten',
+  s3b:'<ul><li>Name des Antragstellers und Unternehmensname</li><li>Unternehmens-ID / Steuernummer</li><li>Standortdaten: Gemeinde, Adresse, Grundstücksidentifikator</li><li>Projektdaten: Leistung (MW), Projekttyp, Genehmigungsphase</li><li>IP-Adresse (automatische technische Protokollierung)</li><li>E-Mail-Adresse (Kundenkommunikation)</li><li>Rechnungs- und Zahlungsinformationen</li></ul>',
+  s4h:'4. Empfänger von Daten',
+  s4b:'<table><tr><th>Partei</th><th>Rolle</th><th>Standort</th><th>Schutzmaßnahme</th></tr><tr><td>Anthropic Inc.</td><td>Claude API (KI)</td><td>USA</td><td>SCC (Kommissionsbeschluss 2021/914)</td></tr><tr><td>Render Services Inc.</td><td>Hosting</td><td>Frankfurt, EU</td><td>EU-Gebiet</td></tr><tr><td>Google LLC</td><td>Google Workspace</td><td>EU / USA</td><td>SCC</td></tr><tr><td>Maanmittauslaitos (MML)</td><td>INSPIRE API</td><td>Finnland, EU</td><td>EU-Gebiet</td></tr></table>',
+  s5h:'5. Internationale Datentransfers',
+  s5b:'<p>Anthropic Inc. (USA) und Google LLC (USA) verarbeiten Daten außerhalb der EU/des EWR. Transfers basieren auf Standardvertragsklauseln (SCC), genehmigt von der Europäischen Kommission (Durchführungsbeschluss 2021/914).</p><p>Render Services Inc. (Frankfurt) verarbeitet Daten innerhalb der EU &mdash; keine Transfers außerhalb der EU/des EWR.</p>',
+  s6h:'6. Aufbewahrungsfristen',
+  s6b:'<table><tr><th>Daten</th><th>Aufbewahrungsfrist</th></tr><tr><td>Generierte PDF-Dokumente</td><td>Nicht auf dem Server gespeichert</td></tr><tr><td>E-Mail-Kommunikation</td><td>12 Monate</td></tr><tr><td>IP-Adressen (Protokolldaten)</td><td>Maximal 24 Stunden</td></tr><tr><td>Abrechnungsdaten</td><td>7 Jahre (Buchführungsgesetz)</td></tr></table>',
+  s7h:'7. Ihre Rechte (DSGVO Art. 15–22)',
+  s7b:'<ul><li><strong>Art. 15 &mdash; Auskunftsrecht:</strong> Sie können eine Kopie Ihrer personenbezogenen Daten anfordern.</li><li><strong>Art. 16 &mdash; Recht auf Berichtigung:</strong> Sie können die Korrektur unrichtiger Daten verlangen.</li><li><strong>Art. 17 &mdash; Recht auf Löschung:</strong> Sie können die Löschung beantragen, wenn keine Verarbeitungsgrundlage mehr besteht.</li><li><strong>Art. 18 &mdash; Recht auf Einschränkung:</strong> Sie können die Einschränkung der Verarbeitung verlangen.</li><li><strong>Art. 20 &mdash; Recht auf Datenübertragbarkeit:</strong> Sie können Ihre Daten in maschinenlesbarem Format anfordern.</li><li><strong>Art. 21 &mdash; Widerspruchsrecht:</strong> Sie können der Verarbeitung auf Basis berechtigter Interessen widersprechen.</li><li><strong>Widerruf der Einwilligung:</strong> Wenn die Verarbeitung auf einer Einwilligung beruht, können Sie diese jederzeit widerrufen.</li><li><strong>Art. 77 &mdash; Beschwerderecht:</strong> Sie können eine Beschwerde bei der Aufsichtsbehörde einreichen.</li></ul><p>Anfragen zu Ihren Rechten senden Sie an: <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a></p>',
+  s8h:'8. Automatisierte Entscheidungsfindung',
+  s8b:'<p>NCE Permit AI erstellt KI-gestützte Entwürfe für Genehmigungsdokumente. <strong>Diese Entwürfe stellen keine automatisierten rechtsverbindlichen Entscheidungen</strong> im Sinne von Art. 22 DSGVO dar. Alle KI-generierten Inhalte bedürfen einer Expertenprüfung vor der offiziellen Verwendung.</p>',
+  s9h:'9. Aufsichtsbehörde',
+  s9b:'<p><strong>Büro des Datenschutzbeauftragten (Finnland)</strong><br>Postfach 800, 00531 Helsinki<br>Tel: +358 29 566 6700<br><a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a> &nbsp;|&nbsp; <a href="mailto:tietosuoja@om.fi">tietosuoja@om.fi</a></p>',
+  s10h:'10. Pflicht zur Datenangabe',
+  s10b:'<p>Die zur Erstellung von Genehmigungsdokumententwürfen erforderlichen Angaben (Name des Antragstellers, Gemeinde, Projekttyp, Grundstücksidentifikator) sind für die Funktionsfähigkeit des Dienstes notwendig. Die IP-Adressprotokollierung ist eine automatische technische Maßnahme.</p>',
+},
+};
+
+function render(lang) {
+  const d = T[lang] || T.FI;
+  document.getElementById('pageTitle').textContent   = TITLES[lang] || TITLES.FI;
+  document.getElementById('navBack').textContent     = d.nav_back;
+  document.getElementById('docUpdated').textContent  = d.updated;
+  document.getElementById('introNotice').textContent = d.notice;
+  ['s1h','s2h','s3h','s4h','s5h','s6h','s7h','s8h','s9h','s10h'].forEach(k => {
+    document.getElementById(k).textContent = d[k];
+  });
+  ['s1b','s2b','s3b','s4b','s5b','s6b','s7b','s8b','s9b','s10b'].forEach(k => {
+    document.getElementById(k).innerHTML = d[k];
+  });
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === lang)
+  );
+  try { localStorage.setItem('nce_lang', lang); } catch(_) {}
+}
+
+(function buildSwitcher() {
+  const el = document.getElementById('langSwitcher');
+  el.innerHTML = LANGS.map(l =>
+    '<button class="lang-btn" data-lang="' + l + '" onclick="render(\'' + l + '\')">' + FLAGS[l] + ' ' + l + '</button>'
+  ).join('');
+})();
+
+const initLang = (function() {
+  try { var s = localStorage.getItem('nce_lang'); if (s && T[s]) return s; } catch(_) {}
+  return 'FI';
+})();
+render(initLang);
+</script>
 </body>
 </html>

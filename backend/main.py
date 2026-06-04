@@ -174,6 +174,11 @@ async def privacy():
     return FileResponse(os.path.join(_STATIC_DIR, "privacy.html"))
 
 
+@app.get("/tietosuoja")
+async def tietosuoja():
+    return FileResponse(os.path.join(_STATIC_DIR, "privacy.html"))
+
+
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "mml_key_set": bool(MML_API_KEY)}
