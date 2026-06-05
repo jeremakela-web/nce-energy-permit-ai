@@ -58,6 +58,7 @@ COUNTRY_LANG: dict[str, str] = {
     "DA": "da",
     "NO": "no",
     "PL": "pl",
+    "DE": "de",
 }
 
 # ── Valmiit lähdekohtaiset URL-konfiguraatiot ────────────────────────────────
@@ -232,6 +233,7 @@ def ingest_web(
         new_docs:  list[str]  = []
         new_ids:   list[str]  = []
         new_metas: list[dict] = []
+        pending_ids: set[str] = set()
 
         for start_url in urls:
             domain   = urlparse(start_url).netloc
@@ -265,8 +267,9 @@ def ingest_web(
 
                 for i, chunk in enumerate(chunks):
                     id_ = _safe_id(country, url, i)
-                    if id_ in existing_ids:
+                    if id_ in existing_ids or id_ in pending_ids:
                         continue
+                    pending_ids.add(id_)
                     new_docs.append(chunk)
                     new_ids.append(id_)
                     new_metas.append({
@@ -319,7 +322,7 @@ def ingest_web(
     print(f"\n{'─'*55}")
     print("Yhteenveto (web-indeksointi):")
     grand = 0
-    for c in ["FI", "SE", "DA", "NO", "PL"]:
+    for c in ["FI", "SE", "DA", "NO", "PL", "DE"]:
         n = totals.get(c, 0)
         if n:
             print(f"  {c}: {n} uutta chunkkia")
