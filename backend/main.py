@@ -390,7 +390,9 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
     allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR",
                "smr_bess", "vesivoima", "hybridi", "business_finland",
                "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
-               "ymparistolupa", "datakeskus"}
+               "ymparistolupa", "datakeskus",
+               "smr_se", "smr_no", "smr_da", "smr_de",
+               "egs", "offshore_wind"}
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
                             detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
@@ -1263,8 +1265,8 @@ async def parse_ifc(
             status_code=400,
             detail=f"project_type oltava: {', '.join(sorted(allowed_project_types))}",
         )
-    if country not in {"FI", "SE", "DA", "NO", "PL"}:
-        raise HTTPException(status_code=400, detail="country oltava: FI, SE, DA, NO, PL")
+    if country not in {"FI", "SE", "DA", "NO", "PL", "DE"}:
+        raise HTTPException(status_code=400, detail="country oltava: FI, SE, DA, NO, PL, DE")
 
     ifc_data = _extract_ifc_data(content)
     permit_map = _map_to_permit(ifc_data, project_type=project_type, country=country)

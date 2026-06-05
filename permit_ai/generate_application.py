@@ -1522,8 +1522,35 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Vesilupa (padotus, rakentaminen)", "Wody Polskie (PGWWP)",               "Prawo wodne (Ustawa z 20.07.2017)"),
             ("Ympäristölupa",                   "RDOŚ",                                "Prawo ochrony środowiska (Ustawa z 27.04.2001)"),
             ("YVA-menettely (tarvitt.)",        "RDOŚ / GDOŚ",                         "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
-            ("Pozwolenie na budowę",                    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na budowę",            "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
             ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
+            ("Maankäyttösopimus",               "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "datakeskus": [
+            ("Pozwolenie na budowę",            "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Ympäristölupa (tarvitt.)",        "Starosta / RDOŚ",                     "Prawo ochrony środowiska (Ustawa z 27.04.2001)"),
+            ("Verkkoliityntäsopimus",           "URE (Urząd Regulacji Energetyki)",    "Ustawa Prawo energetyczne (1997)"),
+            ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "teollisuus": [
+            ("Pozwolenie na budowę",            "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Pozwolenie na emisję",            "Starosta / Marszałek Województwa",    "Prawo ochrony środowiska (Ustawa z 27.04.2001)"),
+            ("YVA-menettely (tarvitt.)",        "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Maankäyttösopimus / kaavoitus",   "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "asuinrakennus": [
+            ("Pozwolenie na budowę",            "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Warunki zabudowy",                "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+            ("Naapurikuuleminen",               "Gmina / hakija",                      "Prawo budowlane (Ustawa z 7.07.1994)"),
+        ],
+        "maatalous": [
+            ("Pozwolenie na budowę",            "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Zgłoszenie robót budowlanych",    "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994) art. 29"),
+            ("Maankäyttösopimus",               "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+        ],
+        "liikerakennus": [
+            ("Pozwolenie na budowę",            "Starostwo Powiatowe",                 "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Warunki zabudowy",                "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
             ("Maankäyttösopimus",               "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
         ],
     },
@@ -1582,6 +1609,33 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Vesilupa (merialue)",               "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
             ("Verkkoliityntäsopimus",             "Svenska kraftnät",                          "Ellagen (SFS 1997:857)"),
         ],
+        "datakeskus": [
+            ("Bygglov",                           "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Miljöprövning (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 9"),
+            ("Verkkoliityntäsopimus",             "Svenska kraftnät / lokalt elnätsbolag",     "Ellagen (SFS 1997:857)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "teollisuus": [
+            ("Bygglov",                           "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Miljötillstånd (tarvitt.)",         "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808) kap. 9"),
+            ("YVA-menettely (tarvitt.)",          "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "asuinrakennus": [
+            ("Bygglov",                           "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Detaljplan / planbesked",           "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Naapurikuuleminen / grannemedgivande", "Kommunen / hakija",                     "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "maatalous": [
+            ("Bygglov (tarvitt.)",                "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Miljöprövning (karjatalous)",       "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 9"),
+            ("Maankäyttösopimus",                 "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
+        "liikerakennus": [
+            ("Bygglov",                           "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Detaljplan / planbesked",           "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Maankäyttösopimus",                 "Kommunen",                                  "Plan- och bygglagen (SFS 2010:900)"),
+        ],
     },
     # ── Danmark ──────────────────────────────────────────────────────────────
     "DA": {
@@ -1638,6 +1692,33 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Vesilupa (merialue)",               "Kystdirektoratet",                          "Kystbeskyttelsesloven (LBK nr. 705/2022)"),
             ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
         ],
+        "datakeskus": [
+            ("Byggetilladelse",                   "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Miljøgodkendelse (tarvitt.)",       "Kommunen / Miljøstyrelsen",                 "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
+            ("Verkkoliityntäsopimus",             "Energinet",                                 "Elforsyningsloven (LBK nr. 119/2020)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+        ],
+        "teollisuus": [
+            ("Byggetilladelse",                   "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Miljøgodkendelse",                  "Kommunen / Miljøstyrelsen",                 "Miljøbeskyttelsesloven (LBK nr. 1218/2019)"),
+            ("YVA-menettely (tarvitt.)",          "Miljøstyrelsen",                            "Miljøvurderingsloven (LBK nr. 1976/2021)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+        ],
+        "asuinrakennus": [
+            ("Byggetilladelse",                   "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Lokalplan",                         "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+            ("Naapurikuuleminen / nabohøring",    "Kommunen / hakija",                        "Byggeloven (LBK nr. 1178/2023)"),
+        ],
+        "maatalous": [
+            ("Byggetilladelse",                   "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Miljøgodkendelse (husdyr)",         "Kommunen",                                  "Lov om miljøgodkendelse m.v. af husdyrbrug (LBK nr. 442/2022)"),
+            ("Lokalplan",                         "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+        ],
+        "liikerakennus": [
+            ("Byggetilladelse",                   "Kommunen (teknik og miljø)",                "Byggeloven (LBK nr. 1178/2023)"),
+            ("Lokalplan",                         "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+            ("Maankäyttösopimus",                 "Kommunen",                                  "Planloven (LBK nr. 1157/2021)"),
+        ],
     },
     # ── Norge ─────────────────────────────────────────────────────────────────
     "NO": {
@@ -1693,6 +1774,109 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Ympäristölupa",                     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
             ("Vesilupa (merialue)",               "Kystverket",                                 "Havne- og farvannsloven (LOV-2019-06-21-70)"),
             ("Verkkoliityntäsopimus",             "Statnett",                                   "Energiloven (LOV-1990-06-29-50)"),
+        ],
+        "datakeskus": [
+            ("Byggetillatelse",                   "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Utslippstillatelse (tarvitt.)",     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("Verkkoliityntäsopimus",             "Statnett / lokalt nettselskap",              "Energiloven (LOV-1990-06-29-50)"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "teollisuus": [
+            ("Byggetillatelse",                   "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Utslippstillatelse",                "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("YVA-menettely (tarvitt.)",          "Statsforvalteren / Miljødirektoratet",        "Plan- og bygningsloven kap. 14"),
+            ("Maankäyttösopimus / kaavoitus",     "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "asuinrakennus": [
+            ("Byggetillatelse",                   "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Reguleringsplan",                   "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Naapurikuuleminen / nabovarsel",    "Kommunen / hakija",                         "Plan- og bygningsloven (LOV-2008-06-27-71) § 21-3"),
+        ],
+        "maatalous": [
+            ("Byggetillatelse",                   "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Utslippstillatelse (husdyr)",       "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("Maankäyttösopimus",                 "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "liikerakennus": [
+            ("Byggetillatelse",                   "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Reguleringsplan",                   "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Maankäyttösopimus",                 "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+    },
+    # ── Deutschland ──────────────────────────────────────────────────────────────
+    "DE": {
+        "SMR": [
+            ("Standortgenehmigung / AtG-Genehmigung", "BMUV / Länderaufsichtsbehörde",         "Atomgesetz (AtG, BGBl. I S. 1553/1959)"),
+            ("UVP-Prüfung",                       "Genehmigungsbehörde (Länder)",               "UVPG (Gesetz über die Umweltverträglichkeitsprüfung)"),
+            ("Baugenehmigung (ydinlaitos)",        "Landesbaubehörde",                          "Landesbauordnung (LBauO, je nach Bundesland)"),
+            ("Wasserrechtliche Erlaubnis",         "Untere Wasserbehörde (Land)",               "Wasserhaushaltsgesetz (WHG, § 8)"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB, § 1)"),
+        ],
+        "BESS": [
+            ("Baugenehmigung",                     "Untere Baubehörde (Landkreis/Stadt)",       "Landesbauordnung (LBauO)"),
+            ("BImSchG-Genehmigung (tarvitt.)",     "Immissionsschutzbehörde (Land)",            "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
+            ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB) / VNB",    "Energiewirtschaftsgesetz (EnWG, § 17)"),
+            ("UVP (tarvitt.)",                     "Genehmigungsbehörde",                       "UVPG"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
+        ],
+        "tuulivoima_maa": [
+            ("BImSchG-Genehmigung",               "Immissionsschutzbehörde (Land)",             "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
+            ("UVP-Prüfung",                        "Genehmigungsbehörde",                       "UVPG"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
+            ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB)",           "Energiewirtschaftsgesetz (EnWG)"),
+            ("Artenschutzrechtliche Prüfung",      "Untere Naturschutzbehörde",                 "Bundesnaturschutzgesetz (BNatSchG, § 44)"),
+        ],
+        "aurinkovoima": [
+            ("Baugenehmigung (tarvitt.)",          "Untere Baubehörde",                         "Landesbauordnung (LBauO)"),
+            ("Verkkoliityntäsopimus",              "Verteilnetzbetreiber (VNB)",                "Energiewirtschaftsgesetz (EnWG, § 17)"),
+            ("Bauleitplanung (tarvitt.)",          "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
+        ],
+        "vesivoima": [
+            ("Wasserrechtliche Erlaubnis / Bewilligung", "Untere Wasserbehörde (Land)",         "Wasserhaushaltsgesetz (WHG, § 8 ff.)"),
+            ("BImSchG-Genehmigung (tarvitt.)",     "Immissionsschutzbehörde",                   "Bundes-Immissionsschutzgesetz (BImSchG)"),
+            ("UVP-Prüfung",                        "Genehmigungsbehörde",                       "UVPG"),
+            ("Baugenehmigung",                     "Untere Baubehörde",                         "Landesbauordnung (LBauO)"),
+            ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB)",           "Energiewirtschaftsgesetz (EnWG)"),
+        ],
+        "datakeskus": [
+            ("Baugenehmigung",                     "Untere Baubehörde (Landkreis/Stadt)",       "Landesbauordnung (LBauO)"),
+            ("BImSchG-Genehmigung (tarvitt.)",     "Immissionsschutzbehörde",                   "Bundes-Immissionsschutzgesetz (BImSchG)"),
+            ("Verkkoliityntäsopimus",              "Verteilnetzbetreiber (VNB) / ÜNB",         "Energiewirtschaftsgesetz (EnWG, § 17)"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
+        ],
+        "teollisuus": [
+            ("Baugenehmigung",                     "Untere Baubehörde",                         "Landesbauordnung (LBauO)"),
+            ("BImSchG-Genehmigung",               "Immissionsschutzbehörde (Land)",             "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
+            ("UVP (tarvitt.)",                     "Genehmigungsbehörde",                       "UVPG"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
+        ],
+        "asuinrakennus": [
+            ("Baugenehmigung",                     "Untere Baubehörde (Landkreis/Stadt)",       "Landesbauordnung (LBauO)"),
+            ("Bebauungsplan",                      "Gemeinde",                                  "Baugesetzbuch (BauGB, § 30)"),
+            ("Nachbaranhörung",                    "Gemeinde / Bauherr",                        "Landesbauordnung (LBauO)"),
+        ],
+        "maatalous": [
+            ("Baugenehmigung / Bauprivileg",       "Untere Baubehörde",                         "Landesbauordnung (LBauO) / BauGB § 35"),
+            ("BImSchG-Genehmigung (Tierhaltung)", "Immissionsschutzbehörde",                    "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
+            ("UVP (tarvitt.)",                     "Genehmigungsbehörde",                       "UVPG"),
+        ],
+        "liikerakennus": [
+            ("Baugenehmigung",                     "Untere Baubehörde",                         "Landesbauordnung (LBauO)"),
+            ("Bebauungsplan",                      "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB, § 1)"),
+        ],
+        "smr_bess": [
+            ("Standortgenehmigung / AtG-Genehmigung", "BMUV / Länderaufsichtsbehörde",         "Atomgesetz (AtG)"),
+            ("BImSchG-Genehmigung (BESS-osuus)",   "Immissionsschutzbehörde",                   "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
+            ("Baugenehmigung",                     "Untere Baubehörde",                         "Landesbauordnung (LBauO)"),
+            ("Wasserrechtliche Erlaubnis",         "Untere Wasserbehörde",                      "Wasserhaushaltsgesetz (WHG, § 8)"),
+            ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB)",           "Energiewirtschaftsgesetz (EnWG)"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
+        ],
+        "tuulivoima_meri": [
+            ("BImSchG-Genehmigung (offshore)",     "BSH (Bundesamt für Seeschifffahrt)",        "Windenergie-auf-See-Gesetz (WindSeeG)"),
+            ("UVP-Prüfung",                        "BSH",                                       "UVPG"),
+            ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB)",           "Energiewirtschaftsgesetz (EnWG)"),
         ],
     },
 }

@@ -2109,6 +2109,7 @@ const TRANSLATIONS = {
     country_da:       'Tanska',
     country_no:       'Norja',
     country_pl:       'Puola',
+    country_de:       'Saksa',
     country_detected: 'Maa tunnistettu automaattisesti:',
     country_hint:     'Valitse ensin kohdemaasi',
     lbl_country:      'Maa',
@@ -2422,6 +2423,7 @@ const TRANSLATIONS = {
     country_da:       'Denmark',
     country_no:       'Norway',
     country_pl:       'Poland',
+    country_de:       'Germany',
     country_detected: 'Country detected automatically:',
     country_hint:     'Select your target country first',
     lbl_country:      'Country',
@@ -2733,6 +2735,7 @@ const TRANSLATIONS = {
     country_da:       'Danmark',
     country_no:       'Norge',
     country_pl:       'Polen',
+    country_de:       'Tyskland',
     country_detected: 'Land identifierat automatiskt:',
     country_hint:     'Välj målland först',
     lbl_country:      'Land',
@@ -2831,6 +2834,7 @@ const TRANSLATIONS = {
     country_da:     'Danmark',
     country_no:     'Norge',
     country_pl:     'Polen',
+    country_de:     'Tyskland',
     country_detected: 'Land registreret automatisk:',
     country_hint:   'Vælg dit målland først',
     lbl_country:    'Land',
@@ -3148,6 +3152,7 @@ const TRANSLATIONS = {
     country_da:     'Danmark',
     country_no:     'Norge',
     country_pl:     'Polen',
+    country_de:     'Tyskland',
     country_detected: 'Land registrert automatisk:',
     country_hint:   'Velg ditt målland først',
     lbl_country:    'Land',
@@ -3465,6 +3470,7 @@ const TRANSLATIONS = {
     country_da:     'Dania',
     country_no:     'Norwegia',
     country_pl:     'Polska',
+    country_de:     'Niemcy',
     country_detected: 'Kraj wykryty automatycznie:',
     country_hint:   'Najpierw wybierz kraj docelowy',
     lbl_country:    'Kraj',
@@ -3893,6 +3899,7 @@ const TRANSLATIONS = {
     country_da:            'Dänemark',
     country_no:            'Norwegen',
     country_pl:            'Polen',
+    country_de:            'Deutschland',
     country_detected:      'Land erkannt:',
     // Map sidebar
     lbl_map_type:          'Projekttyp',
@@ -4837,6 +4844,7 @@ function _rebuildCountrySelect() {
     { code: 'DA', flag: '🇩🇰', key: 'country_da' },
     { code: 'NO', flag: '🇳🇴', key: 'country_no' },
     { code: 'PL', flag: '🇵🇱', key: 'country_pl' },
+    { code: 'DE', flag: '🇩🇪', key: 'country_de' },
   ];
   sel.innerHTML = countries.map(c =>
     `<option value="${c.code}">${c.flag} ${t(c.key)} (${c.code})</option>`
@@ -4900,10 +4908,11 @@ function _rebuildMapGrid() {
 // Coverage levels per country — informs soft warning banner only, never blocks
 const _COUNTRY_COVERAGE = {
   FI: { level: 'full',    label: 'FI — täysi kattavuus' },
-  SE: { level: 'partial', label: 'SE — osittainen kattavuus (1 350 chunkkia)' },
-  DA: { level: 'partial', label: 'DA — osittainen kattavuus (265 chunkkia)' },
-  NO: { level: 'partial', label: 'NO — osittainen kattavuus (1 029 chunkkia)' },
-  PL: { level: 'partial', label: 'PL — SMR/BESS kattavuus (2 186 chunkkia)' },
+  SE: { level: 'partial', label: 'SE — osittainen kattavuus (~1 560 chunkkia)' },
+  DA: { level: 'partial', label: 'DA — osittainen kattavuus (~470 chunkkia)' },
+  NO: { level: 'partial', label: 'NO — osittainen kattavuus (~1 270 chunkkia)' },
+  PL: { level: 'partial', label: 'PL — osittainen kattavuus (~2 190 chunkkia)' },
+  DE: { level: 'partial', label: 'DE — osittainen kattavuus (~920 chunkkia, BImSchG/EEG/BetrSichV)' },
 };
 
 function _isPermitAvailable(country, hanketyyppi) {
