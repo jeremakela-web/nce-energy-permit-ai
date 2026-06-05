@@ -59,6 +59,7 @@ COUNTRY_LANG: dict[str, str] = {
     "NO": "no",
     "PL": "pl",
     "DE": "de",
+    "EU": "en",
 }
 
 # ── Valmiit lähdekohtaiset URL-konfiguraatiot ────────────────────────────────
@@ -322,7 +323,7 @@ def ingest_web(
     print(f"\n{'─'*55}")
     print("Yhteenveto (web-indeksointi):")
     grand = 0
-    for c in ["FI", "SE", "DA", "NO", "PL", "DE"]:
+    for c in ["FI", "SE", "DA", "NO", "PL", "DE", "EU"]:
         n = totals.get(c, 0)
         if n:
             print(f"  {c}: {n} uutta chunkkia")
