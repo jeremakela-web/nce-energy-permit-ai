@@ -521,6 +521,7 @@ _HUOM_LABEL: dict[str, str] = {
 def _postprocess_text(text: str, lang: str = "FI") -> str:
     """Fix authority names, law refs, and symbols. Finnish-specific rules only run for FI."""
     huom = _HUOM_LABEL.get(lang, "[Note] ")
+    text = text.replace('&amp;', '&')
     text = re.sub(r'⚠️\s*', huom, text)
     for pattern, replacement in _POSTPROCESS_RULES_ALL:
         text = re.sub(pattern, replacement, text)
