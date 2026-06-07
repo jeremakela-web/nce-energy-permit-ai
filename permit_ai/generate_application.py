@@ -2203,7 +2203,7 @@ _HANKE_CFG["smr_no"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_da"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_de"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["offshore_wind"] = _HANKE_CFG["tuulivoima_meri"]
-_HANKE_CFG["egs"]           = _HANKE_CFG["muu"]
+_HANKE_CFG["egs"]           = _HANKE_CFG["aurinkovoima"]
 
 
 _WRITE_INSTRUCTION: dict[str, str] = {
