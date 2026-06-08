@@ -184,6 +184,17 @@ async def health():
     return {"status": "ok", "mml_key_set": bool(MML_API_KEY)}
 
 
+@app.get("/api/debug-raw")
+async def debug_raw():
+    """Palauttaa viimeisimmän Claude-vastauksen /tmp/debug_raw_claude.txt."""
+    try:
+        with open("/tmp/debug_raw_claude.txt", encoding="utf-8") as f:
+            content = f.read()
+        return {"content": content[:3000]}
+    except FileNotFoundError:
+        return {"content": "Ei debug-tiedostoa — aja ensin generaatio."}
+
+
 @app.get("/api/debug-encoding")
 def debug_encoding():
     data = {"raw": "testiäö", "ae": "ä", "oe": "ö"}

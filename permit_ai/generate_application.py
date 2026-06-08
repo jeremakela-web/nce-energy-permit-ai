@@ -3695,6 +3695,12 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     raw = unicodedata.normalize("NFC", resp.content[0].text)
     logger.warning("[DEBUG sections] stop_reason=%s tokens=%s raw_len=%d raw_start=%r",
                    resp.stop_reason, resp.usage, len(raw), raw[:120])
+    # Write raw to /tmp for debug endpoint
+    try:
+        with open("/tmp/debug_raw_claude.txt", "w", encoding="utf-8") as _f:
+            _f.write(f"stop_reason={resp.stop_reason}\ntokens={resp.usage}\n\n{raw}")
+    except Exception:
+        pass
 
     # Parsitaan osiot käyttämällä kielen mukaisia otsikoita
     h = [ph["kuvaus"], ph["perustelut"], ph["luvat"], ph["toimenpiteet"]]
