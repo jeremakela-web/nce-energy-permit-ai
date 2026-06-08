@@ -12,12 +12,17 @@ import asyncio
 import base64
 import io
 import json
+import logging
 import os
 import re
+import time
 import unicodedata
 import uuid
-from threading import Thread
+from collections import defaultdict
+from threading import Thread, Lock
 from typing import Optional
+
+import requests as _requests
 
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -90,8 +95,67 @@ _BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 _STATIC_DIR  = os.path.join(_BACKEND_DIR, "static")
 app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
 
-MML_API_KEY = os.getenv("MML_API_KEY", "")
-PORT = int(os.environ.get("PORT", 8000))
+MML_API_KEY   = os.getenv("MML_API_KEY", "")
+PORT          = int(os.environ.get("PORT", 8000))
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+ALERT_EMAIL   = os.getenv("ALERT_EMAIL", "jere@ncenergy.fi")
+
+# ── Usage monitoring ──────────────────────────────────────────────────────────
+_usage_logger = logging.getLogger("usage")
+_usage_logger.setLevel(logging.INFO)
+_ip_window: dict[str, list[float]] = defaultdict(list)   # ip → [timestamps]
+_ip_lock = Lock()
+_ALERT_WINDOW_SEC  = 600   # 10 min
+_ALERT_THRESHOLD   = 3     # max calls per window before alert
+_alerted_ips: set[str] = set()  # avoid duplicate alerts per server lifetime
+
+
+def _log_usage(ip: str, hanketyyppi: str, country: str, phase: str,
+               job_id: str, status: str) -> None:
+    ts = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    _usage_logger.info(
+        "[USAGE] timestamp=%s ip=%s type=%s country=%s phase=%s job_id=%s status=%s",
+        ts, ip, hanketyyppi, country, phase, job_id, status,
+    )
+    if not ip or ip in ("testclient", "127.0.0.1"):
+        return
+    now = time.monotonic()
+    with _ip_lock:
+        calls = [t for t in _ip_window[ip] if now - t < _ALERT_WINDOW_SEC]
+        calls.append(now)
+        _ip_window[ip] = calls
+        should_alert = len(calls) > _ALERT_THRESHOLD and ip not in _alerted_ips
+        if should_alert:
+            _alerted_ips.add(ip)
+    if should_alert:
+        Thread(target=_send_alert, args=(ip, len(calls), ts), daemon=True).start()
+
+
+def _send_alert(ip: str, count: int, ts: str) -> None:
+    if not RESEND_API_KEY:
+        _usage_logger.warning("[USAGE] ALERT: ip=%s count=%d — RESEND_API_KEY puuttuu, sähköposti lähettämättä", ip, count)
+        return
+    try:
+        _requests.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {RESEND_API_KEY}", "Content-Type": "application/json"},
+            json={
+                "from": "NCE Permit AI <noreply@ncenergy.fi>",
+                "to": [ALERT_EMAIL],
+                "subject": f"[NCE Permit AI] Hälytys: {count} kutsua 10 min — IP {ip}",
+                "text": (
+                    f"Epäilyttävä käyttö havaittu.\n\n"
+                    f"IP: {ip}\n"
+                    f"Kutsuja viimeisen 10 min aikana: {count}\n"
+                    f"Aika: {ts}\n\n"
+                    f"Tarkista Render-lokit lisätietoja varten."
+                ),
+            },
+            timeout=10,
+        )
+        _usage_logger.info("[USAGE] ALERT lähetetty: ip=%s count=%d", ip, count)
+    except Exception as exc:
+        _usage_logger.warning("[USAGE] ALERT-lähetys epäonnistui: %s", exc)
 
 if not MML_API_KEY:
     print("[startup] VAROITUS: MML_API_KEY ei asetettu — maankäyttöselvityksen WFS-haut eivät toimi. "
@@ -444,6 +508,10 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         "kunta":       req.kunta or "hanke",
     }
 
+    _client_ip = get_remote_address(request)
+    _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
+               req.hankkeen_vaihe or "", job_id, "started")
+
     def _bg_generate():
         try:
             _proofread_store[job_id]["status"] = "running"
@@ -452,9 +520,13 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             pdf = apply_proofread_to_pdf(inp, sections, sources)
             _proofread_store[job_id]["pdf_bytes"] = pdf
             _proofread_store[job_id]["status"] = "done"
+            _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
+                       req.hankkeen_vaihe or "", job_id, "done")
         except Exception as exc:
             _proofread_store[job_id]["status"] = "error"
             _proofread_store[job_id]["error"] = str(exc)
+            _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
+                       req.hankkeen_vaihe or "", job_id, f"error:{str(exc)[:60]}")
 
     Thread(target=_bg_generate, daemon=True).start()
 
