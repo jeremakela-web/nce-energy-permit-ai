@@ -437,6 +437,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         try:
             _proofread_store[job_id]["status"] = "running"
             draft_bytes, sections, sources = generate_application_draft(inp)
+            _proofread_store[job_id]["debug_sections"] = {k: len(v) for k, v in sections.items() if isinstance(v, str)}
             pdf = apply_proofread_to_pdf(inp, sections, sources)
             _proofread_store[job_id]["pdf_bytes"] = pdf
             _proofread_store[job_id]["status"] = "done"
@@ -463,7 +464,7 @@ async def proofread_status(job_id: str):
     job = _proofread_store.get(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Tehtävää ei löydy")
-    return {"status": job["status"], "error": job.get("error")}
+    return {"status": job["status"], "error": job.get("error"), "debug_sections": job.get("debug_sections")}
 
 
 _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
