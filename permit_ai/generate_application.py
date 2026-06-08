@@ -3510,15 +3510,24 @@ Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali
     raw = unicodedata.normalize("NFC", resp.content[0].text)
 
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
-        start = text.find(f"## {header}")
+        tl = text.lower()
+        hl = header.lower()
+        start = -1
+        for prefix in (f"## {hl}", f"##{hl}"):
+            start = tl.find(prefix)
+            if start != -1:
+                break
         if start == -1:
             return ""
         start = text.find("\n", start) + 1
         end   = len(text)
         for nh in next_headers:
-            pos = text.find(f"## {nh}", start)
-            if pos != -1:
-                end = min(end, pos)
+            nhl = nh.lower()
+            for pfx in (f"## {nhl}", f"##{nhl}"):
+                pos = tl.find(pfx, start)
+                if pos != -1:
+                    end = min(end, pos)
+                    break
         return text[start:end].strip()
 
     headers = ["T&K-KUVAUS", "BUDJETTI JA RAHOITUSRAKENNE", "TIIMIKUVAUS", "PROJEKTIAIKATAULU"]
@@ -3672,7 +3681,7 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     resp   = claude.messages.create(
         model=_MODEL_ID,
-        max_tokens=7000,
+        max_tokens=8000,
         system=_SYSTEM,
         messages=[{"role": "user", "content": prompt}],
     )
@@ -3682,15 +3691,24 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     h = [ph["kuvaus"], ph["perustelut"], ph["luvat"], ph["toimenpiteet"]]
 
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
-        start = text.find(f"## {header}")
+        tl = text.lower()
+        hl = header.lower()
+        start = -1
+        for prefix in (f"## {hl}", f"##{hl}"):
+            start = tl.find(prefix)
+            if start != -1:
+                break
         if start == -1:
             return ""
         start = text.find("\n", start) + 1
         end   = len(text)
         for nh in next_headers:
-            pos = text.find(f"## {nh}", start)
-            if pos != -1:
-                end = min(end, pos)
+            nhl = nh.lower()
+            for pfx in (f"## {nhl}", f"##{nhl}"):
+                pos = tl.find(pfx, start)
+                if pos != -1:
+                    end = min(end, pos)
+                    break
         return text[start:end].strip()
 
     return {
