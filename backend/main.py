@@ -1221,13 +1221,14 @@ def _render_static_map(
 
 
 # ── Phase-Lock ───────────────────────────────────────────────────────────────
+PHASE_LOCK_ENABLED = os.getenv("PHASE_LOCK_ENABLED", "false").lower() == "true"
 try:
     from phase_lock import (
         check_phase_allowed as _check_phase,
         get_phase_status as _get_phase_status,
         unlock_next_phase as _unlock_next_phase,
     )
-    _PHASE_LOCK_OK = True
+    _PHASE_LOCK_OK = PHASE_LOCK_ENABLED
 except Exception as _pl_err:
     _PHASE_LOCK_OK = False
 
