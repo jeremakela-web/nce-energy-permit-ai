@@ -3686,6 +3686,8 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
         messages=[{"role": "user", "content": prompt}],
     )
     raw = unicodedata.normalize("NFC", resp.content[0].text)
+    logger.warning("[DEBUG sections] stop_reason=%s tokens=%s raw_len=%d raw_start=%r",
+                   resp.stop_reason, resp.usage, len(raw), raw[:120])
 
     # Parsitaan osiot käyttämällä kielen mukaisia otsikoita
     h = [ph["kuvaus"], ph["perustelut"], ph["luvat"], ph["toimenpiteet"]]
@@ -3711,12 +3713,14 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
                     break
         return text[start:end].strip()
 
-    return {
+    result = {
         "kuvaus":        _extract(raw, h[0], h[1:]),
         "perustelut":    _extract(raw, h[1], h[2:]),
         "luvat_teksti":  _extract(raw, h[2], h[3:]),
         "toimenpiteet":  _extract(raw, h[3], []),
     }
+    logger.warning("[DEBUG sections] lengths: %s", {k: len(v) for k, v in result.items()})
+    return result
 
 
 # ─────────────────────────────────────────────────────────────────────────────
