@@ -3512,10 +3512,16 @@ Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
         tl = text.lower()
         hl = header.lower()
+        candidates = [
+            f"## {hl}", f"##{hl}", f"# {hl}", f"#{hl}",
+            f"**{hl}**", f"**{hl}:", f"{hl}**",
+            f"\n{hl}\n", f"\n{hl}:",
+        ]
         start = -1
-        for prefix in (f"## {hl}", f"##{hl}"):
-            start = tl.find(prefix)
-            if start != -1:
+        for prefix in candidates:
+            idx = tl.find(prefix)
+            if idx != -1:
+                start = idx
                 break
         if start == -1:
             return ""
@@ -3523,7 +3529,8 @@ Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali
         end   = len(text)
         for nh in next_headers:
             nhl = nh.lower()
-            for pfx in (f"## {nhl}", f"##{nhl}"):
+            for pfx in (f"## {nhl}", f"##{nhl}", f"# {nhl}", f"#{nhl}",
+                        f"**{nhl}**", f"**{nhl}:", f"\n{nhl}\n", f"\n{nhl}:"):
                 pos = tl.find(pfx, start)
                 if pos != -1:
                     end = min(end, pos)
@@ -3695,18 +3702,27 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
         tl = text.lower()
         hl = header.lower()
+        # Try all common Claude header formats, most specific first
+        candidates = [
+            f"## {hl}", f"##{hl}", f"# {hl}", f"#{hl}",
+            f"**{hl}**", f"**{hl}:", f"{hl}**",
+            f"\n{hl}\n", f"\n{hl}:",
+        ]
         start = -1
-        for prefix in (f"## {hl}", f"##{hl}"):
-            start = tl.find(prefix)
-            if start != -1:
+        for prefix in candidates:
+            idx = tl.find(prefix)
+            if idx != -1:
+                start = idx
                 break
         if start == -1:
+            logger.warning("[DEBUG _extract] header NOT found: %r in text[:200]=%r", hl, tl[:200])
             return ""
         start = text.find("\n", start) + 1
         end   = len(text)
         for nh in next_headers:
             nhl = nh.lower()
-            for pfx in (f"## {nhl}", f"##{nhl}"):
+            for pfx in (f"## {nhl}", f"##{nhl}", f"# {nhl}", f"#{nhl}",
+                        f"**{nhl}**", f"**{nhl}:", f"\n{nhl}\n", f"\n{nhl}:"):
                 pos = tl.find(pfx, start)
                 if pos != -1:
                     end = min(end, pos)
