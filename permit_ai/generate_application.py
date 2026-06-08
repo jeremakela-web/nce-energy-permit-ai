@@ -3509,32 +3509,28 @@ Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali
     # ── END DEBUG ────────────────────────────────────────────────────────────
     raw = unicodedata.normalize("NFC", resp.content[0].text)
 
+    _BF_HDR_RE_CACHE: dict[str, re.Pattern] = {}
+
+    def _bf_header_pattern(hl: str) -> re.Pattern:
+        if hl not in _BF_HDR_RE_CACHE:
+            esc = re.escape(hl)
+            _BF_HDR_RE_CACHE[hl] = re.compile(
+                r'(?:#{1,3}\s*(?:\d+[\.\)]\s*)?|\*\*\s*|^)' + esc + r'\s*(?:\*\*)?[:\s]',
+                re.IGNORECASE | re.MULTILINE
+            )
+        return _BF_HDR_RE_CACHE[hl]
+
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
-        tl = text.lower()
         hl = header.lower()
-        candidates = [
-            f"## {hl}", f"##{hl}", f"# {hl}", f"#{hl}",
-            f"**{hl}**", f"**{hl}:", f"{hl}**",
-            f"\n{hl}\n", f"\n{hl}:",
-        ]
-        start = -1
-        for prefix in candidates:
-            idx = tl.find(prefix)
-            if idx != -1:
-                start = idx
-                break
-        if start == -1:
+        m = _bf_header_pattern(hl).search(text.lower())
+        if not m:
             return ""
-        start = text.find("\n", start) + 1
+        start = text.find("\n", m.start()) + 1
         end   = len(text)
         for nh in next_headers:
-            nhl = nh.lower()
-            for pfx in (f"## {nhl}", f"##{nhl}", f"# {nhl}", f"#{nhl}",
-                        f"**{nhl}**", f"**{nhl}:", f"\n{nhl}\n", f"\n{nhl}:"):
-                pos = tl.find(pfx, start)
-                if pos != -1:
-                    end = min(end, pos)
-                    break
+            m2 = _bf_header_pattern(nh.lower()).search(text.lower(), start)
+            if m2 and m2.start() < end:
+                end = m2.start()
         return text[start:end].strip()
 
     headers = ["T&K-KUVAUS", "BUDJETTI JA RAHOITUSRAKENNE", "TIIMIKUVAUS", "PROJEKTIAIKATAULU"]
@@ -3705,34 +3701,30 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     # Parsitaan osiot käyttämällä kielen mukaisia otsikoita
     h = [ph["kuvaus"], ph["perustelut"], ph["luvat"], ph["toimenpiteet"]]
 
+    _HEADER_RE_CACHE: dict[str, re.Pattern] = {}
+
+    def _header_pattern(hl: str) -> re.Pattern:
+        if hl not in _HEADER_RE_CACHE:
+            # Matches: ## [N. ]HEADER, # [N. ]HEADER, **HEADER**, HEADER:
+            esc = re.escape(hl)
+            _HEADER_RE_CACHE[hl] = re.compile(
+                r'(?:#{1,3}\s*(?:\d+[\.\)]\s*)?|\*\*\s*|^)' + esc + r'\s*(?:\*\*)?[:\s]',
+                re.IGNORECASE | re.MULTILINE
+            )
+        return _HEADER_RE_CACHE[hl]
+
     def _extract(text: str, header: str, next_headers: list[str]) -> str:
-        tl = text.lower()
         hl = header.lower()
-        # Try all common Claude header formats, most specific first
-        candidates = [
-            f"## {hl}", f"##{hl}", f"# {hl}", f"#{hl}",
-            f"**{hl}**", f"**{hl}:", f"{hl}**",
-            f"\n{hl}\n", f"\n{hl}:",
-        ]
-        start = -1
-        for prefix in candidates:
-            idx = tl.find(prefix)
-            if idx != -1:
-                start = idx
-                break
-        if start == -1:
-            logger.warning("[DEBUG _extract] header NOT found: %r in text[:200]=%r", hl, tl[:200])
+        m = _header_pattern(hl).search(text.lower())
+        if not m:
+            logger.warning("[DEBUG _extract] header NOT found: %r", hl)
             return ""
-        start = text.find("\n", start) + 1
+        start = text.find("\n", m.start()) + 1
         end   = len(text)
         for nh in next_headers:
-            nhl = nh.lower()
-            for pfx in (f"## {nhl}", f"##{nhl}", f"# {nhl}", f"#{nhl}",
-                        f"**{nhl}**", f"**{nhl}:", f"\n{nhl}\n", f"\n{nhl}:"):
-                pos = tl.find(pfx, start)
-                if pos != -1:
-                    end = min(end, pos)
-                    break
+            m2 = _header_pattern(nh.lower()).search(text.lower(), start)
+            if m2 and m2.start() < end:
+                end = m2.start()
         return text[start:end].strip()
 
     result = {
