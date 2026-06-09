@@ -1983,6 +1983,13 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Baugenehmigung",                     "Untere Baubehörde",                         "Landesbauordnung (LBauO)"),
             ("UVP (tarvitt.)",                     "Genehmigungsbehörde",                       "UVPG"),
         ],
+        "hybridi": [
+            ("BImSchG-Genehmigung (Hauptanlage)",  "Immissionsschutzbehörde (Land)",            "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
+            ("Baugenehmigung",                     "Untere Baubehörde (Landkreis/Stadt)",       "Landesbauordnung (LBauO)"),
+            ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB) / VNB",    "Energiewirtschaftsgesetz (EnWG, § 17)"),
+            ("UVP-Prüfung (tarvitt.)",             "Genehmigungsbehörde",                       "UVPG"),
+            ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB, § 1)"),
+        ],
     },
 }
 
