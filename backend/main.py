@@ -463,7 +463,7 @@ async def generate_report(req: ReportRequest):
 async def generate_application_endpoint(request: Request, req: ApplicationRequest):
     """Käynnistä lupahakemus-PDF:n generointi taustasäikeessä. Palauttaa job_id heti (202)."""
     allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR",
-               "smr_bess", "vesivoima", "hybridi", "business_finland",
+               "smr_bess", "vesivoima", "hybridi",
                "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
                "ymparistolupa", "datakeskus",
                "smr_se", "smr_no", "smr_da", "smr_de",

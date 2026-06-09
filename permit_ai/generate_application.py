@@ -426,7 +426,6 @@ _HANKE_SHORT: dict[str, str] = {
     "smr_bess":        "SMR+BESS",
     "ymparistolupa":   "Ympäristölupa",
     "datakeskus":      "Datakeskus",
-    "business_finland":"Business Finland",
     "asuinrakennus":   "Asuinrakennus",
     "toimitila":       "Toimitila",
     "teollisuus":      "Teollisuus",
@@ -1076,27 +1075,6 @@ _HANKE_CFG = {
             "Lentoestekartoitus (Traficom/Finavia)",
         ],
     },
-    "business_finland": {
-        "nimi_fi":    "Business Finland Sprint — T&K-rahoitushakemus",
-        "lyhenne":    "BF-Sprint",
-        "rag_queries": [
-            "energia-alan tutkimus kehitys innovaatio rahoitus T&K",
-            "akkuenergia aurinkovoima tuulivoima teknologia kehitys innovaatio",
-            "energiavarasto tehoelektroniikka ohjausjärjestelmä tutkimus",
-        ],
-        "luvat": [],
-        "liitteet": [
-            "Sijaintikartta / projektikartta (M 1:20 000 tai laajempi)",
-            "Maankäyttöselvitys PDF (NCE)",
-            "Hakijan taloudellinen tilanne (tilinpäätös, 2 viimeisintä vuotta)",
-            "Projektisuunnitelma (T&K-kuvaus, tavoitteet, metodologia)",
-            "Budjettilaskelmat ja rahoitussuunnitelma",
-            "Tiimikuvaus (ansioluettelot, osaamisprofiilit)",
-            "Riskiarviointi ja mitigaatiosuunnitelma",
-            "Referenssit ja aiempi T&K-toiminta",
-            "IPR-suunnitelma (immateriaalioikeuksien hallinta)",
-        ],
-    },
     "smr_bess": {
         "nimi_fi":    "SMR + BESS -hybridienergiajärjestelmä",
         "lyhenne":    "SMR+BESS",
@@ -1368,9 +1346,6 @@ _HANKE_NIMI_TRANS: dict[str, dict[str, str]] = {
     "smr_bess":       {"EN": "SMR + BESS Hybrid Energy System",              "SE": "SMR + BESS hybridsystem",
                        "DA": "SMR + BESS hybridsystem",                       "NO": "SMR + BESS hybridsystem",
                        "PL": "System hybrydowy SMR + BESS"},
-    "business_finland":{"EN": "Business Finland R&D Grant Application",      "SE": "Business Finland FoU-bidragsansökan",
-                        "DA": "Business Finland F&U-tilskudsansøgning",        "NO": "Business Finland FoU-støttesøknad",
-                        "PL": "Wniosek o dofinansowanie B+R Business Finland"},
     "asuinrakennus":  {"EN": "Residential Construction Permit Application",   "SE": "Bygglovsansökan för bostadsbyggnad",
                        "DA": "Byggetilladelsesansøgning for beboelsesbygning", "NO": "Byggetillatelsessøknad for boligbygg",
                        "PL": "Wniosek o pozwolenie na budowę budynku mieszkalnego"},
@@ -3464,97 +3439,6 @@ def _s(lang: str, key: str) -> str:
     return d.get(key) or _PDF_STRINGS["FI"].get(key, key)
 
 
-def _generate_bf_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str]:
-    """Business Finland Sprint -hakemusosioiden generointi."""
-    now = datetime.now().strftime("%d.%m.%Y")
-    vaihe = inp.hankkeen_vaihe or "esiselvitys"
-    tk_kuvaus = inp.sijainti_ymparistovaikutukset or ""
-    viranomainen_bf = inp.kohdeviranomainen or "Business Finland (avustushakemus)"
-
-    lang_prefix = _LANG_INSTRUCTIONS.get(getattr(inp, "lang", "FI"), "")
-    prompt = f"""{lang_prefix}Laadi Business Finland Sprint -rahoitushakemuksen luonnos:
-
-Hakija / yritys: {inp.hakija}
-Sijaintikunta: {inp.kunta}
-Hankkeen vaihe: {vaihe}
-Kohdeviranomainen / rahoittaja: {viranomainen_bf}
-T&K-haasteet / innovaatiokuvaus: {tk_kuvaus if tk_kuvaus else '(ei täydennetty)'}
-Päivämäärä: {now}
-
-Alla on relevanttia energia-alan T&K-dokumentaatiota:
-{rag_context}
-
-Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. Jos jokin tieto on epävarma tai puuttuu, lisää merkintä '⚠️ Asiantuntijatarkistus suositellaan' heti kyseisen kohdan jälkeen — älä spekuloi:
-
-## T&K-KUVAUS
-Kirjoita 3–5 kappaleen kuvaus tutkimus- ja kehitystyöstä: tutkimusongelma, innovaatio, teknologinen lähestymistapa, odotetut tulokset ja tieteellinen/teknologinen uutuusarvo. Ota huomioon hakijan toimiala ja T&K-haasteiden kuvaus.
-
-## BUDJETTI JA RAHOITUSRAKENNE
-Kirjoita 2–3 kappaletta budjettirakenteesta ja rahoitussuunnitelmasta: kokonaisbudjetti jakautuminen (henkilöstökulut, alihankinnat, laitteet, muut), oma rahoitusosuus ja haettava BF-tuki, kustannustehokkuus.
-
-## TIIMIKUVAUS
-Kirjoita 2–3 kappaletta tiimin osaamistaustasta: keskeiset henkilöt ja roolit, relevantit aiemmat projektit ja referenssit, yhteistyökumppanit ja alihankkijat.
-
-## PROJEKTIAIKATAULU
-Listaa projektin vaiheet ja keskeisimmät välitavoitteet (milestones) kvartaali- tai kuukausitarkkuudella. Aloita hankkeen käynnistämisestä ja pääty loppuraporttiin."""
-
-    claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    resp   = claude.messages.create(
-        model=_MODEL_ID,
-        max_tokens=4000,
-        system=_SYSTEM,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    # ── DEBUG: trace ä/ö through each processing step ──────────────────────
-    _dbg_raw   = resp.content[0].text[:500]
-    _dbg_nfc   = unicodedata.normalize("NFC", _dbg_raw)
-    _dbg_diak  = _fix_fi_diacritics(_dbg_nfc)
-    _dbg_lat1  = _latin1_safe(_dbg_diak)
-    logger.warning("DEBUG: ä/ö trace start")
-    logger.warning("DEBUG [1] RAW (Claude API)  : %s", repr(_dbg_raw))
-    logger.warning("DEBUG [2] After NFC         : %s", repr(_dbg_nfc))
-    logger.warning("DEBUG [3] After fix_diak    : %s", repr(_dbg_diak))
-    logger.warning("DEBUG [4] After latin1_safe : %s", repr(_dbg_lat1))
-    logger.warning("DEBUG [1→2 changed]         : %s", _dbg_raw != _dbg_nfc)
-    logger.warning("DEBUG [2→3 changed]         : %s", _dbg_nfc != _dbg_diak)
-    logger.warning("DEBUG [3→4 changed]         : %s", _dbg_diak != _dbg_lat1)
-    logger.warning("DEBUG: ä/ö trace end")
-    # ── END DEBUG ────────────────────────────────────────────────────────────
-    raw = unicodedata.normalize("NFC", resp.content[0].text)
-
-    _BF_HDR_RE_CACHE: dict[str, re.Pattern] = {}
-
-    def _bf_header_pattern(hl: str) -> re.Pattern:
-        if hl not in _BF_HDR_RE_CACHE:
-            esc = re.escape(hl)
-            _BF_HDR_RE_CACHE[hl] = re.compile(
-                r'(?:#{1,3}\s*(?:\d+[\.\)]\s*)?|\*\*\s*|^)' + esc + r'\s*(?:\*\*)?[:\s]',
-                re.IGNORECASE | re.MULTILINE
-            )
-        return _BF_HDR_RE_CACHE[hl]
-
-    def _extract(text: str, header: str, next_headers: list[str]) -> str:
-        hl = header.lower()
-        m = _bf_header_pattern(hl).search(text.lower())
-        if not m:
-            return ""
-        start = text.find("\n", m.start()) + 1
-        end   = len(text)
-        for nh in next_headers:
-            m2 = _bf_header_pattern(nh.lower()).search(text.lower(), start)
-            if m2 and m2.start() < end:
-                end = m2.start()
-        return text[start:end].strip()
-
-    headers = ["T&K-KUVAUS", "BUDJETTI JA RAHOITUSRAKENNE", "TIIMIKUVAUS", "PROJEKTIAIKATAULU"]
-    return {
-        "tk_kuvaus":    _extract(raw, "T&K-KUVAUS",               headers[1:]),
-        "budjetti":     _extract(raw, "BUDJETTI JA RAHOITUSRAKENNE", headers[2:]),
-        "tiimi":        _extract(raw, "TIIMIKUVAUS",               headers[3:]),
-        "aikataulu":    _extract(raw, "PROJEKTIAIKATAULU",          []),
-    }
-
-
 def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str]:
     """
     Kutsu Claude-API ja generoi kaikki hakemuksen osiot yhdellä kutsulla.
@@ -4112,109 +3996,6 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
     return _NumberedCanvas
 
 
-def _generate_bf_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> bytes:
-    """PDF-rakenne Business Finland Sprint -hakemukselle."""
-    buf    = io.BytesIO()
-    now    = datetime.now().strftime("%d.%m.%Y")
-    cfg    = _HANKE_CFG["business_finland"]
-    st     = _st()
-    margin = 2.2 * cm
-
-    canvas_cls = _make_canvas_cls(inp, now)
-
-    doc = SimpleDocTemplate(
-        buf, pagesize=A4,
-        leftMargin=margin, rightMargin=margin,
-        topMargin=2.2*cm, bottomMargin=2.2*cm,
-    )
-    story = []
-    _bf_lang = inp.lang or "FI"
-
-    story.append(Spacer(1, 6*mm))
-    story.append(Paragraph("Business Finland Sprint", st["sub"]))
-    story.append(Paragraph(_s(_bf_lang, "bf_title"), st["title"]))
-    story.append(Paragraph(f"{inp.hakija}  ·  {inp.kunta}  ·  {now}", st["meta"]))
-    story.append(Spacer(1, 4*mm))
-    story.append(_hr(C_NAVY, 1.5))
-    story.append(Spacer(1, 3*mm))
-
-    meta_rows = [
-        [_s(_bf_lang, "m_hakija"),       inp.hakija],
-        [_s(_bf_lang, "bf_kotipaikka"),  inp.kunta],
-        [_s(_bf_lang, "bf_vaihe"),       _t_vaihe(_bf_lang, inp.hankkeen_vaihe) if inp.hankkeen_vaihe else "–"],
-        [_s(_bf_lang, "bf_tk_kuvaus"),   (inp.sijainti_ymparistovaikutukset or "–")[:120]],
-        [_s(_bf_lang, "m_laadittu"),     now],
-        [_s(_bf_lang, "m_laatinut_lbl"), _s(_bf_lang, "m_laatinut")],
-    ]
-    meta_tbl = Table(
-        [[Paragraph(k, ParagraphStyle("mk", fontSize=8.5, textColor=C_GRAY,
-                                      fontName=PDF_FONT_BOLD)),
-          Paragraph(v, ParagraphStyle("mv", fontSize=8.5, leading=12))]
-         for k, v in meta_rows],
-        colWidths=[4.5*cm, 12.0*cm],
-    )
-    meta_tbl.setStyle(TableStyle([
-        ("ROWBACKGROUNDS", (0, 0), (-1, -1), [C_LGRAY, C_WHITE]),
-        ("PADDING",        (0, 0), (-1, -1), 6),
-        ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
-        ("VALIGN",         (0, 0), (-1, -1), "TOP"),
-    ]))
-    story.append(meta_tbl)
-    story.append(Spacer(1, 6*mm))
-    story.append(_disclaimer_box(st, _bf_lang))
-    story.append(Spacer(1, 8*mm))
-
-    story.append(PageBreak())
-    story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec1"), st["h2"]), _hr()]))
-    story.extend(_para_text(sections.get("tk_kuvaus", "–"), st))
-    story.append(Spacer(1, 4*mm))
-
-    story.append(PageBreak())
-    story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec2"), st["h2"]), _hr()]))
-    story.extend(_para_text(sections.get("budjetti", "–"), st))
-    story.append(Spacer(1, 4*mm))
-
-    story.append(PageBreak())
-    story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec3"), st["h2"]), _hr()]))
-    story.extend(_para_text(sections.get("tiimi", "–"), st))
-    story.append(Spacer(1, 4*mm))
-
-    story.append(PageBreak())
-    story.append(KeepTogether([Paragraph(_s(_bf_lang, "bf_sec4"), st["h2"]), _hr()]))
-    story.extend(_para_text(sections.get("aikataulu", "–"), st))
-    story.append(Spacer(1, 4*mm))
-
-    story.append(PageBreak())
-    story.append(KeepTogether([Paragraph(_s(_bf_lang, "sec5"), st["h2"]), _hr()]))
-    story.append(_liitteet_table("business_finland", _bf_lang))
-    story.append(Spacer(1, 4*mm))
-
-    if sources:
-        story.append(KeepTogether([
-            Paragraph(_s(_bf_lang, "lahteet_h"), st["h2"]),
-            _hr(),
-        ]))
-        story.append(Paragraph(_s(_bf_lang, "lahteet_rag_h"), st["h3"]))
-        story.append(Paragraph(_s(_bf_lang, "lahteet_b"), st["body"]))
-        for src in sources:
-            display = src.get("display", src.get("id", "–"))
-            url = src.get("url")
-            if url:
-                line = f'• <a href="{url}" color="#1a56db">{display}</a> — <font color="#1a56db">{url}</font>'
-            else:
-                line = f"• {display}"
-            story.append(Paragraph(line, st["bullet"]))
-        story.append(Spacer(1, 3*mm))
-
-    story.append(_hr(C_NAVY, 1.0))
-    story.append(Paragraph(
-        _s(_bf_lang, "footer"),
-        ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
-    ))
-    doc.build(story, canvasmaker=canvas_cls)
-    return buf.getvalue()
-
-
 def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> bytes:
     """Rakenna PDF ja palauta bytes."""
     # Hard cap: enintään 3 "Asiantuntijatarkistus suositellaan" VAIN sisältöosioissa
@@ -4518,18 +4299,11 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
 
 def generate_application_draft(inp: ApplicationInput) -> tuple:
     """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
-    is_bf = inp.hanketyyppi == "business_finland"
     rag_ctx, sources = _rag_context(inp.hanketyyppi, inp.country or "FI")
-    if is_bf:
-        sections = _generate_bf_sections(inp, rag_ctx)
-    else:
-        sections = _generate_sections(inp, rag_ctx)
+    sections = _generate_sections(inp, rag_ctx)
     _lang = inp.lang or "FI"
     sections = _final_polish(sections, _lang)
-    if is_bf:
-        pdf_bytes = _generate_bf_pdf(inp, sections, sources)
-    else:
-        pdf_bytes = generate_pdf(inp, sections, sources)
+    pdf_bytes = generate_pdf(inp, sections, sources)
     return pdf_bytes, sections, sources
 
 
@@ -4538,30 +4312,20 @@ def apply_proofread_to_pdf(inp: ApplicationInput, sections: dict, sources: list)
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections)
     sections = _final_polish(sections, _lang)
-    is_bf = inp.hanketyyppi == "business_finland"
-    if is_bf:
-        return _generate_bf_pdf(inp, sections, sources)
     return generate_pdf(inp, sections, sources)
 
 
 def generate_application(inp: ApplicationInput) -> str:
-    """
-    Generoi lupahakemus-PDF (tai BF-hakemus) ja palauta tallennuspolku.
-    """
+    """Generoi lupahakemus-PDF ja palauta tallennuspolku."""
     logger.warning("DEBUG TEST: äö toimii - raw=%s", repr("testäö"))
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
-
-    is_bf = inp.hanketyyppi == "business_finland"
 
     print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi}, maa={inp.country or 'FI'})…")
     rag_ctx, sources = _rag_context(inp.hanketyyppi, inp.country or "FI")
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {[s['display'] for s in sources]}")
 
     print("[2/4] Generoidaan hakemusteksti (Claude)…")
-    if is_bf:
-        sections = _generate_bf_sections(inp, rag_ctx)
-    else:
-        sections = _generate_sections(inp, rag_ctx)
+    sections = _generate_sections(inp, rag_ctx)
     print(f"      Osiot: {list(sections.keys())}")
 
     print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
@@ -4570,10 +4334,7 @@ def generate_application(inp: ApplicationInput) -> str:
     sections = _final_polish(sections, _lang)
 
     print("[4/4] Rakennetaan PDF…")
-    if is_bf:
-        pdf_bytes = _generate_bf_pdf(inp, sections, sources)
-    else:
-        pdf_bytes = generate_pdf(inp, sections, sources)
+    pdf_bytes = generate_pdf(inp, sections, sources)
 
     _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
                      "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}
