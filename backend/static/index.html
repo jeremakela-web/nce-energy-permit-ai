@@ -4175,8 +4175,9 @@ function setLang(lang) {
   // Refresh map power label for current selected type
   const _curMapType = document.getElementById('map-hanketyyppi');
   if (_curMapType && _curMapType.value) switchMapType(_curMapType.value);
-  // Re-render form to translate dropdown options, then restore values
-  if (selectedProjectType) {
+  // Re-render form to translate dropdown options only if the modal is already open
+  const _langOverlay = document.getElementById('hanke-modal-overlay');
+  if (selectedProjectType && _langOverlay && _langOverlay.style.display !== 'none') {
     const savedVals = _saveFormValues();
     selectProjectType(selectedProjectType);
     _restoreFormValues(savedVals);
@@ -4972,8 +4973,9 @@ function setCountry(code) {
   const hint = document.getElementById('gen-country-hint');
   if (hint) hint.style.display = 'none';
 
-  // Re-render form if project type already chosen
-  if (selectedProjectType) {
+  // Re-render form only if the modal is currently open
+  const _cntryOverlay = document.getElementById('hanke-modal-overlay');
+  if (selectedProjectType && _cntryOverlay && _cntryOverlay.style.display !== 'none') {
     const savedVals = _saveFormValues();
     selectProjectType(selectedProjectType);
     _restoreFormValues(savedVals);
@@ -5089,7 +5091,7 @@ function openHankeModal() {
 function closeHankeModal() {
   const overlay = document.getElementById('hanke-modal-overlay');
   if (overlay) { overlay.style.display = 'none'; document.body.style.overflow = ''; }
-  // Deselect card visually but keep selectedProjectType so country change can reopen
+  // Deselect card visually; keep selectedProjectType so re-renders work if modal is re-opened
   document.querySelectorAll('.gen-card').forEach(c => c.classList.remove('selected'));
 }
 
