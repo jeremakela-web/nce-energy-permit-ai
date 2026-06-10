@@ -1325,7 +1325,7 @@
     <div class="gen-layout">
       <div class="gen-page-title" data-i18n="tab_generator">Lupa-asiakirjapalvelu</div>
       <div class="gen-page-sub" data-i18n="gen_desc">
-        Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa (~60 s).
+        Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa.
         Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.
       </div>
 
@@ -1338,6 +1338,7 @@
           <option value="DA">🇩🇰 Danmark (DA)</option>
           <option value="NO">🇳🇴 Norge (NO)</option>
           <option value="PL">🇵🇱 Polska (PL)</option>
+          <option value="DE">🇩🇪 Deutschland (DE)</option>
         </select>
       </div>
       <!-- country option texts are updated by _rebuildCountrySelect() on language change -->
@@ -1851,7 +1852,7 @@ const TRANSLATIONS = {
     gen_done_title: 'Lupahakemusluonnos valmis!',
     gen_done_note:  'AI-luonnos — vaatii asiantuntijatarkistuksen ennen jättämistä',
     gen_proofread_pending: 'Tarkistettu versio valmisteilla',
-    gen_proofread_sub:     'AI-oikoluku käynnissä taustalla (60–90 s)',
+    gen_proofread_sub:     'AI-oikoluku käynnissä taustalla',
     gen_proofread_done:    'Tarkistettu versio valmis!',
     gen_proofread_dl:      'Lataa tarkistettu versio',
     gen_proofread_err:     'Oikoluku epäonnistui',
@@ -1870,8 +1871,8 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI tunnistaa automaattisesti sääntelyaukot ja varoittaa kohdista joissa viranomainen todennäköisesti pyytää lisäselvityksiä — Tanskalla ei ole aktiivista SMR-ohjelmaa eikä ydinenergialakia.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI tunnistaa automaattisesti sääntelyaukot ja varoittaa kohdista joissa viranomainen todennäköisesti pyytää lisäselvityksiä — Saksan ydinvoimapäätös on avoinna; AtG-laki on käytössä mutta uudet rakentamisluvat ovat poliittisesti epävarmat.',
     badge_reg_warning:       'Sääntelyaukot',
-    gen_timing_smr: 'Tämä voi viedä 60–90 sekuntia SMR/offshore-hakemuksille.',
-    gen_timing_std: 'Odota n. 30–60 s.',
+    gen_timing_smr: 'SMR/offshore-hakemukset voivat kestää muutaman minuutin.',
+    gen_timing_std: 'Odota hetki.',
     h3_hanke_tiedot:  'Hankkeen tiedot',
     lbl_owner:        'Hankkeen omistaja',
     lbl_proj_name:    'Hankkeen nimi',
@@ -1918,7 +1919,7 @@ const TRANSLATIONS = {
     lbl_status_idle:  'Odottaa toimintoa…',
     lbl_logbar_ready: 'Valmis — valitse hanketyyppi aloittaaksesi',
     // Form UI
-    gf_form_sub:       'Täytä hankkeen tiedot. AI generoi asiakirjaluonnoksen RAG-haun ja Claude-mallin avulla (~60 s, SMR/offshore ~90 s).',
+    gf_form_sub:       'Täytä hankkeen tiedot. AI generoi asiakirjaluonnoksen RAG-haun ja Claude-mallin avulla.',
     gf_luvat_heading:  'Luvat (yleisesti):',
     gf_submit_btn:     'Generoi asiakirja PDF',
     gf_disclaimer:     'AI-luonnos (RAG + Claude) — vaatii asiantuntijatarkistuksen ennen jättämistä. Ei juridinen neuvo.',
@@ -2173,7 +2174,7 @@ const TRANSLATIONS = {
     gen_done_title: 'Permit application draft ready!',
     gen_done_note:  'AI draft — requires expert review before submission',
     gen_proofread_pending: 'Proofread version in progress',
-    gen_proofread_sub:     'AI proofreading running in background (60–90 s)',
+    gen_proofread_sub:     'AI proofreading running in background',
     gen_proofread_done:    'Proofread version ready!',
     gen_proofread_dl:      'Download proofread version',
     gen_proofread_err:     'Proofreading failed',
@@ -2192,8 +2193,8 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI automatically identifies regulatory gaps and warns about sections where the authority is likely to request additional clarification — Denmark has no active SMR programme or nuclear energy act.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI automatically identifies regulatory gaps and warns about sections where the authority is likely to request additional clarification — Germany\'s nuclear decision is open; AtG framework exists but new construction permits remain politically uncertain.',
     badge_reg_warning:       'Regulatory gaps',
-    gen_timing_smr: 'This may take 60–90 seconds for SMR/offshore applications.',
-    gen_timing_std: 'Please wait approx. 30–60 s.',
+    gen_timing_smr: 'SMR/offshore applications may take a few minutes.',
+    gen_timing_std: 'Please wait a moment.',
     h3_hanke_tiedot:  'Project Details',
     lbl_owner:        'Project Owner',
     lbl_proj_name:    'Project Name',
@@ -2240,7 +2241,7 @@ const TRANSLATIONS = {
     lbl_status_idle:  'Waiting for action…',
     lbl_logbar_ready: 'Ready — select project type to begin',
     // Form UI
-    gf_form_sub:       'Fill in project details. AI generates a document draft using RAG search and Claude model (~60 s, SMR/offshore ~90 s).',
+    gf_form_sub:       'Fill in project details. AI generates a document draft using RAG search and Claude model.',
     gf_luvat_heading:  'Permits (general):',
     gf_submit_btn:     'Generate document PDF',
     gf_disclaimer:     'AI draft (RAG + Claude) — requires expert review before submission. Not legal advice.',
@@ -2465,7 +2466,7 @@ const TRANSLATIONS = {
     tab_map:              'Markanvändningsutredning',
     tab_map_short:        'Plats',
     subtitle:             'Energiprojekt tillståndsanalys',
-    gen_desc:       'Välj projekttyp och fyll i grunduppgifterna — AI genererar ett RAG-baserat tillståndsansökningsutkast i PDF-format (~60 s). Utkastet kräver expertgranskning innan inlämning.',
+    gen_desc:       'Välj projekttyp och fyll i grunduppgifterna — AI genererar ett RAG-baserat tillståndsansökningsutkast i PDF-format. Utkastet kräver expertgranskning innan inlämning.',
     gen_form_title: 'Tillståndsansökningsutkast — PDF',
     lbl_hanketyyppi:'Projekttyp',
     h3_hanketyyppi: 'Projekttyp',
@@ -2485,7 +2486,7 @@ const TRANSLATIONS = {
     gen_done_title: 'Tillståndsansökan är klar!',
     gen_done_note:  'AI-utkast — kräver expertgranskning innan inlämning',
     gen_proofread_pending: 'Korrekturläst version under förberedelse',
-    gen_proofread_sub:     'AI-korrekturläsning körs i bakgrunden (60–90 s)',
+    gen_proofread_sub:     'AI-korrekturläsning körs i bakgrunden',
     gen_proofread_done:    'Korrekturläst version klar!',
     gen_proofread_dl:      'Ladda ned korrekturläst version',
     gen_proofread_err:     'Korrekturläsningen misslyckades',
@@ -2504,8 +2505,8 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI identifierar automatiskt regulatoriska luckor och varnar om avsnitt där myndigheten sannolikt begär ytterligare förtydliganden — Danmark saknar ett aktivt SMR-program och kärnenergilag.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI identifierar automatiskt regulatoriska luckor och varnar om avsnitt där myndigheten sannolikt begär ytterligare förtydliganden — Tysklands kärnkraftsbeslut är öppet; AtG-ramverket finns men nya bygglov är politiskt osäkra.',
     badge_reg_warning:       'Regulatoriska luckor',
-    gen_timing_smr: 'Detta kan ta 60–90 sekunder för SMR/offshore-ansökningar.',
-    gen_timing_std: 'Vänta ca 30–60 s.',
+    gen_timing_smr: 'SMR/offshore-ansökningar kan ta några minuter.',
+    gen_timing_std: 'Vänta ett ögonblick.',
     h3_hanke_tiedot:  'Projektuppgifter',
     lbl_owner:        'Projektägare',
     lbl_proj_name:    'Projektnamn',
@@ -2552,7 +2553,7 @@ const TRANSLATIONS = {
     lbl_status_idle:  'Väntar på åtgärd…',
     lbl_logbar_ready: 'Redo — välj projekttyp för att börja',
     // Form UI
-    gf_form_sub:       'Fyll i projektuppgifterna. AI genererar ett dokumentutkast med RAG-sökning och Claude-modell (~60 s, SMR/offshore ~90 s).',
+    gf_form_sub:       'Fyll i projektuppgifterna. AI genererar ett dokumentutkast med RAG-sökning och Claude-modell.',
     gf_luvat_heading:  'Tillstånd (allmänt):',
     gf_submit_btn:     'Generera dokument PDF',
     gf_disclaimer:     'AI-utkast (RAG + Claude) — kräver expertgranskning innan inlämning. Inte juridisk rådgivning.',
@@ -2777,7 +2778,7 @@ const TRANSLATIONS = {
     tab_map:              'Arealanvendelsesundersøgelse',
     tab_map_short:        'Placering',
     subtitle:             'Energiprojekt tilladelsesanalyse',
-    gen_desc:       'Vælg projekttype og udfyld grundoplysninger — AI genererer et RAG-baseret tilladelses­ansøgningsudkast i PDF-format (~60 s). Udkastet kræver ekspertgennemgang inden indsendelse.',
+    gen_desc:       'Vælg projekttype og udfyld grundoplysninger — AI genererer et RAG-baseret tilladelses­ansøgningsudkast i PDF-format. Udkastet kræver ekspertgennemgang inden indsendelse.',
     gen_form_title: 'Tilladelses­ansøgningsudkast — PDF',
     lbl_hanketyyppi:'Projekttype',
     h3_hanketyyppi: 'Projekttype',
@@ -2804,8 +2805,8 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI identificerer automatisk regulatoriske huller og advarer om afsnit, hvor myndigheden sandsynligvis anmoder om yderligere afklaring — Danmark har intet aktivt SMR-program eller kerneenergilov.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI identificerer automatisk regulatoriske huller og advarer om afsnit, hvor myndigheden sandsynligvis anmoder om yderligere afklaring — Tysklands atomkraftbeslutning er åben; AtG-rammen eksisterer, men nye byggetilladelser er politisk usikre.',
     badge_reg_warning:       'Regulatoriske huller',
-    gen_timing_smr: 'Dette kan tage 60–90 sekunder for SMR/offshore-ansøgninger.',
-    gen_timing_std: 'Vent ca. 30–60 s.',
+    gen_timing_smr: 'SMR/offshore-ansøgninger kan tage et par minutter.',
+    gen_timing_std: 'Vent et øjeblik.',
     btn_fetch:      'Søg',
     gf_submit_btn:  'Generer dokument PDF',
     gf_disclaimer:  'AI-udkast (RAG + Claude) — kræver ekspertgennemgang inden indsendelse. Ikke juridisk rådgivning.',
@@ -2848,7 +2849,7 @@ const TRANSLATIONS = {
     lbl_logbar_ready: 'Klar — vælg projekttype for at begynde',
     // Proofread
     gen_proofread_pending: 'Korrekturlæst version under forberedelse',
-    gen_proofread_sub:     'AI-korrekturlæsning kører i baggrunden (60–90 s)',
+    gen_proofread_sub:     'AI-korrekturlæsning kører i baggrunden',
     gen_proofread_done:    'Korrekturlæst version klar!',
     gen_proofread_dl:      'Download korrekturlæst version',
     gen_proofread_err:     'Korrekturlæsning mislykkedes',
@@ -2906,7 +2907,7 @@ const TRANSLATIONS = {
     h3_loki:               'Log',
     lbl_status_idle:       'Venter på handling…',
     // Form UI
-    gf_form_sub:           'Udfyld projektoplysninger. AI genererer et dokumentudkast med RAG-søgning og Claude-model (~60 s, SMR/offshore ~90 s).',
+    gf_form_sub:           'Udfyld projektoplysninger. AI genererer et dokumentudkast med RAG-søgning og Claude-model.',
     gf_luvat_heading:      'Tilladelser (generelt):',
     gf_auto_info:          'Automatisk identificeret baseret på valgt projekttype',
     // Form titles
@@ -3095,7 +3096,7 @@ const TRANSLATIONS = {
     tab_map:              'Arealbruksundersøkelse',
     tab_map_short:        'Plassering',
     subtitle:             'Energiprosjekt tillatelsesanalyse',
-    gen_desc:       'Velg prosjekttype og fyll inn grunnleggende opplysninger — AI genererer et RAG-basert tillatelsessøknadsutkast i PDF-format (~60 s). Utkastet krever ekspertgjennomgang før innlevering.',
+    gen_desc:       'Velg prosjekttype og fyll inn grunnleggende opplysninger — AI genererer et RAG-basert tillatelsessøknadsutkast i PDF-format. Utkastet krever ekspertgjennomgang før innlevering.',
     gen_form_title: 'Tillatelsessøknadsutkast — PDF',
     lbl_hanketyyppi:'Prosjekttype',
     h3_hanketyyppi: 'Prosjekttype',
@@ -3122,8 +3123,8 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI identifiserer automatisk regulatoriske gap og advarer om avsnitt der myndigheten sannsynligvis ber om ytterligere avklaring — Danmark har ikke noe aktivt SMR-program eller kjernekraftlov.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI identifiserer automatisk regulatoriske gap og advarer om avsnitt der myndigheten sannsynligvis ber om ytterligere avklaring — Tysklands kjernekraftbeslutning er åpen; AtG-rammeverket finnes, men nye byggetillatelser er politisk usikre.',
     badge_reg_warning:       'Regulatoriske gap',
-    gen_timing_smr: 'Dette kan ta 60–90 sekunder for SMR/offshore-søknader.',
-    gen_timing_std: 'Vent ca. 30–60 s.',
+    gen_timing_smr: 'SMR/offshore-søknader kan ta noen minutter.',
+    gen_timing_std: 'Vent et øyeblikk.',
     btn_fetch:      'Søk',
     gf_submit_btn:  'Generer dokument PDF',
     gf_disclaimer:  'AI-utkast (RAG + Claude) — krever ekspertgjennomgang før innlevering. Ikke juridisk råd.',
@@ -3166,7 +3167,7 @@ const TRANSLATIONS = {
     lbl_logbar_ready: 'Klar — velg prosjekttype for å starte',
     // Proofread
     gen_proofread_pending: 'Korrekturlest versjon under forberedelse',
-    gen_proofread_sub:     'AI-korrekturlesing kjører i bakgrunnen (60–90 s)',
+    gen_proofread_sub:     'AI-korrekturlesing kjører i bakgrunnen',
     gen_proofread_done:    'Korrekturlest versjon klar!',
     gen_proofread_dl:      'Last ned korrekturlest versjon',
     gen_proofread_err:     'Korrekturlesing mislyktes',
@@ -3224,7 +3225,7 @@ const TRANSLATIONS = {
     h3_loki:               'Logg',
     lbl_status_idle:       'Venter på handling…',
     // Form UI
-    gf_form_sub:           'Fyll inn prosjektopplysninger. AI genererer et dokumentutkast med RAG-søk og Claude-modell (~60 s, SMR/offshore ~90 s).',
+    gf_form_sub:           'Fyll inn prosjektopplysninger. AI genererer et dokumentutkast med RAG-søk og Claude-modell.',
     gf_luvat_heading:      'Tillatelser (generelt):',
     gf_auto_info:          'Automatisk identifisert basert på valgt prosjekttype',
     // Form titles
@@ -3413,7 +3414,7 @@ const TRANSLATIONS = {
     tab_map:              'Analiza zagospodarowania terenu',
     tab_map_short:        'Lokalizacja',
     subtitle:             'Analiza zezwoleń dla projektów energetycznych',
-    gen_desc:       'Wybierz typ projektu i wypełnij podstawowe dane — AI wygeneruje szkic wniosku o zezwolenie w oparciu o RAG w formacie PDF (~60 s). Szkic wymaga przeglądu eksperta przed złożeniem.',
+    gen_desc:       'Wybierz typ projektu i wypełnij podstawowe dane — AI wygeneruje szkic wniosku o zezwolenie w oparciu o RAG w formacie PDF. Szkic wymaga przeglądu eksperta przed złożeniem.',
     gen_form_title: 'Szkic wniosku o zezwolenie — PDF',
     lbl_hanketyyppi:'Typ projektu',
     h3_hanketyyppi: 'Typ projektu',
@@ -3440,8 +3441,8 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI automatycznie identyfikuje luki regulacyjne i ostrzega o sekcjach, w których organ prawdopodobnie poprosi o dodatkowe wyjaśnienia — Dania nie ma aktywnego programu SMR ani ustawy o energii jądrowej.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI automatycznie identyfikuje luki regulacyjne i ostrzega o sekcjach, w których organ prawdopodobnie poprosi o dodatkowe wyjaśnienia — decyzja Niemiec ws. energii jądrowej jest otwarta; ramy AtG istnieją, ale nowe pozwolenia budowlane są politycznie niepewne.',
     badge_reg_warning:       'Luki regulacyjne',
-    gen_timing_smr: 'Może to potrwać 60–90 sekund dla wniosków SMR/offshore.',
-    gen_timing_std: 'Poczekaj ok. 30–60 s.',
+    gen_timing_smr: 'Wnioski SMR/offshore mogą potrwać kilka minut.',
+    gen_timing_std: 'Poczekaj chwilę.',
     btn_fetch:      'Szukaj',
     gf_submit_btn:  'Generuj dokument PDF',
     gf_disclaimer:  'Szkic AI (RAG + Claude) — wymaga przeglądu eksperta przed złożeniem. Nie jest poradą prawną.',
@@ -3484,7 +3485,7 @@ const TRANSLATIONS = {
     lbl_logbar_ready: 'Gotowy — wybierz typ projektu, aby rozpocząć',
     // Proofread
     gen_proofread_pending: 'Wersja po korekcie w przygotowaniu',
-    gen_proofread_sub:     'Korekta AI działa w tle (60–90 s)',
+    gen_proofread_sub:     'Korekta AI działa w tle',
     gen_proofread_done:    'Wersja po korekcie gotowa!',
     gen_proofread_dl:      'Pobierz wersję po korekcie',
     gen_proofread_err:     'Korekta nie powiodła się',
@@ -3542,7 +3543,7 @@ const TRANSLATIONS = {
     h3_loki:               'Dziennik',
     lbl_status_idle:       'Oczekiwanie na działanie…',
     // Form UI
-    gf_form_sub:           'Uzupełnij dane projektu. AI generuje szkic dokumentu na podstawie wyszukiwania RAG i modelu Claude (~60 s, SMR/offshore ~90 s).',
+    gf_form_sub:           'Uzupełnij dane projektu. AI generuje szkic dokumentu na podstawie wyszukiwania RAG i modelu Claude.',
     gf_luvat_heading:      'Zezwolenia (ogólnie):',
     gf_auto_info:          'Automatycznie zidentyfikowano na podstawie wybranego typu projektu',
     // Form titles
@@ -3731,7 +3732,7 @@ const TRANSLATIONS = {
     tab_map:              'Flächennutzungsanalyse',
     tab_map_short:        'Standort',
     subtitle:             'Genehmigungsprozessanalyse für Energieprojekte',
-    gen_desc:       'Wählen Sie den Projekttyp und füllen Sie die Grunddaten aus — KI erstellt einen RAG-basierten Genehmigungsantragsentwurf als PDF (~60 s). Der Entwurf muss vor der Einreichung von einem Experten geprüft werden.',
+    gen_desc:       'Wählen Sie den Projekttyp und füllen Sie die Grunddaten aus — KI erstellt einen RAG-basierten Genehmigungsantragsentwurf als PDF. Der Entwurf muss vor der Einreichung von einem Experten geprüft werden.',
     gen_form_title: 'Genehmigungsantragsentwurf — PDF',
     lbl_hanketyyppi:'Projekttyp',
     h3_hanketyyppi: 'Projekttyp',
@@ -3751,7 +3752,7 @@ const TRANSLATIONS = {
     gen_done_title: 'Genehmigungsantragsentwurf fertig!',
     gen_done_note:  'KI-Entwurf — muss vor der Einreichung von einem Experten geprüft werden',
     gen_proofread_pending: 'Geprüfte Version wird vorbereitet',
-    gen_proofread_sub:     'KI-Korrektur läuft im Hintergrund (60–90 s)',
+    gen_proofread_sub:     'KI-Korrektur läuft im Hintergrund',
     gen_proofread_done:    'Geprüfte Version fertig!',
     gen_proofread_dl:      'Geprüfte Version herunterladen',
     gen_proofread_err:     'Korrektur fehlgeschlagen',
@@ -3766,8 +3767,8 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI erkennt automatisch regulatorische Lücken und warnt vor Abschnitten, in denen die Behörde voraussichtlich zusätzliche Erläuterungen anfordert — Dänemark hat kein aktives SMR-Programm oder Kernenergigesetz.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI erkennt automatisch regulatorische Lücken und warnt vor Abschnitten, in denen die Behörde voraussichtlich zusätzliche Erläuterungen anfordert — Deutschlands Kernkraftentscheidung ist offen; AtG-Rahmen besteht, aber neue Baugenehmigungen sind politisch unsicher.',
     badge_reg_warning:       'Regulatorische Lücken',
-    gen_timing_smr: 'Dies kann bei SMR/Offshore-Anträgen 60–90 Sekunden dauern.',
-    gen_timing_std: 'Bitte ca. 30–60 s warten.',
+    gen_timing_smr: 'SMR/Offshore-Anträge können einige Minuten dauern.',
+    gen_timing_std: 'Bitte einen Moment warten.',
     h3_hanke_tiedot:  'Projektdaten',
     lbl_owner:        'Projektinhaber',
     lbl_proj_name:    'Projektname',
@@ -4965,7 +4966,7 @@ function setCountry(code) {
   if (topSel && topSel.value !== code) topSel.value = code;
 
   // Sync modal button bar
-  ['FI','SE','DA','NO','PL'].forEach(c => {
+  ['FI','SE','DA','NO','PL','DE'].forEach(c => {
     const btn = document.getElementById('country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
@@ -6874,6 +6875,7 @@ function archExportJson() {
         <button class="lang-btn" id="country-btn-DA" onclick="setCountry('DA')">🇩🇰 DA</button>
         <button class="lang-btn" id="country-btn-NO" onclick="setCountry('NO')">🇳🇴 NO</button>
         <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
+        <button class="lang-btn" id="country-btn-DE" onclick="setCountry('DE')">🇩🇪 DE</button>
       </div>
       <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
       <div id="gen-country-hint" class="gen-country-hint" style="display:none;" data-i18n="country_hint">Valitse ensin kohdemaasi</div>

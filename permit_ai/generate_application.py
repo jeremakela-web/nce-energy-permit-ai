@@ -2688,7 +2688,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "disclaimer_h":    "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN",
         "disclaimer_b":    ("Tekoälyavusteinen luonnos — ei juridisesti sitova. "
                             "Tarkistuta asiantuntijalla ennen hakemuksen jättämistä."),
-        "nce_speed_note":  ("NCE Permit AI generoi hakemuspohjan ~60 sekunnissa. "
+        "nce_speed_note":  ("NCE Permit AI generoi hakemuspohjan muutamassa minuutissa. "
                             "Viranomaisen arviointiviive on erillinen prosessi ja vaihtelee "
                             "hanketyypeittäin (ks. alta)."),
         "arviointiviive_lbl": "Viranomaisen arviointiviive",
@@ -2781,7 +2781,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "disclaimer_h":    "AI DRAFT — REQUIRES EXPERT REVIEW",
         "disclaimer_b":    ("AI-assisted draft — not legally binding. "
                             "Review with a qualified expert before submission."),
-        "nce_speed_note":  ("NCE Permit AI generates the application draft in ~60 seconds. "
+        "nce_speed_note":  ("NCE Permit AI generates the application draft in minutes. "
                             "Authority processing time is a separate process and varies by project type "
                             "(see below)."),
         "arviointiviive_lbl": "Authority processing time",
@@ -3224,7 +3224,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "disclaimer_h":    "KI-ENTWURF — EXPERTENPRÜFUNG ERFORDERLICH",
         "disclaimer_b":    ("KI-gestützter Entwurf — rechtlich nicht bindend. "
                             "Vor der Einreichung des Antrags von einem Experten prüfen lassen."),
-        "nce_speed_note":  ("NCE Permit AI erstellt eine Antragsvorlage in ~60 Sekunden. "
+        "nce_speed_note":  ("NCE Permit AI erstellt eine Antragsvorlage in wenigen Minuten. "
                             "Die Bearbeitungszeit der Behörde ist ein separater Prozess und variiert "
                             "je nach Projekttyp (siehe unten)."),
         "arviointiviive_lbl": "Bearbeitungszeit der Behörde",
