@@ -1,2564 +1,647 @@
-<!DOCTYPE html>
-<html lang="fi">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NCE Energy Permit AI – Energiahankkeiden lupaprosessianalyysi</title>
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
-
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #1a1a2e;
-      color: #e0e0e0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    /* ── Header ── */
-    header {
-      background: #16213e;
-      border-bottom: 2px solid #0f3460;
-      padding: 0 20px;
-      display: flex;
-      align-items: stretch;
-      gap: 0;
-      flex-shrink: 0;
-      min-height: 52px;
-    }
-
-    .header-brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 8px 0;
-      flex-shrink: 0;
-    }
-
-    header h1 { font-size: 1.05rem; color: #e94560; letter-spacing: 0.5px; }
-    header .subtitle { font-size: 0.76rem; color: #8899aa; }
-
-    .badge {
-      background: #0f3460;
-      border: 1px solid #e94560;
-      border-radius: 4px;
-      padding: 3px 10px;
-      font-size: 0.75rem;
-      color: #e94560;
-    }
-
-    /* ── Tab Navigation ── */
-    .tab-nav {
-      display: flex;
-      align-items: flex-end;
-      gap: 2px;
-      margin-left: 20px;
-      align-self: stretch;
-    }
-
-    .tab-btn {
-      background: transparent;
-      border: none;
-      border-bottom: 3px solid transparent;
-      padding: 8px 18px 10px;
-      color: #8899aa;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: color 0.18s, border-color 0.18s;
-      white-space: nowrap;
-      font-family: inherit;
-      align-self: flex-end;
-    }
-    .tab-btn:hover { color: #c0d0e0; background: rgba(255,255,255,0.04); }
-    .tab-btn.active { color: #00C2A8; border-bottom-color: #00C2A8; font-weight: 600; }
-
-    .header-right {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* ── Tab area ── */
-    .tab-area {
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .tab-content {
-      display: none;
-      flex: 1;
-      min-height: 0;
-    }
-
-    .tab-content.active {
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ── Generator tab ── */
-    #tab-generator.active {
-      overflow-y: auto;
-    }
-
-    .gen-layout {
-      padding: 26px 32px 40px;
-      max-width: 1280px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .gen-page-title {
-      font-size: 1.18rem;
-      color: #00C2A8;
-      font-weight: 700;
-      margin-bottom: 4px;
-      letter-spacing: 0.3px;
-    }
-
-    .gen-page-sub {
-      font-size: 0.82rem;
-      color: #8899aa;
-      margin-bottom: 22px;
-      line-height: 1.5;
-    }
-
-    .gen-section-label {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #4a6a8a;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    /* ── Project type cards ── */
-    .gen-cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 13px;
-      margin-bottom: 26px;
-    }
-
-    .gen-card {
-      background: #16213e;
-      border: 1.5px solid #2a3a5e;
-      border-radius: 12px;
-      padding: 18px 13px 14px;
-      cursor: pointer;
-      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.12s;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
-    }
-
-    .gen-card:hover {
-      border-color: #00C2A8;
-      background: #1a2a48;
-      box-shadow: 0 4px 24px rgba(0,194,168,0.14);
-      transform: translateY(-2px);
-    }
-
-    .gen-card.selected {
-      border-color: #00C2A8;
-      background: #0d1e30;
-      box-shadow: 0 0 0 2px rgba(0,194,168,0.3), 0 4px 20px rgba(0,194,168,0.18);
-    }
-
-    .gen-card-icon {
-      font-size: 2rem;
-      margin-bottom: 9px;
-      line-height: 1;
-      filter: drop-shadow(0 2px 6px rgba(0,194,168,0.2));
-    }
-
-    .gen-card-name {
-      font-size: 0.83rem;
-      color: #e0e0e0;
-      font-weight: 600;
-      margin-bottom: 3px;
-      line-height: 1.3;
-    }
-
-    .gen-card-sub {
-      font-size: 0.66rem;
-      color: #6a8aaa;
-      line-height: 1.4;
-    }
-
-    .gen-card-badge {
-      display: inline-block;
-      background: rgba(0,194,168,0.18);
-      color: #00C2A8;
-      font-size: 0.58rem;
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: 8px;
-      margin-top: 5px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-
-    /* ── Generator form ── */
-    .gen-form-wrap {
-      background: #16213e;
-      border: 1.5px solid #00C2A8;
-      border-radius: 14px;
-      padding: 24px 28px 22px;
-      max-width: 800px;
-      animation: fadeSlideIn 0.22s ease;
-    }
-
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .gen-form-title {
-      font-size: 0.98rem;
-      color: #00C2A8;
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-
-    .gen-form-sub {
-      font-size: 0.73rem;
-      color: #4a6a8a;
-      margin-bottom: 18px;
-      line-height: 1.5;
-    }
-
-    .gen-form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .gen-form-grid.full { grid-template-columns: 1fr; }
-
-    .gen-field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .gen-field label {
-      font-size: 0.69rem;
-      color: #4a7a9a;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-    }
-
-    .gen-field input,
-    .gen-field select {
-      background: #0f2040;
-      border: 1px solid #2a4a7f;
-      border-radius: 6px;
-      padding: 8px 10px;
-      color: #d8e8ff;
-      font-size: 0.83rem;
-      width: 100%;
-      font-family: inherit;
-      transition: border-color 0.15s;
-    }
-
-    .gen-field input:focus,
-    .gen-field select:focus { outline: none; border-color: #00C2A8; }
-    .gen-field select option { background: #0f1e3a; }
-    .gen-field input[type="number"] { font-family: monospace; }
-
-    .gen-submit-row {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid #1a2a4a;
-    }
-
-    .gen-submit-btn {
-      background: #00C2A8;
-      color: #0a1020;
-      border: none;
-      border-radius: 8px;
-      padding: 11px 24px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-    .gen-submit-btn:hover { background: #00a890; }
-    .gen-submit-btn:disabled { background: #1a3a4a; color: #3a6a7a; cursor: not-allowed; }
-
-    .gen-disclaimer {
-      font-size: 0.68rem;
-      color: #3a5a7a;
-      line-height: 1.55;
-      flex: 1;
-      padding-top: 2px;
-    }
-
-    /* ── BESS tab layout ── */
-    #tab-bess.active {
-      flex-direction: row;
-      overflow: hidden;
-    }
-
-    /* ── Sidebar ── */
-    .main-container {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .sidebar {
-      width: 320px;
-      background: #16213e;
-      border-right: 1px solid #0f3460;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      flex-shrink: 0;
-    }
-
-    .sidebar-section {
-      border-bottom: 1px solid #0f3460;
-      padding: 14px 16px;
-    }
-
-    .sidebar-section h3 {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #e94560;
-      margin-bottom: 10px;
-    }
-
-    .kt-input-row {
-      display: flex;
-      gap: 6px;
-    }
-
-    .kt-input-row input {
-      flex: 1;
-      background: #0f3460;
-      border: 1px solid #2a4a7f;
-      border-radius: 4px;
-      padding: 7px 10px;
-      color: #e0e0e0;
-      font-size: 0.85rem;
-      font-family: monospace;
-    }
-
-    .kt-input-row input:focus { outline: none; border-color: #e94560; }
-
-    button.btn {
-      background: #e94560;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 7px 14px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      transition: background 0.2s;
-      white-space: nowrap;
-    }
-
-    button.btn:hover { background: #c73652; }
-    button.btn:disabled { background: #555; cursor: not-allowed; }
-    button.btn.secondary {
-      background: #0f3460;
-      border: 1px solid #2a4a7f;
-    }
-    button.btn.secondary:hover { background: #1a4880; }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .info-item {
-      background: #0f3460;
-      border-radius: 4px;
-      padding: 8px 10px;
-    }
-
-    .info-item .label {
-      font-size: 0.68rem;
-      color: #8899aa;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 3px;
-    }
-
-    .info-item .value {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: #e0e0e0;
-    }
-
-    .info-item .value.ok { color: #4caf50; }
-    .info-item .value.warn { color: #ff9800; }
-    .info-item .value.na { color: #8899aa; }
-
-    .layer-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      cursor: pointer;
-    }
-
-    .layer-toggle input[type="checkbox"] { accent-color: #e94560; }
-    .layer-toggle span { font-size: 0.83rem; }
-    .layer-toggle .dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .score-bar-wrap { margin-top: 6px; }
-    .score-bar-wrap .score-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      color: #8899aa;
-      margin-bottom: 4px;
-    }
-
-    .score-bar {
-      height: 8px;
-      background: #0f3460;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .score-bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      background: linear-gradient(90deg, #e94560, #f4a261);
-      transition: width 0.6s ease;
-    }
-
-    #status-log {
-      font-size: 0.75rem;
-      color: #8899aa;
-      min-height: 40px;
-      line-height: 1.6;
-    }
-
-    #status-log .ok { color: #4caf50; }
-    #status-log .err { color: #e94560; }
-    #status-log .info { color: #64b5f6; }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    /* ── Map ── */
-    #map {
-      flex: 1;
-      background: #0d1117;
-    }
-
-    /* Leaflet dark overrides */
-    .leaflet-control-zoom a { background: #16213e !important; color: #e0e0e0 !important; border-color: #0f3460 !important; }
-    .leaflet-control-zoom a:hover { background: #0f3460 !important; }
-    .leaflet-control-attribution { background: rgba(22,33,62,0.85) !important; color: #8899aa !important; font-size: 0.65rem !important; }
-    .leaflet-control-attribution a { color: #64b5f6 !important; }
-
-    .leaflet-popup-content-wrapper {
-      background: #16213e;
-      color: #e0e0e0;
-      border: 1px solid #0f3460;
-      border-radius: 6px;
-      font-size: 0.82rem;
-    }
-    .leaflet-popup-tip { background: #16213e; }
-
-    /* Loading spinner */
-    .spinner {
-      display: inline-block;
-      width: 12px; height: 12px;
-      border: 2px solid #8899aa;
-      border-top-color: #e94560;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .proj-field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 8px;
-    }
-    .proj-field:last-child { margin-bottom: 0; }
-    .proj-field label {
-      font-size: 0.72rem;
-      color: #8899aa;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .proj-field input,
-    .proj-field select {
-      background: #0f3460;
-      border: 1px solid #2a4a7f;
-      border-radius: 4px;
-      padding: 6px 10px;
-      color: #e0e0e0;
-      font-size: 0.82rem;
-      width: 100%;
-    }
-    .proj-field input:focus,
-    .proj-field select:focus { outline: none; border-color: #e94560; }
-    .proj-field select option { background: #16213e; }
-    .proj-field input[type="number"] { font-family: monospace; }
-
-    /* ── Lokipalkki ── */
-    #logbar {
-      flex-shrink: 0;
-      background: #0d1117;
-      border-top: 2px solid #0f3460;
-      padding: 0 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 2px;
-      min-height: 58px;
-      overflow: hidden;
-    }
-
-    .logbar-entry {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 0.76rem;
-      font-family: 'Segoe UI', monospace;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.5;
-      transition: opacity 0.3s;
-    }
-
-    .logbar-entry.newest {
-      font-size: 0.84rem;
-      font-weight: 600;
-      animation: logSlideIn 0.25s ease;
-    }
-
-    .logbar-entry.older   { opacity: 0.38; }
-    .logbar-entry.middle  { opacity: 0.62; }
-
-    .logbar-entry.ok   { color: #4caf50; }
-    .logbar-entry.err  { color: #e94560; }
-    .logbar-entry.info { color: #64b5f6; }
-    .logbar-entry.warn { color: #ff9800; }
-
-    .logbar-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .logbar-entry.ok   .logbar-dot { background: #4caf50; box-shadow: 0 0 4px #4caf50; }
-    .logbar-entry.err  .logbar-dot { background: #e94560; box-shadow: 0 0 4px #e94560; }
-    .logbar-entry.info .logbar-dot { background: #64b5f6; }
-    .logbar-entry.warn .logbar-dot { background: #ff9800; }
-
-    .logbar-ts {
-      color: #4a5a6a;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-
-    .logbar-msg { overflow: hidden; text-overflow: ellipsis; }
-
-    @keyframes logSlideIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── Generoi hakemus -lomake (Permit AI panel) ── */
-    .pai-gen-form {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-      background: #0a1628;
-      border-top: 1px solid #1e3a6a;
-    }
-    .pai-gen-form.open {
-      max-height: 400px;
-      padding: 12px 14px 14px;
-    }
-    .pai-gen-form h4 {
-      font-size: 0.78rem;
-      color: #64b5f6;
-      font-weight: 700;
-      margin-bottom: 10px;
-      letter-spacing: 0.3px;
-    }
-    .pai-gen-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin-bottom: 7px;
-    }
-    .pai-gen-row.full { grid-template-columns: 1fr; }
-    .pai-gen-field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .pai-gen-field label {
-      font-size: 0.67rem;
-      color: #4a6a9a;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-    .pai-gen-field input,
-    .pai-gen-field select {
-      background: #1a2a4a;
-      border: 1px solid #2a4a7f;
-      border-radius: 5px;
-      padding: 6px 8px;
-      color: #d8e8ff;
-      font-size: 0.79rem;
-      width: 100%;
-    }
-    .pai-gen-field input:focus,
-    .pai-gen-field select:focus { outline: none; border-color: #3a7bd5; }
-    .pai-gen-field select option { background: #0f1e3a; }
-    .pai-gen-actions {
-      display: flex;
-      gap: 7px;
-      margin-top: 10px;
-    }
-    .pai-gen-submit {
-      flex: 1;
-      background: #3a7bd5;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .pai-gen-submit:hover { background: #2a6bc5; }
-    .pai-gen-submit:disabled { background: #1a2a4a; color: #3a5a7a; cursor: not-allowed; }
-    .pai-gen-cancel {
-      background: none;
-      border: 1px solid #2a4a7f;
-      border-radius: 6px;
-      padding: 8px 12px;
-      color: #4a6a9a;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .pai-gen-cancel:hover { border-color: #e94560; color: #e94560; }
-    .btn-gen-hakemus {
-      background: #0f3a1a;
-      border: 1px solid #2a7a4a;
-      border-radius: 10px;
-      padding: 3px 9px;
-      font-size: 0.7rem;
-      color: #4caf50;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-      font-weight: 600;
-    }
-    .btn-gen-hakemus:hover { background: #1a4a2a; border-color: #4caf50; color: #80e090; }
-
-    /* ── Permit AI Chat Panel ── */
-    .permit-ai-panel {
-      position: fixed;
-      top: 0; right: 0;
-      width: 420px;
-      height: 100vh;
-      background: #12192e;
-      border-left: 2px solid #3a7bd5;
-      display: flex;
-      flex-direction: column;
-      z-index: 1500;
-      transform: translateX(100%);
-      transition: transform 0.28s cubic-bezier(.4,0,.2,1);
-      box-shadow: -6px 0 30px rgba(0,0,0,0.6);
-    }
-    .permit-ai-panel.open { transform: translateX(0); }
-
-    .pai-header {
-      background: #0f1e3a;
-      border-bottom: 1px solid #1e3a6a;
-      padding: 11px 14px;
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      flex-shrink: 0;
-    }
-    .pai-header-title { flex: 1; }
-    .pai-header-title h2 { font-size: 0.88rem; color: #64b5f6; letter-spacing: 0.3px; }
-    .pai-header-title p { font-size: 0.68rem; color: #4a6a9a; margin-top: 1px; }
-    .pai-close {
-      background: none; border: none; color: #4a6a9a;
-      cursor: pointer; font-size: 1.1rem; padding: 2px 6px;
-      border-radius: 4px; line-height: 1; transition: color 0.15s, background 0.15s;
-    }
-    .pai-close:hover { color: #e94560; background: rgba(233,69,96,0.1); }
-
-    .pai-chips {
-      padding: 8px 12px;
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-      border-bottom: 1px solid #1a2a4a;
-      flex-shrink: 0;
-      background: #0f1e3a;
-    }
-    .pai-chip {
-      background: #1a2a4a;
-      border: 1px solid #2a4a7f;
-      border-radius: 10px;
-      padding: 3px 9px;
-      font-size: 0.7rem;
-      color: #64b5f6;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-    .pai-chip:hover { background: #1e3a6a; border-color: #3a7bd5; color: #a0d0ff; }
-
-    .pai-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      scrollbar-width: thin;
-      scrollbar-color: #1e3a6a transparent;
-    }
-    .pai-messages::-webkit-scrollbar { width: 4px; }
-    .pai-messages::-webkit-scrollbar-thumb { background: #1e3a6a; border-radius: 2px; }
-
-    .chat-msg { display: flex; flex-direction: column; gap: 3px; }
-    .chat-msg.user { align-items: flex-end; }
-    .chat-msg.user .bubble {
-      background: #1a3460;
-      border: 1px solid #2a5090;
-      border-radius: 10px 10px 2px 10px;
-      padding: 8px 12px;
-      font-size: 0.81rem;
-      color: #c8daff;
-      max-width: 88%;
-    }
-    .chat-msg.ai .bubble {
-      background: #0f1e3a;
-      border: 1px solid #1e3a6a;
-      border-radius: 2px 10px 10px 10px;
-      padding: 10px 13px;
-      font-size: 0.79rem;
-      line-height: 1.58;
-      color: #d8e8ff;
-      word-break: break-word;
-    }
-    .chat-msg.ai .bubble strong { color: #90caff; }
-    .chat-msg.ai .bubble .md-h2 {
-      font-size: 0.84rem; color: #64b5f6;
-      display: block; margin: 9px 0 3px; font-weight: 700;
-    }
-    .chat-msg.ai .bubble .md-h3 {
-      color: #90caff; display: block;
-      margin: 6px 0 2px; font-weight: 600; font-size: 0.8rem;
-    }
-    .chat-msg.ai .bubble hr { border: none; border-top: 1px solid #1e3a6a; margin: 7px 0; }
-    .chat-msg .sources { font-size: 0.67rem; color: #3a5a8a; padding: 0 4px; }
-
-    .pai-typing {
-      display: flex; gap: 5px; padding: 8px 13px;
-      align-items: center; background: #0f1e3a;
-      border: 1px solid #1e3a6a;
-      border-radius: 2px 10px 10px 10px; width: fit-content;
-    }
-    .pai-typing span {
-      width: 6px; height: 6px; background: #3a7bd5;
-      border-radius: 50%;
-      animation: paiTyping 1.1s infinite ease-in-out;
-    }
-    .pai-typing span:nth-child(2) { animation-delay: 0.18s; }
-    .pai-typing span:nth-child(3) { animation-delay: 0.36s; }
-    @keyframes paiTyping {
-      0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
-      40% { transform: translateY(-5px); opacity: 1; }
-    }
-
-    .pai-input-area {
-      padding: 10px 12px;
-      border-top: 1px solid #1a2a4a;
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-      flex-shrink: 0;
-      background: #0f1e3a;
-    }
-    .pai-input-area textarea {
-      flex: 1;
-      background: #1a2a4a;
-      border: 1px solid #2a4a7f;
-      border-radius: 8px;
-      padding: 8px 11px;
-      color: #d8e8ff;
-      font-size: 0.8rem;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      resize: none;
-      height: 60px;
-      max-height: 120px;
-      line-height: 1.45;
-    }
-    .pai-input-area textarea:focus { outline: none; border-color: #3a7bd5; }
-    .pai-input-area textarea::placeholder { color: #3a5a7a; }
-    .pai-send {
-      background: #3a7bd5; color: #fff;
-      border: none; border-radius: 8px;
-      padding: 10px 15px; cursor: pointer;
-      font-size: 0.81rem; font-weight: 600;
-      transition: background 0.2s; white-space: nowrap;
-    }
-    .pai-send:hover { background: #2a6bc5; }
-    .pai-send:disabled { background: #1a2a4a; color: #3a5a7a; cursor: not-allowed; }
-
-    .btn-permit-ai {
-      background: #1a2a4a;
-      border: 1px solid #3a7bd5;
-      border-radius: 4px;
-      padding: 5px 12px;
-      color: #64b5f6;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .btn-permit-ai:hover { background: #1e3a6a; color: #a0d0ff; }
-    .btn-permit-ai.active { background: #3a7bd5; color: #fff; border-color: #3a7bd5; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NCE Permit AI — Regulatory Intelligence for Energy Projects</title>
+<meta name="description" content="NCE Permit AI — institutional-grade Nordic clean energy development: wind, solar, BESS, SMR. Permit AI tool for project developers." />
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="NCE Permit AI">
+<meta property="og:description" content="Regulatory Intelligence for Energy, Construction and Infrastructure Projects">
+<meta property="og:image" content="https://ncenergy.fi/assets/images/nce_og_image.png">
+<meta property="og:url" content="https://ncenergy.fi">
+<meta property="og:site_name" content="NCE Permit AI">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NCE Permit AI">
+<meta name="twitter:description" content="Regulatory Intelligence for Energy, Construction and Infrastructure Projects">
+<meta name="twitter:image" content="https://ncenergy.fi/assets/images/nce_og_image.png">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/styles.css" />
 </head>
-<body>
+ 
+<body class="lang-en">
 
-<!-- ── Header ── -->
-<header>
-  <div class="header-brand">
-    <img src="data:image/png;base64,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" alt="NCE Energy"
-         style="width:150px;height:auto;display:block;flex-shrink:0;" />
-    <div>
-      <h1>NCE Energy Permit AI</h1>
-      <div class="subtitle">Energiahankkeiden lupaprosessianalyysi</div>
+<!-- ============================================================
+     LANDING VIEW
+============================================================ -->
+<main id="view-landing" class="view0 active0">
+
+
+  <!-- HEADER -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="#top" class="brand">
+        <img src="assets/images/nce_logo.svg" alt="NCE Energy">
+      </a>
+      <nav class="primary-nav" aria-label="Primary">
+        <a href="#about" data-i18n="nav.item1">About</a>
+        <a href="#how" data-i18n="nav.item2">How it works</a>
+        <a href="#projects" data-i18n="nav.item3">Projects</a>
+        <a href="#tool-preview" data-i18n="nav.item4" data-jumpoff="tool">Permit AI</a>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-switcher" id="langSwitcher">
+          <button class="lang-current" aria-haspopup="listbox" aria-expanded="false">
+            <span id="langLabel">EN</span>
+            <svg viewBox="0 0 12 8" width="10" height="6" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+          <ul class="lang-menu" role="listbox">
+            <li role="option" data-lang="en">EN — English</li>
+            <li role="option" data-lang="fi">FI — Suomi</li>
+          </ul>
+        </div>
+        <a href="https://ai.ncenergy.fi" class="btn-pill" data-i18n="cta.openTool">Open Tool</a>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="generator" onclick="switchTab('generator')">
-      &#x1F4C4; Lupahakemusgeneraattori
-    </button>
-    <button class="tab-btn" data-tab="bess" onclick="switchTab('bess')">
-      &#x1F5FA;&#xFE0F; Kaavoituskartoitus
-    </button>
-  </nav>
-
-  <div class="header-right">
-    <button class="btn-permit-ai" id="btn-permit-ai" onclick="togglePermitAI()">
-      &#x1F4AC; Permit AI
-    </button>
-    <div class="badge" id="header-badge" style="display:none;">Pöytyä · 636-439-4-711</div>
-  </div>
-</header>
-
-<!-- ── Tab area ── -->
-<div class="tab-area">
-
-  <!-- ── Tab: Generator ── -->
-  <div id="tab-generator" class="tab-content active">
-    <div class="gen-layout">
-      <div class="gen-page-title">Lupahakemusgeneraattori</div>
-      <div class="gen-page-sub">
-        Valitse hanketyyppi ja täytä perustiedot — AI generoi RAG-pohjaisen lupahakemusluonnoksen PDF-muodossa (~60 s).
-        Luonnos vaatii asiantuntijatarkistuksen ennen jättämistä.
+  <!-- HERO -->
+  <section class="hero" id="top">
+    
+    <div class="hero-bg" id="heroBg" aria-hidden="true"> 
+      
+      <div class="slide active">
+        <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/images/poster1.jpg">
+          <source src="assets/video/v1-wind-forest.webm" type="video/webm">
+          <source src="assets/video/v1-wind-forest.mp4" type="video/mp4">
+        </video>
       </div>
 
-      <div class="gen-section-label">Hanketyyppi</div>
-      <div class="gen-cards" id="gen-cards-grid">
-        <!-- Cards rendered by JS -->
+      <div class="slide">
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/v2-wind-hill.webm" type="video/webm">
+          <source src="assets/video/v2-wind-hill.mp4" type="video/mp4">
+        </video>
       </div>
 
-      <!-- Form section (hidden until card selected) -->
-      <div id="gen-form-section" style="display:none;"></div>
+      <div class="slide">
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/v3-offshore.webm" type="video/webm">
+          <source src="assets/video/v3-offshore.mp4" type="video/mp4">
+        </video>
+      </div>
+ 
+      <div class="slide">
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/v4-bess.webm" type="video/webm">
+          <source src="assets/video/v4-bess.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="slide">
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/v5-solar.webm" type="video/webm">
+          <source src="assets/video/v5-solar.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="slide">
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/v7-forest.webm" type="video/webm">
+          <source src="assets/video/v7-forest.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="slide">
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/v8-cyclist.webm" type="video/webm">
+          <source src="assets/video/v8-cyclist.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="slide">
+        <video class="hero-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/vA-signing.webm" type="video/webm">
+          <source src="assets/video/vA-signing.mp4" type="video/mp4">
+        </video>
+      </div>
+
+    </div> 
+
+    <div class="hero-overlay" aria-hidden="true"></div>
+    
+    <div class="row-inner">
+    <div class="hero-content">
+
+      <h1 class="hero-title">
+        <span data-i18n="hero.title1">Permit documentation for energy projects</span>
+        <em data-i18n="hero.title2">— in minutes, not weeks</em>
+      </h1>
+      <p class="hero-sub" data-i18n="hero.sub">
+        NCE Permit AI helps energy developers and engineering firms generate professional, source-traceable permit documentation with built-in regulatory quality validation
+      </p>
+
+      <div class="hero-tags">      
+          <span data-i18n="hero.tag1">BESS</span>
+          <span data-i18n="hero.tag2">Wind</span>
+          <span data-i18n="hero.tag3">Solar</span>
+          <span data-i18n="hero.tag4">SMR</span>
+          <span data-i18n="hero.tag5">Hydro</span>
+          <span class="hero-tag-more" data-i18n="hero.tagMore">20+ Types</span>      
+      </div> 
+
+      <div class="hero-ctas">
+        <a href="https://ai.ncenergy.fi" class="btn-hero">
+          <span data-i18n="cta.openTool">Open Tool</span>
+          <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M1 6h13M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn-ghost" href="#how" data-i18n="cta.discover">See how it works</a>
+      </div>
     </div>
-  </div>
 
-  <!-- ── Tab: Kaavoituskartoitus ── -->
-  <div id="tab-bess" class="tab-content">
-    <div class="main-container">
-
-      <!-- ── Sidebar ── -->
-      <aside class="sidebar">
-
-        <div class="sidebar-section">
-          <h3>Hanketyyppi</h3>
-          <div class="proj-field">
-            <select id="kaav-tyyppi" onchange="switchKaavoitusForm(this.value)">
-              <option value="">— Valitse —</option>
-              <option value="rakentamislupa">Rakentamislupa</option>
-              <option value="BESS">BESS</option>
-              <option value="tuulivoima">Tuulivoima</option>
-              <option value="aurinkovoima">Aurinkovoima</option>
-              <option value="SMR">SMR</option>
-              <option value="muu">Muu</option>
-            </select>
+      <div class="hero-stats" id="heroStats">
+      
+          <div class="hero-stats-label">
+              <span class="live-dot"></span>
+              <span data-i18n="hero.statLabel">LIVE REGULATORY DATA</span>
           </div>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Hankkeen tiedot</h3>
-          <div class="proj-field">
-            <label>Hankkeen omistaja</label>
-            <input type="text" id="proj-owner" placeholder="Yrityksen nimi" />
-          </div>
-          <div class="proj-field">
-            <label>Hankkeen nimi</label>
-            <input type="text" id="proj-name" placeholder="Hankkeen nimi" />
-          </div>
-          <div class="proj-field" id="kaav-power-wrap">
-            <label>Teho (MW)</label>
-            <input type="number" id="proj-power" min="0" step="0.1" />
-          </div>
-          <div id="bess-specific-fields" style="display:none;">
-            <div class="proj-field">
-              <label>Verkkoliityntä</label>
-              <select id="proj-grid">
-                <option value="">— Valitse —</option>
-                <option value="Jakeluverkko 20 kV (Caruna)">Caruna 20 kV (jakeluverkko)</option>
-                <option value="Jakeluverkko 20 kV (Elenia)">Elenia 20 kV (jakeluverkko)</option>
-                <option value="Jakeluverkko 20 kV (muu)">Muu jakeluverkko 20 kV</option>
-                <option value="Fingrid 110 kV (kantaverkko)">Fingrid 110 kV (kantaverkko)</option>
-                <option value="Fingrid 400 kV (kantaverkko)">Fingrid 400 kV (kantaverkko)</option>
-              </select>
-            </div>
-            <div class="proj-field">
-              <label>Tavoitemarkkinat</label>
-              <select id="proj-market">
-                <option value="">— Valitse —</option>
-                <option value="FCR (Frequency Containment Reserve)">FCR</option>
-                <option value="mFRR (Manual Frequency Restoration Reserve)">mFRR</option>
-                <option value="aFRR (Automatic Frequency Restoration Reserve)">aFRR</option>
-                <option value="Arbitraasi">Arbitraasi</option>
-              </select>
-            </div>
-          </div>
-          <div class="proj-field">
-            <label>Hankkeen vaihe</label>
-            <select id="proj-vaihe">
-              <option value="">— Valitse —</option>
-              <option value="esiselvitys">Esiselvitys</option>
-              <option value="lupavaihe">Lupavaihe</option>
-              <option value="rakentaminen">Rakentaminen</option>
-            </select>
-          </div>
-          <!-- Tyyppikohteinen lisäkenttä (JS renderöi) -->
-          <div id="kaav-extra-fields"></div>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Kiinteistö</h3>
-          <div class="kt-input-row" style="margin-bottom:8px;">
-            <input type="text" id="kt-input" placeholder="KKK-VVV-RR-PPPP" spellcheck="false" />
-            <button class="btn" id="btn-fetch-property">Hae</button>
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Kiinteistötiedot</h3>
-          <div class="info-grid" id="property-info">
-            <div class="info-item">
-              <div class="label">Tunnus</div>
-              <div class="value na" id="info-kt">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Pinta-ala</div>
-              <div class="value na" id="info-area">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Kunta</div>
-              <div class="value na" id="info-muni">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Kylä</div>
-              <div class="value na" id="info-village">–</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="sidebar-section" id="section-manual">
-          <h3>Manuaaliset tiedot</h3>
-          <div style="font-size:0.72rem;color:#8899aa;margin-bottom:8px;line-height:1.4;">
-            Täytä kentät joihin rajapinta ei palauta arvoa. Vaikuttavat pisteytykseen.
-          </div>
-          <div class="proj-field">
-            <label>Kaavoitustilanne</label>
-            <select id="manual-kaavoitus">
-              <option value="">– ei asetettu –</option>
-              <option value="asemakaava">Asemakaava</option>
-              <option value="yleiskaava">Yleiskaava</option>
-              <option value="ei_kaavaa">Ei kaavaa</option>
-              <option value="ei_tietoa">Ei tietoa</option>
-            </select>
-          </div>
-          <div class="proj-field">
-            <label>Tulvavaara</label>
-            <select id="manual-tulvavaara">
-              <option value="">– ei asetettu –</option>
-              <option value="ei">Ei</option>
-              <option value="kyllä">Kyllä</option>
-              <option value="ei_tietoa">Ei tietoa</option>
-            </select>
-          </div>
-          <div class="proj-field">
-            <label>Maaperä</label>
-            <select id="manual-maapera">
-              <option value="">– ei asetettu –</option>
-              <option value="kallio">Kallio</option>
-              <option value="moreeni">Moreeni</option>
-              <option value="hiekka">Hiekka</option>
-              <option value="savi">Savi</option>
-              <option value="turve">Turve</option>
-              <option value="ei_tietoa">Ei tietoa</option>
-            </select>
-          </div>
-          <div class="proj-field" id="manual-pinta-ala-wrap" style="display:none;">
-            <label>Rekisteripinta-ala (ha) <span style="color:#8899aa;font-size:0.7em;">MML ei palauttanut arvoa</span></label>
-            <input type="number" id="manual-pinta-ala" placeholder="esim. 4.50" min="0.01" step="0.01" />
-          </div>
-          <div style="margin-top:8px;">
-            <button class="btn secondary" id="btn-apply-manual" style="width:100%;">
-              Päivitä pisteet manuaalisilla tiedoilla
-            </button>
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Kaavoituskartoitus</h3>
-          <div style="font-size:0.72rem;color:#8899aa;margin-bottom:8px;line-height:1.4;">Rakennushankkeen sijaintianalyysi</div>
-          <div class="info-grid" style="margin-bottom:10px;">
-            <div class="info-item" style="grid-column:1/-1;">
-              <div class="label">Etäisyys verkko</div>
-              <div class="value na" id="info-grid-dist">–</div>
-              <div style="font-size:0.68rem;color:#8899aa;margin-top:2px;" id="info-grid-status"></div>
-              <div style="font-size:0.66rem;color:#6a7a8a;margin-top:4px;line-height:1.4;" id="grid-link-note">
-                OSM-data puutteellinen — <a id="grid-offer-link" href="https://www.caruna.fi/asiakaspalvelu/liittyminen/uusi-liittyman" target="_blank" rel="noopener" style="color:#4a9eff;text-decoration:none;font-weight:600;">Pyydä tarjous →</a>
+      
+          <div class="hero-stat">
+              <div class="counter" data-value="7993"></div>
+              <div class="hero-stat-text" data-i18n="hero.statText1">
+                  Regulatory chunks indexed
               </div>
-            </div>
-            <div class="info-item">
-              <div class="label">Kaavat. tilanne</div>
-              <div class="value na" id="info-zoning">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Natura / SuojeluA</div>
-              <div class="value na" id="info-nature">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Pohjavesialue</div>
-              <div class="value na" id="info-groundwater">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Lähin rakennus</div>
-              <div class="value na" id="info-building">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Maankäyttö</div>
-              <div class="value na" id="info-landuse">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Muinaismuistot</div>
-              <div class="value na" id="info-heritage">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Tiesuoja-alue</div>
-              <div class="value na" id="info-road">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Maaperä (GTK)</div>
-              <div class="value na" id="info-soil">–</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Tulvavaara (SYKE)</div>
-              <div class="value na" id="info-flood">–</div>
-            </div>
-            <div class="info-item" style="grid-column:1/-1;">
-              <div class="label">Lähin sähköasema</div>
-              <div class="value na" id="info-substation">–</div>
-            </div>
           </div>
-          <div class="score-bar-wrap">
-            <div class="score-label">
-              <span>Soveltuvuusindeksi</span>
-              <span id="score-value">– / 100</span>
-            </div>
-            <div class="score-bar">
-              <div class="score-bar-fill" id="score-fill" style="width:0%"></div>
-            </div>
+      
+          <div class="hero-stat">
+              <div class="counter" data-value="20"></div>
+              <div class="hero-stat-text" data-i18n="hero.statText2">
+                  Project types
+              </div>
           </div>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Karttatasot</h3>
-          <label class="layer-toggle">
-            <input type="checkbox" id="lyr-property" checked />
-            <span class="dot" style="background:#e94560;"></span>
-            <span>Kiinteistörajat</span>
-          </label>
-          <label class="layer-toggle">
-            <input type="checkbox" id="lyr-grid" />
-            <span class="dot" style="background:#f4a261;"></span>
-            <span>Voimajohdot (OSM/Fingrid)</span>
-          </label>
-          <label class="layer-toggle">
-            <input type="checkbox" id="lyr-groundwater" />
-            <span class="dot" style="background:#00bcd4;"></span>
-            <span>Pohjavesialueet (SYKE)</span>
-          </label>
-          <label class="layer-toggle">
-            <input type="checkbox" id="lyr-natura" />
-            <span class="dot" style="background:#9c27b0;"></span>
-            <span>Natura 2000 (SYKE)</span>
-          </label>
-          <label class="layer-toggle">
-            <input type="checkbox" id="lyr-buildings" />
-            <span class="dot" style="background:#ff7043;"></span>
-            <span>Rakennukset 1 km (OSM)</span>
-          </label>
-          <label class="layer-toggle">
-            <input type="checkbox" id="lyr-zoning" />
-            <span class="dot" style="background:#4caf50;"></span>
-            <span>Kaavat (MML WMS)</span>
-          </label>
-          <label class="layer-toggle">
-            <input type="checkbox" id="lyr-buffer" />
-            <span class="dot" style="background:#64b5f6;"></span>
-            <span>500 m puskurivyöhyke</span>
-          </label>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Toiminnot</h3>
-          <div class="btn-row">
-            <button class="btn" id="btn-analyze">Analysoi sijainti</button>
-            <button class="btn secondary" id="btn-report">PDF-raportti</button>
+      
+          <div class="hero-stat">
+              <div class="counter" data-value="6"></div>
+              <div class="hero-stat-text" data-i18n="hero.statText3">
+                  Countries
+              </div>
           </div>
-          <div style="margin-top:10px;">
-            <button class="btn secondary" id="btn-zoom-property" style="width:100%;">
-              Kohdista kiinteistölle
-            </button>
-          </div>
-        </div>
+      
+      </div> 
 
-        <div class="sidebar-section" id="ai-strategy-section" style="display:none;">
-          <h3>AI-lupaprosessistrategia</h3>
-          <div style="font-size:0.72rem;color:#64b5f6;margin-bottom:6px;">
-            Claude AI — ei juridinen neuvo
-          </div>
-          <div id="ai-strategy-text" style="font-size:0.8rem;line-height:1.5;color:#e0e0e0;white-space:pre-wrap;"></div>
-        </div>
 
-        <div class="sidebar-section">
-          <h3>Loki</h3>
-          <div id="status-log">Odottaa toimintoa…</div>
-        </div>
-
-      </aside>
-
-      <!-- ── Map ── -->
-      <div id="map"></div>
-
-    </div><!-- .main-container -->
-  </div><!-- #tab-bess -->
-
-</div><!-- .tab-area -->
-
-<!-- ── Lokipalkki ── -->
-<div id="logbar">
-  <div id="logbar-entries">
-    <div class="logbar-entry info newest">
-      <span class="logbar-dot"></span>
-      <span class="logbar-ts">--:--:--</span>
-      <span class="logbar-msg">Valmis — valitse hanketyyppi ja täytä perustiedot tai vaihda Kaavoituskartoitus-välilehdelle</span>
     </div>
-  </div>
+
+    <div class="hero-pager">
+      <div class="hero-pager-label">
+        <span class="pager-index" id="pagerIndex">01</span>
+        <span class="pager-name" id="pagerName">Onshore Wind Development</span>
+      </div>
+      <div class="hero-dots" id="heroDots" role="tablist" aria-label="Hero slides"></div>
+    </div>
+
+  </section>
+
+
+  <section class="subhero" id="about">
+      <div class="subhero-inner">
+  
+          <span class="tag" data-i18n="subhero.tag">
+              Regulatory Intelligence Platform
+          </span>
+  
+          <h2 class="serif-h2" data-i18n="subhero.title.html">
+              Built for energy, construction, industrial and infrastructure projects
+              <em>the Nordic and European market</em>
+          </h2>
+  
+          <p class="subhero-copy" data-i18n="subhero.text">NCE Permit AI is a regulatory intelligence platform built for the energy sector. It combines AI-assisted drafting, source-traced regulatory content and RAQS quality validation into one structured workflow.</p>
+  
+          <div class="country-line" data-i18n="subhero.country">
+              Finland · Sweden · Denmark · Norway · Poland · Germany
+          </div>
+  
+      </div>
+  </section>
+
+
+  <!-- SCROLL SECTION 1 — Signing -->
+  <section class="row-section"  data-parallax>
+    <div class="row-inner">
+
+      <div class="text-container">
+        <span class="tag" data-i18n="s1.tag">01 — TRUST LINE</span>
+        <h2 class="serif-h2" data-i18n="s1.h2.html">From contract negotiations <em>to building permits</em></h2>
+        <p data-i18n="s1.p1">Every report is grounded in official sources: Finlex, STUK YVL guidelines, EUR-Lex, Fingrid and SYKE. RAQS validation ensures structure, traceability and regulatory compliance before any document is delivered.</p>
+
+        <a class="text-cta" href="https://ai.ncenergy.fi">
+          <span data-i18n="s1.cta">Open permit AI</span>
+          <svg width="14" height="10" viewBox="0 0 14 10" aria-hidden="true"><path d="M1 5h11M8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </a>
+      </div>
+
+      <div class="media-container autoplay">
+        <video class="section-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/vA-signing2.webm" type="video/webm">
+          <source src="assets/video/vA-signing2.mp4" type="video/mp4">
+        </video>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <section class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" data-i18n="stats.minute">in minutes</div>
+      <div class="stat-label" data-i18n="stats.draft">Draft permit application</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">20+</div>
+      <div class="stat-label" data-i18n="stats.types">Project types</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">359+</div>
+      <div class="stat-label" data-i18n="stats.mw">MW in the BESS pipeline in Finland</div>
+    </div>
+<div class="stat-item stat-summary">
+    <div class="stat-summary-title" data-i18n="stats.summaryTitle">
+       From Idea To Application
+    </div>
+
+    <div class="stat-summary-text" data-i18n="stats.summaryText">
+        Significant time and cost savings compared to traditional permit preparation and consulting workflows
+    </div>
 </div>
+  </section>
 
-<!-- ── Permit AI Chat Panel ── -->
-<div class="permit-ai-panel" id="permit-ai-panel">
 
-  <div class="pai-header">
-    <div class="pai-header-title">
-      <h2>&#x1F4CB; Permit AI</h2>
-      <p>NCE Energy &mdash; Fingrid &middot; Pelastusopisto &middot; Tukes &middot; STUK YVL</p>
+
+
+
+
+  <!-- SCROLL SECTION 2 — Paper Stack -->
+
+  <section class="row-section row-alt" id="how" data-parallax>
+    <div class="subhero-inner">
+        <span class="tag" data-i18n="s2.tag">
+            02 — HOW IT WORKS
+        </span>
+         <h2 class="serif-h2" data-i18n="s2.h2.html">A thousand pages, <em>compressed</em> to a single signature</h2>
     </div>
-    <button class="pai-close" onclick="togglePermitAI()" title="Sulje">&#x2715;</button>
-  </div>
 
-  <div class="pai-chips">
-    <button class="pai-chip" onclick="askPermit('Mitä lupia tarvitaan 1MW BESS pohjavesialueella?')">BESS + pohjavesi</button>
-    <button class="pai-chip" onclick="askPermit('Mitä Fingrid vaatii verkkoliityntälaskelmilta BESS-hankkeelle?')">Fingrid-vaatimukset</button>
-    <button class="pai-chip" onclick="askPermit('Milloin BESS-hankkeelle tarvitaan YVA-menettely?')">YVA-kynnys</button>
-    <button class="pai-chip" onclick="askPermit('Mitkä ovat paloturvallisuusvaatimukset BESS-konttiasennukselle ulkona?')">Paloturvallisuus</button>
-    <button class="pai-chip" onclick="askPermit('Mitä STUK edellyttää SMR-laitoksen pre-licensing vaiheessa?')">SMR pre-licensing</button>
-    <button class="pai-chip" onclick="askPermit('Mitä sammutusvedenkeräysvaatimuksia on litiumioniakkuvarastolle?')">Sammutusvesi</button>
-    <button class="btn-gen-hakemus" onclick="toggleGenForm()">&#x1F4C4; Generoi hakemus</button>
-  </div>
-
-  <!-- Generoi hakemus -lomake -->
-  <div class="pai-gen-form" id="pai-gen-form">
-    <h4>&#x1F4C4; Lupahakemusluonnos — PDF</h4>
-    <div class="pai-gen-row">
-      <div class="pai-gen-field">
-        <label>Hanketyyppi</label>
-        <select id="gen-hanketyyppi">
-          <option value="BESS">BESS — Akkuvarasto</option>
-          <option value="tuulivoima_maa">Tuulivoima (maa)</option>
-          <option value="tuulivoima_meri">Tuulivoima (meri / offshore)</option>
-          <option value="aurinkovoima">Aurinkovoima</option>
-          <option value="SMR">SMR — Pienydinreaktori</option>
-          <option value="smr_bess">SMR + BESS — Hybridi</option>
-          <option value="vesivoima">Vesivoima</option>
-          <option value="hybridi">Hybridivoimala (BESS + tuuli/aurinko)</option>
-          <option value="business_finland">Business Finland Sprint (T&amp;K)</option>
-        </select>
+    <div class="row-inner reverse">
+      <div class="media-container media-container40">
+        <img src="assets/images/imgD-papers.jpg">
       </div>
-      <div class="pai-gen-field">
-        <label>Teho (MW)</label>
-        <input type="number" id="gen-teho" min="0.1" step="0.1" />
+      <div class="text-container text-container60">
+
+
+      <div class="how-step">
+          <div class="step-head">
+              <span class="step-number">01</span>
+              <h4 data-i18n="s2.step1Title">Enter project details</h4>
+          </div>
+      
+          <p data-i18n="s2.step1Text">
+              Add basic project information, location and project type.
+          </p>
       </div>
-    </div>
-    <div class="pai-gen-row">
-      <div class="pai-gen-field">
-        <label>Kiinteistötunnus</label>
-        <input type="text" id="gen-kt" placeholder="esim. 091-001-0001-0001" />
-      </div>
-      <div class="pai-gen-field">
-        <label>Kunta</label>
-        <input type="text" id="gen-kunta" placeholder="Kunta" />
-      </div>
-    </div>
-    <div class="pai-gen-row full">
-      <div class="pai-gen-field">
-        <label>Hakija (yritys)</label>
-        <input type="text" id="gen-hakija" placeholder="Yrityksen nimi" />
-      </div>
-    </div>
-    <div class="pai-gen-actions">
-      <button class="pai-gen-cancel" onclick="toggleGenForm()">Peruuta</button>
-      <button class="pai-gen-submit" id="gen-submit" onclick="generateApplication()">
-        &#x23F3; Generoi PDF
-      </button>
-    </div>
-  </div>
 
-  <div class="pai-messages" id="pai-messages">
-    <div class="chat-msg ai">
-      <div class="bubble">Hei! Olen NCE Energy Permit AI.<br><br>
-        Vastaan kysymyksiin energia-alan lupaprosesseista perustuen Fingridin, Pelastuslaitoksen, Tukesin
-        ja STUK:n YVL-ohjeisiin (2024–2025).<br><br>
-        Kirjoita kysymys tai valitse pikavalinta. Voit myös generoida lupahakemusluonnoksen PDF-muodossa.
-      </div>
-    </div>
-  </div>
-
-  <div class="pai-input-area">
-    <textarea id="pai-textarea"
-      placeholder="Kysy lupaprosessista, Fingrid-vaatimuksista, STUK YVL-ohjeista… (Ctrl+Enter lähettää)"></textarea>
-    <button class="pai-send" id="pai-send" onclick="sendPermitMessage()">L&auml;het&auml;</button>
-  </div>
-
-</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
-<script>
-// ─────────────────────────────────────────────
-// Config
-// ─────────────────────────────────────────────
-const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
-const DEFAULT_KT = '';
-const CENTER = [60.7, 22.7];
-const ZOOM = 13;
-
-let propertyGeoJson = null;
-let lastAnalysis = null;
-
-// ─────────────────────────────────────────────
-// log() — defined before all callers
-// ─────────────────────────────────────────────
-const _logHistory = [];
-
-function log(msg, type = 'info') {
-  const ts = new Date().toLocaleTimeString('fi-FI');
-
-  const sidebar = document.getElementById('status-log');
-  if (sidebar) sidebar.innerHTML = `<span class="${type}">[${ts}] ${msg}</span><br>` + sidebar.innerHTML;
-
-  _logHistory.unshift({ msg, type, ts });
-  if (_logHistory.length > 3) _logHistory.length = 3;
-
-  const bar = document.getElementById('logbar-entries');
-  if (bar) {
-    bar.innerHTML = _logHistory.map((e, i) => {
-      const ageCls = i === 0 ? 'newest' : i === 1 ? 'middle' : 'older';
-      return `<div class="logbar-entry ${e.type} ${ageCls}">
-        <span class="logbar-dot"></span>
-        <span class="logbar-ts">${e.ts}</span>
-        <span class="logbar-msg">${e.msg}</span>
-      </div>`;
-    }).join('');
-  }
-}
-
-// ─────────────────────────────────────────────
-// Tab switching
-// ─────────────────────────────────────────────
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tabId);
-  });
-  document.querySelectorAll('.tab-content').forEach(content => {
-    content.classList.toggle('active', content.id === 'tab-' + tabId);
-  });
-  const badge = document.getElementById('header-badge');
-  if (badge) badge.style.display = tabId === 'bess' ? '' : 'none';
-  if (tabId === 'bess') {
-    setTimeout(() => { if (typeof map !== 'undefined') map.invalidateSize(); }, 80);
-  }
-}
-
-// ─────────────────────────────────────────────
-// Kaavoituskartoitus: hanketyyppilomakkeet
-// ─────────────────────────────────────────────
-const KAAV_EXTRA_FIELDS = {
-  rakentamislupa: [
-    { id: 'kaav-kerrosala',  label: 'Kerrosala (m²)',   type: 'number', min: '1',   step: '1' },
-    { id: 'kaav-kerrosluku', label: 'Kerrosluku',       type: 'number', min: '1',   step: '1' },
-    { id: 'kaav-kaytt',      label: 'Käyttötarkoitus',  type: 'select',
-      options: ['— Valitse —', 'Asuinrakennus', 'Liikerakennus', 'Teollisuusrakennus', 'Varastorakennus', 'Muu'] },
-  ],
-  BESS: [],
-  tuulivoima: [
-    { id: 'kaav-turbiinimi', label: 'Turbiinimäärä (kpl)', type: 'number', min: '1',  step: '1' },
-    { id: 'kaav-napakork',   label: 'Napakorkeus (m)',     type: 'number', min: '50', step: '5' },
-    { id: 'kaav-roottorid',  label: 'Roottorin halk. (m)', type: 'number', min: '50', step: '5' },
-  ],
-  aurinkovoima: [
-    { id: 'kaav-pvala',      label: 'Paneelipinta-ala (ha)', type: 'number', min: '0.1', step: '0.1' },
-    { id: 'kaav-pvtyyppi',   label: 'Asennustapa',           type: 'select',
-      options: ['— Valitse —', 'Maastoasennus', 'Kattopaneelit', 'Kelluvat (floatovoltaics)'] },
-  ],
-  SMR: [
-    { id: 'kaav-reaktori',   label: 'Reaktorityyppi',   type: 'select',
-      options: ['— Valitse —', 'PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
-    { id: 'kaav-smrkaytt',   label: 'Käyttötarkoitus',  type: 'select',
-      options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
-  ],
-  muu: [
-    { id: 'kaav-kuvaus',     label: 'Hankkeen kuvaus',  type: 'text', placeholder: 'Lyhyt kuvaus hankkeesta' },
-  ],
-};
-
-function switchKaavoitusForm(type) {
-  const bessFields    = document.getElementById('bess-specific-fields');
-  const powerWrap     = document.getElementById('kaav-power-wrap');
-  const manualSection = document.getElementById('section-manual');
-  const analyzeBtn    = document.getElementById('btn-analyze');
-  const extraDiv      = document.getElementById('kaav-extra-fields');
-
-  const showBess = type === 'BESS';
-  if (bessFields)    bessFields.style.display    = showBess ? '' : 'none';
-  if (manualSection) manualSection.style.display = showBess ? '' : 'none';
-
-  const hidePower = type === 'rakentamislupa' || type === 'muu' || type === '';
-  if (powerWrap) powerWrap.style.display = hidePower ? 'none' : '';
-
-  if (analyzeBtn) {
-    const labels = { rakentamislupa: 'Rakentamislupa', BESS: 'BESS', tuulivoima: 'Tuulivoima',
-                     aurinkovoima: 'Aurinkovoima', SMR: 'SMR', muu: 'Hanke' };
-    analyzeBtn.textContent = 'Analysoi ' + (labels[type] || 'sijainti');
-  }
-
-  if (extraDiv) {
-    const fields = KAAV_EXTRA_FIELDS[type] || [];
-    extraDiv.innerHTML = fields.map(f => {
-      let inp;
-      if (f.type === 'select') {
-        const opts = f.options.map(o => `<option value="${o.replace(/"/g, '&quot;')}">${o}</option>`).join('');
-        inp = `<select id="${f.id}">${opts}</select>`;
-      } else {
-        inp = `<input type="${f.type}" id="${f.id}" min="${f.min || ''}" step="${f.step || ''}"
-          placeholder="${f.placeholder || ''}" />`;
-      }
-      return `<div class="proj-field"><label>${f.label}</label>${inp}</div>`;
-    }).join('');
-  }
-}
-
-// ─────────────────────────────────────────────
-// Generator: project type definitions
-// ─────────────────────────────────────────────
-const PROJECT_TYPES = [
-  { id: 'BESS',           icon: '🔋', name: 'BESS',             sub: 'Akkuenergiavarastohanke',       badge: null },
-  { id: 'tuulivoima_maa', icon: '🌬️', name: 'Tuulivoima (maa)', sub: 'Maalle sijoitettava hanke',     badge: null },
-  { id: 'tuulivoima_meri',icon: '⛵', name: 'Tuulivoima (meri)',sub: 'Offshore-tuulivoimahanke',      badge: null },
-  { id: 'aurinkovoima',   icon: '☀️', name: 'Aurinkovoima',     sub: 'Aurinkopaneelihanke',           badge: null },
-  { id: 'SMR',            icon: '⚛️', name: 'SMR',              sub: 'Pienydinreaktorihanke',         badge: null },
-  { id: 'smr_bess',       icon: '⚛️', name: 'SMR + BESS',       sub: 'Hybridienergijärjestelmä',      badge: null },
-  { id: 'vesivoima',      icon: '💧', name: 'Vesivoima',         sub: 'Vesivoimalahanke',              badge: null },
-  { id: 'hybridi',           icon: '⚡',  name: 'Hybridivoimala',    sub: 'BESS + tuuli/aurinko',         badge: null },
-  { id: 'business_finland',  icon: '🇫🇮', name: 'Business Finland',  sub: 'Sprint T&amp;K-rahoitushakemus', badge: 'BF' },
-];
-
-// Form field definitions per project type
-// apiKey: maps to ApplicationRequest field; null = extra field, not sent to API
-const HANKE_FIELDS = {
-  BESS: {
-    title: 'BESS — Akkuenergiavarastohanke',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                    type: 'text',   placeholder: 'Yrityksen nimi',                           required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                   type: 'text',   placeholder: 'esim. 091-001-0001-0001',                  required: true },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Teho (MW)',                          type: 'number', min: '0.1', step: '0.1',                                required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                      type: 'text',   placeholder: 'Kunta',                                   required: true },
-      { id: 'gf-verkko',      apiKey: null,                            label: 'Verkkoliityntä',                     type: 'select', options: ['— Valitse —', 'Jakeluverkko 20 kV (Caruna)', 'Jakeluverkko 20 kV (Elenia)', 'Jakeluverkko 20 kV (muu)', 'Fingrid 110 kV (kantaverkko)', 'Fingrid 400 kV (kantaverkko)'] },
-      { id: 'gf-kap',         apiKey: null,                            label: 'Kapasiteetti (MWh)',                  type: 'number', min: '0.1', step: '0.1' },
-      { id: 'gf-sijainti',      apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset',    type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',         apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                     type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen',  apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                  type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  tuulivoima_maa: {
-    title: 'Tuulivoima (maa) — Maalle sijoitettava tuulivoimahanke',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-turbiinimi',  apiKey: null,                            label: 'Turbiinimäärä (kpl)',             type: 'number', min: '1',   step: '1' },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Kokonaisteho (MW)',               type: 'number', min: '1',   step: '0.5', required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus (pää)',          type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
-      { id: 'gf-yva',         apiKey: null,                            label: 'YVA tarvitaan',                   type: 'select', options: ['— Valitse —', 'Kyllä (≥10 voimalaa tai ≥45 MW)', 'Ei', 'Ei tiedossa'] },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  tuulivoima_meri: {
-    title: 'Tuulivoima (meri) — Offshore-tuulivoimahanke',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                  type: 'text',   placeholder: 'Yrityksen nimi', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintialue (lähin kunta)',        type: 'text',   placeholder: 'Kunta',          required: true },
-      { id: 'gf-etaisyys',    apiKey: null,                            label: 'Etäisyys rannasta (km)',            type: 'number', min: '1',   step: '0.5' },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Kokonaisteho (MW)',                 type: 'number', min: '10',  step: '5',  required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Merialueen koordinaatit / viite',  type: 'text',   placeholder: '61°N 21°E', full: true },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset',  type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                   type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  aurinkovoima: {
-    title: 'Aurinkovoima — Aurinkopaneelihanke',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
-      { id: 'gf-pintaala',    apiKey: null,                            label: 'Pinta-ala (ha)',                   type: 'number', min: '0.1', step: '0.1' },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Teho (MWp)',                      type: 'number', min: '0.1', step: '0.1', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  SMR: {
-    title: 'SMR — Pienydinreaktorihanke (pre-licensing)',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',           required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                    required: true },
-      { id: 'gf-reaktori',    apiKey: null,                            label: 'Reaktorityyppi',                  type: 'select', options: ['— Valitse —', 'PWR (painevesireaktori)', 'BWR (kiehutusvesireaktori)', 'HTGR (kaasujäähdytteinen)', 'MSR (suolasulareaktori)', 'Muu / ei määritelty'] },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Lämpöteho (MW)',                  type: 'number', min: '10', step: '10',                   required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001' },
-      { id: 'gf-kaytto',      apiKey: null,                            label: 'Käyttötarkoitus',                 type: 'select', options: ['— Valitse —', 'Sähköntuotanto', 'Kaukolämpö + sähkö', 'Teollisuusprosessilämpö', 'Vetytuotanto'] },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  smr_bess: {
-    title: 'SMR + BESS — Hybridienergijärjestelmä',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi', required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',          required: true },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'SMR lämpöteho (MW)',              type: 'number', min: '10', step: '10',          required: true },
-      { id: 'gf-bess-kap',    apiKey: null,                            label: 'BESS kapasiteetti (MWh)',          type: 'number', min: '1',  step: '1' },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  vesivoima: {
-    title: 'Vesivoima — Vesivoimalahanke',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
-      { id: 'gf-vesisto',     apiKey: null,                            label: 'Vesistö',                         type: 'text',   placeholder: 'Vesistön nimi' },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Teho (MW)',                       type: 'number', min: '0.1', step: '0.1',              required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', full: true },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  hybridi: {
-    title: 'Hybridivoimala — BESS + tuuli/aurinko',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija (yritys)',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
-      { id: 'gf-kt',          apiKey: 'kiinteistotunnus',               label: 'Kiinteistötunnus',                type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
-      { id: 'gf-komponentit', apiKey: null,                            label: 'Komponentit',                     type: 'select', options: ['— Valitse —', 'BESS + tuulivoima', 'BESS + aurinkovoima', 'BESS + tuuli + aurinko'] },
-      { id: 'gf-teho',        apiKey: 'teho_mw',                       label: 'Kokonaisteho (MW)',               type: 'number', min: '0.1', step: '0.1',              required: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Sijaintikunta',                   type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text',   placeholder: 'Sijainnin kuvaus ja tunnetut ympäristövaikutukset', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-  business_finland: {
-    title: 'Business Finland Sprint — T&K-rahoitushakemus',
-    fields: [
-      { id: 'gf-hakija',      apiKey: 'hakija',                        label: 'Hakija / yritys',                 type: 'text',   placeholder: 'Yrityksen nimi',          required: true },
-      { id: 'gf-hnimi',       apiKey: null,                            label: 'Projektin nimi',                  type: 'text',   placeholder: 'T&K-projektin nimi',      full: true },
-      { id: 'gf-kunta',       apiKey: 'kunta',                         label: 'Kotipaikka (kunta)',               type: 'text',   placeholder: 'Kunta',                   required: true },
-      { id: 'gf-budjetti',    apiKey: null,                            label: 'Hankebudjetti (€)',                type: 'number', min: '10000', step: '1000',             required: true },
-      { id: 'gf-omarah',      apiKey: null,                            label: 'Oma rahoitus (%)',                 type: 'number', min: '30',    step: '5' },
-      { id: 'gf-tiimi',       apiKey: null,                            label: 'Tiimikoko (henkilöä)',             type: 'number', min: '1',     step: '1' },
-      { id: 'gf-kesto',       apiKey: null,                            label: 'Kesto (kk)',                      type: 'number', min: '6',     step: '1' },
-      { id: 'gf-sijainti',    apiKey: 'sijainti_ymparistovaikutukset', label: 'T&K-haasteet / innovaatiokuvaus',  type: 'text',   placeholder: 'Kuvaa tutkimushaaste ja innovaatio lyhyesti', full: true },
-      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',                label: 'Hankkeen vaihe',                  type: 'select', options: ['— Valitse —', 'Esiselvitys', 'Lupavaihe', 'Rakentaminen'] },
-      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',             label: 'Kohdeviranomainen',                type: 'select', options: ['— Valitse —', 'Kunta (rakentamislupa)', 'ELY-keskus (YVA)', 'STUK (ydinlupa)', 'Business Finland (avustushakemus)', 'Fingrid (verkkoliityntä)', 'AVI (ympäristölupa/vesilupa)', 'TEM (periaatepäätös)', 'Muu'] },
-    ]
-  },
-};
-
-// ─────────────────────────────────────────────
-// Render project type cards
-// ─────────────────────────────────────────────
-(function renderCards() {
-  const grid = document.getElementById('gen-cards-grid');
-  if (!grid) return;
-  grid.innerHTML = PROJECT_TYPES.map(pt => `
-    <div class="gen-card" data-type="${pt.id}" onclick="selectProjectType('${pt.id}')">
-      <div class="gen-card-icon">${pt.icon}</div>
-      <div class="gen-card-name">${pt.name}</div>
-      <div class="gen-card-sub">${pt.sub}</div>
-      ${pt.badge ? `<div class="gen-card-badge">${pt.badge}</div>` : ''}
-    </div>
-  `).join('');
-})();
-
-// ─────────────────────────────────────────────
-// Generator: project type selection + form render
-// ─────────────────────────────────────────────
-let selectedProjectType = null;
-
-function selectProjectType(typeId) {
-  selectedProjectType = typeId;
-
-  document.querySelectorAll('.gen-card').forEach(card => {
-    card.classList.toggle('selected', card.dataset.type === typeId);
-  });
-
-  const fieldDef = HANKE_FIELDS[typeId];
-  if (!fieldDef) return;
-
-  const formSection = document.getElementById('gen-form-section');
-
-  function _fieldHtml(f) {
-    if (f.type === 'select') {
-      const opts = f.options.map(o =>
-        `<option value="${o.replace(/"/g, '&quot;')}">${o}</option>`
-      ).join('');
-      return `<label>${f.label}</label><select id="${f.id}">${opts}</select>`;
-    }
-    let attrs = `type="${f.type}"`;
-    if (f.value !== undefined) attrs += ` value="${f.value}"`;
-    if (f.placeholder) attrs += ` placeholder="${f.placeholder}"`;
-    if (f.min !== undefined) attrs += ` min="${f.min}"`;
-    if (f.step !== undefined) attrs += ` step="${f.step}"`;
-    if (f.required) attrs += ' required';
-    return `<label>${f.label}</label><input id="${f.id}" ${attrs} />`;
-  }
-
-  // Build form HTML — pair non-full fields, full fields get own row
-  let rowsHtml = '';
-  const fields = fieldDef.fields;
-  let i = 0;
-  while (i < fields.length) {
-    const f = fields[i];
-    if (f.full) {
-      rowsHtml += `<div class="gen-form-grid full"><div class="gen-field">${_fieldHtml(f)}</div></div>`;
-      i++;
-    } else if (i + 1 < fields.length && !fields[i + 1].full) {
-      rowsHtml += `<div class="gen-form-grid"><div class="gen-field">${_fieldHtml(f)}</div><div class="gen-field">${_fieldHtml(fields[i + 1])}</div></div>`;
-      i += 2;
-    } else {
-      rowsHtml += `<div class="gen-form-grid"><div class="gen-field">${_fieldHtml(f)}</div><div class="gen-field"></div></div>`;
-      i++;
-    }
-  }
-
-  formSection.innerHTML = `
-    <div class="gen-form-wrap">
-      <div class="gen-form-title">${fieldDef.title}</div>
-      <div class="gen-form-sub">Täytä hankkeen perustiedot. AI generoi lupahakemusluonnoksen RAG-haun ja Claude-mallin avulla (~60 s).</div>
-      ${rowsHtml}
-      <div class="gen-submit-row">
-        <button class="gen-submit-btn" id="gen-main-submit" onclick="submitGeneratorForm()">
-          &#x1F4C4; Generoi lupahakemus PDF
-        </button>
-        <div class="gen-disclaimer">
-          AI-luonnos (RAG + Claude) — vaatii asiantuntijatarkistuksen ennen jättämistä. Ei juridinen neuvo.
+      <div class="how-step">
+        <div class="step-head">
+          <span class="step-number">02</span>
+          <h4 data-i18n="s2.step2Title">AI retrieves regulatory requirements</h4>
         </div>
+  
+      <p data-i18n="s2.step2Text">
+          NCE automatically retrieves relevant legislation, authority requirements and  source references for your project type and jurisdiction.</p>
+      </div>
+
+      <div class="how-step">
+          <div class="step-head">
+              <span class="step-number">03</span>
+              <h4 data-i18n="s2.step3Title">Generate structured draft</h4>
+          </div>
+      
+          <p data-i18n="s2.step3Text">
+             A structured permit application draft is generated in PDF format, ready for professional review and submission.
+          </p>
+      </div>
+
+      <div class="how-step">
+        <div class="step-head">
+          <span class="step-number">04</span>
+          <h4 data-i18n="s2.step4Title">RAQS validates before delivery</h4>
+        </div>
+
+        <p data-i18n="s2.step4Text">Every document goes through the RAQS validation process (Regulatory Assurance Quality System). This automated quality assurance step ensures structural consistency, source traceability, and regulatory compliance before the document reaches the user. This guarantees professional quality and reduces the risk of errors or missing regulatory references.</p>
+      </div>
+
+        <a class="text-cta" href="https://ai.ncenergy.fi">
+          <span data-i18n="s2.cta">Try the Permit AI</span>
+          <svg width="14" height="10" viewBox="0 0 14 10" aria-hidden="true"><path d="M1 5h11M8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </a>
       </div>
     </div>
-  `;
-  formSection.style.display = 'block';
-  formSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-// ─────────────────────────────────────────────
-// Generator: submit form → API → download PDF
-// ─────────────────────────────────────────────
-function _parseApiError(errText, httpStatus) {
-  try {
-    const parsed = JSON.parse(errText);
-    if (typeof parsed.detail === 'string') return parsed.detail;
-    if (Array.isArray(parsed.detail))
-      return parsed.detail.map(e => e.msg || JSON.stringify(e)).join(' | ');
-    if (parsed.detail) return JSON.stringify(parsed.detail);
-  } catch {}
-  return `HTTP ${httpStatus}`;
-}
-
-async function submitGeneratorForm() {
-  if (!selectedProjectType) return;
-
-  const fieldDef = HANKE_FIELDS[selectedProjectType];
-  const payload = { hanketyyppi: selectedProjectType };
-
-  for (const f of fieldDef.fields) {
-    const el = document.getElementById(f.id);
-    if (!el || !f.apiKey) continue;
-    payload[f.apiKey] = f.type === 'number'
-      ? (parseFloat(el.value) || 0)
-      : el.value.trim();
-  }
-
-  // Sentinel for API fields not applicable to this form type
-  if (!payload.kiinteistotunnus) payload.kiinteistotunnus = 'EI-SOVELLU';
-  if (!payload.kunta)            payload.kunta = '–';
-
-  console.log('[Generator] payload:', JSON.stringify(payload));
-
-  const btn = document.getElementById('gen-main-submit');
-  if (!btn) return;
-  btn.disabled = true;
-  btn.innerHTML = '&#x23F3; Generoidaan… (n. 90s)';
-
-  log(`Generoidaan lupahakemusluonnos: ${selectedProjectType} / ${payload.kunta}…`, 'info');
-
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 120_000);
-
-  try {
-    const resp = await fetch(`${API_BASE}/api/generate-application`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: ctrl.signal,
-    });
-    clearTimeout(timer);
-
-    if (!resp.ok) {
-      const errText = await resp.text().catch(() => '');
-      console.error('[Generator] server error:', resp.status, errText);
-      throw new Error(_parseApiError(errText, resp.status));
-    }
-
-    const blob = await resp.blob();
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = `hakemus_${selectedProjectType}_${(payload.kunta || 'hanke').replace(/\s+/g, '_')}.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    btn.innerHTML = '&#x2705; PDF ladattu!';
-    btn.style.background = '#2a7a4a';
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.innerHTML = '&#x1F4C4; Generoi lupahakemus PDF';
-      btn.style.background = '';
-    }, 4000);
-
-    log(`Lupahakemusluonnos valmis: ${selectedProjectType} / ${payload.kunta}`, 'ok');
-
-  } catch (err) {
-    clearTimeout(timer);
-    btn.disabled = false;
-    btn.innerHTML = '&#x274C; Yritä uudelleen';
-    btn.style.background = '#7a1a2a';
-    setTimeout(() => {
-      btn.innerHTML = '&#x1F4C4; Generoi lupahakemus PDF';
-      btn.style.background = '';
-    }, 4000);
-    const msg = err.name === 'AbortError' ? 'Aikakatkaisu (>120s) — yritä uudelleen' : err.message;
-    console.error('[Generator] virhe:', err);
-    log(`Hakemusgeneraattori virhe: ${msg}`, 'err');
-    alert(`Virhe: ${msg}`);
-  }
-}
-
-// ─────────────────────────────────────────────
-// Map init
-// ─────────────────────────────────────────────
-const map = L.map('map', {
-  center: CENTER,
-  zoom: ZOOM,
-  zoomControl: true,
-  attributionControl: true,
-});
-
-const osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  maxZoom: 19,
-  zIndex: 1,
-}).addTo(map);
-
-const zoningWms = L.tileLayer.wms(
-  'https://avoin-paikkatieto.maanmittauslaitos.fi/maastotiedot/wms/v1',
-  {
-    layers: 'maastotiedot:kaavoitusrajoitus',
-    format: 'image/png',
-    transparent: true,
-    opacity: 0.45,
-    attribution: '&copy; MML',
-  }
-);
-
-const layers = {
-  property:    L.featureGroup().addTo(map),
-  grid:        L.featureGroup(),
-  groundwater: L.featureGroup(),
-  natura:      L.featureGroup(),
-  buildings:   L.featureGroup(),
-  zoning:      L.featureGroup(),
-  buffer:      L.featureGroup(),
-};
-
-// ─────────────────────────────────────────────
-// Layer toggle handlers
-// ─────────────────────────────────────────────
-document.getElementById('lyr-property').addEventListener('change', e => {
-  e.target.checked ? map.addLayer(layers.property) : map.removeLayer(layers.property);
-});
-document.getElementById('lyr-grid').addEventListener('change', e => {
-  e.target.checked ? map.addLayer(layers.grid) : map.removeLayer(layers.grid);
-  if (e.target.checked && layers.grid.getLayers().length === 0) fetchGridLines();
-});
-document.getElementById('lyr-groundwater').addEventListener('change', e => {
-  e.target.checked ? map.addLayer(layers.groundwater) : map.removeLayer(layers.groundwater);
-  if (e.target.checked && layers.groundwater.getLayers().length === 0) fetchGroundwater();
-});
-document.getElementById('lyr-natura').addEventListener('change', e => {
-  e.target.checked ? map.addLayer(layers.natura) : map.removeLayer(layers.natura);
-  if (e.target.checked && layers.natura.getLayers().length === 0) fetchNatura();
-});
-document.getElementById('lyr-buildings').addEventListener('change', e => {
-  e.target.checked ? map.addLayer(layers.buildings) : map.removeLayer(layers.buildings);
-  if (e.target.checked && layers.buildings.getLayers().length === 0) fetchBuildings();
-});
-document.getElementById('lyr-zoning').addEventListener('change', e => {
-  e.target.checked ? map.addLayer(zoningWms) : map.removeLayer(zoningWms);
-});
-document.getElementById('lyr-buffer').addEventListener('change', e => {
-  e.target.checked ? map.addLayer(layers.buffer) : map.removeLayer(layers.buffer);
-});
-
-function setLoading(btn, loading) {
-  btn.disabled = loading;
-  if (loading) {
-    btn.dataset.orig = btn.textContent;
-    btn.innerHTML = '<span class="spinner"></span>Ladataan…';
-  } else {
-    btn.textContent = btn.dataset.orig || btn.textContent;
-  }
-}
-
-// ─────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────
-function updateInfoField(id, value, status = '') {
-  const el = document.getElementById(id);
-  el.textContent = value;
-  el.className = 'value' + (status ? ' ' + status : '');
-}
-
-function setScore(score) {
-  document.getElementById('score-value').textContent = `${score} / 100`;
-  document.getElementById('score-fill').style.width = `${score}%`;
-}
-
-function buildUrl(path, extraParams = {}) {
-  const url = new URL(`${API_BASE}${path}`);
-  Object.entries(extraParams).forEach(([k, v]) => url.searchParams.set(k, v));
-  return url;
-}
-
-async function parseHttpError(resp) {
-  let detail = `HTTP ${resp.status}`;
-  try {
-    const j = await resp.json();
-    detail += `: ${j.detail ?? JSON.stringify(j)}`;
-  } catch {
-    const txt = await resp.text().catch(() => '');
-    if (txt) detail += `: ${txt.slice(0, 200)}`;
-  }
-  return detail;
-}
-
-// ─────────────────────────────────────────────
-// Fetch property boundaries
-// ─────────────────────────────────────────────
-async function fetchProperty() {
-  const kt = document.getElementById('kt-input').value.trim();
-  if (!kt) { log('Syötä kiinteistötunnus', 'err'); return; }
-
-  const btn = document.getElementById('btn-fetch-property');
-  setLoading(btn, true);
-  log(`Haetaan ${kt}…`, 'info');
-
-  layers.property.clearLayers();
-  layers.buffer.clearLayers();
-
-  try {
-    const url = buildUrl(`/api/property/${encodeURIComponent(kt)}`);
-    const resp = await fetch(url);
-    if (!resp.ok) {
-      const msg = await parseHttpError(resp);
-      throw new Error(msg);
-    }
-    const geojson = await resp.json();
-
-    if (!geojson.features || geojson.features.length === 0) {
-      log('Kiinteistöä ei löydy – tarkista tunnus', 'err');
-      return;
-    }
-
-    propertyGeoJson = geojson;
-
-    const propLayer = L.geoJSON(geojson, {
-      style: {
-        color: '#e94560', weight: 3, opacity: 1,
-        fillColor: '#e94560', fillOpacity: 0.08,
-      },
-      onEachFeature(feat, lyr) {
-        const p = feat.properties || {};
-        lyr.bindPopup(`
-          <b>Kiinteistö</b><br>
-          Tunnus: ${p.kiinteistotunnus || kt}<br>
-          Kunta: ${p.kuntanimi || '–'}<br>
-          Pinta-ala: ${p.pinta_ala ? (p.pinta_ala / 10000).toFixed(2) + ' ha' : '–'}
-        `);
-      },
-    });
-
-    propLayer.addTo(layers.property);
-
-    const feat = geojson.features[0];
-    const p = feat?.properties || {};
-    updateInfoField('info-kt', kt);
-    updateInfoField('info-muni', p.kuntanimi || '–');
-    updateInfoField('info-village', p.kylanimi || '–');
-    const areaHa = p.pinta_ala ? (p.pinta_ala / 10000).toFixed(2) + ' ha' : '–';
-    updateInfoField('info-area', areaHa);
-    document.getElementById('manual-pinta-ala-wrap').style.display =
-      p.pinta_ala ? 'none' : 'flex';
-
-    const bounds = propLayer.getBounds();
-    const center = bounds.getCenter();
-    L.circle(center, {
-      radius: 500,
-      color: '#64b5f6', weight: 2, dashArray: '6 4', fillOpacity: 0.04,
-    }).addTo(layers.buffer);
-
-    map.fitBounds(propLayer.getBounds(), { padding: [60, 60] });
-    log(`Kiinteistö ladattu – ${areaHa}`, 'ok');
-
-  } catch (err) {
-    log(`Virhe: ${err.message}`, 'err');
-    console.error(err);
-  } finally {
-    setLoading(btn, false);
-  }
-}
-
-// ─────────────────────────────────────────────
-// Fetch: Voimajohdot (OSM Overpass via backend)
-// ─────────────────────────────────────────────
-async function fetchGridLines() {
-  log('Haetaan voimajohtoja (OSM/Fingrid)…', 'info');
-  try {
-    const url = buildUrl('/api/fingrid/lines', { bbox: '22.5,60.6,23.0,60.9' });
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(await parseHttpError(resp));
-    const geojson = await resp.json();
-    if (geojson.error) { log(`Voimajohdot: ${geojson.error}`, 'warn'); return; }
-
-    L.geoJSON(geojson, {
-      style: feat => ({
-        color: (feat.properties?.voltage_kv || 0) >= 110 ? '#f4a261' : '#aaa',
-        weight: (feat.properties?.voltage_kv || 0) >= 110 ? 3 : 1.5,
-        opacity: 0.85,
-      }),
-      onEachFeature(feat, lyr) {
-        const p = feat.properties || {};
-        lyr.bindPopup(
-          `<b>Voimajohto</b><br>` +
-          `${p.line_type || '–'}<br>` +
-          `${p.voltage_kv ? p.voltage_kv + ' kV' : ''}`
-        );
-      },
-    }).addTo(layers.grid);
-
-    log(`Voimajohdot ladattu – ${geojson.features?.length || 0} linjaa`, 'ok');
-  } catch (err) {
-    log(`Voimajohtovirhe: ${err.message}`, 'err');
-  }
-}
-
-// ─────────────────────────────────────────────
-// Fetch: Pohjavesialueet (SYKE)
-// ─────────────────────────────────────────────
-async function fetchGroundwater() {
-  log('Haetaan pohjavesialueita (SYKE)…', 'info');
-  try {
-    const url = buildUrl('/api/groundwater', { bbox: '22.5,60.6,23.0,60.9' });
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(await parseHttpError(resp));
-    const geojson = await resp.json();
-
-    if (geojson.unavailable) {
-      log(`Pohjavesi: ${geojson.message || 'SYKE ei vastannut'}`, 'warn');
-      return;
-    }
-    L.geoJSON(geojson, {
-      style: { color: '#00bcd4', weight: 2, fillColor: '#00bcd4', fillOpacity: 0.18 },
-      onEachFeature(feat, lyr) {
-        const p = feat.properties || {};
-        lyr.bindPopup(`<b>Pohjavesialue</b><br>${p.nimi || '–'}<br>Luokka: ${p.luokka || '–'}`);
-      },
-    }).addTo(layers.groundwater);
-    log(`Pohjavesialueet ladattu – ${geojson.features?.length || 0} aluetta`, 'ok');
-  } catch (err) {
-    log(`Pohjavesivirhe: ${err.message}`, 'err');
-  }
-}
-
-// ─────────────────────────────────────────────
-// Fetch: Rakennukset (OSM)
-// ─────────────────────────────────────────────
-async function fetchBuildings() {
-  const propBounds = layers.property.getBounds();
-  if (!propBounds.isValid()) { log('Hae kiinteistö ensin', 'warn'); return; }
-  const c = propBounds.getCenter();
-  log('Haetaan rakennuksia 1 km säteeltä (OSM)…', 'info');
-  try {
-    const url = buildUrl('/api/buildings/nearest', { lat: c.lat, lon: c.lng });
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(await parseHttpError(resp));
-    const data = await resp.json();
-
-    layers.buildings.clearLayers();
-    L.geoJSON(data.geojson, {
-      pointToLayer(feat, latlng) {
-        return L.circleMarker(latlng, {
-          radius: 4, color: '#ff7043', fillColor: '#ff7043',
-          fillOpacity: 0.7, weight: 1,
-        });
-      },
-      onEachFeature(feat, lyr) {
-        lyr.bindPopup(`<b>Rakennus</b><br>${feat.properties?.building || 'rakennustyyppi ei tiedossa'}`);
-      },
-    }).addTo(layers.buildings);
-
-    const dist = data.nearest_building_m;
-    const label = dist != null ? `${dist} m` : '–';
-    updateInfoField('info-building', label, dist == null ? 'na' : dist > 300 ? 'ok' : 'warn');
-    log(`Rakennukset ladattu – ${data.buildings_found} kpl, lähin ${label}`, dist > 300 || dist == null ? 'ok' : 'warn');
-  } catch (err) {
-    log(`Rakennusvirhe: ${err.message}`, 'err');
-  }
-}
-
-// ─────────────────────────────────────────────
-// Fetch: Natura (SYKE)
-// ─────────────────────────────────────────────
-async function fetchNatura() {
-  log('Haetaan Natura 2000 -alueet…', 'info');
-  try {
-    const url = buildUrl('/api/natura', { bbox: '22.5,60.6,23.0,60.9' });
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(await parseHttpError(resp));
-    const geojson = await resp.json();
-    L.geoJSON(geojson, {
-      style: { color: '#9c27b0', weight: 2, fillOpacity: 0.15 },
-      onEachFeature(feat, lyr) {
-        const p = feat.properties || {};
-        lyr.bindPopup(`<b>Natura 2000</b><br>${p.nimi || p.name || '–'}`);
-      },
-    }).addTo(layers.natura);
-    log(`Natura-alueet ladattu (${geojson.features?.length || 0})`, 'ok');
-  } catch (err) {
-    log(`Natura-virhe: ${err.message}`, 'err');
-  }
-}
-
-// ─────────────────────────────────────────────
-// Sijaintianalyysi
-// ─────────────────────────────────────────────
-async function runAnalysis() {
-  const kt = document.getElementById('kt-input').value.trim();
-  if (!kt) { log('Syötä ensin kiinteistötunnus', 'err'); return; }
-
-  const btn = document.getElementById('btn-analyze');
-  setLoading(btn, true);
-  log('Suoritetaan sijaintianalyysi (kaikki datalähteet)…', 'info');
-
-  try {
-    const gc = document.getElementById('proj-grid').value;
-    const url = buildUrl(`/api/bess/analysis/${encodeURIComponent(kt)}`, { grid_connection: gc });
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(await parseHttpError(resp));
-    const d = await resp.json();
-    lastAnalysis = d;
-
-    const gm = d.nearest_grid_m;
-    const gs = d.grid_status || '';
-    updateInfoField('info-grid-dist',
-      gm != null ? `${gm} m` : '–',
-      gm == null ? 'na' : gm < 500 ? 'ok' : gm < 2000 ? 'ok' : gm < 5000 ? 'warn' : 'na');
-    const statusEl = document.getElementById('info-grid-status');
-    if (statusEl) statusEl.textContent = gs;
-
-    updateInfoField('info-zoning', d.zoning_status || '–', d.zoning_ok ? 'ok' : 'warn');
-    updateInfoField('info-nature', d.natura_overlap ? 'Kyllä ⚠' : 'Ei ✓',
-      d.natura_overlap ? 'warn' : 'ok');
-
-    const gwCls  = d.groundwater_class || '';
-    const gwText = d.groundwater_unavailable ? 'Ei dataa (N/A)'
-                 : d.groundwater_overlap
-                   ? ('Kyllä' + (gwCls ? ` — Luokka ${gwCls}` : '') + ' ⚠')
-                   : 'Ei ✓';
-    updateInfoField('info-groundwater', gwText,
-      d.groundwater_unavailable ? 'na' : d.groundwater_overlap ? 'warn' : 'ok');
-
-    const bm = d.nearest_building_m;
-    updateInfoField('info-building',
-      bm != null ? `${bm} m` : '–',
-      bm == null ? 'na' : bm > 300 ? 'ok' : 'warn');
-
-    updateInfoField('info-landuse', d.land_use || '–');
-
-    const hText = d.heritage_unavailable ? 'Ei dataa (N/A)'
-                : d.heritage_overlap ? ('Kyllä ⚠' + (d.heritage_source === 'osm' ? ' (OSM)' : ''))
-                : ('Ei ✓' + (d.heritage_source === 'osm' ? ' (OSM)' : ''));
-    updateInfoField('info-heritage', hText,
-      d.heritage_unavailable ? 'na' : d.heritage_overlap ? 'warn' : 'ok');
-
-    const rm = d.nearest_road_m;
-    const roadText = rm != null
-      ? `${rm} m${d.nearest_road_name ? ' (' + d.nearest_road_name + ')' : ''}`
-      : 'Ei tiedossa';
-    updateInfoField('info-road', roadText,
-      rm == null ? 'na' : d.road_protection_ok ? 'ok' : 'warn');
-
-    updateInfoField('info-soil', d.maaperalaaji || '–',
-      !d.maaperalaaji || d.maaperalaaji === 'Ei tiedossa' ? 'na' :
-      ['Kallio', 'Moreeni'].includes(d.maaperalaaji) ? 'ok' :
-      d.maaperalaaji === 'Turve' ? 'warn' : '');
-
-    updateInfoField('info-flood',
-      d.flood_unavailable ? 'Ei dataa (N/A)' : d.flood_overlap ? 'Kyllä ⚠' : 'Ei ✓',
-      d.flood_unavailable ? 'na' : d.flood_overlap ? 'warn' : 'ok');
-
-    const ssm = d.nearest_substation_m;
-    const ssn = d.nearest_substation_name;
-    updateInfoField('info-substation',
-      ssm != null ? `${ssm} m${ssn ? ' (' + ssn + ')' : ''}` : '–',
-      ssm == null ? 'na' : ssm < 5000 ? 'ok' : '');
-
-    if (d.kuntanimi) {
-      document.getElementById('header-badge').textContent = `${d.kuntanimi} · ${kt}`;
-    }
-
-    const aiSection = document.getElementById('ai-strategy-section');
-    const aiText    = document.getElementById('ai-strategy-text');
-    if (d.ai_strategy) {
-      aiText.textContent = d.ai_strategy;
-      aiSection.style.display = 'block';
-    } else if (d.ai_strategy_error) {
-      aiText.textContent = `Ei saatavilla: ${d.ai_strategy_error}`;
-      aiSection.style.display = 'block';
-    } else {
-      aiSection.style.display = 'none';
-    }
-
-    setScore(d.bess_score || 0);
-    log(`Sijaintianalyysi valmis – indeksi: ${d.bess_score}/100`, 'ok');
-  } catch (err) {
-    log(`Analyysivirhe: ${err.message}`, 'err');
-  } finally {
-    setLoading(btn, false);
-  }
-}
-
-// ─────────────────────────────────────────────
-// Manuaalisten arvojen pisteytys
-// ─────────────────────────────────────────────
-const SOIL_PTS = { kallio: 5, moreeni: 4, hiekka: 3, savi: 1, turve: 0 };
-const MAAPERA_FI = { kallio: 'Kallio', moreeni: 'Moreeni', hiekka: 'Hiekka', savi: 'Savi', turve: 'Turve' };
-
-function recalcScore(a) {
-  const gridM = a.nearest_grid_m;
-  const grid = gridM == null ? 15 : gridM < 1000 ? 30 : gridM < 2000 ? 20 : 5;
-
-  const gw = a.groundwater_unavailable ? null
-    : !a.groundwater_overlap ? 20
-    : ['1', '1E'].includes(a.groundwater_class || '') ? 0 : 8;
-
-  const natura = a.natura_overlap ? 0 : 15;
-  const zoning = a.zoning_unavailable ? null : (a.zoning_ok ? 10 : 3);
-
-  const bm = a.nearest_building_m;
-  const settlement = bm == null ? 5 : bm > 300 ? 10 : bm > 150 ? 5 : 0;
-  const heritage = a.heritage_unavailable ? null : (a.heritage_overlap ? 0 : 10);
-  const road = a.road_protection_ok !== false ? 5 : 0;
-  const flood = a.flood_unavailable ? null : (a.flood_overlap ? 0 : 5);
-  const soil = (a.score_soil !== undefined && a.score_soil !== null) ? a.score_soil : null;
-
-  const components = [
-    [grid, 30], [gw, 20], [natura, 15], [zoning, 10],
-    [settlement, 10], [heritage, 10], [road, 5], [flood, 5], [soil, 5],
-  ];
-  const achieved = components.filter(([v]) => v !== null).reduce((s, [v]) => s + v, 0);
-  const maxPts   = components.filter(([v]) => v !== null).reduce((s, [, m]) => s + m, 0);
-  return maxPts ? Math.min(Math.round(achieved / maxPts * 100), 100) : 0;
-}
-
-function applyManualOverrides() {
-  if (!lastAnalysis) {
-    log('Aja ensin sijaintianalyysi ennen manuaalisten tietojen päivitystä', 'warn');
-    return;
-  }
-
-  const a = Object.assign({}, lastAnalysis);
-  let changed = false;
-
-  const kaavoitus  = document.getElementById('manual-kaavoitus').value;
-  const tulvavaara = document.getElementById('manual-tulvavaara').value;
-  const maapera    = document.getElementById('manual-maapera').value;
-  const pintaAla   = document.getElementById('manual-pinta-ala').value;
-
-  if (kaavoitus && kaavoitus !== 'ei_tietoa') {
-    a.zoning_unavailable = false;
-    if (kaavoitus === 'asemakaava') {
-      a.zoning_ok     = false;
-      a.zoning_status = 'Asemakaava (manuaalinen syöte)';
-    } else {
-      a.zoning_ok     = true;
-      a.zoning_status = kaavoitus === 'yleiskaava'
-        ? 'Yleiskaava (manuaalinen syöte)'
-        : 'Ei kaavaa (manuaalinen syöte)';
-    }
-    updateInfoField('info-zoning', a.zoning_status, a.zoning_ok ? 'ok' : 'warn');
-    changed = true;
-  }
-
-  if (tulvavaara && tulvavaara !== 'ei_tietoa') {
-    a.flood_unavailable = false;
-    a.flood_overlap = (tulvavaara === 'kyllä');
-    updateInfoField('info-flood',
-      a.flood_overlap ? 'Kyllä ⚠ (manuaalinen)' : 'Ei ✓ (manuaalinen)',
-      a.flood_overlap ? 'warn' : 'ok');
-    changed = true;
-  }
-
-  if (maapera && maapera !== 'ei_tietoa' && SOIL_PTS[maapera] !== undefined) {
-    a.maaperalaaji = MAAPERA_FI[maapera] + ' (manuaalinen)';
-    a.score_soil   = SOIL_PTS[maapera];
-    updateInfoField('info-soil', a.maaperalaaji,
-      ['kallio', 'moreeni'].includes(maapera) ? 'ok' : maapera === 'turve' ? 'warn' : '');
-    changed = true;
-  }
-
-  if (pintaAla) {
-    const ha = parseFloat(pintaAla);
-    if (!isNaN(ha) && ha > 0) {
-      a.area_ha = ha;
-      updateInfoField('info-area', ha.toFixed(2) + ' ha (manuaalinen)');
-      changed = true;
-    }
-  }
-
-  if (changed) {
-    lastAnalysis = a;
-    const newScore = recalcScore(a);
-    setScore(newScore);
-    log('Manuaaliset tiedot päivitetty – soveltuvuusindeksi: ' + newScore + '/100', 'ok');
-  } else {
-    log('Ei aktivoituja manuaalisia kenttiä', 'info');
-  }
-}
-
-// ─────────────────────────────────────────────
-// PDF report
-// ─────────────────────────────────────────────
-async function generateReport() {
-  const kt = document.getElementById('kt-input').value.trim();
-  if (!kt) { log('Syötä ensin kiinteistötunnus', 'err'); return; }
-
-  if (!propertyGeoJson) {
-    log('Hae kiinteistö ensin ennen raportin generointia', 'warn');
-    return;
-  }
-
-  const btn = document.getElementById('btn-report');
-  setLoading(btn, true);
-  log('Generoidaan PDF-raportti…', 'info');
-
-  try {
-    const manualKaavoitus   = document.getElementById('manual-kaavoitus').value  || null;
-    const manualTulvavaara  = document.getElementById('manual-tulvavaara').value || null;
-    const manualMaapera     = document.getElementById('manual-maapera').value    || null;
-    const manualPintaAlaRaw = document.getElementById('manual-pinta-ala').value;
-    const manualPintaAla    = manualPintaAlaRaw ? parseFloat(manualPintaAlaRaw) || null : null;
-
-    const projPayload = {
-      kiinteistotunnus: kt,
-      property_geojson: propertyGeoJson,
-      analysis_result:  lastAnalysis,
-      project_owner:   document.getElementById('proj-owner').value.trim(),
-      project_name:    document.getElementById('proj-name').value.trim(),
-      power_mw:        parseFloat(document.getElementById('proj-power').value) || 0,
-      grid_connection: document.getElementById('proj-grid').value,
-      market:          document.getElementById('proj-market').value,
-      manual_kaavoitus:    manualKaavoitus,
-      manual_tulvavaara:   manualTulvavaara,
-      manual_maapera:      manualMaapera,
-      manual_pinta_ala_ha: manualPintaAla,
-    };
-    const resp = await fetch(`${API_BASE}/api/report/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(projPayload),
-    });
-    if (!resp.ok) throw new Error(await parseHttpError(resp));
-
-    const blob = await resp.blob();
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = `sijaintianalyysi_${kt.replace(/-/g, '_')}.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
-    log('PDF-raportti ladattu', 'ok');
-  } catch (err) {
-    log(`Raporttivvirhe: ${err.message}`, 'err');
-  } finally {
-    setLoading(btn, false);
-  }
-}
-
-// ─────────────────────────────────────────────
-// Zoom to property
-// ─────────────────────────────────────────────
-document.getElementById('btn-zoom-property').addEventListener('click', () => {
-  if (layers.property.getLayers().length > 0) {
-    map.fitBounds(layers.property.getBounds(), { padding: [60, 60] });
-  } else {
-    map.setView(CENTER, ZOOM);
-  }
-});
-
-// ─────────────────────────────────────────────
-// Button bindings
-// ─────────────────────────────────────────────
-document.getElementById('btn-fetch-property').addEventListener('click', fetchProperty);
-document.getElementById('btn-analyze').addEventListener('click', runAnalysis);
-document.getElementById('btn-report').addEventListener('click', generateReport);
-document.getElementById('btn-apply-manual').addEventListener('click', applyManualOverrides);
-
-document.getElementById('kt-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') fetchProperty();
-});
-
-// ─────────────────────────────────────────────
-// Dynaaminen verkkoliityntä-linkki
-// ─────────────────────────────────────────────
-const GRID_URLS = {
-  'Jakeluverkko 20 kV (Caruna)':   'https://www.caruna.fi/asiakaspalvelu/liittyminen/uusi-liittyman',
-  'Jakeluverkko 20 kV (Elenia)':   'https://www.elenia.fi/sahko/liittyminen',
-  'Jakeluverkko 20 kV (muu)':      '',
-  'Fingrid 110 kV (kantaverkko)':  'https://www.fingrid.fi/kantaverkko/liittyminen-kantaverkkoon/',
-  'Fingrid 400 kV (kantaverkko)':  'https://www.fingrid.fi/kantaverkko/liittyminen-kantaverkkoon/',
-};
-
-function updateGridLink() {
-  const val  = document.getElementById('proj-grid').value;
-  const url  = GRID_URLS[val] ?? '';
-  const note = document.getElementById('grid-link-note');
-  if (url) {
-    note.innerHTML = 'OSM-data puutteellinen — <a href="' + url +
-      '" target="_blank" rel="noopener" style="color:#4a9eff;text-decoration:none;font-weight:600;">Pyydä tarjous →</a>';
-  } else {
-    note.textContent = 'OSM-data puutteellinen — Ota yhteyttä paikalliseen jakeluverkkoyhtiöön';
-  }
-}
-
-document.getElementById('proj-grid').addEventListener('change', updateGridLink);
-updateGridLink();
-
-window.addEventListener('load', () => {
-  if (document.getElementById('tab-bess').classList.contains('active')) {
-    log('Kartta alustettu. Haetaan oletuskiinteistö…', 'info');
-    setTimeout(fetchProperty, 800);
-  }
-});
-
-// ─────────────────────────────────────────────
-// Permit AI Chat
-// ─────────────────────────────────────────────
-function togglePermitAI() {
-  const panel = document.getElementById('permit-ai-panel');
-  const btn   = document.getElementById('btn-permit-ai');
-  const open  = panel.classList.toggle('open');
-  btn.classList.toggle('active', open);
-}
-
-function toggleGenForm() {
-  const form = document.getElementById('pai-gen-form');
-  const opening = !form.classList.contains('open');
-  form.classList.toggle('open', opening);
-
-  if (opening) {
-    const kt    = document.getElementById('kt-input')?.value  || '';
-    const teho  = document.getElementById('proj-power')?.value || '';
-    const hakija= document.getElementById('proj-owner')?.value || '';
-    const kunta = lastAnalysis?.kuntanimi || '';
-
-    document.getElementById('gen-kt').value    = kt;
-    document.getElementById('gen-teho').value  = teho;
-    document.getElementById('gen-hakija').value= hakija;
-    document.getElementById('gen-kunta').value = kunta;
-  }
-}
-
-async function generateApplication() {
-  const hanketyyppi = document.getElementById('gen-hanketyyppi').value;
-  const kt          = document.getElementById('gen-kt').value.trim();
-  const teho        = parseFloat(document.getElementById('gen-teho').value) || 0;
-  const kunta       = document.getElementById('gen-kunta').value.trim();
-  const hakija      = document.getElementById('gen-hakija').value.trim();
-
-  if (!kt || !kunta || !hakija) {
-    alert('Täytä kiinteistötunnus, kunta ja hakija.');
-    return;
-  }
-
-  const btn = document.getElementById('gen-submit');
-  btn.disabled = true;
-  btn.textContent = '⏳ Generoidaan… (n. 60s)';
-
-  const msgs = document.getElementById('pai-messages');
-  const waitDiv = document.createElement('div');
-  waitDiv.className = 'chat-msg ai';
-  waitDiv.id = 'gen-wait-msg';
-  waitDiv.innerHTML = `<div class="bubble" style="color:#64b5f6;">
-    ⏳ Generoidaan lupahakemusluonnosta (${hanketyyppi}, ${kunta}, ${teho} MW)…<br>
-    <span style="color:#4a6a9a;font-size:0.75rem;">RAG-haku + Claude AI + PDF-generointi — odota n. 60 s</span>
-  </div>`;
-  msgs.appendChild(waitDiv);
-  msgs.scrollTop = msgs.scrollHeight;
-
-  try {
-    const resp = await fetch(`${API_BASE}/api/generate-application`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hanketyyppi, kiinteistotunnus: kt, teho_mw: teho, kunta, hakija }),
-    });
-
-    if (!resp.ok) {
-      const errText = await resp.text().catch(() => '');
-      console.error('[genApplication] server error:', resp.status, errText);
-      throw new Error(_parseApiError(errText, resp.status));
-    }
-
-    const blob     = await resp.blob();
-    const url      = URL.createObjectURL(blob);
-    const a        = document.createElement('a');
-    a.href         = url;
-    a.download     = `hakemus_${kt}.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    waitDiv.innerHTML = `<div class="bubble" style="border-color:#4caf50;">
-      ✅ <strong>Lupahakemusluonnos valmis!</strong><br>
-      <span style="font-size:0.77rem;color:#80e090;">${hanketyyppi} · ${kunta} · ${teho} MW</span><br>
-      <span style="font-size:0.74rem;color:#4a6a9a;">PDF ladattu: hakemus_${kt}.pdf<br>
-      ⚠️ AI-luonnos — vaatii asiantuntijatarkistuksen ennen jättämistä</span>
-    </div>`;
-
-    document.getElementById('pai-gen-form').classList.remove('open');
-    log(`Lupahakemusluonnos generoitu: ${hanketyyppi} / ${kunta}`, 'ok');
-
-  } catch (err) {
-    waitDiv.innerHTML = `<div class="bubble" style="color:#e94560;">
-      ❌ Generointi epäonnistui: ${err.message}
-    </div>`;
-    log(`Hakemusgeneraattori virhe: ${err.message}`, 'err');
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '&#x23F3; Generoi PDF';
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function _renderMarkdown(raw) {
-  let s = raw
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-  s = s.replace(/^#{2} (.+)$/gm, '<span class="md-h2">$1</span>');
-  s = s.replace(/^#{3} (.+)$/gm, '<span class="md-h3">$1</span>');
-  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  s = s.replace(/^---$/gm, '<hr>');
-  s = s.replace(/\n/g, '<br>');
-  return s;
-}
-
-async function askPermit(question) {
-  const panel = document.getElementById('permit-ai-panel');
-  if (!panel.classList.contains('open')) togglePermitAI();
-
-  const msgs    = document.getElementById('pai-messages');
-  const sendBtn = document.getElementById('pai-send');
-
-  const userDiv = document.createElement('div');
-  userDiv.className = 'chat-msg user';
-  userDiv.innerHTML = `<div class="bubble">${question.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
-  msgs.appendChild(userDiv);
-
-  const typing = document.createElement('div');
-  typing.className = 'chat-msg ai';
-  typing.innerHTML = '<div class="pai-typing"><span></span><span></span><span></span></div>';
-  msgs.appendChild(typing);
-  msgs.scrollTop = msgs.scrollHeight;
-
-  sendBtn.disabled = true;
-
-  try {
-    const resp = await fetch(`${API_BASE}/api/permit-ai`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, n_results: 5 }),
-    });
-
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.detail || `HTTP ${resp.status}`);
-    }
-
-    const data = await resp.json();
-    typing.remove();
-
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'chat-msg ai';
-
-    const sourceHtml = data.sources?.length
-      ? `<div class="sources">Lähteet: ${data.sources.join(' · ')}</div>`
-      : '';
-
-    aiDiv.innerHTML = `<div class="bubble">${_renderMarkdown(data.answer)}</div>${sourceHtml}`;
-    msgs.appendChild(aiDiv);
-
-  } catch (err) {
-    typing.remove();
-    const errDiv = document.createElement('div');
-    errDiv.className = 'chat-msg ai';
-    errDiv.innerHTML = `<div class="bubble" style="color:#e94560;">Virhe: ${err.message}</div>`;
-    msgs.appendChild(errDiv);
-    log(`Permit AI -virhe: ${err.message}`, 'err');
-  }
-
-  sendBtn.disabled = false;
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-async function sendPermitMessage() {
-  const ta = document.getElementById('pai-textarea');
-  const q  = ta.value.trim();
-  if (!q) return;
-  ta.value = '';
-  ta.style.height = '';
-  await askPermit(q);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const ta = document.getElementById('pai-textarea');
-  if (!ta) return;
-
-  ta.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      sendPermitMessage();
-    }
-  });
-
-  ta.addEventListener('input', () => {
-    ta.style.height = '';
-    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
-  });
-});
-</script>
+  </section>
+
+  <!-- SCROLL SECTION 3 — Project Type Cards -->
+  <section class="cards-section" id="projects">
+    <div class="cards-head">
+      <span class="tag" data-i18n="s3.tag">03 — SUPPORTED PROJECT TYPES</span>
+      <h2 class="serif-h2 center" data-i18n="s3.h2.html">20+ project archetypes. <em>One development standard</em></h2>
+    </div>
+    <div class="cards-grid" id="cardsGrid">
+
+      <article class="card">
+        <div class="card-bg bg-bess"></div>
+        <div class="card-content">
+          <div class="card-num">01</div>
+          <div class="card-title" data-i18n="s3.card1Title">BESS</div>
+          <div class="card-meta" data-i18n="s3.card1Meta">Battery Energy Storage · 50–800 MWh</div>
+          <div class="card-detail" data-i18n="s3.card1Text">
+          Grid connection, environmental review and building permitting.
+          Designed for frequency response, energy arbitrage and renewable integration.
+          </div>
+        </div>
+      </article>
+    
+      <article class="card">
+        <div class="card-bg bg-windland"></div>
+        <div class="card-content">
+          <div class="card-num">02</div>
+          <div class="card-title" data-i18n="s3.card2Title">Wind — Land</div>
+          <div class="card-meta" data-i18n="s3.card2Meta">Onshore Wind · 50–600 MW</div>
+          <div class="card-detail" data-i18n="s3.card2Text">
+          Large-scale wind developments across forest and agricultural land.
+          Includes EIA, landowner agreements and transmission planning.
+          </div>
+        </div>
+      </article>
+    
+      <article class="card">
+        <div class="card-bg bg-windsea"></div>
+        <div class="card-content">
+          <div class="card-num">03</div>
+          <div class="card-title" data-i18n="s3.card3Title">Wind — Sea</div>
+          <div class="card-meta" data-i18n="s3.card3Meta">Offshore Wind · 500 MW–2 GW</div>
+          <div class="card-detail" data-i18n="s3.card3Text">
+          Maritime permitting, seabed surveys and offshore grid integration.
+          Built for utility-scale renewable generation in Nordic waters.
+          </div>          
+        </div>
+      </article>
+    
+      <article class="card">
+        <div class="card-bg bg-solar"></div>
+        <div class="card-content">
+          <div class="card-num">04</div>
+          <div class="card-title" data-i18n="s3.card4Title">Solar</div>
+          <div class="card-meta" data-i18n="s3.card4Meta">Utility PV · 10–400 MW</div>
+          <div class="card-detail" data-i18n="s3.card4Text">
+          Ground-mounted solar parks with optional battery storage.
+          Fast permitting path and scalable deployment model.
+          </div>          
+        </div>
+      </article>
+    
+      <article class="card">
+        <div class="card-bg bg-smr"></div>
+        <div class="card-content">
+          <div class="card-num">05</div>
+          <div class="card-title" data-i18n="s3.card5Title">SMR</div>
+          <div class="card-meta" data-i18n="s3.card5Meta">Small Modular Reactor · 50–300 MW</div>
+          <div class="card-detail" data-i18n="s3.card5Text">
+          Advanced nuclear projects for district heating, hydrogen production
+          and long-term baseload electricity supply.
+          </div>          
+        </div>
+      </article>
+    
+      <article class="card">
+        <div class="card-bg bg-hydro"></div>
+        <div class="card-content">
+          <div class="card-num">06</div>
+          <div class="card-title" data-i18n="s3.card6Title">Hydro</div>
+          <div class="card-meta" data-i18n="s3.card6Meta">Hydropower · 5–60 MW</div>
+          <div class="card-detail" data-i18n="s3.card6Text">
+          Water permit management, environmental assessments and
+          modernisation of existing hydroelectric infrastructure.
+          </div>          
+        </div>
+      </article>
+    
+      <article class="card">
+        <div class="card-bg bg-residential"></div>
+        <div class="card-content">
+          <div class="card-num">07</div>
+          <div class="card-title" data-i18n="s3.card7Title">Residential</div>
+          <div class="card-meta" data-i18n="s3.card7Meta">Housing Development</div>
+          <div class="card-detail" data-i18n="s3.card7Text">
+          Apartment complexes, residential districts and mixed-use communities.
+          Building permits, zoning compliance and infrastructure coordination.
+          </div>
+        </div>
+      </article>
+    
+      <article class="card">
+        <div class="card-bg bg-industrial"></div>
+        <div class="card-content">
+          <div class="card-num">08</div>
+          <div class="card-title" data-i18n="s3.card8Title">Industrial</div>
+          <div class="card-meta" data-i18n="s3.card8Meta">Manufacturing & Processing</div>
+          <div class="card-detail" data-i18n="s3.card8Text">
+          Factories, production facilities and logistics hubs. Environmental permits, utility connections and site approvals.
+          </div>          
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-bg bg-farm"></div>
+        <div class="card-content">
+          <div class="card-num">09</div>
+          <div class="card-title" data-i18n="s3.card9Title">Agriculture</div>
+          <div class="card-meta" data-i18n="s3.card9Meta">Farm Infrastructure</div>
+          <div class="card-detail" data-i18n="s3.card9Text">
+          Barns, storage facilities and agricultural processing buildings. Permitting adapted for rural development projects.
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-bg bg-commercial"></div>
+        <div class="card-content">
+          <div class="card-num">10</div>
+          <div class="card-title" data-i18n="s3.card10Title">Commercial</div>
+          <div class="card-meta" data-i18n="s3.card10Meta">Office & Retail Development</div>
+          <div class="card-detail" data-i18n="s3.card10Text">
+          Business parks, office buildings and commercial real estate. Planning approvals, construction permits and utility integration.
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-bg bg-other"></div>
+        <div class="card-content">
+          <div class="card-num">11</div>
+          <div class="card-title" data-i18n="s3.card11Title">Other Project</div>
+          <div class="card-meta" data-i18n="s3.card11Meta">Custom Development</div>
+          <div class="card-detail" data-i18n="s3.card11Text">
+          Infrastructure, public-sector and special-purpose developments. Flexible permitting workflows tailored to project requirements.
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-more">
+          <div class="card-content">
+              <div class="card-num">20+</div>
+              <div class="card-title" data-i18n="s3.cardMoreTitle">
+                  More Project Types
+              </div>
+              <div class="card-meta" data-i18n="s3.cardMoreMeta">
+                  Infrastructure · Energy · Industrial
+              </div>
+              <div class="card-detail" data-i18n="s3.cardMoreText">
+                  Data centres, logistics hubs, public infrastructure,
+                  commercial developments and sector-specific projects.
+                  NCE Permit AI currently supports more than 20 project categories.
+              </div>
+          </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- SCROLL SECTION 4 — SMR / Nuclear -->
+  <section class="row-section row-dark" id="technology" data-parallax>
+    <div class="row-inner">
+      <div class="text-container">
+        <span class="tag" data-i18n="s4.tag">04 — SMR / NEXT-GENERATION NUCLEAR</span>
+        <h2 class="serif-h2 light" data-i18n="s4.h2.html">Small Modular Reactors, <em>European-scaled</em></h2>
+        <p class="light" data-i18n="s4.p1">NCE Permit AI supports the permitting process for Small Modular Reactors across Nordic and European jurisdictions, including pre-licensing, site characterisation and safety documentation.</p>
+        <p class="light" data-i18n="s4.p2">Designed to manage the regulatory complexity of new nuclear technologies under STUK (Finland), SSM (Sweden), DSA (Norway) and EURATOM frameworks.</p>
+      </div>
+      <div class="media-container autoplay">
+        <video class="section-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/vC-ignalina.webm" type="video/webm">
+          <source src="assets/video/vC-ignalina.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCROLL SECTION 5 — Control Room -->
+  <section class="row-section" data-parallax>
+    <div class="row-inner reverse">
+      <div class="media-container autoplay">
+        <video class="section-video" muted loop playsinline preload="metadata">
+          <source src="assets/video/vB-control.webm" type="video/webm">
+          <source src="assets/video/vB-control.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="text-container">
+        <span class="tag" data-i18n="s5.tag">05 — FROM PERMITTING TO OPERATIONS</span>
+        <h2 class="serif-h2" data-i18n="s5.h2.html">A single pane of glass for <em>every megawatt</em></h2>
+        <p data-i18n="s5.p1">NCE Permit AI provides structure across the full permitting lifecycle — from initial application through construction and into operations and compliance monitoring. Regulatory requirements, documentation and compliance tracking in a single auditable workflow.</p>
+      </div>
+    </div>
+  </section>
+
+
+
+<section class="subhero">
+    <div class="subhero-inner">
+
+        <div>
+            <span class="tag" data-i18n="s6.tag">06 — WHY NCE</span>
+
+            <h2 class="serif-h2" data-i18n="s6.h2.html">
+                Built for permitting. <em>Nothing else</em>
+            </h2>
+
+            <p data-i18n="s6.p1">
+                NCE is not a generic AI writing tool. It is built for one purpose:
+                helping energy projects move through permitting faster, with full
+                regulatory traceability and less manual work.
+            </p>
+            <br>
+            <p data-i18n="s6.p2">
+                Your team works from a single structured workflow instead of searching
+                through regulations, managing document versions and rewriting the same
+                content across projects.
+            </p>
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+
+
+<section class="subhero">
+    <div class="subhero-inner">
+
+        <span class="tag" data-i18n="s7.tag">
+            07 — WHO IT IS FOR
+        </span>
+
+        <div class="country-line" data-i18n="s7.p1">
+            Energy developers · Engineering firms · Permit specialists · Project managers · Regulatory and compliance teams
+        </div>
+
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+  <!-- SCROLL SECTION 8 — Tool Preview & Final CTA -->
+  <section class="tool-cta" id="tool-preview">
+    <div class="ambient-glow ag-1"></div>
+    <div class="ambient-glow ag-2"></div>
+    <span class="tag center" data-i18n="s8.tag">08 — CTA / ONBOARDING</span>
+    <h2 class="serif-h2 center light" data-i18n="s8.h2.html">In minutes, <em>Professional license application</em>.</h2>
+    <p class="tool-cta-sub light" data-i18n="s8.p1">We are currently onboarding the first pilot customers.</p>    
+
+    <p class="tool-cta-sub light" data-i18n="s8.p2">If you are working on BESS, wind, solar, SMR or construction, industrial or infrastructure projects — get in touch to discuss a pilot.</p>
+
+    <a href="https://ai.ncenergy.fi" class="btn-hero big" data-jump1="tool">
+      <span data-i18n="cta.openToolRequest">Request access</span>
+      <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M1 6h13M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-copy">
+            <h3 data-i18n="footer.title">NCE — Native Clean Energy</h3>
+
+            <p data-i18n="footer.p1">
+                Regulatory Intelligence for Energy, Construction and Infrastructure Projects
+            </p>
+        </div>
+        <div class="footer-links">
+          <a href="https://ncenergy.fi">ncenergy.fi</a>
+          <span>·</span>
+          <a href="mailto:info@ncenergy.fi">info@ncenergy.fi</a>
+          <span>·</span>
+          <a href="/privacy" data-i18n="footer.pp">Privacy Policy</a>
+        </div>
+        <div class="footer-countries" data-i18n="footer.tag">
+            Finland · Sweden · Denmark · Norway · Poland · Germany
+        </div>
+    </div>
+</footer>
+
+
+</main>
+
+<script src="assets/js/script.js" defer></script>
 </body>
 </html>
