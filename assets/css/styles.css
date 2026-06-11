@@ -2138,23 +2138,68 @@ body.tool {
    RESPONSIVE
    ========================================================== */
 @media (max-width:1024px){
-  .header-inner{padding:18px 24px}
+  .header-inner{padding:18px 20px}
   .primary-nav{display:none}
-  .hero-content{max-width:90%;padding:0 32px}
   .row-inner{flex-direction:column;gap:40px}
   .row-inner.reverse{flex-direction:column-reverse}
   .text-container,.media-container{flex:0 0 100%;max-width:100%}
   .cards-grid{grid-template-columns:repeat(2,1fr)}
   .tool-mock-body{grid-template-columns:1fr}
   .tm-side{display:none}
+
+
+  .btn-pill {
+    padding: 12px 12px;
+    font-size: 10px;
+    letter-spacing: 0em;
+  }
+.brand img {
+  width: 130px;
+  height: auto;
 }
+
+.hero-content{ max-width:100%;padding:0 0px}
+.row-inner {
+  padding-left: 20px;
+  padding-right: 20px; 
+}
+.hero-stats {
+  display: none;
+}
+
+.hero-sub {
+  margin-bottom: 20px;
+  font-size: clamp(12px,1.1vw,18px);
+}
+
+.btn-hero {
+  padding: 12px 18px;
+}
+
+.subhero-copy {
+  margin-top: 24px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--slate-700);
+}
+
+
+}
+
+
+
+
+
+
+
 @media (max-width:640px){
   .hero-title{font-size:44px}
-  .hero-pager{bottom:96px;padding:0 16px}
+  
   .scroll-cue{display:none}
   .row-section{padding:80px 0}
   .cards-section{padding:80px 0}
-  .cards-grid{grid-template-columns:1fr;padding:0 24px}
+  /*.cards-grid{grid-template-columns:1fr;padding:0 24px}*/
+  .cards-grid{grid-template-columns:1fr;padding:0 45px}
   .cards-head{padding:0 24px}
   .tool-cta{padding:80px 24px 110px}
   .footer-inner{flex-direction:column;align-items:flex-start;gap:24px;text-align:left}
@@ -2165,6 +2210,13 @@ body.tool {
   .type-picker{grid-template-columns:repeat(2,1fr)}
   .form-row{grid-template-columns:1fr}
   .hero-ctas{flex-direction:column;align-items:flex-start}
+
+
+.hero-pager{bottom:96px;padding:0 16px}
+.hero-pager{ display: none;}
+
+
+
 }
 
 
