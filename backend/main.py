@@ -1385,10 +1385,11 @@ async def phase_status(
 ):
     """Palauttaa vaiheen tilan sessiolle ja hanketyypille."""
     if not _PHASE_LOCK_OK:
-        return JSONResponse({"completed_phase": 0, "next_phase": 1, "phases": [
+        # Phase lock disabled (demo mode) — all phases open, signal frontend to skip locks
+        return JSONResponse({"completed_phase": 0, "next_phase": 1, "phase_lock_disabled": True, "phases": [
             {"name": "esiselvitys",  "phase": 1, "state": "active"},
-            {"name": "lupavaihe",    "phase": 2, "state": "locked"},
-            {"name": "rakentaminen", "phase": 3, "state": "locked"},
+            {"name": "lupavaihe",    "phase": 2, "state": "active"},
+            {"name": "rakentaminen", "phase": 3, "state": "active"},
         ]})
     if not session_id or not hanketyyppi:
         raise HTTPException(status_code=400, detail="session_id ja hanketyyppi vaaditaan")
