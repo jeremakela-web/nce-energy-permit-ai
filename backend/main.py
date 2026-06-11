@@ -92,8 +92,16 @@ async def add_charset(request, call_next):
         response.headers["content-type"] = "application/json; charset=utf-8"
     return response
 _BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+_REPO_DIR    = os.path.dirname(_BACKEND_DIR)
 _STATIC_DIR  = os.path.join(_BACKEND_DIR, "static")
+_LANDING_DIR = _REPO_DIR  # root index.html lives here
 app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
+
+# Root assets/ for the landing page (ncenergy.fi / www.ncenergy.fi).
+# Mount only if the folder exists so the app still starts without it.
+_ASSETS_DIR = os.path.join(_REPO_DIR, "assets")
+if os.path.isdir(_ASSETS_DIR):
+    app.mount("/assets", StaticFiles(directory=_ASSETS_DIR), name="assets")
 
 MML_API_KEY   = os.getenv("MML_API_KEY", "")
 PORT          = int(os.environ.get("PORT", 8000))
@@ -229,7 +237,15 @@ class ReportRequest(BaseModel):
 # ── Endpointit ────────────────────────────────────────────────────────────────
 
 @app.get("/")
-async def root():
+async def root(request: Request):
+    host = request.headers.get("host", "")
+    if "ai.ncenergy" in host:
+        return FileResponse(os.path.join(_STATIC_DIR, "index.html"))
+    # ncenergy.fi, www.ncenergy.fi, localhost → landing page
+    landing = os.path.join(_LANDING_DIR, "index.html")
+    if os.path.isfile(landing):
+        return FileResponse(landing)
+    # fallback: tool (landing page not deployed yet)
     return FileResponse(os.path.join(_STATIC_DIR, "index.html"))
 
 
