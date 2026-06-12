@@ -1547,6 +1547,13 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("YVA-menettely (tarvitt.)",        "RDOŚ",                                "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
             ("Maankäyttösopimus",               "Gmina (urząd gminy / miasta)",        "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
         ],
+        "hybridi": [
+            ("Pozwolenie na budowę (instalacja hybrydowa)", "Starostwo Powiatowe",     "Prawo budowlane (Ustawa z 7.07.1994)"),
+            ("Decyzja o środowiskowych uwarunkowaniach",  "RDOŚ",                      "Ustawa o udostępnianiu informacji o środowisku (Dz.U. 2023 poz. 1029)"),
+            ("Koncesja na wytwarzanie energii",           "URE (Urząd Regulacji Energetyki)", "Ustawa Prawo energetyczne (1997)"),
+            ("Decyzja o warunkach zabudowy (tarvitt.)",  "Wójt / Burmistrz / Prezydent miasta", "Ustawa o planowaniu i zagospodarowaniu przestrzennym (2003)"),
+            ("Umowa przyłączeniowa (sieć)",               "URE / operator systemu dystrybucyjnego", "Ustawa Prawo energetyczne (1997)"),
+        ],
     },
     # ── Sverige ──────────────────────────────────────────────────────────────
     "SE": {
@@ -1651,6 +1658,13 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Bygglov",                           "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
             ("Miljötillstånd (tarvitt.)",         "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 9"),
             ("Vattendomstol (borrning)",          "Mark- och miljödomstolen",                  "Miljöbalken (SFS 1998:808) kap. 11"),
+        ],
+        "hybridi": [
+            ("Bygglov (hybridanläggning)",        "Kommunen (byggnadsnämnd)",                  "Plan- och bygglagen (SFS 2010:900)"),
+            ("Miljötillstånd (IED/IPPC)",         "Länsstyrelsen / Mark- och miljödomstolen",  "Miljöbalken (SFS 1998:808) kap. 9"),
+            ("Nätanslutningsavtal",               "Affärsverket svenska kraftnät / VNB",       "Ellagen (SFS 1997:857)"),
+            ("MKB (tarvitt.)",                   "Länsstyrelsen",                             "Miljöbalken (SFS 1998:808) kap. 6"),
+            ("Detaljplan / ändring av detaljplan", "Kommunen",                                "Plan- och bygglagen (SFS 2010:900) kap. 5"),
         ],
     },
     # ── Danmark ──────────────────────────────────────────────────────────────
@@ -1861,6 +1875,13 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Byggetillatelse",                   "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
             ("Utslippstillatelse (tarvitt.)",     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
             ("Maankäyttösopimus",                 "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+        ],
+        "hybridi": [
+            ("Byggetillatelse (hybridanlegg)",    "Kommunen (plan og bygning)",                 "Plan- og bygningsloven (LOV-2008-06-27-71)"),
+            ("Konsesjon (energianlegg)",          "NVE / Olje- og energidepartementet",         "Energiloven (LOV-1990-06-29-50)"),
+            ("Nettilkoblingsavtale",              "Statnett / lokal netteier",                  "Energiloven (LOV-1990-06-29-50)"),
+            ("Utslippstillatelse (tarvitt.)",     "Statsforvalteren",                           "Forurensningsloven (LOV-1981-03-13-6)"),
+            ("Reguleringsplan",                   "Kommunen",                                   "Plan- og bygningsloven (LOV-2008-06-27-71)"),
         ],
     },
     # ── Deutschland ──────────────────────────────────────────────────────────────

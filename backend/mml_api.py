@@ -30,7 +30,7 @@ def format_kiinteistotunnus(kt: str) -> str:
     """'636-439-4-711' → '63643900040711' (MMMKKKRRRRPPPP, 14 merkkiä)."""
     parts = kt.strip().split("-")
     if len(parts) != 4:
-        raise ValueError(f"Virheellinen kiinteistötunnus: {kt!r} (odotettiin MMM-KKK-R-PPPP)")
+        raise ValueError(f"Invalid property ID: {kt!r} (expected MMM-KKK-R-PPPP)")
     muni, village, group, parcel = parts
     return f"{muni.zfill(3)}{village.zfill(3)}{group.zfill(4)}{parcel.zfill(4)}"
 

@@ -389,7 +389,7 @@ async def static_map_image(
     try:
         prop = await get_property_boundaries(kiinteistotunnus)
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"Kiinteistöhaku epäonnistui: {exc}")
+        raise HTTPException(status_code=502, detail=f"Property lookup failed: {exc}")
 
     center_lat, center_lon = _centroid(prop)
 
@@ -399,7 +399,7 @@ async def static_map_image(
         )
         return {"image_b64": base64.b64encode(png_bytes).decode()}
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Karttakuvan generointi epäonnistui: {exc}")
+        raise HTTPException(status_code=500, detail=f"Map image generation failed: {exc}")
 
 
 @app.post("/api/report/generate")
@@ -562,7 +562,7 @@ async def proofread_status(job_id: str):
     """Oikolukutehtävän tila: pending | running | done | error."""
     job = _proofread_store.get(job_id)
     if job is None:
-        raise HTTPException(status_code=404, detail="Tehtävää ei löydy")
+        raise HTTPException(status_code=404, detail="Task not found")
     return {"status": job["status"], "error": job.get("error"), "debug_sections": job.get("debug_sections")}
 
 
@@ -581,7 +581,7 @@ async def proofread_download(job_id: str):
     """Lataa oikoluvun jälkeinen PDF."""
     job = _proofread_store.get(job_id)
     if job is None or job["status"] != "done" or not job["pdf_bytes"]:
-        raise HTTPException(status_code=404, detail="PDF ei ole vielä valmis")
+        raise HTTPException(status_code=404, detail="PDF not ready yet")
     prefix  = _FILE_PREFIX.get(job.get("lang", "FI"), "hakemus")
     _kt     = _fn(job.get("hanketyyppi", "doc"))
     _kunta  = _fn(job.get("kunta", "hanke"))
@@ -597,7 +597,7 @@ async def proofread_download(job_id: str):
 async def permit_ai(request: Request, req: PermitAIRequest):
     """RAG-pohjainen lupaprosessikysely. Hakee Fingrid/Pelastusopisto/Tukes-dokumenteista."""
     if not req.question.strip():
-        raise HTTPException(status_code=400, detail="Kysymys ei voi olla tyhjä.")
+        raise HTTPException(status_code=400, detail="Question cannot be empty.")
     try:
         result = await asyncio.to_thread(
             query_permit_ai, req.question, req.n_results
@@ -628,7 +628,7 @@ async def optimize_sites(request: Request, req: OptimizeRequest):
     Hanketyypit: bess, tuulivoima, aurinkovoima, smr
     """
     if not _OPTIMIZER_OK:
-        raise HTTPException(status_code=501, detail="optimizer.py ei löydy")
+        raise HTTPException(status_code=501, detail="optimizer.py not found")
 
     _allowed = {"bess", "tuulivoima", "aurinkovoima", "smr"}
     if req.project_type not in _allowed:
@@ -761,7 +761,7 @@ async def _run_analysis(
         try:
             prop = await get_property_boundaries(kiinteistotunnus, api_key=key)
         except Exception as exc:
-            raise HTTPException(status_code=502, detail=f"Kiinteistöhaku epäonnistui: {exc}")
+            raise HTTPException(status_code=502, detail=f"Property lookup failed: {exc}")
 
     kuntanimi  = _prop_kuntanimi(prop)
     kylanimi   = _prop_kylanimi(prop)
@@ -1355,7 +1355,7 @@ async def parse_ifc(
     if len(content) > _IFC_MAX_BYTES:
         raise HTTPException(status_code=413, detail="Tiedosto liian suuri (max 50 MB)")
     if not content:
-        raise HTTPException(status_code=400, detail="Tyhjä tiedosto")
+        raise HTTPException(status_code=400, detail="Empty file")
 
     allowed_project_types = {
         "BESS", "AURINKO", "TUULI", "SMR", "DATAKESKUS",
@@ -1491,7 +1491,7 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
             None, lambda: apply_proofread_to_pdf(inp, sections, sources)
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"PDF-generointi epäonnistui: {e}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {e}")
 
     # Audit trail — lisätään PDF:n metatietoihin (ei sisältöön)
     timestamp = datetime.datetime.utcnow().isoformat() + "Z"
