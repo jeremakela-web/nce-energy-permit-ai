@@ -1618,23 +1618,20 @@
         <div class="sidebar-section" id="site-optimizer-section">
           <h3>&#9889; Site Optimizer</h3>
           <div class="proj-field">
-            <label>Hanketyyppi</label>
+            <label data-i18n="lbl_hanketyyppi">Hanketyyppi</label>
             <select id="opt-project-type">
-              <option value="bess">BESS &#8212; Akkuenergiavarastot</option>
-              <option value="tuulivoima">Tuulivoima</option>
-              <option value="aurinkovoima">Aurinkovoima</option>
-              <option value="smr">SMR &#8212; Pienydinreaktori</option>
+              <!-- rebuilt by _rebuildOptProjectType() on init and lang change -->
             </select>
           </div>
-          <div class="opt-draw-hint" id="opt-draw-hint">
+          <div class="opt-draw-hint" id="opt-draw-hint" data-i18n="opt_draw_hint_txt">
             Piirrä optimointialue kartalle &#8594; paina Optimoi sijainnit.
           </div>
           <div class="btn-row">
             <button class="btn secondary" id="btn-draw-rect" onclick="activateOptDraw()">
-              &#9645; Piirrä alue
+              &#9645; <span data-i18n="opt_btn_draw">Piirrä alue</span>
             </button>
             <button class="btn" id="btn-optimize" onclick="runOptimizer()" disabled>
-              &#9889; Optimoi
+              &#9889; <span data-i18n="opt_btn_optimize">Optimoi</span>
             </button>
           </div>
           <div id="opt-results" style="margin-top:10px;"></div>
@@ -1917,6 +1914,12 @@ const TRANSLATIONS = {
     opt_sector_txt:       'Sektori',
     opt_done_prefix:      'Optimointi valmis —',
     opt_done_suffix:      'parasta sijaintia näkyvillä kartalla',
+    opt_btn_draw:         'Piirrä alue',
+    opt_btn_optimize:     'Optimoi',
+    opt_type_bess:        'BESS — Akkuenergiavarastot',
+    opt_type_wind:        'Tuulivoima',
+    opt_type_solar:       'Aurinkovoima',
+    opt_type_smr:         'SMR — Pienydinreaktori',
     opt_site_location:    'Kohteen sijainti:',
     opt_site_hint_ph:     '— anna kiinteistötunnus',
     opt_site_enter_hint:  '— syötä kiinteistötunnus ja paina Hae',
@@ -2313,6 +2316,12 @@ const TRANSLATIONS = {
     opt_sector_txt:       'Sector',
     opt_done_prefix:      'Optimization complete —',
     opt_done_suffix:      'best locations shown on map',
+    opt_btn_draw:         'Draw area',
+    opt_btn_optimize:     'Optimize',
+    opt_type_bess:        'BESS — Battery energy storage',
+    opt_type_wind:        'Wind power',
+    opt_type_solar:       'Solar power',
+    opt_type_smr:         'SMR — Small modular reactor',
     opt_site_location:    'Site location:',
     opt_site_hint_ph:     '— enter property ID',
     opt_site_enter_hint:  '— enter property ID and press Search',
@@ -2699,6 +2708,12 @@ const TRANSLATIONS = {
     opt_sector_txt:       'Sektor',
     opt_done_prefix:      'Optimering klar —',
     opt_done_suffix:      'bästa platser visas på kartan',
+    opt_btn_draw:         'Rita område',
+    opt_btn_optimize:     'Optimera',
+    opt_type_bess:        'BESS — Batterienergilager',
+    opt_type_wind:        'Vindkraft',
+    opt_type_solar:       'Solenergi',
+    opt_type_smr:         'SMR — Liten modulreaktor',
     opt_site_location:    'Platsens läge:',
     opt_site_hint_ph:     '— ange fastighetsbeteckning',
     opt_site_enter_hint:  '— ange fastighetsbeteckning och tryck Sök',
@@ -3073,6 +3088,12 @@ const TRANSLATIONS = {
     opt_sector_txt:       'Sektor',
     opt_done_prefix:      'Optimering færdig —',
     opt_done_suffix:      'bedste steder vist på kortet',
+    opt_btn_draw:         'Tegn område',
+    opt_btn_optimize:     'Optimer',
+    opt_type_bess:        'BESS — Batterienergilager',
+    opt_type_wind:        'Vindkraft',
+    opt_type_solar:       'Solenergi',
+    opt_type_smr:         'SMR — Lille modulreaktor',
     opt_site_location:    'Stedets placering:',
     opt_site_hint_ph:     '— indtast ejendomsidentifikator',
     opt_site_enter_hint:  '— indtast ejendomsidentifikator og tryk Søg',
@@ -3465,6 +3486,12 @@ const TRANSLATIONS = {
     opt_sector_txt:       'Sektor',
     opt_done_prefix:      'Optimering ferdig —',
     opt_done_suffix:      'beste steder vist på kartet',
+    opt_btn_draw:         'Tegn område',
+    opt_btn_optimize:     'Optimer',
+    opt_type_bess:        'BESS — Batterienergilager',
+    opt_type_wind:        'Vindkraft',
+    opt_type_solar:       'Solenergi',
+    opt_type_smr:         'SMR — Liten modulreaktor',
     opt_site_location:    'Stedets plassering:',
     opt_site_hint_ph:     '— skriv inn eiendomsidentifikator',
     opt_site_enter_hint:  '— skriv inn eiendomsidentifikator og trykk Søk',
@@ -3857,6 +3884,12 @@ const TRANSLATIONS = {
     opt_sector_txt:       'Sektor',
     opt_done_prefix:      'Optymalizacja gotowa —',
     opt_done_suffix:      'najlepszych lokalizacji na mapie',
+    opt_btn_draw:         'Narysuj obszar',
+    opt_btn_optimize:     'Optymalizuj',
+    opt_type_bess:        'BESS — Magazyn energii',
+    opt_type_wind:        'Energetyka wiatrowa',
+    opt_type_solar:       'Energetyka słoneczna',
+    opt_type_smr:         'SMR — Mały reaktor modułowy',
     opt_site_location:    'Lokalizacja obiektu:',
     opt_site_hint_ph:     '— wpisz identyfikator nieruchomości',
     opt_site_enter_hint:  '— wpisz identyfikator i naciśnij Szukaj',
@@ -4257,6 +4290,12 @@ const TRANSLATIONS = {
     opt_sector_txt:       'Sektor',
     opt_done_prefix:      'Optimierung fertig —',
     opt_done_suffix:      'beste Standorte auf Karte',
+    opt_btn_draw:         'Gebiet zeichnen',
+    opt_btn_optimize:     'Optimieren',
+    opt_type_bess:        'BESS — Batteriespeicher',
+    opt_type_wind:        'Windenergie',
+    opt_type_solar:       'Solarenergie',
+    opt_type_smr:         'SMR — Kleiner Modulreaktor',
     opt_site_location:    'Standort:',
     opt_site_hint_ph:     '— Grundstückskennzeichen eingeben',
     opt_site_enter_hint:  '— Grundstückskennzeichen eingeben und Suchen drücken',
@@ -4691,6 +4730,7 @@ function setLang(lang) {
   // Rebuild map type select and grid with translated names
   _rebuildMapTypeSelect();
   _rebuildMapGrid();
+  _rebuildOptProjectType();
   // Refresh map power label for current selected type
   const _curMapType = document.getElementById('map-hanketyyppi');
   if (_curMapType && _curMapType.value) switchMapType(_curMapType.value);
@@ -5407,6 +5447,19 @@ function _rebuildMapTypeSelect() {
   if (currentVal) sel.value = currentVal;
 }
 _rebuildMapTypeSelect();
+
+function _rebuildOptProjectType() {
+  const sel = document.getElementById('opt-project-type');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML =
+    `<option value="bess">${t('opt_type_bess')}</option>` +
+    `<option value="tuulivoima">${t('opt_type_wind')}</option>` +
+    `<option value="aurinkovoima">${t('opt_type_solar')}</option>` +
+    `<option value="smr">${t('opt_type_smr')}</option>`;
+  if (cur) sel.value = cur;
+}
+_rebuildOptProjectType();
 
 // ─────────────────────────────────────────────
 // Country selection
