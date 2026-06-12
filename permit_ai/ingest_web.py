@@ -92,6 +92,13 @@ WEB_SOURCES: dict[str, list[str]] = {
         "https://www.dudkowiak.com/blog/battery-energy-storage-in-poland-legal-requirements-and-investment-risks-in-2025/",
         "https://www.greenrecruitmentcompany.com/blog/2025/12/why-polands-new-renewable-energy-permits-are-making-waves-in-2025",
     ],
+    "DE": [
+        # Federal law texts — gesetze-im-internet.de (public domain, Apache/plain HTML)
+        # Each index page links to individual paragraph pages; crawler follows 1 level (MAX_PAGES=20 per URL)
+        "https://www.gesetze-im-internet.de/bbaug/",   # BauGB — Baugesetzbuch
+        "https://www.gesetze-im-internet.de/bimschg/", # BImSchG — Bundes-Immissionsschutzgesetz
+        "https://www.gesetze-im-internet.de/enwg_2005/", # EnWG — Energiewirtschaftsgesetz
+    ],
 }
 
 # Sivustot joita ei crawlata linkkien kautta (vain annettu URL itse)
