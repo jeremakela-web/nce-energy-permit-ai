@@ -1276,7 +1276,7 @@ def _rag_context(
                     _collect(col.query(
                         query_embeddings=emb,
                         n_results=n_per_query,
-                        where={"country": country},
+                        where={"country": {"$in": [country, "EU"]}},
                     ))
                 except Exception:
                     pass  # maakohtaisia dokumentteja ei vielä indeksoitu
@@ -1286,7 +1286,7 @@ def _rag_context(
                 _collect(col.query(
                     query_embeddings=emb,
                     n_results=n_per_query,
-                    where={"country": "FI"},
+                    where={"country": {"$in": ["FI", "EU"]}},
                 ))
             except Exception:
                 # Vanha indeksi ilman metadataa — hae ilman suodatinta
