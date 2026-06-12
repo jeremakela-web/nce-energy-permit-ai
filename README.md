@@ -79,7 +79,7 @@ bess_tool/
 
 ## RAG-tietokanta
 
-Lupa-asiakirjapalvelu käyttää RAG-hakua (Retrieval-Augmented Generation). Tietokanta sisältää ~1800 chunkkia suomalaisista lupa- ja rakennusohjeistuksista.
+Lupa-asiakirjapalvelu käyttää RAG-hakua (Retrieval-Augmented Generation). Tietokanta sisältää ~8 000 chunkkia lupa- ja rakennusohjeistuksista — 6 maa (FI, SE, DA, NO, PL, DE), 7 kieltä (FI, EN, SE, DA, NO, PL, DE), 20+ hanketyyppiä.
 
 Tietokannan uudelleenindeksointi:
 ```bash
