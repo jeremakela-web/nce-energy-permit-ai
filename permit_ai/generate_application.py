@@ -533,8 +533,6 @@ def _postprocess_text(text: str, lang: str = "FI") -> str:
 # Vain sisältöosioiden tekstit lasketaan — kansilehti/disclaimer/footer eivät koskaan
 _CONTENT_SECTION_KEYS: frozenset[str] = frozenset({
     "kuvaus", "perustelut", "luvat_teksti", "toimenpiteet",
-    # BF-osiot (business_finland)
-    "tk_kuvaus", "budjetti", "tiimi", "aikataulu",
 })
 
 
@@ -2724,10 +2722,6 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "toim_vastuutaho": "Vastuutaho", "toim_aikataulu": "Aikataulu",
         "hdr_draft": "lupahakemusluonnos", "hdr_right": "ncenergy.fi  |  AI-luonnos",
         "ftr_ai":    "AI-luonnos — vaatii tarkistuksen", "ftr_sivu": "Sivu",
-        "bf_title": "T&K-rahoitushakemus — luonnos",
-        "bf_kotipaikka": "Kotipaikka", "bf_vaihe": "Vaihe", "bf_tk_kuvaus": "T&K-kuvaus",
-        "bf_sec1": "1. T&K-kuvaus", "bf_sec2": "2. Budjetti ja rahoitusrakenne",
-        "bf_sec3": "3. Tiimikuvaus", "bf_sec4": "4. Projektiaikataulu",
         "esiselvitys_p":   ("Hanke on esiselvitysvaiheessa. Lopulliset tekniset mitoitukset, "
                             "sijaintisuunnitelmat ja ympäristövaikutusten arvioinnit tarkentuvat "
                             "jatkosuunnittelun myötä."),
@@ -2817,10 +2811,6 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "toim_vastuutaho": "Responsible", "toim_aikataulu": "Timeline",
         "hdr_draft": "permit application draft", "hdr_right": "ncenergy.fi  |  AI draft",
         "ftr_ai":    "AI draft — requires review", "ftr_sivu": "Page",
-        "bf_title": "R&D Funding Application Draft",
-        "bf_kotipaikka": "Location", "bf_vaihe": "Phase", "bf_tk_kuvaus": "R&D Description",
-        "bf_sec1": "1. R&D Description", "bf_sec2": "2. Budget and Funding Structure",
-        "bf_sec3": "3. Team Description", "bf_sec4": "4. Project Timeline",
         "esiselvitys_p":   ("The project is in the pre-study phase. Final technical specifications, "
                             "site plans and environmental impact assessments will be refined "
                             "during further planning."),
@@ -2903,10 +2893,6 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "toim_vastuutaho": "Ansvarig", "toim_aikataulu": "Tidplan",
         "hdr_draft": "bygglovsansökan — utkast", "hdr_right": "ncenergy.fi  |  AI-utkast",
         "ftr_ai":    "AI-utkast — kräver granskning", "ftr_sivu": "Sida",
-        "bf_title": "FoU-finansieringsansökan — utkast",
-        "bf_kotipaikka": "Hemort", "bf_vaihe": "Fas", "bf_tk_kuvaus": "FoU-beskrivning",
-        "bf_sec1": "1. FoU-beskrivning", "bf_sec2": "2. Budget och finansieringsstruktur",
-        "bf_sec3": "3. Teambeskrivning", "bf_sec4": "4. Projekttidslinje",
         "esiselvitys_p":   ("Projektet befinner sig i förundersökningsfasen. Slutliga tekniska "
                             "specifikationer, platsplaner och miljökonsekvensbedömningar preciseras "
                             "under den fortsatta planeringen."),
@@ -2989,10 +2975,6 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "toim_vastuutaho": "Ansvarlig", "toim_aikataulu": "Tidsplan",
         "hdr_draft": "tilladelsesansøgning — udkast", "hdr_right": "ncenergy.fi  |  AI-udkast",
         "ftr_ai":    "AI-udkast — kræver gennemgang", "ftr_sivu": "Side",
-        "bf_title": "F&U-finansieringsansøgning — udkast",
-        "bf_kotipaikka": "Hjemsted", "bf_vaihe": "Fase", "bf_tk_kuvaus": "F&U-beskrivelse",
-        "bf_sec1": "1. F&U-beskrivelse", "bf_sec2": "2. Budget og finansieringsstruktur",
-        "bf_sec3": "3. Teambeskrivelse", "bf_sec4": "4. Projekttidslinje",
         "esiselvitys_p":   ("Projektet befinder sig i forundersøgelsesfasen. Endelige tekniske "
                             "specifikationer, lokalplaner og miljøkonsekvensvurderinger vil blive "
                             "præciseret under den videre planlægning."),
@@ -3077,10 +3059,6 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "toim_vastuutaho": "Ansvarlig", "toim_aikataulu": "Tidsplan",
         "hdr_draft": "tillatelsessøknad — utkast", "hdr_right": "ncenergy.fi  |  AI-utkast",
         "ftr_ai":    "AI-utkast — krever gjennomgang", "ftr_sivu": "Side",
-        "bf_title": "FoU-finansieringssøknad — utkast",
-        "bf_kotipaikka": "Hjemsted", "bf_vaihe": "Fase", "bf_tk_kuvaus": "FoU-beskrivelse",
-        "bf_sec1": "1. FoU-beskrivelse", "bf_sec2": "2. Budsjett og finansieringsstruktur",
-        "bf_sec3": "3. Teambeskrivelse", "bf_sec4": "4. Prosjekttidslinje",
         "esiselvitys_p":   ("Prosjektet er i forstudiefasen. Endelige tekniske spesifikasjoner, "
                             "stedplaner og miljøkonsekvensutredninger vil bli presisert "
                             "under videre planlegging."),
@@ -3164,10 +3142,6 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "toim_vastuutaho": "Odpowiedzialny", "toim_aikataulu": "Harmonogram",
         "hdr_draft": "wniosek o zezwolenie — szkic", "hdr_right": "ncenergy.fi  |  Szkic AI",
         "ftr_ai":    "Szkic AI — wymaga przeglądu", "ftr_sivu": "Strona",
-        "bf_title": "Wniosek o dofinansowanie B+R — szkic",
-        "bf_kotipaikka": "Siedziba", "bf_vaihe": "Faza", "bf_tk_kuvaus": "Opis B+R",
-        "bf_sec1": "1. Opis B+R", "bf_sec2": "2. Budżet i struktura finansowania",
-        "bf_sec3": "3. Opis zespołu", "bf_sec4": "4. Harmonogram projektu",
         "esiselvitys_p":   ("Projekt jest w fazie analizy wstępnej. Ostateczne specyfikacje techniczne, "
                             "plany lokalizacyjne i oceny oddziaływania na środowisko zostaną doprecyzowane "
                             "w trakcie dalszego planowania."),
