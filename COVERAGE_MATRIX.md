@@ -1,89 +1,74 @@
-# NCE Permit AI — Coverage Matrix
+# NCE Permit AI — RAG Coverage Matrix
 
-Generated: 2026-06-10  
-Source: `_COUNTRY_LUVAT`, `_HANKE_CFG`, `_COUNTRY_COVERAGE` in `permit_ai/generate_application.py` and `backend/static/index.html`.
+Auto-generated | 2026-06-12 | Source: `_COUNTRY_LUVAT`, `_HANKE_CFG` in `permit_ai/generate_application.py`
 
-## Legend
+---
 
-| Symbol | Meaning |
-|--------|---------|
-| ✅ | Permit entries defined in `_COUNTRY_LUVAT` / `_HANKE_CFG` + adequate RAG context |
-| ⚠️ | Defined but partial — low RAG chunk count, aliased config, or only some phases tested |
-| ❌ | Not defined / not covered |
+## Summary
 
-## RAG Chunk Counts per Country
+| Country | Code | Chunks | Status | Primary sources |
+|---------|------|-------:|--------|-----------------|
+| Finland | FI | 1,036 | Full | Fingrid, STUK YVL, Luova, Tukes, Pelastuslaki, MRL, Rakentamislaki |
+| Sweden | SE | 1,561 | Full | Energimyndigheten, SSM, Mark- och miljödomstolen, Elsäkerhetsverket |
+| Denmark | DA | 467 | Partial | Energistyrelsen, Planloven, Bekendtgørelse om nukleare anlæg |
+| Norway | NO | 1,267 | Full | NVE, DSA, Energidepartementet, Plan- og bygningsloven, Atomenergiloven |
+| Poland | PL | 2,573 | Full | PAA, URE, UDT, Ustawa OZE, Prawo budowlane, Prawo wodne |
+| Germany | DE | 1,017 | Partial | BImSchG, EEG, WHG, BauGB, BetrSichV, AtG, WindSeeG, BBergG |
+| EU/IAEA | EU | 72 | Partial | EU taxonomy, RED III, IAEA safety standards (incomplete) |
+| **Total** | | **7,993** | | |
 
-| Country | Chunks | Level |
-|---------|--------|-------|
-| 🇫🇮 FI | ~5 000+ | Full (Fingrid, STUK YVL, Luova, Tukes, Pelastuslaki, MRL) |
-| 🇸🇪 SE | ~1 560 | Partial (Energimyndigheten, Mark- och miljödomstolen, Elsäkerhetsverket) |
-| 🇩🇰 DA | ~470 | Partial — low coverage (Energistyrelsen, Planloven) |
-| 🇳🇴 NO | ~1 270 | Partial (NVE, Energidepartementet, Plan- og bygningsloven) |
-| 🇵🇱 PL | ~2 190 | Partial (UDT, URE, Ustawa OZE, Prawo budowlane) |
-| 🇩🇪 DE | ~920 | Partial (BImSchG, EEG, WHG, BauGB, BetrSichV) |
+---
 
-## Coverage Matrix
+## Project Type Coverage
 
-| Project type | 🇫🇮 FI | 🇸🇪 SE | 🇩🇰 DA | 🇳🇴 NO | 🇵🇱 PL | 🇩🇪 DE |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **BESS** (akkuvarasto) | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Tuulivoima — maa** (onshore) | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Tuulivoima — meri** (offshore) | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Aurinkovoima** (solar) | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **SMR** (pienydinreaktori) | ✅ | ✅ (smr_se) | ⚠️ (smr_da) | ✅ (smr_no) | ✅ | ✅ (smr_de) |
-| **SMR + BESS** (hybridi ydin+akku) | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Hybridivoimala** (BESS+tuuli/aurinko) | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| **Vesivoima** (hydropower) | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Datakeskus** | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Asuinrakennus** (residential) | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Teollisuus** (industrial) | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Maatalous** (agriculture) | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Liikerakennus** (commercial) | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **EGS** (geothermal / enhanced) | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **Offshore Wind** (floating) | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
-| **sCO₂ turbine** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Ympäristölupa** (YSL 527/2014) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+Legend: ✅ Full config + RAG context · ⚠️ Partial (low chunks or aliased config) · ❌ Not defined
 
-## Notes
+| Project type | ID | FI | SE | DA | NO | PL | DE |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| BESS (battery storage) | `BESS` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Wind — onshore | `tuulivoima_maa` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Wind — offshore (fixed) | `tuulivoima_meri` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Wind — offshore (floating) | `offshore_wind` | ✅ | ✅ | ⚠️ | ✅ | ❌ | ✅ |
+| Solar / PV | `aurinkovoima` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| SMR (generic) | `SMR` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| SMR — Sweden variant | `smr_se` | — | ✅ | — | — | — | — |
+| SMR — Denmark variant | `smr_da` | — | — | ⚠️ | — | — | — |
+| SMR — Norway variant | `smr_no` | — | — | — | ✅ | — | — |
+| SMR — Germany variant | `smr_de` | — | — | — | — | — | ⚠️ |
+| SMR + BESS hybrid | `smr_bess` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Hybrid (BESS + wind/solar) | `hybridi` | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Hydropower | `vesivoima` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Data centre | `datakeskus` | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| EGS / deep geothermal | `egs` | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Residential building | `asuinrakennus` | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Industrial facility | `teollisuus` | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Agricultural building | `maatalous` | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Commercial building | `liikerakennus` | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Environmental permit (YSL) | `ymparistolupa` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Other / generic | `muu` | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
 
-### FI
-- Full RAG: Finnish regulatory database is the primary training corpus.
-- `asuinrakennus`, `teollisuus`, `maatalous`, `liikerakennus` use generic configs in `_HANKE_CFG` with limited RAG depth compared to energy project types — marked ⚠️.
-- `egs` is currently aliased to the `aurinkovoima` base config (limited EGS-specific guidance).
-- `ymparistolupa` is FI-only (YSL 527/2014).
+**Notes:**
+- FI `egs` is aliased to `aurinkovoima` config — EGS-specific guidance is thin.
+- SE/NO/PL `hybridi` falls through to FI base config — unreliable for those countries.
+- PL `offshore_wind` uses `tuulivoima_meri` base; Polish offshore framework (2021) not yet indexed.
+- DA all types rated ⚠️ regardless of config due to low chunk count (~467).
 
-### SE (~1 560 chunks)
-- Country-specific SMR variant: `smr_se` (Kärntillstånd / MKB under Miljöbalken).
-- `hybridi` not yet defined in `_COUNTRY_LUVAT["SE"]` — falls through to FI base config, unreliable.
-- `offshore_wind` aliased to `tuulivoima_meri`.
+---
 
-### DA (~470 chunks)
-- Lowest RAG coverage of all active countries — all project types marked ⚠️.
-- Country-specific SMR variant: `smr_da` (Bekendtgørelse om nukleare anlæg).
-- Priority: ingest more Danish regulatory documents (Energistyrelsen, Natur- og Miljøklagenævnet).
+## Known Gaps
 
-### NO (~1 270 chunks)
-- Country-specific SMR variant: `smr_no` (NVE konsesjon / Atomenergiloven).
-- `hybridi` not defined for NO — falls through to FI base config.
+| Gap | Country | Priority | Action needed |
+|-----|---------|----------|---------------|
+| retsinformation.dk coverage incomplete | DA | High | Index Energistyrelsen VE-love, Planloven, Miljøvurderingsloven |
+| Bauordnungsrecht (Landesbauordnungen) not indexed | DE | High | Index state-level building codes (BayBO, LBO BW, etc.) |
+| IAEA SSR-2/1, NS-R-5, GSR Part 4 missing | EU | High | Index IAEA safety standards for SMR chapters |
+| Offshore wind framework (Ustawa offshore 2021) | PL | Medium | Index Polish offshore wind act + GDOŚ/URE guidance |
+| BAT principles, best-practice maintenance manuals | All | Medium | Index EU BAT reference documents (BREFs) |
+| E-value / energy performance calculations | All | Low | Index EN ISO 52000, national energy performance regs |
+| `hybridi` config for SE, NO, PL | SE/NO/PL | Medium | Add country-specific entries in `_COUNTRY_LUVAT` |
+| FI EGS dedicated config | FI | Low | Remove `egs` alias to `aurinkovoima`; write EGS-specific config |
+| sCO₂ turbine (all countries) | All | Low | Not yet in `_HANKE_CFG`; planned feature |
 
-### PL (~2 190 chunks)
-- Best non-FI RAG coverage.
-- `hybridi` not defined for PL — falls through to FI base config.
-- `smr_bess` defined; standalone SMR uses generic SMR config.
+---
 
-### DE (~920 chunks — BImSchG / EEG / WHG)
-- Most complete `_COUNTRY_LUVAT` entry: all 15 types including `hybridi` (added 2026-06-09).
-- Country-specific SMR variant: `smr_de` (AtG-Genehmigung, BMUV).
-- `offshore_wind` uses WindSeeG (BSH) permits.
-- `egs` uses BBergG Betriebsplanzulassung.
-
-## Missing Coverage / Gaps
-
-| Gap | Priority | Action needed |
-|-----|----------|---------------|
-| DA RAG depth (~470 chunks) | High | Ingest Energistyrelsen, Miljøstyrelsen, Planloven docs |
-| SE `hybridi` in `_COUNTRY_LUVAT` | Medium | Add SE hybridi entry (BImSchG equivalent: MB + koncession) |
-| NO `hybridi` in `_COUNTRY_LUVAT` | Medium | Add NO hybridi entry (Energiloven + Plan- og bygningsloven) |
-| PL `hybridi` in `_COUNTRY_LUVAT` | Medium | Add PL hybridi entry (Prawo energetyczne + Prawo budowlane) |
-| sCO₂ turbine (all countries) | Low | Feature planned — not yet in `_HANKE_CFG` |
-| FI EGS dedicated config | Low | Remove `egs` alias to `aurinkovoima`; write FI-specific EGS config |
+> **Update this file after every RAG indexing session.**
