@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 from datetime import datetime
 from dataclasses import dataclass
 from functools import lru_cache
+from typing import Optional
 
 # ── ReportLab ────────────────────────────────────────────────────────────────
 from reportlab.lib import colors
@@ -57,6 +58,18 @@ from sentence_transformers import SentenceTransformer
 # ─────────────────────────────────────────────────────────────────────────────
 # Vakiot
 # ─────────────────────────────────────────────────────────────────────────────
+
+
+class InsufficientSourcesError(Exception):
+    """Raised when RAG retrieval returns too few or too-low-relevance chunks."""
+    def __init__(self, chunks_found: int, avg_relevance: float):
+        self.chunks_found   = chunks_found
+        self.avg_relevance  = avg_relevance
+        super().__init__(
+            f"RAG_FAIL: chunks={chunks_found} avg_score={avg_relevance:.2f} — "
+            "insufficient sources for a reliable permit draft"
+        )
+
 
 # TODO: domain muutos ncepermit.ai kun NCE Global perustettu
 _HERE        = os.path.dirname(os.path.abspath(__file__))
@@ -1232,33 +1245,40 @@ def _rag_context(
     hanketyyppi: str,
     country: str = "FI",
     n_per_query: int = 2,
-) -> tuple[str, list[dict]]:
+) -> tuple[str, list[dict], bool, list[str], list[str]]:
     """Hae relevantit dokumenttichunkit.
 
     Jos country != 'FI', haetaan ensin maakohtaiset dokumentit ja täydennetään
     FI-dokumenteilla (suomalainen lainsäädäntö on aina relevanttia kontekstia).
     Graceful fallback: jos metadata-suodatus epäonnistuu, haetaan ilman suodatinta.
-    Palauttaa (context_text, list[dict]) — kukin dict on {id, display, url}.
+
+    Palauttaa (context_text, sources, warning_flag, precedent_chunks, precedent_sources).
+    Nostaa InsufficientSourcesError jos RAG-laatu on riittämätön (hard stop).
     """
     cfg = _HANKE_CFG[hanketyyppi]
     try:
         embed_model = _get_embed_model()
         col         = _get_chroma_col()
 
-        seen_ids:       set[str]        = set()
-        all_docs:       list[str]       = []
+        seen_ids:        set[str]        = set()
+        all_docs:        list[str]       = []
+        all_distances:   list[float]     = []
         all_source_meta: dict[str, dict] = {}  # src_id → {display, url}
 
         def _collect(results: dict) -> None:
-            docs   = results["documents"][0]
-            ids    = results["ids"][0]
-            metas  = (results.get("metadatas") or [[]])[0]
+            docs      = results["documents"][0]
+            ids       = results["ids"][0]
+            metas     = (results.get("metadatas") or [[]])[0]
+            distances = (results.get("distances") or [[]])[0]
             if not metas:
                 metas = [{}] * len(ids)
-            for doc, id_, meta in zip(docs, ids, metas):
+            if not distances:
+                distances = [0.5] * len(ids)
+            for doc, id_, meta, dist in zip(docs, ids, metas, distances):
                 if id_ not in seen_ids:
                     seen_ids.add(id_)
                     all_docs.append(doc)
+                    all_distances.append(dist)
                     src_id = re.sub(r"[_-]\d+$", "", id_)
                     if src_id not in all_source_meta:
                         meta = meta or {}
@@ -1267,8 +1287,12 @@ def _rag_context(
                             "url":     meta.get("url"),
                         }
 
+        # Use the first query for precedent retrieval embedding
+        first_emb = None
         for q in cfg["rag_queries"]:
             emb = embed_model.encode([q]).tolist()
+            if first_emb is None:
+                first_emb = emb
 
             # 1. Maakohtainen haku (vain kun country != FI ja metadata on olemassa)
             if country != "FI":
@@ -1295,12 +1319,60 @@ def _rag_context(
                 except Exception:
                     pass
 
+        # ── Task 2: RAG confidence check ─────────────────────────────────────
+        chunks_returned = len(all_docs)
+        if all_distances:
+            relevance_scores = [max(0.0, 1.0 - d) for d in all_distances]
+            avg_score = sum(relevance_scores) / len(relevance_scores)
+        else:
+            avg_score = 0.0
+
+        if chunks_returned < 5 or avg_score < 0.65:
+            logger.warning(
+                "RAG_FAIL: %s %s chunks=%d avg_score=%.2f",
+                hanketyyppi, country, chunks_returned, avg_score,
+            )
+            raise InsufficientSourcesError(chunks_returned, avg_score)
+        elif chunks_returned < 12 or avg_score < 0.75:
+            warning_flag = True
+            logger.warning(
+                "RAG_WARN: %s %s chunks=%d avg_score=%.2f",
+                hanketyyppi, country, chunks_returned, avg_score,
+            )
+        else:
+            warning_flag = False
+
+        # ── Task 3: Precedent retrieval ───────────────────────────────────────
+        precedent_chunks:  list[str] = []
+        precedent_sources: list[str] = []
+        if first_emb:
+            try:
+                prec_results = col.query(
+                    query_embeddings=first_emb,
+                    n_results=5,
+                    where={"$and": [
+                        {"country": {"$in": [country, "EU"]}},
+                        {"doc_type": "case_law"},
+                    ]},
+                )
+                prec_docs   = prec_results["documents"][0] if prec_results["documents"] else []
+                prec_metas  = (prec_results.get("metadatas") or [[]])[0]
+                for doc, meta in zip(prec_docs, prec_metas):
+                    meta = meta or {}
+                    precedent_chunks.append(doc)
+                    precedent_sources.append(meta.get("source", "Viranomainen"))
+            except Exception:
+                pass  # case_law-metadata ei indeksoitu tai yhteensopivuusvirhe
+
         context = "\n\n---\n\n".join(all_docs)
         sources = [{"id": sid, **info} for sid, info in sorted(all_source_meta.items())]
-        return context, sources
+        return context, sources, warning_flag, precedent_chunks, precedent_sources
+
+    except InsufficientSourcesError:
+        raise
     except Exception as exc:
         print(f"[RAG] Haku epäonnistui ({exc}) — jatketaan ilman kontekstia")
-        return "", []
+        return "", [], False, [], []
 
 
 def _statutory_sources(hanketyyppi: str, country: str = "FI") -> list[str]:
@@ -2705,8 +2777,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lupavaihe_sub":   "Lupavaihe — Rakentamislupahakemusluonnos",
         "rakentaminen_sub":"Rakentamisvaihe — Toteutus ja valvonta",
         "disclaimer_h":    "AI-LUONNOS — VAATII ASIANTUNTIJATARKISTUKSEN",
-        "disclaimer_b":    ("Tekoälyavusteinen luonnos — ei juridisesti sitova. "
-                            "Tarkistuta asiantuntijalla ennen hakemuksen jättämistä."),
+        "disclaimer_b":    ("Tämä raportti on NCE Permit AI:n generoima luonnos. Se vaatii "
+                            "pätevyysvaatimukset täyttävän asiantuntijan tarkistuksen ennen "
+                            "viranomaiskäyttöä."),
         "nce_speed_note":  ("NCE Permit AI generoi hakemuspohjan muutamassa minuutissa. "
                             "Viranomaisen arviointiviive on erillinen prosessi ja vaihtelee "
                             "hanketyypeittäin (ks. alta)."),
@@ -2794,8 +2867,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lupavaihe_sub":   "Permit Phase — Construction Permit Application Draft",
         "rakentaminen_sub":"Construction Phase — Execution and Supervision",
         "disclaimer_h":    "AI DRAFT — REQUIRES EXPERT REVIEW",
-        "disclaimer_b":    ("AI-assisted draft — not legally binding. "
-                            "Review with a qualified expert before submission."),
+        "disclaimer_b":    ("This report is an AI-generated draft requiring review by a qualified "
+                            "expert before use with authorities."),
         "nce_speed_note":  ("NCE Permit AI generates the application draft in minutes. "
                             "Authority processing time is a separate process and varies by project type "
                             "(see below)."),
@@ -2880,8 +2953,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lupavaihe_sub":   "Tillståndsfas — Utkast till bygglovsansökan",
         "rakentaminen_sub":"Byggfas — Genomförande och tillsyn",
         "disclaimer_h":    "AI-UTKAST — KRÄVER EXPERTGRANSKNING",
-        "disclaimer_b":    ("AI-assisterat utkast — inte juridiskt bindande. "
-                            "Granska med en kvalificerad expert innan inlämning."),
+        "disclaimer_b":    ("Denna rapport är ett AI-genererat utkast som kräver granskning av en "
+                            "kvalificerad expert före användning hos myndigheter."),
         "m_hakija":        "Sökande",          "m_ytunnus":    "Organisationsnummer",
         "m_hanketyyppi":   "Projekttyp",       "m_teho":       "Kapacitet / Effekt",
         "m_kunta":         "Kommun",           "m_kt":         "Fastighetsbeteckning",
@@ -2962,8 +3035,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lupavaihe_sub":   "Tilladelsefase — Udkast til byggetilladelsesansøgning",
         "rakentaminen_sub":"Anlægsfase — Udførelse og tilsyn",
         "disclaimer_h":    "AI-UDKAST — KRÆVER EKSPERTGENNEMGANG",
-        "disclaimer_b":    ("AI-assisteret udkast — ikke juridisk bindende. "
-                            "Gennemgå med en kvalificeret ekspert inden indsendelse."),
+        "disclaimer_b":    ("Denne rapport er et AI-genereret udkast, der kræver gennemgang af en "
+                            "kvalificeret ekspert, før det anvendes over for myndigheder."),
         "m_hakija":        "Ansøger",          "m_ytunnus":    "CVR-nummer",
         "m_hanketyyppi":   "Projekttype",      "m_teho":       "Kapacitet / Effekt",
         "m_kunta":         "Kommune",          "m_kt":         "Ejendomsnummer",
@@ -3046,8 +3119,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lupavaihe_sub":   "Tillatelsefase — Utkast til byggetillatelsessøknad",
         "rakentaminen_sub":"Byggefase — Gjennomføring og tilsyn",
         "disclaimer_h":    "AI-UTKAST — KREVER EKSPERTGJENNOMGANG",
-        "disclaimer_b":    ("AI-assistert utkast — ikke juridisk bindende. "
-                            "Gjennomgå med en kvalifisert ekspert før innsending."),
+        "disclaimer_b":    ("Denne rapporten er et AI-generert utkast som krever gjennomgang av en "
+                            "kvalifisert ekspert før bruk overfor myndigheter."),
         "m_hakija":        "Søker",             "m_ytunnus":    "Org.nummer",
         "m_hanketyyppi":   "Prosjekttype",      "m_teho":       "Kapasitet / Effekt",
         "m_kunta":         "Kommune",           "m_kt":         "Eiendomsnummer",
@@ -3129,8 +3202,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lupavaihe_sub":   "Faza zezwoleń — Szkic wniosku o pozwolenie na budowę",
         "rakentaminen_sub":"Faza budowy — Realizacja i nadzór",
         "disclaimer_h":    "SZKIC AI — WYMAGA PRZEGLĄDU EKSPERTA",
-        "disclaimer_b":    ("Szkic przygotowany z pomocą AI — nie jest prawnie wiążący. "
-                            "Przed złożeniem wniosku sprawdź z wykwalifikowanym ekspertem."),
+        "disclaimer_b":    ("Ten raport jest wersją roboczą wygenerowaną przez AI i wymaga przeglądu "
+                            "przez wykwalifikowanego eksperta przed użyciem w organach."),
         "m_hakija":        "Wnioskodawca",      "m_ytunnus":    "NIP/KRS",
         "m_hanketyyppi":   "Typ projektu",      "m_teho":       "Moc / pojemność",
         "m_kunta":         "Gmina",             "m_kt":         "Numer nieruchomości",
@@ -3217,8 +3290,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "lupavaihe_sub":   "Genehmigungsphase — Genehmigungsantragsentwurf",
         "rakentaminen_sub":"Bauphase — Durchführung und Überwachung",
         "disclaimer_h":    "KI-ENTWURF — EXPERTENPRÜFUNG ERFORDERLICH",
-        "disclaimer_b":    ("KI-gestützter Entwurf — rechtlich nicht bindend. "
-                            "Vor der Einreichung des Antrags von einem Experten prüfen lassen."),
+        "disclaimer_b":    ("Dieser Bericht ist ein KI-generierter Entwurf, der vor der Verwendung bei "
+                            "Behörden von einem qualifizierten Experten geprüft werden muss."),
         "nce_speed_note":  ("NCE Permit AI erstellt eine Antragsvorlage in wenigen Minuten. "
                             "Die Bearbeitungszeit der Behörde ist ein separater Prozess und variiert "
                             "je nach Projekttyp (siehe unten)."),
@@ -3434,7 +3507,12 @@ def _s(lang: str, key: str) -> str:
     return d.get(key) or _PDF_STRINGS["FI"].get(key, key)
 
 
-def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str]:
+def _generate_sections(
+    inp: ApplicationInput,
+    rag_context: str,
+    prec_chunks: Optional[list] = None,
+    prec_sources: Optional[list] = None,
+) -> dict[str, str]:
     """
     Kutsu Claude-API ja generoi kaikki hakemuksen osiot yhdellä kutsulla.
     Palauttaa dict: { "kuvaus": ..., "luvat_teksti": ..., "laki": ..., "toimenpiteet": ... }
@@ -3547,6 +3625,14 @@ def _generate_sections(inp: ApplicationInput, rag_context: str) -> dict[str, str
             f"Käytä AINA näitä lukuja raportissa — älä käytä muita lukuja."
         )
 
+    _prec_block = ""
+    if prec_chunks:
+        _prec_lines = "\n\n---\n\n".join(
+            f"[{src}]\n{chunk}"
+            for chunk, src in zip(prec_chunks, prec_sources or ["Viranomainen"] * len(prec_chunks))
+        )
+        _prec_block = f"\n\n---ENNAKKOTAPAUKSET---\n{_prec_lines}\n---ENNAKKOTAPAUKSET_LOPPU---"
+
     prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
 
 Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
@@ -3557,7 +3643,7 @@ Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto
 Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}{context_extra_block}{phase_block}
 
 {ph["rag_intro"]}
-{rag_context}
+{rag_context}{_prec_block}
 
 {write_instr}
 
@@ -3991,8 +4077,17 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
     return _NumberedCanvas
 
 
-def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> bytes:
+def generate_pdf(
+    inp: ApplicationInput,
+    sections: dict,
+    sources: list[dict],
+    warning_flag: bool = False,
+    prec_chunks: Optional[list] = None,
+    prec_sources: Optional[list] = None,
+) -> bytes:
     """Rakenna PDF ja palauta bytes."""
+    prec_chunks  = prec_chunks  or []
+    prec_sources = prec_sources or []
     # Hard cap: enintään 3 "Asiantuntijatarkistus suositellaan" VAIN sisältöosioissa
     _SEC_SEP = "\x00||SEC||\x00"
     _str_keys = [k for k, v in sections.items()
@@ -4206,6 +4301,32 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     ]))
     story.append(Spacer(1, 4*mm))
 
+    # ── Varoitusbanneri (Task 4: warning_flag) ─────────────────────────────────
+    if warning_flag:
+        _warn_text = {
+            "FI": "⚠️ Lähdeaineisto rajallinen — tarkista kaikki kohdat huolellisesti",
+            "EN": "⚠️ Limited source material — verify all sections carefully",
+            "SE": "⚠️ Begränsat källmaterial — kontrollera alla avsnitt noggrant",
+            "DA": "⚠️ Begrænset kildemateriale — kontroller alle afsnit omhyggeligt",
+            "NO": "⚠️ Begrenset kildemateriale — kontroller alle seksjoner nøye",
+            "PL": "⚠️ Ograniczony materiał źródłowy — sprawdź dokładnie wszystkie sekcje",
+            "DE": "⚠️ Begrenztes Quellmaterial — alle Abschnitte sorgfältig prüfen",
+        }
+        story.append(Spacer(1, 4*mm))
+        _w_row = [[Paragraph(
+            _warn_text.get(lang, _warn_text["FI"]),
+            ParagraphStyle("warn_b", fontSize=8.5, textColor=colors.HexColor("#7a4400"),
+                           fontName=PDF_FONT_BOLD, alignment=TA_CENTER, leading=13),
+        )]]
+        _w_tbl = Table(_w_row, colWidths=[16.5*cm])
+        _w_tbl.setStyle(TableStyle([
+            ("BOX",        (0, 0), (-1, -1), 1.2, colors.HexColor("#ff9800")),
+            ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#fff3e0")),
+            ("PADDING",    (0, 0), (-1, -1), 8),
+        ]))
+        story.append(_w_tbl)
+        story.append(Spacer(1, 4*mm))
+
     # ── Lähteet (vain RAG-viranomaislähteet; säädösperusta on jo osiossa 4) ───
     if sources:
         story.append(KeepTogether([
@@ -4213,11 +4334,54 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
             _hr(),
         ]))
         story.append(Paragraph(_s(lang, "lahteet_b"), st["body"]))
-        story.append(Paragraph(
-            "Viranomais- ja standardidokumentit: STUK YVL, Fingrid, SYKE, Tukes, NCE RAG-tietokanta.",
-            st["bullet"],
-        ))
+        # Task 4: per-source citation lines
+        _src_label = {"FI": "Lähde", "EN": "Source", "SE": "Källa", "DA": "Kilde",
+                       "NO": "Kilde", "PL": "Źródło", "DE": "Quelle"}.get(lang, "Lähde")
+        _reg_label = {"FI": "viranomaisrekisteri", "EN": "authority registry",
+                       "SE": "myndighetsregister", "DA": "myndighedsregister",
+                       "NO": "myndighetsregister", "PL": "rejestr organów",
+                       "DE": "Behördenregister"}.get(lang, "viranomaisrekisteri")
+        for src in sources[:8]:
+            src_display = src.get("display") or src.get("id", "–")
+            src_country = src.get("country", country)
+            cite_line   = f"{_src_label}: {src_display} ({src_country} {_reg_label})"
+            story.append(Paragraph(f"• {cite_line}", st["bullet"]))
         story.append(Spacer(1, 3*mm))
+
+    # ── Ennakkotapaukset (Task 3) ──────────────────────────────────────────────
+    if prec_chunks:
+        _prec_h = {"FI": "Ennakkotapaukset ja viranomaisratkaisut",
+                    "EN": "Precedents and Regulatory Decisions",
+                    "SE": "Prejudikat och myndighetsbeslut",
+                    "DA": "Præjudikater og myndighedsafgørelser",
+                    "NO": "Prejudikater og myndighetsbeslutninger",
+                    "PL": "Precedensy i decyzje organów regulacyjnych",
+                    "DE": "Präzedenzfälle und Behördenentscheidungen"}.get(lang, "Ennakkotapaukset")
+        story.append(PageBreak())
+        story.append(KeepTogether([
+            Paragraph(_prec_h, st["h2"]),
+            _hr(),
+        ]))
+        _prec_note = {
+            "FI": ("Seuraavat viranomaisratkaisut ja ennakkotapaukset on haettu NCE RAG-tietokannasta. "
+                   "Ne antavat viitteitä lupakäytännöistä — tarkista ajantasaisuus ennen käyttöä."),
+            "EN": ("The following regulatory decisions and precedents were retrieved from the NCE RAG database. "
+                   "They provide guidance on permit practices — verify currency before relying on them."),
+        }.get(lang, (
+            "Seuraavat viranomaisratkaisut ja ennakkotapaukset on haettu NCE RAG-tietokannasta. "
+            "Ne antavat viitteitä lupakäytännöistä — tarkista ajantasaisuus ennen käyttöä."
+        ))
+        story.append(Paragraph(_prec_note, st["body"]))
+        story.append(Spacer(1, 3*mm))
+        for chunk, src in zip(prec_chunks[:3], prec_sources[:3]):
+            story.append(Paragraph(
+                f"<b>{src}</b>",
+                ParagraphStyle("prec_src", fontSize=8.5, fontName=PDF_FONT_BOLD, textColor=C_NAVY,
+                               spaceBefore=4, leading=12),
+            ))
+            story.extend(_para_text(chunk[:600] + ("…" if len(chunk) > 600 else ""), st))
+            story.append(Spacer(1, 2*mm))
+        story.append(Spacer(1, 4*mm))
 
     # ── NCE Permit AI -infolaatikko ───────────────────────────────────────────
     _nce_desc = _s(lang, "nce_info_desc") or (
@@ -4277,6 +4441,103 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
     ]))
     story.append(Spacer(1, 4*mm))
 
+    # ── Task 5: Client briefing page ─────────────────────────────────────────
+    story.append(PageBreak())
+    _brief_title = {
+        "FI": "Ohjeistus asiantuntijatarkistukseen",
+        "EN": "Expert Review Guide",
+        "SE": "Guide för expertgranskning",
+        "DA": "Vejledning til ekspertgennemgang",
+        "NO": "Veiledning for ekspertgjennomgang",
+        "PL": "Przewodnik po przeglądzie eksperckim",
+        "DE": "Leitfaden zur Expertenprüfung",
+    }.get(lang, "Expert Review Guide")
+    story.append(Paragraph(_brief_title, st["h2"]))
+    story.append(_hr(C_NAVY, 1.5))
+    story.append(Spacer(1, 4*mm))
+
+    _chunk_count = len(sources)
+    _brief_rows = []
+
+    # What the report contains
+    _cont_h = {"FI": "Raportti sisältää", "EN": "This report contains", "SE": "Rapporten innehåller",
+                "DA": "Rapporten indeholder", "NO": "Rapporten inneholder",
+                "PL": "Raport zawiera", "DE": "Der Bericht enthält"}.get(lang, "This report contains")
+    _cont_v = {
+        "FI": (f"AI-luonnos — {_chunk_count} RAG-lähteestä haettu konteksti  •  "
+               f"Hanketyyppi: {inp.hanketyyppi}  •  Maa: {country}  •  "
+               f"Laadittu: {now}  •  NCE Permit AI MVP"),
+        "EN": (f"AI draft — context from {_chunk_count} RAG sources  •  "
+               f"Project type: {inp.hanketyyppi}  •  Country: {country}  •  "
+               f"Generated: {now}  •  NCE Permit AI MVP"),
+    }.get(lang, (
+        f"AI draft — context from {_chunk_count} RAG sources  •  "
+        f"Project type: {inp.hanketyyppi}  •  Country: {country}  •  "
+        f"Generated: {now}  •  NCE Permit AI MVP"
+    ))
+    _brief_rows.append([_cont_h, _cont_v])
+
+    # What it does NOT contain
+    _not_h = {"FI": "Ei sisällä", "EN": "Does NOT contain", "SE": "Innehåller INTE",
+               "DA": "Indeholder IKKE", "NO": "Inneholder IKKE",
+               "PL": "NIE zawiera", "DE": "Enthält NICHT"}.get(lang, "Does NOT contain")
+    _not_v = {
+        "FI": ("Juridisia neuvoja  •  Sitovia viranomaistulkintoja  •  "
+               "Paikkansapitäviä kiinteistö- tai kaava-tietoja  •  "
+               "Lopullisia kustannusarvioita"),
+        "EN": ("Legal advice  •  Binding regulatory interpretations  •  "
+               "Verified property or zoning data  •  Final cost estimates"),
+    }.get(lang, (
+        "Legal advice  •  Binding regulatory interpretations  •  "
+        "Verified property or zoning data  •  Final cost estimates"
+    ))
+    _brief_rows.append([_not_h, _not_v])
+
+    # What to check
+    _chk_h = {"FI": "Tarkista ennen jättämistä", "EN": "Verify before submission",
+               "SE": "Verifiera före inlämning", "DA": "Kontrollér inden indsendelse",
+               "NO": "Verifiser før innsending", "PL": "Sprawdź przed złożeniem",
+               "DE": "Vor der Einreichung prüfen"}.get(lang, "Verify before submission")
+    _chk_items = []
+    if warning_flag:
+        _chk_items.append({"FI": "⚠️ Merkityt osiot — erityistä huomiota vaativat kohdat",
+                            "EN": "⚠️ Flagged sections — require special attention"}.get(lang,
+                           "⚠️ Flagged sections — require special attention"))
+    _chk_items += [
+        {"FI": "Lakiviitteiden ajantasaisuus", "EN": "Currency of statutory references",
+         "SE": "Rättsreferensernas aktualitet", "DA": "Lovhenvisningernes aktualitet",
+         "NO": "Lovhenvisningenes aktualitet", "PL": "Aktualność odniesień prawnych",
+         "DE": "Aktualität der gesetzlichen Referenzen"}.get(lang, "Currency of statutory references"),
+        {"FI": "Kaavatilanne ja kiinteistötiedot", "EN": "Zoning status and property data",
+         "SE": "Planstatus och fastighetsuppgifter", "DA": "Planstatus og ejendomsdata",
+         "NO": "Planstatus og eiendomsdata", "PL": "Status planu i dane nieruchomości",
+         "DE": "Bebauungsplan und Grundstücksdaten"}.get(lang, "Zoning status and property data"),
+        {"FI": "Paikalliset kaavoitusmääräykset", "EN": "Local zoning requirements",
+         "SE": "Lokala planbestämmelser", "DA": "Lokale planbestemmelser",
+         "NO": "Lokale planbestemmelser", "PL": "Lokalne wymogi planistyczne",
+         "DE": "Lokale Bebauungsvorschriften"}.get(lang, "Local zoning requirements"),
+    ]
+    _brief_rows.append([_chk_h, "  •  ".join(_chk_items)])
+
+    # Contact
+    _brief_rows.append(["NCE Permit AI", "info@ncenergy.fi  ·  ncenergy.fi"])
+
+    _brief_tbl = Table(
+        [[Paragraph(k, ParagraphStyle("bk", fontSize=8.5, textColor=C_GRAY, fontName=PDF_FONT_BOLD,
+                                       leading=13)),
+          Paragraph(v, ParagraphStyle("bv", fontSize=8.5, leading=13))]
+         for k, v in _brief_rows],
+        colWidths=[4.5*cm, 12.0*cm],
+    )
+    _brief_tbl.setStyle(TableStyle([
+        ("ROWBACKGROUNDS", (0, 0), (-1, -1), [C_LGRAY, C_WHITE]),
+        ("PADDING",        (0, 0), (-1, -1), 7),
+        ("GRID",           (0, 0), (-1, -1), 0.3, C_DGRAY),
+        ("VALIGN",         (0, 0), (-1, -1), "TOP"),
+    ]))
+    story.append(_brief_tbl)
+    story.append(Spacer(1, 6*mm))
+
     # ── Loppumerkintä ─────────────────────────────────────────────────────────
     story.append(_hr(C_NAVY, 1.0))
     story.append(Paragraph(
@@ -4294,20 +4555,31 @@ def generate_pdf(inp: ApplicationInput, sections: dict, sources: list[dict]) -> 
 
 def generate_application_draft(inp: ApplicationInput) -> tuple:
     """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
-    rag_ctx, sources = _rag_context(inp.hanketyyppi, inp.country or "FI")
-    sections = _generate_sections(inp, rag_ctx)
+    rag_ctx, sources, warning_flag, prec_chunks, prec_sources = \
+        _rag_context(inp.hanketyyppi, inp.country or "FI")
+    sections = _generate_sections(inp, rag_ctx, prec_chunks, prec_sources)
     _lang = inp.lang or "FI"
     sections = _final_polish(sections, _lang)
-    pdf_bytes = generate_pdf(inp, sections, sources)
+    pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources)
     return pdf_bytes, sections, sources
 
 
-def apply_proofread_to_pdf(inp: ApplicationInput, sections: dict, sources: list) -> bytes:
+def apply_proofread_to_pdf(
+    inp: ApplicationInput,
+    sections: dict,
+    sources: list,
+    warning_flag: bool = False,
+    prec_chunks: Optional[list] = None,
+    prec_sources: Optional[list] = None,
+) -> bytes:
     """Oikolue sections Claudella ja rakenna lopullinen PDF."""
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections)
     sections = _final_polish(sections, _lang)
-    return generate_pdf(inp, sections, sources)
+    return generate_pdf(
+        inp, sections, sources,
+        warning_flag, prec_chunks or [], prec_sources or [],
+    )
 
 
 def generate_application(inp: ApplicationInput) -> str:
@@ -4316,11 +4588,14 @@ def generate_application(inp: ApplicationInput) -> str:
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
 
     print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi}, maa={inp.country or 'FI'})…")
-    rag_ctx, sources = _rag_context(inp.hanketyyppi, inp.country or "FI")
+    rag_ctx, sources, warning_flag, prec_chunks, prec_sources = \
+        _rag_context(inp.hanketyyppi, inp.country or "FI")
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {[s['display'] for s in sources]}")
+    if warning_flag:
+        print("      ⚠️  RAG_WARN: rajallinen lähdeaineisto")
 
     print("[2/4] Generoidaan hakemusteksti (Claude)…")
-    sections = _generate_sections(inp, rag_ctx)
+    sections = _generate_sections(inp, rag_ctx, prec_chunks, prec_sources)
     print(f"      Osiot: {list(sections.keys())}")
 
     print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
@@ -4329,7 +4604,7 @@ def generate_application(inp: ApplicationInput) -> str:
     sections = _final_polish(sections, _lang)
 
     print("[4/4] Rakennetaan PDF…")
-    pdf_bytes = generate_pdf(inp, sections, sources)
+    pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources)
 
     _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
                      "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}

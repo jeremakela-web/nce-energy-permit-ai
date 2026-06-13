@@ -56,6 +56,7 @@ _sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from generate_application import (
     generate_application, generate_application_draft, apply_proofread_to_pdf,
     ApplicationInput, _get_embed_model, _get_chroma_col,
+    InsufficientSourcesError,
 )
 try:
     from optimizer import NCEOptimizer, EnergySite
@@ -538,6 +539,13 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             _proofread_store[job_id]["status"] = "done"
             _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
                        req.hankkeen_vaihe or "", job_id, "done")
+        except InsufficientSourcesError as exc:
+            _proofread_store[job_id]["status"] = "insufficient_sources"
+            _proofread_store[job_id]["error"] = str(exc)
+            _proofread_store[job_id]["chunks_found"] = exc.chunks_found
+            _proofread_store[job_id]["avg_relevance"] = round(exc.avg_relevance, 2)
+            _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
+                       req.hankkeen_vaihe or "", job_id, f"RAG_FAIL:chunks={exc.chunks_found}")
         except Exception as exc:
             _proofread_store[job_id]["status"] = "error"
             _proofread_store[job_id]["error"] = str(exc)
@@ -559,10 +567,24 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
 
 @app.get("/api/proofread/{job_id}")
 async def proofread_status(job_id: str):
-    """Oikolukutehtävän tila: pending | running | done | error."""
+    """Oikolukutehtävän tila: pending | running | done | error | insufficient_sources."""
     job = _proofread_store.get(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Task not found")
+    if job["status"] == "insufficient_sources":
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error":         "insufficient_sources",
+                "message":       (
+                    "Riittämätön lähdeaineisto — RAG-tietokanta ei palauttanut riittävästi "
+                    "relevantteja lähteitä luotettavan lupahakemusluonnoksen tuottamiseen. "
+                    "Kokeile eri hanketyyppiä tai ota yhteyttä info@ncenergy.fi."
+                ),
+                "chunks_found":  job.get("chunks_found", 0),
+                "avg_relevance": job.get("avg_relevance", 0.0),
+            },
+        )
     return {"status": job["status"], "error": job.get("error"), "debug_sections": job.get("debug_sections")}
 
 
