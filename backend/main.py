@@ -1544,6 +1544,21 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
     return resp
 
 
+@app.get("/api/stats")
+async def get_stats():
+    try:
+        col = _get_chroma_col()
+        chunk_count = col.count()
+    except Exception:
+        chunk_count = 10316  # fallback
+    return {
+        "chunks_total":  chunk_count,
+        "countries":     6,
+        "project_types": 20,
+        "languages":     7,
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=PORT)

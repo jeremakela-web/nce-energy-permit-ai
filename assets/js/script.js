@@ -636,6 +636,19 @@
   function initHeroCounters(){
       const stats = document.getElementById('heroStats');
       if(!stats) return;
+
+      // Fetch live stats and update data-value before animation fires at 4 s.
+      // Counter order: [0] chunks, [1] project_types, [2] countries.
+      fetch('/api/stats')
+          .then(r => r.json())
+          .then(data => {
+              const counters = stats.querySelectorAll('.counter');
+              if(counters[0] && data.chunks_total)  counters[0].dataset.value = data.chunks_total;
+              if(counters[1] && data.project_types) counters[1].dataset.value = data.project_types;
+              if(counters[2] && data.countries)     counters[2].dataset.value = data.countries;
+          })
+          .catch(() => {}); // keep hardcoded fallback values on network error
+
       setTimeout(() => { stats.classList.add('visible'); }, 3000);
       setTimeout(() => {
           document
