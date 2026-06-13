@@ -240,7 +240,7 @@
     "s2.step1Title": "Syötä projektin tiedot",
     "s2.step1Text": "Lisää perustiedot, sijainti ja projektityyppi.",
     "s2.step2Title": "Tekoäly hakee sääntelyvaatimukset",
-    "s2.step2Text": "NCE hakee automaattisesti hankkeeseen liittyvän lainsäädännön, viranomaisvaatimukset ja lähdeviitteet.",
+    "s2.step2Text": "NCE Permit AI hakee automaattisesti hankkeeseen liittyvän lainsäädännön, viranomaisvaatimukset ja lähdeviitteet.",
     "s2.step3Title": "Luo rakenteellinen luonnos",
     "s2.step3Text": "Järjestelmä luo PDF-muotoisen lupahakemusluonnoksen valmiina asiantuntijatarkastukseen ja jättämiseen.",
     "s2.step4Title": "RAQS tarkistaa ennen toimitusta",
@@ -306,7 +306,7 @@
     "s3.card11Text": "Infrastruktuuri-, julkisen sektorin ja erityiskohteiden hankkeet. Joustavat lupaprosessit projektin tarpeiden mukaan.",
 
     // Card More
-    "s3.cardMoreTitle": "Lisää projektityyppejä",
+    "s3.cardMoreTitle": "Lisää hanketyyppejä",
     "s3.cardMoreMeta": "Infrastruktuuri · Energia · Teollisuus",
     "s3.cardMoreText": "Datakeskukset, logistiikkakeskukset, julkinen infrastruktuuri, liikekiinteistöt ja toimialakohtaiset hankkeet. NCE Permit AI tukee tällä hetkellä yli 20 projektikategoriaa.",
 

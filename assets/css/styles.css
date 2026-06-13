@@ -2163,10 +2163,6 @@ body.tool {
   padding-left: 20px;
   padding-right: 20px; 
 }
-.hero-stats {
-  display: block;
-}
-
 .hero-sub {
   margin-bottom: 20px;
   font-size: clamp(12px,1.1vw,18px);
@@ -2184,6 +2180,10 @@ body.tool {
 }
 
 
+}
+
+@media (max-width:768px){
+  .hero-stats { display: none; }
 }
 
 
