@@ -30,7 +30,7 @@ import requests as _requests
 
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -108,26 +108,22 @@ async def basic_auth_middleware(request: Request, call_next):
 
     # All other requests — including /, /static/*, /api/* — require credentials
     auth = request.headers.get("authorization", "")
+    _401 = HTMLResponse(
+        content=_401_HTML,
+        status_code=401,
+        headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
+    )
     if not auth.startswith("Basic "):
-        return Response(
-            status_code=401,
-            headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
-        )
+        return _401
     try:
         decoded  = base64.b64decode(auth[6:]).decode("utf-8")
         username, password = decoded.split(":", 1)
     except Exception:
-        return Response(
-            status_code=401,
-            headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
-        )
+        return _401
     ok = secrets.compare_digest(username.encode(), _AUTH_USER.encode()) and \
          secrets.compare_digest(password.encode(), _AUTH_PASS.encode())
     if not ok:
-        return Response(
-            status_code=401,
-            headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
-        )
+        return _401
     return await call_next(request)
 
 
@@ -161,6 +157,31 @@ _TOOL_EXEMPT = {"/api/stats", "/api/access-request", "/api/health"}
 
 SMTP_USER     = os.getenv("SMTP_USER", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+
+_401_HTML = """<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kirjautuminen vaaditaan</title>
+<style>
+  body{margin:0;font-family:system-ui,sans-serif;background:#fff;
+       display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}
+  .box{padding:40px 24px}
+  h1{font-size:22px;font-weight:500;color:#111;margin:0 0 8px}
+  p{font-size:15px;color:#666;margin:0 0 28px}
+  a{color:#00B4A0;text-decoration:none;font-size:15px}
+  a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Kirjautuminen vaaditaan</h1>
+  <p>Authentication required</p>
+  <a href="https://ncenergy.fi">&#8592; Palaa etusivulle &nbsp;/&nbsp; Return to homepage</a>
+</div>
+</body>
+</html>"""
 
 # ── Usage monitoring ──────────────────────────────────────────────────────────
 _usage_logger = logging.getLogger("usage")
