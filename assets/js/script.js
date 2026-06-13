@@ -374,6 +374,7 @@
     "modal.optional": "(valinnainen)",
     "modal.desc":     "Kuvaus toiminnasta",
     "modal.submit":   "Lähetä",
+    "modal.credNote": "Lähetämme käyttöoikeustunnukset antamaasi sähköpostiosoitteeseen.",
 
     "hero.slides": [
       "Maatuulivoimahanke",
