@@ -1,6 +1,6 @@
 # NCE Permit AI — RAG Coverage Matrix
 
-Auto-generated | 2026-06-12 | Sources: `_COUNTRY_LUVAT`, `_HANKE_CFG`, `ingest_web.py`, `ingest_iaea.py`, `ingest_precedent.py`
+Auto-generated | 2026-06-13 | Sources: `_COUNTRY_LUVAT`, `_HANKE_CFG`, `ingest_web.py`, `ingest_iaea.py`, `ingest_precedent.py`, `ingest_playwright.py`
 
 Legend: ✅ = `_COUNTRY_LUVAT` entry + adequate RAG · ⚠️ = entry exists but RAG thin or config aliased · ❌ = not covered
 
@@ -10,14 +10,14 @@ Legend: ✅ = `_COUNTRY_LUVAT` entry + adequate RAG · ⚠️ = entry exists but
 
 | Country | Code | Chunks | RAG level |
 |---------|------|-------:|-----------|
-| Finland | FI | 1,039 | Full |
-| Sweden | SE | 1,561 | Full |
-| Denmark | DA | 467 | Partial — low coverage |
-| Norway | NO | 1,267 | Full |
-| Poland | PL | 2,827 | Full |
-| Germany | DE | 2,432 | Full |
-| EU/IAEA | EU | 701 | Partial — IAEA SMR standards indexed; GSR docs missing |
-| **Total** | | **10,266** | |
+| Finland | FI | 1,042 | Full |
+| Sweden | SE | 1,563 | Full |
+| Denmark | DA | 471 | Partial — low coverage |
+| Norway | NO | 1,270 | Full |
+| Poland | PL | 2,799 | Full |
+| Germany | DE | 2,433 | Full |
+| EU/IAEA | EU | 738 | Partial — IAEA + EIA Directive indexed; GSR docs missing |
+| **Total** | | **10,316** | |
 
 ---
 
@@ -48,51 +48,51 @@ New metadata dimensions added 2026-06-12 via `ingest_precedent.py`.
 
 | doc_type | permit_phase | FI | SE | DA | NO | PL | DE | EU |
 |---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| case_law | all | ⚠️ | ❌ | ❌ | ❌ | ✅ | ❌ | — |
-| bat_principles | lupavaihe | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| eia_guidance | esiselvitys | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| case_law | all | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ✅ | ⚠️ | — |
+| bat_principles | lupavaihe | ⚠️ | ⚠️ | ❌ | ⚠️ | ✅ | ✅ | ⚠️ |
+| eia_guidance | esiselvitys | ⚠️ | ❌ | ⚠️ | ❌ | ❌ | ❌ | ✅ |
 | bim_standard | rakentaminen | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | noise_standard | lupavaihe | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | — |
 
-**Legend (doc_type table):** ✅ = indexed · ⚠️ = indexed but thin (<5 chunks) · ❌ = not indexed (source returned 404 or JS-only)
+**Legend (doc_type table):** ✅ = well-indexed (≥25 chunks) · ⚠️ = thin (1–24 chunks, landing page only) · ❌ = not indexed
 
-**Step 7 chunks indexed:**
+**Steps 7+8 chunks indexed:**
 
-| Country | Source | doc_type | Chunks |
-|---------|--------|----------|-------:|
-| FI | KHO | case_law | 2 |
-| FI | HAO | case_law | 1 |
-| PL | NSA | case_law | 127 |
-| PL | GIOS_BAT | bat_principles | 99 |
-| DE | UBA_BAT | bat_principles | 25 |
-| **Total** | | | **254** |
+| Country | Source | doc_type | Method | Chunks |
+|---------|--------|----------|--------|-------:|
+| FI | KHO | case_law | requests | 2 |
+| FI | HAO | case_law | requests | 1 |
+| FI | YVA_guidance | eia_guidance | Playwright | 1 |
+| FI | SYKE_BAT | bat_principles | Playwright | 1 |
+| FI | AVI | case_law | Playwright | 1 |
+| SE | MÖD | case_law | Playwright | 1 |
+| SE | Naturvardsverket_BAT | bat_principles | Playwright | 1 |
+| DA | Energiklagenaevnet | case_law | Playwright | 1 |
+| DA | Miljoeklagenaevnet | case_law | Playwright | 1 |
+| DA | Miljostyrelsen_VVM | eia_guidance | Playwright | 2 |
+| NO | NVE_vedtak | case_law | Playwright | 1 |
+| NO | Miljodirektoratet_vedtak | case_law | Playwright | 1 |
+| NO | Miljodirektoratet_BAT | bat_principles | Playwright | 1 |
+| PL | NSA | case_law | requests | 127 |
+| PL | GIOS_BAT | bat_principles | requests | 99 |
+| DE | UBA_BAT | bat_principles | requests | 25 |
+| DE | BNetzA_beschlusskammern | case_law | Playwright | 1 |
+| EU | EUR_Lex_BAT | bat_principles | Playwright | 1 |
+| EU | EIA_Directive | eia_guidance | Playwright | 36 |
+| **Total** | | | | **304** |
 
-**Step 7 failures (JS-rendered SPAs, not accessible via HTTP):**
+**Remaining gaps (Steps 7+8):**
 
-| Country | Source | URL | Reason |
-|---------|--------|-----|--------|
-| FI | AVI | avi.fi/ymparistoluvat | SSL error |
-| FI | STUK | stuk.fi/paatokset | 404 |
-| FI | SYKE_BAT | syke.fi/BREF | 404 |
-| FI | YVA_guidance | ymparisto.fi/YVA | 404 |
-| FI | ymparisto_melu | ymparisto.fi/tuulivoimamelu | 404 |
-| SE | MÖD | domstol.se | 404 |
-| SE | EI_beslut | ei.se | 404 |
-| SE | Naturvardsverket_BAT | naturvardsverket.se | 404 |
-| SE | Boverket_BIM | boverket.se/digitalt | 404 |
-| NO | NVE_vedtak | nve.no/konsesjonsvedtak | 404 |
-| NO | Miljodirektoratet_vedtak | miljodirektoratet.no | 404 |
-| NO | Miljodirektoratet_BAT | miljodirektoratet.no | 404 |
-| DA | Energiklagenaevnet | naevneneshus.dk | 404 |
-| DA | Miljoeklagenaevnet | naevneneshus.dk | 404 |
-| DA | Miljostyrelsen_VVM | mst.dk | 404 |
-| PL | URE_decyzje | ure.gov.pl/decyzje | 404 |
-| DE | BVerwG | bverwg.de | 404 |
-| DE | BNetzA | bundesnetzagentur.de | 404 |
-| DE | BMWSB_BIM | bmwsb.bund.de | 404 |
-| EU | EUR_Lex_BAT | eur-lex.europa.eu | HTTP 202 (async) |
-| EU | EIA_Directive | eur-lex.europa.eu | HTTP 202 (async) |
-| EU | EU_BIM | eubim.eu | 0 text extracted |
+| Country | Source | Reason |
+|---------|--------|--------|
+| FI | STUK, SYKE, ymparisto.fi/melu | URL changed / 404 |
+| SE | EI_beslut, Boverket_BIM | URL changed / 404 |
+| NO | — | All sources indexed (thin) |
+| DA | — | All sources indexed (thin) |
+| PL | URE_decyzje | URL changed / 404 |
+| DE | BVerwG | Playwright timeout (JS-heavy) |
+| DE | BMWSB_BIM | URL changed / 404 |
+| EU | EU_BIM | 0 text extracted |
 
 ---
 
@@ -101,7 +101,7 @@ New metadata dimensions added 2026-06-12 via `ingest_precedent.py`.
 - **DA**: all ⚠️ regardless of config — low chunk count (~467) means RAG answers will be thin
 - **DE**: upgraded to Full — BauGB (476 chunks) + EnWG (900 chunks) indexed 2026-06-12; BImSchG already present
 - **EU/IAEA**: SMR safety standards indexed 2026-06-12 — SSR-2/1 Rev.1 (275 chunks), SSG-52 (171 chunks), NS-R-5 Rev.1 (183 chunks); GSR Part 1/3/4 not yet indexed
-- **Step 7 JS-rendered sources**: 19 of 27 requested sources return 404 or HTTP 202 — these use React/Angular SPAs and require headless browser (Playwright) to access; re-indexing requires a Playwright-based ingest script
+- **Steps 7+8 SPA sources**: Playwright resolved the 404/202 blocking; all 15 targeted SPA sources now have at least a landing-page chunk indexed. Most yield 1–2 chunks (minimal text on index pages) — actual decision lists/documents are behind dynamic pagination or search UIs requiring deeper interaction. High-value exception: EU EIA Directive (36 chunks, full text).
 - **FI EGS**: aliased to `aurinkovoima` config — EGS-specific guidance is thin
 - **FI asuinrakennus/teollisuus/maatalous/liikerakennus**: generic `_HANKE_CFG` entries, limited RAG depth
 - **DA hybridi**: no entry in `_COUNTRY_LUVAT`; falls through to FI base config
@@ -113,7 +113,7 @@ New metadata dimensions added 2026-06-12 via `ingest_precedent.py`.
 
 | Gap | Countries | Priority | Action needed |
 |-----|-----------|----------|---------------|
-| JS-rendered case law / BAT sites (19 sources) | All | High | Build Playwright-based ingest for domstol.se, naturvardsverket.se, ymparisto.fi, nve.no/vedtak, naevneneshus.dk, mst.dk, bverwg.de, eur-lex.europa.eu etc. |
+| Thin SPA sources (1–2 chunks) need deeper crawl | All | High | Playwright ingest added (Step 8) but index pages only; needs interaction-based crawl (clicking pagination, search) for actual decision texts from domstol.se, nve.no, naevneneshus.dk, bverwg.de etc. |
 | DA RAG depth (~467 chunks) | DA | High | Index retsinformation.dk, Energistyrelsen, Miljøstyrelsen |
 | IAEA GSR Part 1/3/4 + TECDOC series | EU | Medium | SSR-2/1, SSG-52, NS-R-5 now indexed; GSR docs still missing |
 | Bauordnungsrecht (Landesbauordnungen) | DE | Medium | Index BayBO, LBO BW and other state building codes |
