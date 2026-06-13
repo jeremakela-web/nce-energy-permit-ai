@@ -23,7 +23,7 @@ Avaa selaimella: http://localhost:8000
 | Muuttuja | Pakollinen | Kuvaus |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Kyllä | Claude API -avain (claude.ai / console.anthropic.com) |
-| `MML_API_KEY` | Suositellaan | Maanmittauslaitoksen WFS-avain maankäyttöselvitykseen |
+| `MML_API_KEY` | Lisätty tuotantoon | Lisätty Render-ympäristömuuttujiin. Ei tarvitse lisätä uudelleen. |
 
 ### MML_API_KEY hankkiminen
 
@@ -79,9 +79,17 @@ bess_tool/
 
 ## RAG-tietokanta
 
-Lupa-asiakirjapalvelu käyttää RAG-hakua (Retrieval-Augmented Generation). Tietokanta sisältää ~10 300 chunkkia (sis. IAEA, EU EIA-direktiivi, viranomaisratkaisut) lupa- ja rakennusohjeistuksista — 6 maa (FI, SE, DA, NO, PL, DE), 7 kieltä (FI, EN, SE, DA, NO, PL, DE), 20+ hanketyyppiä.
+Lupa-asiakirjapalvelu käyttää RAG-hakua (Retrieval-Augmented Generation). Tietokanta sisältää 10 316 chunkkia (sis. IAEA SMR-turvallisuusstandardit, EU EIA-direktiivi, viranomaisratkaisut) lupa- ja rakennusohjeistuksista — 6 maata (FI, SE, DA, NO, PL, DE) + EU-taso, 7 kieltä (FI, EN, SE, DA, NO, PL, DE), 20+ hanketyyppiä.
 
 Tietokannan uudelleenindeksointi:
 ```bash
 cd permit_ai && python3 index_docs.py
 ```
+
+## Ominaisuudet
+
+- **RAQS MINI -laadunvarmistus** — luottamuspisteytys, kova pysäytys liian pienellä lähdekannalla (HTTP 422), varoitusbanneri, ennakkotapaushaku, lähdeviitteet PDF:ssä, asiakastiedotesivu
+- **Ennakkotapausindeksointi** — KHO, HAO, NSA, NVE, MÖD + muita (case_law-metatiedolla haettavissa)
+- **IAEA SMR -turvallisuusstandardit** — SSR-2/1 Rev.1, SSG-52, NS-R-5 Rev.1 (629 chunkkia)
+- **EU-kyselylaajennus** — kaikki maakohtaiset RAG-kyselyt sisältävät automaattisesti EU-tason chunkit
+- **7 käyttöliittymäkieltä** — FI, EN, SE, DA, NO, PL, DE
