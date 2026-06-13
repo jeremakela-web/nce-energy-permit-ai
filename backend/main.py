@@ -92,31 +92,42 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 @app.middleware("http")
 async def basic_auth_middleware(request: Request, call_next):
-    # Auth is disabled when BASIC_AUTH_PASS is not set (local development)
-    if _AUTH_PASS:
-        path = request.url.path
-        if path not in _AUTH_EXEMPT and not path.startswith(("/assets", "/static")):
-            auth = request.headers.get("authorization", "")
-            if not auth.startswith("Basic "):
-                return Response(
-                    status_code=401,
-                    headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
-                )
-            try:
-                decoded = base64.b64decode(auth[6:]).decode("utf-8")
-                username, password = decoded.split(":", 1)
-            except Exception:
-                return Response(
-                    status_code=401,
-                    headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
-                )
-            ok = secrets.compare_digest(username.encode(), _AUTH_USER.encode()) and \
-                 secrets.compare_digest(password.encode(), _AUTH_PASS.encode())
-            if not ok:
-                return Response(
-                    status_code=401,
-                    headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
-                )
+    # Auth disabled when BASIC_AUTH_PASS not set (local dev)
+    if not _AUTH_PASS:
+        return await call_next(request)
+
+    # Only enforce auth on the tool subdomain (ai.ncenergy.fi).
+    # ncenergy.fi landing page and localhost pass through unconditionally.
+    host = request.headers.get("host", "")
+    if "ai.ncenergy" not in host:
+        return await call_next(request)
+
+    # Three paths remain public on the tool domain
+    if request.url.path in _TOOL_EXEMPT:
+        return await call_next(request)
+
+    # All other requests — including /, /static/*, /api/* — require credentials
+    auth = request.headers.get("authorization", "")
+    if not auth.startswith("Basic "):
+        return Response(
+            status_code=401,
+            headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
+        )
+    try:
+        decoded  = base64.b64decode(auth[6:]).decode("utf-8")
+        username, password = decoded.split(":", 1)
+    except Exception:
+        return Response(
+            status_code=401,
+            headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
+        )
+    ok = secrets.compare_digest(username.encode(), _AUTH_USER.encode()) and \
+         secrets.compare_digest(password.encode(), _AUTH_PASS.encode())
+    if not ok:
+        return Response(
+            status_code=401,
+            headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
+        )
     return await call_next(request)
 
 
@@ -145,7 +156,8 @@ ALERT_EMAIL   = os.getenv("ALERT_EMAIL", "jere@ncenergy.fi")
 
 _AUTH_USER   = os.getenv("BASIC_AUTH_USER", "nce")
 _AUTH_PASS   = os.getenv("BASIC_AUTH_PASS", "")  # empty = auth disabled (local dev)
-_AUTH_EXEMPT = {"/", "/privacy", "/tietosuoja", "/api/health", "/api/stats", "/api/access-request"}
+# Paths that remain public even on ai.ncenergy.fi (landing page counter, contact form, health check)
+_TOOL_EXEMPT = {"/api/stats", "/api/access-request", "/api/health"}
 
 SMTP_USER     = os.getenv("SMTP_USER", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
