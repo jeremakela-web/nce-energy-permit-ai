@@ -10,12 +10,15 @@ Käynnistys:
 
 import asyncio
 import base64
+import email.mime.multipart
+import email.mime.text
 import io
 import json
 import logging
 import os
 import re
 import secrets
+import smtplib
 import time
 import unicodedata
 import uuid
@@ -142,7 +145,10 @@ ALERT_EMAIL   = os.getenv("ALERT_EMAIL", "jere@ncenergy.fi")
 
 _AUTH_USER   = os.getenv("BASIC_AUTH_USER", "nce")
 _AUTH_PASS   = os.getenv("BASIC_AUTH_PASS", "")  # empty = auth disabled (local dev)
-_AUTH_EXEMPT = {"/", "/privacy", "/tietosuoja", "/api/health", "/api/stats"}
+_AUTH_EXEMPT = {"/", "/privacy", "/tietosuoja", "/api/health", "/api/stats", "/api/access-request"}
+
+SMTP_USER     = os.getenv("SMTP_USER", "")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
 
 # ── Usage monitoring ──────────────────────────────────────────────────────────
 _usage_logger = logging.getLogger("usage")
@@ -207,6 +213,14 @@ if not MML_API_KEY:
 
 
 # ── Pydantic-mallit ───────────────────────────────────────────────────────────
+
+class AccessRequestModel(BaseModel):
+    yritys: str
+    yhteyshenkilo: str
+    sahkoposti: str
+    puhelin: str = ""
+    kuvaus: str
+
 
 class PermitAIRequest(BaseModel):
     question: str
@@ -298,6 +312,48 @@ async def tietosuoja():
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "mml_key_set": bool(MML_API_KEY)}
+
+
+@app.post("/api/access-request")
+async def access_request(req: AccessRequestModel):
+    def _send():
+        msg = email.mime.multipart.MIMEMultipart()
+        msg["From"]    = SMTP_USER or "info@ncenergy.fi"
+        msg["To"]      = "info@ncenergy.fi"
+        msg["Subject"] = "Käyttöoikeuspyyntö — NCE Permit AI"
+        body = (
+            "Käyttöoikeuspyyntö — NCE Permit AI\n"
+            "=====================================\n\n"
+            f"Yritys:           {req.yritys}\n"
+            f"Yhteyshenkilö:    {req.yhteyshenkilo}\n"
+            f"Sähköposti:       {req.sahkoposti}\n"
+            f"Puhelin:          {req.puhelin or '—'}\n\n"
+            "Kuvaus toiminnasta:\n"
+            "-------------------\n"
+            f"{req.kuvaus}\n"
+        )
+        msg.attach(email.mime.text.MIMEText(body, "plain", "utf-8"))
+        with smtplib.SMTP("smtp.gmail.com", 587) as s:
+            s.ehlo()
+            s.starttls()
+            s.login(SMTP_USER, SMTP_PASSWORD)
+            s.send_message(msg)
+
+    if not SMTP_USER or not SMTP_PASSWORD:
+        logging.getLogger("usage").warning(
+            "[ACCESS-REQUEST] SMTP not configured — yritys=%s email=%s",
+            req.yritys, req.sahkoposti,
+        )
+        raise HTTPException(status_code=503, detail="Email service not configured")
+
+    loop = asyncio.get_event_loop()
+    try:
+        await loop.run_in_executor(None, _send)
+    except Exception as exc:
+        logging.getLogger("usage").error("[ACCESS-REQUEST] SMTP error: %s", exc)
+        raise HTTPException(status_code=502, detail="Failed to send email")
+
+    return {"ok": True}
 
 
 @app.get("/api/debug-raw")

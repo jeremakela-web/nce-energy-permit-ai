@@ -732,20 +732,47 @@
 
           if (!company || !contact || !email || !desc) return;
 
-          const lines = [
-              'Yritys: '           + company,
-              'Yhteyshenkilö: '    + contact,
-              'Sähköposti: '       + email,
-              phone ? 'Puhelin: ' + phone : null,
-              '',
-              'Kuvaus toiminnasta:',
-              desc,
-          ].filter(l => l !== null).join('\n');
+          const lang       = document.body.classList.contains('lang-fi') ? 'fi' : 'en';
+          const successMsg = lang === 'fi'
+              ? 'Kiitos! Otamme yhteyttä pian.'
+              : 'Thank you! We will be in touch soon.';
+          const errorMsg   = lang === 'fi'
+              ? 'Lähetys epäonnistui. Lähetä sähköposti osoitteeseen info@ncenergy.fi'
+              : 'Sending failed. Please email us at info@ncenergy.fi';
 
-          const subject = encodeURIComponent('Käyttöoikeuspyyntö — NCE Permit AI');
-          const body    = encodeURIComponent(lines);
-          window.location.href = 'mailto:info@ncenergy.fi?subject=' + subject + '&body=' + body;
-          closeModal();
+          const submitBtn = form.querySelector('.access-submit');
+          submitBtn.disabled = true;
+          const origText = submitBtn.textContent;
+          submitBtn.textContent = '…';
+
+          fetch('/api/access-request', {
+              method:  'POST',
+              headers: {'Content-Type': 'application/json'},
+              body:    JSON.stringify({
+                  yritys:        company,
+                  yhteyshenkilo: contact,
+                  sahkoposti:    email,
+                  puhelin:       phone,
+                  kuvaus:        desc,
+              }),
+          })
+          .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(() => {
+              form.innerHTML = '<p style="color:#00d9c7;font-size:16px;margin:0;line-height:1.5">'
+                  + successMsg + '</p>';
+          })
+          .catch(() => {
+              let errEl = form.querySelector('.access-err');
+              if (!errEl) {
+                  errEl = document.createElement('p');
+                  errEl.className = 'access-err';
+                  errEl.style.cssText = 'color:#f87171;font-size:13px;margin:10px 0 0';
+                  form.appendChild(errEl);
+              }
+              errEl.textContent = errorMsg;
+              submitBtn.disabled  = false;
+              submitBtn.textContent = origText;
+          });
       });
   }
 
