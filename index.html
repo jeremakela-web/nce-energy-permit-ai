@@ -610,7 +610,7 @@
 
     <p class="tool-cta-sub light" data-i18n="s8.p2">If you are working on BESS, wind, solar, SMR or construction, industrial or infrastructure projects — get in touch to discuss a pilot.</p>
 
-    <a href="https://ai.ncenergy.fi" class="btn-hero big" data-jump1="tool">
+    <a href="#" class="btn-hero big" data-modal="access">
       <span data-i18n="cta.openToolRequest">Request access</span>
       <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M1 6h13M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -639,6 +639,38 @@
     </div>
 </footer>
 
+
+<!-- ACCESS REQUEST MODAL -->
+<div class="access-modal-overlay" id="accessModalOverlay" role="dialog" aria-modal="true" aria-labelledby="accessModalTitle">
+  <div class="access-modal">
+    <button class="access-modal-close" id="accessModalClose" aria-label="Close">&#x2715;</button>
+    <h3 class="access-modal-title" id="accessModalTitle" data-i18n="modal.title">Request Access</h3>
+    <p class="access-modal-sub" data-i18n="modal.sub">We are onboarding pilot customers. Fill in your details and we'll be in touch.</p>
+    <form id="accessForm" class="access-form" novalidate>
+      <div class="access-field">
+        <label for="af-company" data-i18n="modal.company">Company</label>
+        <input type="text" id="af-company" required autocomplete="organization">
+      </div>
+      <div class="access-field">
+        <label for="af-contact" data-i18n="modal.contact">Contact person</label>
+        <input type="text" id="af-contact" required autocomplete="name">
+      </div>
+      <div class="access-field">
+        <label for="af-email" data-i18n="modal.email">Email</label>
+        <input type="email" id="af-email" required autocomplete="email">
+      </div>
+      <div class="access-field">
+        <label for="af-phone"><span data-i18n="modal.phone">Phone</span> <span data-i18n="modal.optional">(optional)</span></label>
+        <input type="tel" id="af-phone" autocomplete="tel">
+      </div>
+      <div class="access-field">
+        <label for="af-desc" data-i18n="modal.desc">Description of operations</label>
+        <textarea id="af-desc" required rows="4"></textarea>
+      </div>
+      <button type="submit" class="access-submit" data-i18n="modal.submit">Submit</button>
+    </form>
+  </div>
+</div>
 
 </main>
 

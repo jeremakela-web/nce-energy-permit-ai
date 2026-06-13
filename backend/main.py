@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import re
+import secrets
 import time
 import unicodedata
 import uuid
@@ -87,6 +88,36 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 
 @app.middleware("http")
+async def basic_auth_middleware(request: Request, call_next):
+    # Auth is disabled when BASIC_AUTH_PASS is not set (local development)
+    if _AUTH_PASS:
+        path = request.url.path
+        if path not in _AUTH_EXEMPT and not path.startswith(("/assets", "/static")):
+            auth = request.headers.get("authorization", "")
+            if not auth.startswith("Basic "):
+                return Response(
+                    status_code=401,
+                    headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
+                )
+            try:
+                decoded = base64.b64decode(auth[6:]).decode("utf-8")
+                username, password = decoded.split(":", 1)
+            except Exception:
+                return Response(
+                    status_code=401,
+                    headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
+                )
+            ok = secrets.compare_digest(username.encode(), _AUTH_USER.encode()) and \
+                 secrets.compare_digest(password.encode(), _AUTH_PASS.encode())
+            if not ok:
+                return Response(
+                    status_code=401,
+                    headers={"WWW-Authenticate": 'Basic realm="NCE Permit AI"'},
+                )
+    return await call_next(request)
+
+
+@app.middleware("http")
 async def add_charset(request, call_next):
     response = await call_next(request)
     if "application/json" in response.headers.get("content-type", ""):
@@ -108,6 +139,10 @@ MML_API_KEY   = os.getenv("MML_API_KEY", "")
 PORT          = int(os.environ.get("PORT", 8000))
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 ALERT_EMAIL   = os.getenv("ALERT_EMAIL", "jere@ncenergy.fi")
+
+_AUTH_USER   = os.getenv("BASIC_AUTH_USER", "nce")
+_AUTH_PASS   = os.getenv("BASIC_AUTH_PASS", "")  # empty = auth disabled (local dev)
+_AUTH_EXEMPT = {"/", "/privacy", "/tietosuoja", "/api/health", "/api/stats"}
 
 # ── Usage monitoring ──────────────────────────────────────────────────────────
 _usage_logger = logging.getLogger("usage")

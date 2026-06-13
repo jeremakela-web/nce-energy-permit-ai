@@ -177,6 +177,16 @@
       "tool.f.run": "Run permit analysis",
       "tool.back": "← Back to site",
 
+      "modal.title":    "Request Access",
+      "modal.sub":      "We are onboarding pilot customers. Fill in your details and we'll be in touch.",
+      "modal.company":  "Company",
+      "modal.contact":  "Contact person",
+      "modal.email":    "Email",
+      "modal.phone":    "Phone",
+      "modal.optional": "(optional)",
+      "modal.desc":     "Description of operations",
+      "modal.submit":   "Submit",
+
       "hero.slides": [
         "Onshore Wind Development",
         "Renewable Infrastructure",
@@ -355,6 +365,16 @@
 
     "tool.back": "← Takaisin sivustolle",
 
+    "modal.title":    "Pyydä käyttöoikeutta",
+    "modal.sub":      "Otamme mukaan pilottiasiakkaita. Täytä tietosi ja otamme sinuun yhteyttä.",
+    "modal.company":  "Yritys",
+    "modal.contact":  "Yhteyshenkilö",
+    "modal.email":    "Sähköposti",
+    "modal.phone":    "Puhelin",
+    "modal.optional": "(valinnainen)",
+    "modal.desc":     "Kuvaus toiminnasta",
+    "modal.submit":   "Lähetä",
+
     "hero.slides": [
       "Maatuulivoimahanke",
       "Uusiutuva infrastruktuuri",
@@ -437,6 +457,7 @@
     setupHeaderScroll();
     setupLangSwitcher();
     initHeroCounters();
+    setupAccessModal();
     // setupHeroSlides();
     // setupViewSwitcher(); 111111
     setupJumpButtons();
@@ -674,6 +695,59 @@
 //         .toggle('open');
 
 // });
+
+
+  /* ---------- Access Request Modal ---------- */
+  function setupAccessModal() {
+      const overlay = document.getElementById('accessModalOverlay');
+      if (!overlay) return;
+      const closeBtn = document.getElementById('accessModalClose');
+      const form     = document.getElementById('accessForm');
+
+      function openModal() {
+          overlay.classList.add('open');
+          document.body.style.overflow = 'hidden';
+      }
+      function closeModal() {
+          overlay.classList.remove('open');
+          document.body.style.overflow = '';
+      }
+
+      // All buttons/links with data-modal="access" open the modal
+      document.querySelectorAll('[data-modal="access"]').forEach(el => {
+          el.addEventListener('click', e => { e.preventDefault(); openModal(); });
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+      form.addEventListener('submit', e => {
+          e.preventDefault();
+          const company = document.getElementById('af-company').value.trim();
+          const contact = document.getElementById('af-contact').value.trim();
+          const email   = document.getElementById('af-email').value.trim();
+          const phone   = document.getElementById('af-phone').value.trim();
+          const desc    = document.getElementById('af-desc').value.trim();
+
+          if (!company || !contact || !email || !desc) return;
+
+          const lines = [
+              'Yritys: '           + company,
+              'Yhteyshenkilö: '    + contact,
+              'Sähköposti: '       + email,
+              phone ? 'Puhelin: ' + phone : null,
+              '',
+              'Kuvaus toiminnasta:',
+              desc,
+          ].filter(l => l !== null).join('\n');
+
+          const subject = encodeURIComponent('Käyttöoikeuspyyntö — NCE Permit AI');
+          const body    = encodeURIComponent(lines);
+          window.location.href = 'mailto:info@ncenergy.fi?subject=' + subject + '&body=' + body;
+          closeModal();
+      });
+  }
 
 
 })();
