@@ -2164,7 +2164,7 @@ body.tool {
   padding-right: 20px; 
 }
 .hero-stats {
-  display: none;
+  display: block;
 }
 
 .hero-sub {

@@ -27,7 +27,7 @@
       "cta.discover": "See how it works",
       "hero.title1": "Permit documentation for energy projects",
       "hero.title2": "— in minutes, not weeks",
-      "hero.sub": "NCE Permit AI helps energy developers and engineering firms generate professional, source-traceable permit documentation with built-in regulatory quality validation",
+      "hero.sub": "NCE Permit AI helps energy developers and engineering firms generate professional, source-traceable permit documentation with built-in regulatory quality validation.",
       "hero.tag1": "BESS",
       "hero.tag2": "Wind",
       "hero.tag3": "Solar",
@@ -59,7 +59,7 @@
       "s1.cta": "Open permit AI",
 
       "s2.tag": "02 — HOW IT WORKS",
-      "s2.h2.html": "A thousand pages, <em>compressed</em> to a single signature",
+      "s2.h2.html": "A thousand pages, <em>distilled</em> into one application",
       "s2.step1Title": "Enter project details",
       "s2.step1Text": "Add basic project information, location and project type.",
       "s2.step2Title": "AI retrieves regulatory requirements",
@@ -71,7 +71,7 @@
       "s2.cta": "Try the Permit AI",
       
       "s3.tag": "03 — SUPPORTED PROJECT TYPES",
-      "s3.h2.html": "20+ project archetypes. <em>One development standard</em>",
+      "s3.h2.html": "20+ project types. <em>One development standard</em>",
       //CARDS
       
       //Card 1
@@ -203,7 +203,7 @@
     "hero.title1": "Lupadokumentaatio energiahankkeille",
     "hero.title2": "— minuuteissa, ei viikoissa",
 
-    "hero.sub": "NCE Permit AI auttaa energiakehittäjiä ja insinööritoimistoja tuottamaan ammattitasoinen, lähdejäljitettäviä lupadokumentteja sisäänrakennetulla sääntelyn laadunvarmistuksella.",
+    "hero.sub": "NCE Permit AI auttaa energiakehittäjiä ja insinööritoimistoja tuottamaan ammattitasoisia, lähdejäljitettäviä lupadokumentteja sisäänrakennetulla sääntelyn laadunvarmistuksella.",
 
     "hero.tag1": "BESS",
     "hero.tag2": "Tuulivoima",
@@ -236,7 +236,7 @@
     "s1.cta": "Avaa Permit AI",
 
     "s2.tag": "02 — NÄIN SE TOIMII",
-    "s2.h2.html": "Tuhat sivua sääntelyä, <em>yhdeksi allekirjoitukseksi tiivistettynä</em>",
+    "s2.h2.html": "Tuhat sivua sääntelyä, <em>yhdeksi hakemukseksi tiivistettynä</em>",
     "s2.step1Title": "Syötä projektin tiedot",
     "s2.step1Text": "Lisää perustiedot, sijainti ja projektityyppi.",
     "s2.step2Title": "Tekoäly hakee sääntelyvaatimukset",
@@ -248,7 +248,7 @@
     "s2.cta": "Kokeile Permit AI:ta",
 
     "s3.tag": "03 — TUETUT PROJEKTITYYPIT",
-    "s3.h2.html": "Yli 20 projektiarkkityyppiä. <em>Yksi kehitysstandardi</em>",
+    "s3.h2.html": "Yli 20 hanketyyppiä. <em>Yksi kehitysstandardi</em>",
 
     // Card 1
     "s3.card1Title": "BESS",
