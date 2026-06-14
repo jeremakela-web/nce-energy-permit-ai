@@ -502,22 +502,29 @@ async def rag_status():
     import chromadb as _chroma
     active_col   = _permit_ai_module._COLLECTION
     active_model = _permit_ai_module._EMBED_MODEL
+    v1_count = None
+    v2_count = None
+    db_error = None
     try:
         client = _chroma.PersistentClient(path=_DB_PATH)
-        v1_count = client.get_collection("permit_docs").count()
-    except Exception:
-        v1_count = None
-    try:
-        v2_col   = client.get_collection("permit_docs_v2")
-        v2_count = v2_col.count()
-    except Exception:
-        v2_count = None
+        try:
+            v1_count = client.get_collection("permit_docs").count()
+        except Exception:
+            pass
+        try:
+            v2_count = client.get_collection("permit_docs_v2").count()
+        except Exception:
+            pass
+    except Exception as exc:
+        db_error = str(exc)
     return {
         "active_collection": active_col,
         "active_model":      active_model,
         "v2_ready":          (v2_count or 0) >= _V2_MIN_CHUNKS,
         "permit_docs_count": v1_count,
         "permit_docs_v2_count": v2_count,
+        "db_path": _DB_PATH,
+        **({"db_error": db_error} if db_error else {}),
     }
 
 
