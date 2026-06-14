@@ -20,7 +20,7 @@ HERE     = Path(__file__).parent
 DB_DIR   = HERE / "embeddings"
 DOCS_DIR = HERE / "docs"
 
-EMBED_MODEL  = "all-MiniLM-L6-v2"   # small model, fits Render free tier (512MB)
+EMBED_MODEL  = "paraphrase-multilingual-MiniLM-L12-v2"
 COLLECTION   = "permit_docs"
 CHUNK_CHARS  = 1500   # merkkiä per chunkkia (≈300 sanaa)
 OVERLAP      = 200    # päällekkäisyys chunks välillä
@@ -56,7 +56,7 @@ def build() -> None:
 
     model  = SentenceTransformer(EMBED_MODEL)
     client = chromadb.PersistentClient(path=str(DB_DIR))
-    col    = client.get_or_create_collection(COLLECTION)
+    col    = client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine"})
 
     all_docs:  list[str]  = []
     all_ids:   list[str]  = []

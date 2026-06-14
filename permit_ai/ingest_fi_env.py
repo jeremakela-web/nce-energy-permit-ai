@@ -25,7 +25,7 @@ from urllib.parse import urljoin, urlparse
 HERE   = Path(__file__).parent
 DB_DIR = HERE / "embeddings"
 
-EMBED_MODEL = "all-MiniLM-L6-v2"   # small model, fits Render free tier (512MB)
+EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 COLLECTION  = "permit_docs"
 CHUNK_CHARS = 1500
 OVERLAP     = 200
@@ -349,7 +349,7 @@ def ingest() -> None:
 
     model  = SentenceTransformer(EMBED_MODEL)
     client = chromadb.PersistentClient(path=str(DB_DIR))
-    col    = client.get_or_create_collection(COLLECTION)
+    col    = client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine"})
 
     existing_ids: set[str] = set(col.get()["ids"])
     print(f"[ingest_fi_env] Olemassaolevia chunkkeja: {len(existing_ids)}")

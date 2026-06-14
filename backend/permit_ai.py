@@ -14,7 +14,7 @@ from sentence_transformers import SentenceTransformer
 _DB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "permit_ai", "embeddings"))
 _COLLECTION = "permit_docs"                      # v1 fallback; switched to v2 at runtime
 _MODEL_ID = "claude-sonnet-4-6"
-_EMBED_MODEL = "all-MiniLM-L6-v2"               # v1 fallback; switched to v2 at runtime
+_EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"   # multilingual; switched to v2 at runtime
 
 _COLLECTION_V2 = "permit_docs_v2"
 _EMBED_MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
@@ -44,7 +44,7 @@ def _get_embed_model() -> SentenceTransformer:
 @lru_cache(maxsize=1)
 def _get_collection() -> chromadb.Collection:
     client = chromadb.PersistentClient(path=_DB_DIR)
-    return client.get_or_create_collection(_COLLECTION)
+    return client.get_or_create_collection(_COLLECTION, metadata={"hnsw:space": "cosine"})
 
 
 def query_permit_ai(question: str, n_results: int = 5) -> dict:

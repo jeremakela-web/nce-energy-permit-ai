@@ -78,7 +78,7 @@ _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
 _MODEL_ID      = "claude-sonnet-4-5"
 _MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
-_EMBED_MODEL   = "all-MiniLM-L6-v2"               # v1 fallback; switched to v2 at runtime
+_EMBED_MODEL   = "paraphrase-multilingual-MiniLM-L12-v2"   # multilingual; switched to v2 at runtime
 _EMBED_MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
 _COLLECTION_V2  = "permit_docs_v2"
 _CHROMA_COLLECTION = "permit_docs"              # v1 fallback; switched to v2 at runtime
@@ -457,7 +457,7 @@ def _get_embed_model() -> SentenceTransformer:
 @lru_cache(maxsize=1)
 def _get_chroma_col():
     client = chromadb.PersistentClient(path=_DB_DIR)
-    return client.get_or_create_collection(_CHROMA_COLLECTION)
+    return client.get_or_create_collection(_CHROMA_COLLECTION, metadata={"hnsw:space": "cosine"})
 
 
 def activate_v2() -> None:
