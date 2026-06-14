@@ -63,7 +63,7 @@
       "s2.step1Title": "Enter project details",
       "s2.step1Text": "Add basic project information, location and project type.",
       "s2.step2Title": "AI retrieves regulatory requirements",
-      "s2.step2Text": "NCE automatically retrieves relevant legislation, authority requirements and source references for your project type and jurisdiction.",
+      "s2.step2Text": "NCE Permit AI automatically retrieves relevant legislation, authority requirements and source references for your project type and jurisdiction.",
       "s2.step3Title": "Generate structured draft",
       "s2.step3Text": "A structured permit application draft is generated in PDF format, ready for professional review and submission.",
       "s2.step4Title": "RAQS validates before delivery",
@@ -146,7 +146,7 @@
 
       "s6.tag": "06 — WHY NCE",
       "s6.h2.html": "Built for permitting. <em>Nothing else</em>",
-      "s6.p1": "NCE is not a generic AI writing tool. It is built for one purpose: helping energy projects move through permitting faster, with full regulatory traceability and less manual work.",
+      "s6.p1": "NCE Permit AI is not a generic AI writing tool. It is built for one purpose: helping energy projects move through permitting faster, with full regulatory traceability and less manual work.",
       "s6.p2": "Your team works from a single structured workflow instead of searching through regulations, managing document versions and rewriting the same content across projects.",
 
       "s7.tag": "07 — WHO IT IS FOR",
@@ -331,7 +331,7 @@
 
     "s6.tag": "06 — MIKSI NCE",
     "s6.h2.html": "Rakennettu luvitukseen. <em>Ei mihinkään muuhun</em>",
-    "s6.p1": "NCE ei ole yleiskäyttöinen tekoälykirjoitustyökalu. Se on rakennettu auttamaan energiahankkeita etenemään luvituksessa nopeammin, täydellä sääntelyn jäljitettävyydellä ja vähemmällä manuaalisella työllä.",
+    "s6.p1": "NCE Permit AI ei ole yleiskäyttöinen tekoälykirjoitustyökalu. Se on rakennettu auttamaan energiahankkeita etenemään luvituksessa nopeammin, täydellä sääntelyn jäljitettävyydellä ja vähemmällä manuaalisella työllä.",
     "s6.p2": "Tiimisi työskentelee yhden rakenteisen työnkulun kautta sen sijaan, että etsisi säädöksiä, hallitsisi dokumenttiversioita ja kirjoittaisi samaa sisältöä uudelleen projektista toiseen.",
 
     "s7.tag": "07 — KENELLE",
