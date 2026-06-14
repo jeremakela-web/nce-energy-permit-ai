@@ -78,7 +78,10 @@ _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
 _MODEL_ID      = "claude-sonnet-4-5"
 _MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
-_EMBED_MODEL   = "all-MiniLM-L6-v2"
+_EMBED_MODEL   = "all-MiniLM-L6-v2"               # v1 fallback; switched to v2 at runtime
+_EMBED_MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
+_COLLECTION_V2  = "permit_docs_v2"
+_CHROMA_COLLECTION = "permit_docs"              # v1 fallback; switched to v2 at runtime
 
 # Sentinel values sent by the frontend when a field is not applicable
 _SENTINEL_VALS = frozenset({
@@ -454,7 +457,17 @@ def _get_embed_model() -> SentenceTransformer:
 @lru_cache(maxsize=1)
 def _get_chroma_col():
     client = chromadb.PersistentClient(path=_DB_DIR)
-    return client.get_or_create_collection("permit_docs")
+    return client.get_or_create_collection(_CHROMA_COLLECTION)
+
+
+def activate_v2() -> None:
+    """Switch permit application RAG to permit_docs_v2 + mpnet."""
+    global _EMBED_MODEL, _CHROMA_COLLECTION
+    _EMBED_MODEL = _EMBED_MODEL_V2
+    _CHROMA_COLLECTION = _COLLECTION_V2
+    _get_embed_model.cache_clear()
+    _get_chroma_col.cache_clear()
+
 
 C_NAVY   = colors.HexColor("#16213e")
 C_RED    = colors.HexColor("#e94560")

@@ -20,8 +20,8 @@ HERE     = Path(__file__).parent
 DB_DIR   = HERE / "embeddings"
 DOCS_DIR = HERE / "docs"
 
-EMBED_MODEL  = "all-MiniLM-L6-v2"
-COLLECTION   = "permit_docs"
+EMBED_MODEL  = "paraphrase-multilingual-mpnet-base-v2"
+COLLECTION   = "permit_docs_v2"
 CHUNK_CHARS  = 1500   # merkkiä per chunkkia (≈300 sanaa)
 OVERLAP      = 200    # päällekkäisyys chunks välillä
 BATCH        = 64     # embedding-batch koko

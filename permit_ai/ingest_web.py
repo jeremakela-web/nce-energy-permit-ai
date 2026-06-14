@@ -36,8 +36,8 @@ HERE = Path(__file__).parent
 ROOT = HERE.parent
 DB_DIR = HERE / "embeddings"
 
-EMBED_MODEL = "all-MiniLM-L6-v2"
-COLLECTION  = "permit_docs"
+EMBED_MODEL = "paraphrase-multilingual-mpnet-base-v2"
+COLLECTION  = "permit_docs_v2"
 CHUNK_CHARS = 1500
 OVERLAP     = 200
 BATCH       = 64

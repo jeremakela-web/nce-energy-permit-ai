@@ -12,9 +12,12 @@ import anthropic
 from sentence_transformers import SentenceTransformer
 
 _DB_DIR = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
-_COLLECTION = "permit_docs"
+_COLLECTION = "permit_docs"                      # v1 fallback; switched to v2 at runtime
 _MODEL_ID = "claude-sonnet-4-6"
-_EMBED_MODEL = "all-MiniLM-L6-v2"
+_EMBED_MODEL = "all-MiniLM-L6-v2"               # v1 fallback; switched to v2 at runtime
+
+_COLLECTION_V2 = "permit_docs_v2"
+_EMBED_MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
 
 SYSTEM_PROMPT = (
     "Olet Nordic Clean Energy (NCE) Energy Permit AI -asiantuntija. "
@@ -80,3 +83,12 @@ def query_permit_ai(question: str, n_results: int = 5) -> dict:
         "answer":  resp.content[0].text,
         "sources": sources,
     }
+
+
+def activate_v2() -> None:
+    """Switch retrieval to permit_docs_v2 + mpnet (called after re-index completes)."""
+    global _COLLECTION, _EMBED_MODEL
+    _COLLECTION = _COLLECTION_V2
+    _EMBED_MODEL = _EMBED_MODEL_V2
+    _get_embed_model.cache_clear()
+    _get_collection.cache_clear()

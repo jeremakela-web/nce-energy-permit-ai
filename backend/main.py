@@ -52,6 +52,7 @@ from gtk_api import get_soil_type
 from ai_strategy import get_lupaprosessi_strategy
 from report import generate_bess_report
 from permit_ai import query_permit_ai
+import permit_ai as _permit_ai_module
 
 # permit_ai-moduuli on ~/bess_tool/permit_ai/ — lisätään polkuun
 import sys as _sys
@@ -62,6 +63,7 @@ from generate_application import (
     ApplicationInput, _get_embed_model, _get_chroma_col,
     InsufficientSourcesError,
 )
+import generate_application as _gen_app_module
 try:
     from optimizer import NCEOptimizer, EnergySite
     _OPTIMIZER_OK = True
@@ -69,9 +71,156 @@ except ImportError:
     _OPTIMIZER_OK = False
     print("[startup] optimizer.py ei löydy — /api/optimize-bess palauttaa 501")
 
+# ── V2 re-index constants ──────────────────────────────────────────────────────
+_V2_COL        = "permit_docs_v2"
+_V2_MODEL      = "paraphrase-multilingual-mpnet-base-v2"
+_V2_MIN_CHUNKS = 10000          # treat V2 as complete when count reaches this
+_DB_PATH       = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
+_reindex_log   = logging.getLogger("reindex")
+
+
+def _v2_is_ready() -> bool:
+    """Return True if permit_docs_v2 exists and has enough chunks."""
+    try:
+        import chromadb as _chroma
+        c = _chroma.PersistentClient(path=_DB_PATH)
+        col = c.get_collection(_V2_COL)
+        return col.count() >= _V2_MIN_CHUNKS
+    except Exception:
+        return False
+
+
+def _activate_all_v2() -> None:
+    """Switch both RAG modules to V2 collection + mpnet model (no restart needed)."""
+    _permit_ai_module.activate_v2()
+    _gen_app_module.activate_v2()
+    logging.getLogger("startup").info(
+        "[rag] Switched to permit_docs_v2 + paraphrase-multilingual-mpnet-base-v2 (768-dim)"
+    )
+
+
+def _run_background_reindex() -> None:
+    """
+    Background thread: re-embeds all chunks from permit_docs → permit_docs_v2
+    using paraphrase-multilingual-mpnet-base-v2 (768-dim, multilingual, 512-tok).
+    Logs progress every 500 chunks. Calls _activate_all_v2() on completion.
+    On error: logs and exits — app keeps serving from V1 collection.
+    """
+    import warnings
+    warnings.filterwarnings("ignore")
+
+    _reindex_log.info("[reindex] Starting background re-index → permit_docs_v2 (mpnet 768-dim)")
+
+    try:
+        import chromadb as _chroma
+        from sentence_transformers import SentenceTransformer
+
+        _reindex_log.info(f"[reindex] Loading model: {_V2_MODEL}")
+        model = SentenceTransformer(_V2_MODEL)
+        _reindex_log.info(f"[reindex] Model loaded, dim={model.get_sentence_embedding_dimension()}")
+
+        client = _chroma.PersistentClient(path=_DB_PATH)
+        src    = client.get_collection("permit_docs")
+        total  = src.count()
+        _reindex_log.info(f"[reindex] Source: {total} chunks in permit_docs")
+
+        # Delete and recreate target (handles partial previous runs)
+        try:
+            client.delete_collection(_V2_COL)
+            _reindex_log.info(f"[reindex] Deleted partial '{_V2_COL}'")
+        except Exception:
+            pass
+
+        tgt = client.create_collection(
+            name=_V2_COL,
+            metadata={"hnsw:space": "cosine"},
+            embedding_function=None,
+        )
+
+        PAGE_SIZE   = 500
+        EMBED_BATCH = 32
+        WRITE_BATCH = 500
+
+        offset      = 0
+        total_added = 0
+        errors: list = []
+        t0 = time.time()
+
+        while offset < total:
+            page  = src.get(limit=PAGE_SIZE, offset=offset,
+                            include=["documents", "metadatas"])
+            ids   = page["ids"]
+            docs  = page["documents"]
+            metas = page["metadatas"]
+            if not ids:
+                break
+
+            embs = model.encode(docs, batch_size=EMBED_BATCH,
+                                show_progress_bar=False, normalize_embeddings=True)
+
+            for i in range(0, len(ids), WRITE_BATCH):
+                try:
+                    tgt.add(
+                        ids       = ids[i:i+WRITE_BATCH],
+                        documents = docs[i:i+WRITE_BATCH],
+                        metadatas = metas[i:i+WRITE_BATCH],
+                        embeddings= embs[i:i+WRITE_BATCH].tolist(),
+                    )
+                    total_added += len(ids[i:i+WRITE_BATCH])
+                except Exception as e:
+                    errors.append(str(e))
+                    _reindex_log.warning(f"[reindex] Write error at offset {offset+i}: {e}")
+
+            elapsed = time.time() - t0
+            rate    = total_added / elapsed if elapsed > 0 else 0
+            eta     = (total - total_added) / rate if rate > 0 else 0
+            _reindex_log.info(
+                f"[reindex] {total_added}/{total} chunks "
+                f"({100*total_added//total}%) | "
+                f"{elapsed/60:.0f}min elapsed | "
+                f"ETA {eta/60:.0f}min"
+            )
+
+            offset += len(ids)
+            if len(ids) < PAGE_SIZE:
+                break
+
+        final_count = tgt.count()
+        elapsed_total = time.time() - t0
+        _reindex_log.info(
+            f"[reindex] Done: {final_count}/{total} chunks in "
+            f"{elapsed_total/60:.1f}min, errors={len(errors)}"
+        )
+
+        if final_count >= _V2_MIN_CHUNKS:
+            _activate_all_v2()
+            _reindex_log.info("[reindex] ✓ Auto-switched to permit_docs_v2 — no restart needed")
+        else:
+            _reindex_log.error(
+                f"[reindex] ✗ Only {final_count} chunks written (need {_V2_MIN_CHUNKS}) — "
+                "staying on V1 collection"
+            )
+
+    except Exception as exc:
+        _reindex_log.exception(f"[reindex] Fatal error: {exc} — app continues on V1 collection")
+
+
 # Warmup: lataa embedding-malli ja ChromaDB heti käynnistyksen yhteydessä,
 # ei ensimmäisen requestin yhteydessä.
 try:
+    if _v2_is_ready():
+        _activate_all_v2()
+        logging.getLogger("startup").info("[startup] permit_docs_v2 ready — using mpnet 768-dim immediately")
+    else:
+        logging.getLogger("startup").info(
+            "[startup] permit_docs_v2 not ready — serving from permit_docs (all-MiniLM-L6-v2); "
+            "background re-index will start in 5s"
+        )
+        def _delayed_reindex():
+            time.sleep(5)          # let uvicorn finish binding port / health-check pass
+            _run_background_reindex()
+        Thread(target=_delayed_reindex, daemon=True, name="reindex-v2").start()
+
     _get_embed_model()
     _get_chroma_col()
     print("[startup] Embedding-malli ja ChromaDB ladattu")
@@ -153,7 +302,7 @@ ALERT_EMAIL   = os.getenv("ALERT_EMAIL", "jere@ncenergy.fi")
 _AUTH_USER   = os.getenv("BASIC_AUTH_USER", "nce")
 _AUTH_PASS   = os.getenv("BASIC_AUTH_PASS", "")  # empty = auth disabled (local dev)
 # Paths that remain public even on ai.ncenergy.fi (landing page counter, contact form, health check)
-_TOOL_EXEMPT = {"/api/stats", "/api/access-request", "/api/health"}
+_TOOL_EXEMPT = {"/api/stats", "/api/access-request", "/api/health", "/api/rag-status"}
 
 SMTP_USER     = os.getenv("SMTP_USER", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
@@ -345,6 +494,31 @@ async def tietosuoja():
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "mml_key_set": bool(MML_API_KEY)}
+
+
+@app.get("/api/rag-status")
+async def rag_status():
+    """Returns which RAG collection + model is currently active. Public endpoint."""
+    import chromadb as _chroma
+    active_col   = _permit_ai_module._COLLECTION
+    active_model = _permit_ai_module._EMBED_MODEL
+    try:
+        client = _chroma.PersistentClient(path=_DB_PATH)
+        v1_count = client.get_collection("permit_docs").count()
+    except Exception:
+        v1_count = None
+    try:
+        v2_col   = client.get_collection("permit_docs_v2")
+        v2_count = v2_col.count()
+    except Exception:
+        v2_count = None
+    return {
+        "active_collection": active_col,
+        "active_model":      active_model,
+        "v2_ready":          (v2_count or 0) >= _V2_MIN_CHUNKS,
+        "permit_docs_count": v1_count,
+        "permit_docs_v2_count": v2_count,
+    }
 
 
 @app.post("/api/access-request")

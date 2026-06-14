@@ -29,8 +29,8 @@ from pathlib import Path
 HERE = Path(__file__).parent
 DB_DIR = HERE / "embeddings"
 
-EMBED_MODEL = "all-MiniLM-L6-v2"
-COLLECTION  = "permit_docs"
+EMBED_MODEL = "paraphrase-multilingual-mpnet-base-v2"
+COLLECTION  = "permit_docs_v2"
 CHUNK_CHARS = 2000
 OVERLAP     = 200
 BATCH       = 32
