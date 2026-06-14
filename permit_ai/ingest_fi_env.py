@@ -25,8 +25,8 @@ from urllib.parse import urljoin, urlparse
 HERE   = Path(__file__).parent
 DB_DIR = HERE / "embeddings"
 
-EMBED_MODEL = "paraphrase-multilingual-mpnet-base-v2"
-COLLECTION  = "permit_docs_v2"
+EMBED_MODEL = "all-MiniLM-L6-v2"   # small model, fits Render free tier (512MB)
+COLLECTION  = "permit_docs"
 CHUNK_CHARS = 1500
 OVERLAP     = 200
 BATCH       = 64

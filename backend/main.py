@@ -211,15 +211,20 @@ try:
     if _v2_is_ready():
         _activate_all_v2()
         logging.getLogger("startup").info("[startup] permit_docs_v2 ready — using mpnet 768-dim immediately")
-    else:
+    elif os.getenv("ENABLE_REINDEX", "").lower() == "true":
         logging.getLogger("startup").info(
             "[startup] permit_docs_v2 not ready — serving from permit_docs (all-MiniLM-L6-v2); "
-            "background re-index will start in 5s"
+            "background re-index will start in 5s (ENABLE_REINDEX=true)"
         )
         def _delayed_reindex():
             time.sleep(5)          # let uvicorn finish binding port / health-check pass
             _run_background_reindex()
         Thread(target=_delayed_reindex, daemon=True, name="reindex-v2").start()
+    else:
+        logging.getLogger("startup").info(
+            "[startup] permit_docs_v2 not ready — serving from permit_docs; "
+            "background re-index disabled (set ENABLE_REINDEX=true to enable)"
+        )
 
     _get_embed_model()
     _get_chroma_col()

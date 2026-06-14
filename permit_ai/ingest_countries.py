@@ -43,8 +43,8 @@ RAG_ROOT_PRIMARY  = HERE / "rag_docs"
 RAG_ROOT_FALLBACK = ROOT / "rag_docs"
 RAG_ROOT = RAG_ROOT_PRIMARY  # used only for legacy reference below
 
-EMBED_MODEL = "paraphrase-multilingual-mpnet-base-v2"
-COLLECTION  = "permit_docs_v2"
+EMBED_MODEL = "all-MiniLM-L6-v2"   # small model, fits Render free tier (512MB)
+COLLECTION  = "permit_docs"
 CHUNK_CHARS = 1500
 OVERLAP     = 200
 BATCH       = 64
