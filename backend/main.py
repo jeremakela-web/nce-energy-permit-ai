@@ -517,6 +517,8 @@ async def rag_status():
             pass
     except Exception as exc:
         db_error = str(exc)
+    db_path_exists = os.path.isdir(_DB_PATH)
+    db_path_files  = os.listdir(_DB_PATH) if db_path_exists else []
     return {
         "active_collection": active_col,
         "active_model":      active_model,
@@ -524,6 +526,8 @@ async def rag_status():
         "permit_docs_count": v1_count,
         "permit_docs_v2_count": v2_count,
         "db_path": _DB_PATH,
+        "db_path_exists": db_path_exists,
+        "db_path_files": db_path_files,
         **({"db_error": db_error} if db_error else {}),
     }
 
