@@ -205,6 +205,33 @@ def _run_background_reindex() -> None:
         _reindex_log.exception(f"[reindex] Fatal error: {exc} — app continues on V1 collection")
 
 
+def _run_startup_fallback_index() -> None:
+    """
+    Background thread: if permit_docs is empty at startup, run build_index.build()
+    to self-heal without needing a Render redeploy.
+    Clears lru_cache on both RAG modules after build so next query sees new chunks.
+    """
+    _log = logging.getLogger("startup-fallback")
+    try:
+        import build_index as _build_index
+        _log.info("[startup-fallback] permit_docs empty — building FI index from permit_ai/docs/")
+        try:
+            _build_index.build()
+        except SystemExit as exc:
+            if exc.code != 0:
+                _log.error(f"[startup-fallback] build_index.build() exited with code {exc.code} — staying empty")
+                return
+        # Clear lru_cache so next query opens the freshly-built collection
+        _get_chroma_col.cache_clear()
+        _get_embed_model.cache_clear()
+        _permit_ai_module._get_collection.cache_clear()
+        _permit_ai_module._get_embed_model.cache_clear()
+        count = _get_chroma_col().count()
+        _log.info(f"[startup-fallback] Done — {count} chunks now in permit_docs")
+    except Exception as exc:
+        logging.getLogger("startup-fallback").exception(f"[startup-fallback] Unexpected error: {exc}")
+
+
 # Warmup: lataa embedding-malli ja ChromaDB heti käynnistyksen yhteydessä,
 # ei ensimmäisen requestin yhteydessä.
 try:
@@ -227,8 +254,12 @@ try:
         )
 
     _get_embed_model()
-    _get_chroma_col()
-    print("[startup] Embedding-malli ja ChromaDB ladattu")
+    col_at_startup = _get_chroma_col()
+    if col_at_startup.count() == 0:
+        print("[startup] permit_docs on tyhjä — käynnistetään taustalla FI-indeksointi")
+        Thread(target=_run_startup_fallback_index, daemon=True, name="startup-fallback").start()
+    else:
+        print(f"[startup] Embedding-malli ja ChromaDB ladattu ({col_at_startup.count()} chunkkia)")
 except Exception as _e:
     print(f"[startup] Varoitus: RAG-lataus epäonnistui: {_e}")
 
