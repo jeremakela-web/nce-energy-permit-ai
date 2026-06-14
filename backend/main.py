@@ -74,8 +74,8 @@ except ImportError:
 # ── V2 re-index constants ──────────────────────────────────────────────────────
 _V2_COL        = "permit_docs_v2"
 _V2_MODEL      = "paraphrase-multilingual-mpnet-base-v2"
-_V2_MIN_CHUNKS = 10000          # treat V2 as complete when count reaches this
-_DB_PATH       = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
+_V2_MIN_CHUNKS = 200            # buildCommand produces ~300-600 FI chunks; background reindex produces ~10k
+_DB_PATH       = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "permit_ai", "embeddings"))
 _reindex_log   = logging.getLogger("reindex")
 
 

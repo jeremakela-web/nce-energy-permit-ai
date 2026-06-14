@@ -11,7 +11,7 @@ import chromadb
 import anthropic
 from sentence_transformers import SentenceTransformer
 
-_DB_DIR = os.path.expanduser("~/bess_tool/permit_ai/embeddings")
+_DB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "permit_ai", "embeddings"))
 _COLLECTION = "permit_docs"                      # v1 fallback; switched to v2 at runtime
 _MODEL_ID = "claude-sonnet-4-6"
 _EMBED_MODEL = "all-MiniLM-L6-v2"               # v1 fallback; switched to v2 at runtime
