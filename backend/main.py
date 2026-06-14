@@ -205,61 +205,87 @@ def _run_background_reindex() -> None:
         _reindex_log.exception(f"[reindex] Fatal error: {exc} — app continues on V1 collection")
 
 
+def _db_needs_index() -> bool:
+    """
+    Return True if the embeddings directory has no ChromaDB collection.
+    Uses only filesystem ops — NO ChromaDB client is opened.
+    ChromaDB creates UUID-named subdirs when a collection is first populated;
+    a freshly-initialised (empty) DB has only chroma.sqlite3 and no subdirs.
+    """
+    from pathlib import Path as _Path
+    db_dir = _Path(_DB_PATH)
+    if not db_dir.exists():
+        return True
+    return not any(child.is_dir() for child in db_dir.iterdir())
+
+
 def _run_startup_fallback_index() -> None:
     """
-    Background thread: if permit_docs is empty at startup, run build_index.build()
-    to self-heal without needing a Render redeploy.
-    Clears lru_cache on both RAG modules after build so next query sees new chunks.
+    Background thread: build the FI index when the DB is empty at startup.
+
+    CRITICAL INVARIANT: this thread must be started only when NO ChromaDB
+    PersistentClient for DB_PATH has been created yet in this process.
+    build_index.build() calls shutil.rmtree internally; if any live client
+    exists before the rmtree the module-level segment state becomes stale
+    and subsequent query() calls return 0 even though count() returns 886.
+
+    After build() completes we clear lru_caches (evicting any clients that
+    may have been created by requests arriving mid-build) then create the
+    single definitive client that all subsequent queries will use.
     """
     _log = logging.getLogger("startup-fallback")
     try:
         import build_index as _build_index
-        _log.info("[startup-fallback] permit_docs empty — building FI index from permit_ai/docs/")
+        _log.info("[startup-fallback] Building FI index from permit_ai/docs/")
         try:
             _build_index.build()
         except SystemExit as exc:
             if exc.code != 0:
-                _log.error(f"[startup-fallback] build_index.build() exited with code {exc.code} — staying empty")
+                _log.error(f"[startup-fallback] build_index.build() exited {exc.code} — staying empty")
                 return
-        # Clear lru_cache so next query opens the freshly-built collection
+        # Evict any stale clients created by requests that arrived mid-build
         _get_chroma_col.cache_clear()
         _get_embed_model.cache_clear()
         _permit_ai_module._get_collection.cache_clear()
         _permit_ai_module._get_embed_model.cache_clear()
+        # Warm up the definitive client now that the DB is fully written
+        _get_embed_model()
         count = _get_chroma_col().count()
-        _log.info(f"[startup-fallback] Done — {count} chunks now in permit_docs")
+        _log.info(f"[startup-fallback] Done — {count} chunks in permit_docs, ready for queries")
+        print(f"[startup-fallback] ✓ {count} chunkkia indeksoitu — RAG valmis")
     except Exception as exc:
         logging.getLogger("startup-fallback").exception(f"[startup-fallback] Unexpected error: {exc}")
 
 
-# Warmup: lataa embedding-malli ja ChromaDB heti käynnistyksen yhteydessä,
-# ei ensimmäisen requestin yhteydessä.
+# Startup: check DB state with filesystem ops first, open ChromaDB only after
+# any necessary rebuild — so there is never a live client during rmtree.
 try:
-    if _v2_is_ready():
-        _activate_all_v2()
-        logging.getLogger("startup").info("[startup] permit_docs_v2 ready — using mpnet 768-dim immediately")
-    elif os.getenv("ENABLE_REINDEX", "").lower() == "true":
-        logging.getLogger("startup").info(
-            "[startup] permit_docs_v2 not ready — serving from permit_docs (all-MiniLM-L6-v2); "
-            "background re-index will start in 5s (ENABLE_REINDEX=true)"
-        )
-        def _delayed_reindex():
-            time.sleep(5)          # let uvicorn finish binding port / health-check pass
-            _run_background_reindex()
-        Thread(target=_delayed_reindex, daemon=True, name="reindex-v2").start()
-    else:
-        logging.getLogger("startup").info(
-            "[startup] permit_docs_v2 not ready — serving from permit_docs; "
-            "background re-index disabled (set ENABLE_REINDEX=true to enable)"
-        )
-
-    _get_embed_model()
-    col_at_startup = _get_chroma_col()
-    if col_at_startup.count() == 0:
-        print("[startup] permit_docs on tyhjä — käynnistetään taustalla FI-indeksointi")
+    if _db_needs_index():
+        # No collection on disk yet. Start the fallback indexer in background
+        # WITHOUT opening any ChromaDB client here — the thread will create the
+        # single definitive client after build() completes.
+        print("[startup] permit_docs tyhjä — käynnistetään taustalla FI-indeksointi")
         Thread(target=_run_startup_fallback_index, daemon=True, name="startup-fallback").start()
     else:
-        print(f"[startup] Embedding-malli ja ChromaDB ladattu ({col_at_startup.count()} chunkkia)")
+        # DB has collections — safe to open clients, check V2, and warm up.
+        if _v2_is_ready():
+            _activate_all_v2()
+            logging.getLogger("startup").info("[startup] permit_docs_v2 ready — using mpnet 768-dim")
+        elif os.getenv("ENABLE_REINDEX", "").lower() == "true":
+            logging.getLogger("startup").info(
+                "[startup] permit_docs_v2 not ready — background V2 reindex starts in 5s"
+            )
+            def _delayed_reindex():
+                time.sleep(5)
+                _run_background_reindex()
+            Thread(target=_delayed_reindex, daemon=True, name="reindex-v2").start()
+        else:
+            logging.getLogger("startup").info(
+                "[startup] permit_docs_v2 not ready — set ENABLE_REINDEX=true to enable"
+            )
+        _get_embed_model()
+        count = _get_chroma_col().count()
+        print(f"[startup] Embedding-malli ja ChromaDB ladattu ({count} chunkkia)")
 except Exception as _e:
     print(f"[startup] Varoitus: RAG-lataus epäonnistui: {_e}")
 
