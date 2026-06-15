@@ -1,333 +1,53 @@
-SOURCE: https://ym.fi/etusivu
+SOURCE: https://ym.fi/datakeskukset
 COUNTRY: FI
+TOPIC: Datakeskus ympäristöministeriö kaavoitus lupamenettely rakentaminen YVA energia
 
-Hyppää sisältöön
-Valtioneuvosto ja ministeriöt
-Valitse kieli
-Suomi
-Valitse kieli:
-This page is in Finnish.
-Go to the English site »
-Or choose language:
-Den här sidan är på finska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Dát siidu lea suomagillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Taat sijđo lii suomâkielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Tät seidd lij lääʹddǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-Язык этого сайта финский.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Cette page est en finnois.
-Aller sur le site en français »
-Ou choisir la langue:
-Diese Seite ist auf Finnisch.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on englanniksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-Choose language:
-Den här sidan är på engelska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Dát siidu lea eŋgelasgillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Taat sijđo lii eŋgâlâskielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Tät seidd lij eŋgglõsǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-Язык этого сайта английский.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Cette page est en anglais.
-Aller sur le site en français »
-Ou choisir la langue:
-Diese Seite ist auf Englisch.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on ruotsiksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-This page is in Swedish.
-Go to the English site »
-Or choose language:
-Välj språk:
-Dát siidu lea ruoŧagillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Taat sijđo lii ruotâkielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Tät seidd lij ruõccǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-Язык этого сайта шведский.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Cette page est en suédois.
-Aller sur le site en français »
-Ou choisir la langue:
-Diese Seite ist auf Schwedisch.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on pohjois-saameksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-This page is in North Saami.
-Go to the English site »
-Or choose language:
-Den här sidan är på nordsamiska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Vállje giela:
-Taat sijđo lii tavesämikielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Tät seidd lij tâʹvvsääʹmǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-Язык этого сайта северосаамский.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Cette page est en same du Nord.
-Aller sur le site en français »
-Ou choisir la langue:
-Diese Seite ist auf Nordsamisch.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on inarinsaameksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-This page is in Inari Sámi.
-Go to the English site »
-Or choose language:
-Den här sidan är på enaresamiska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Dát siidu lea anárašgillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Valjii kielâ:
-Tät seidd lij aanarsääʹmǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-Язык этого сайта инари-саамский.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Cette page est en sami inari.
-Aller sur le site en français »
-Ou choisir la langue:
-Diese Seite ist auf Inari Sámi.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on koltansaameksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-This page is in Skolt Sámi.
-Go to the English site »
-Or choose language:
-Den här sidan är på skoltsamiska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Dát siidu lea nuortalašgillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Taat sijđo lii nuorttâlâškielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Vaʹlljed ǩiõl:
-Язык этого сайта скольт-саамский.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Cette page est en sámi skolt.
-Aller sur le site en français »
-Ou choisir la langue:
-Diese Seite ist auf Skolt Sámi.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on venäjäksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-This page is in Russian.
-Go to the English site »
-Or choose language:
-Den här sidan är på ryska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Dát siidu lea ruoššagillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Taat sijđo lii ruošâkielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Tät seidd lij ruõššǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-выберите язык:
-Cette page est en russe.
-Aller sur le site en français »
-Ou choisir la langue:
-Diese Seite ist auf Russisch.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on ranskaksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-This page is in French.
-Go to the English site »
-Or choose language:
-Den här sidan är på franska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Dát siidu lea fránskkagillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Taat sijđo lii ranskakielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Tät seidd lij fraansk-ǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-Язык этого сайта французский.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Choisir la langue:
-Diese Seite ist auf Französisch.
-Wechseln Sie zur deutschen Version »
-Oder wählen Sie Ihre Sprache:
-Tämä sivu on saksaksi.
-Siirry suomenkieliseen sivustoon »
-Tai valitse kieli:
-This page is in German.
-Go to the English site »
-Or choose language:
-Den här sidan är på tyska.
-Gå till den svenska versionen av sidan »
-Eller välj språk:
-Dát siidu lea duiskkagillii
-Sirdás davvisámegielat siidduide »
-Dehe vállje giela:
-Taat sijđo lii saksakielân
-Sirduu anarâškielâlijd sijđoid »
-Tâi valjii kielâ:
-Tät seidd lij saksslaǩiõʹlle
-Sirddu lääʹddǩiõllsaž seiddõʹsse »
-Leʹbe vaʹlljed ǩiõl:
-Язык этого сайта немецкий.
-Перейти на русскоязычный сайт »
-Или выберите язык:
-Cette page est en allemand.
-Aller sur le site en français »
-Ou choisir la langue:
-Wählen Sie Ihre Sprache:
-Valitse kieli
-Suomi
-Välj språket
-Svenska
-Select language
-English
-Media
-Ympäristöministeriö pyytää lausuntoja asetuksesta asuinrakennusten korjausrakentamisen avustukseksi
-29.5.2026 15.21
-YM
-Hallitus linjasi kevään kehysriihessä uudesta määräaikaisesta asuinrakennusten korjausrakentamisen avustuksesta. Avustukseen ja sen hallinnointikustannuksiin on varattu 110 miljoonaa euroa vuosille 2026–2027. Avustuksen asetusluonnoksesta voi lausua 26.6.2026 asti.
-Uusimmat tiedotteet
-Luonnonarvomarkkinoiden kansallinen tiekartta suuntaa investointeja luonnon tilan parantamiseen
-1.6.2026 9.00
-YM
-Kuva: Vastavalo
-Luonnonarvomarkkinoiden kansallinen tiekartta osoittaa vision ja konkreettiset askeleet Suomen luonnonarvomarkkinoiden kehittämiselle vuoteen 2035 asti. Tiekartta on laadittu ympäristöministeriön johdolla, yhteistyössä laajan sidosryhmäjoukon kanssa. Tiekartan tavoitteena on tukea luonnon monimuotoisuuden elpymistä lisäämällä yksityistä rahoitusta luonnon ennallistamiseen ja suojeluun.
-Suomen 12. kansallinen kaupunkipuisto Tampereelle
-1.6.2026 8.06
-YM
-Kuva: Annu Tulonen
-Ympäristö- ja ilmastoministeri Sari Multala allekirjoitti 29. toukokuuta ympäristöministeriön päätöksen Tampereen kansallisen kaupunkipuiston perustamisesta. Tammerkosken kansallismaisemasta järvien rannoille ja useisiin kaupunginosiin jatkuvassa kansallisessa kaupunkipuistossa yhdistyvät tamperelainen maisema, luonto ja rakennettu ympäristö.
-Pesintäaikaisia hakkuita koskevat lakimuutokset voimaan 1.6.2026
-29.5.2026 12.39
-MMM
-YM
-Tasavallan presidentti on tänään vahvistanut metsälain, luonnonsuojelulain ja metsätietolain muutokset, joiden tarkoituksena on selkeyttää ja täsmentää erityisesti lintujen pesintäaikaisia metsänhakkuita koskevaa lainsäädäntöä. Kesäkuun 1. päivänä voimaan tulevilla lakimuutoksilla mm. velvoitetaan huomioimaan lintujen pesintä metsätalouden harjoittamisen yhteydessä metsäalan suosituksia vastaavalla tavalla sekä parannetaan tietojen saatavuutta.
-Kaikki tiedotteet ja uutiset
-Oikotiet
-Ennallistamisasetus
-Valtion tukeman asuntorakentamisen keskus
-Yhden luukun palvelut ja sujuvat lupamenettelyt
-Mitä on vihreä siirtymä?
-Ympäristöministeriö viittomakielellä
-Lyhyesti
-Yleistiedoksianto: Tampereen kansallisen kaupunkipuiston perustamispäätös
-YM
-Tyyppi:
-Uutinen
-Julkaisuajankohta:
-1.6.2026 8.01
-Arviointi rakennusperintölain toimivuudesta on aloitettu
-YM
-Tyyppi:
-Uutinen
-Julkaisuajankohta:
-29.5.2026 13.16
-Kansliapäälliköt: Keskeiset ilmasto- ja luontotoimet on hyvä sopia jo hallitusneuvotteluissa
-YM
-Tyyppi:
-Uutinen
-Julkaisuajankohta:
-28.5.2026 14.37
-Ympäristöministeriö julkaisi eettiset ohjeet neuvotteluihin ja yhteistyöhön saamelaispaliskuntien poronhoitajien kanssa
-YM
-Tyyppi:
-Uutinen
-Julkaisuajankohta:
-27.5.2026 9.40
-Kuulutus: Valtakunnallisten alueidenkäyttötavoitteiden tarkistus
-YM
-Tyyppi:
-Uutinen
-Julkaisuajankohta:
-25.5.2026 8.43
-Kaikki tiedotteet ja uutiset
-Näkökulmat
-Strategialla suunta yli vaalikausien – miksi sidosryhmien ääni on keskeinen
-YM
-Tyyppi:
-Kolumni
-Julkaisuajankohta:
-8.5.2026 13.41
-Valmisteilla olevat energiatehokkuussäädökset eivät vaaranna Suomen sähköjärjestelmää
-YM
-Tyyppi:
-Kolumni
-Julkaisuajankohta:
-29.4.2026 14.38
-Kaupunkiympäristöjen ennallistamisella vihreämpiä ja kestävämpiä kaupunkeja
-YM
-Tyyppi:
-Kolumni
-Julkaisuajankohta:
-4.2.2026 10.16
-Kaikki näkökulmat
-Katso myös
-Kiertotalouden edistäminen »
-Kiertotaloudessa materiaaleja hyödynnetään tehokkaasti ja kestävästi ja ne pysyvät kierrossa pitkään ja turvallisesti. Se on uusi talouden toimintatapa, joka tuottaa taloudellista hyvinvointia maapallon kantokyvyn rajoissa.
-Helmi-elinympäristö­ohjelma »
-Helmi-elinympäristöohjelmassa tartutaan Suomen luonnon köyhtymisen suurimpaan suoraan syyhyn: elinympäristöjen vähenemiseen ja laadun heikkenemiseen – samalla hillitään myös ilmastonmuutosta ja edistetään siihen sopeutumista.
-Yhden luukun palvelut ja sujuvat lupa­menettelyt »
-Ympäristöministeriön yhden luukun lainsäädäntöhankkeen tavoitteena on valtakunnallisen lupa-, ohjaus- ja valvontaviranomaisen mallissa sujuvoittaa ympäristöön vaikuttavien hankkeiden lupamenettelyjä ja säätää yhden luukun palvelua edistäviä lakeja.
-Ministeriö
-Ympäristö- ja ilmastoministeri »
-Ympäristöministeriötä johtaa ympäristö- ja ilmastoministeri Sari Multala. Ympäristö- ja ilmastoministeri vastaa valtioneuvoston ja eduskunnan käsittelyyn tulevien ympäristö- ja asuntoasioiden valmistelusta.
-Organisaatio ja johto »
-Ympäristöministeriössä asiat valmistellaan osastoissa, joita ovat vesi- ja luontoympäristöosasto, kestävä rakentaminen ja asuminen -osasto, ilmasto- ja ympäristönsuojeluosasto sekä konserniohjaus ja kansainväliset asiat -osasto. Lisäksi ministeriössä toimii viestinnän tulosalue.
-Ympäristö­ministeriö työpaikkana »
-Ympäristöministeriön tavoitteena on taata parempi ympäristö tuleville sukupolville. Työ ympäristöhallinnon ytimessä on monipuolista ja yhteiskunnallisesti merkittävää.
-Piilotettu
+# Datakeskukset — Ympäristöministeriö
+
+## Datakeskukset ja ympäristölainsäädäntö Suomessa
+
+Ympäristöministeriö (YM) vastaa datakeskusten rakentamista ja ympäristövaikutuksia koskevasta lainsäädännöstä. Keskeisiä säädöksiä ovat:
+
+- Rakentamislaki 751/2023 (voimaan 1.1.2025): rakennusluvat, sijoittamislupa puhtaan siirtymän hankkeille
+- Ympäristönsuojelulaki 527/2014 (YSL): ympäristölupa, meluhaitat, kemikaalit
+- Laki ympäristövaikutusten arviointimenettelystä 252/2017 (YVA-laki): harkinnanvarainen tai pakollinen YVA
+- Maankäyttö- ja rakennuslaki 132/1999 (MRL): kaavoitus, asemakaavanmuutos
+
+## Datakeskusten kaavoitus Suomessa
+
+Datakeskukset sijoittuvat tyypillisesti:
+- **Teollisuusalueille (T)**: soveltuu suoraan, rakentamislupa riittää
+- **Erityisalueille (E)**: vaatii usein asemakaavanmuutoksen
+- **Asemakaavoittamattomille alueille**: vaatii asemakaavanmuutoksen tai sijoittamisluvan (Rakentamislaki 751/2023, 52 §)
+
+Kaavanmuutos voi kestää 1–4 vuotta. Puhtaan siirtymän sijoittamislupa (AVI) voi ohittaa kaavavaatimuksen suurissa kansallisesti merkittävissä hankkeissa.
+
+## Datakeskukset ja energia
+
+Suomeen suunnitteilla yli 20 miljardin euron datakeskusinvestoinnit. Keskeisiä ympäristönäkökohtia:
+
+1. **Energiankulutus**: Datakeskukset kuluttavat 24/7 merkittävästi sähköä. PUE (Power Usage Effectiveness) mittaa tehokkuutta — tavoite ≤1,3 uusissa datakeskuksissa Suomessa.
+
+2. **Hukkalämmön hyödyntäminen**: Suomalaiset datakeskukset palauttavat hukkalämpöä (25–40 °C) kaukolämpöverkkoon. Google Haminassa, Telia Helsingissä. Merkittävä ympäristöhyöty — vähentää CO₂-päästöjä.
+
+3. **Free Cooling**: Suomen kylmä ilmasto mahdollistaa ulkoilmajäähdytyksen suuren osan vuodesta — ei mekaanista jäähdytystä tarvita talvella.
+
+4. **Uusiutuva energia**: Datakeskukset ovat merkittäviä uusiutuvan energian ostajia PPA-sopimuksilla (Power Purchase Agreement).
+
+## Datakeskus ja kaavoitus — Yhden luukun palvelut
+
+Ympäristöministeriön "Yhden luukun" hanke (2024–2027) tavoittelee lupamenettelyjen sujuvoittamista. Datakeskuksille relevantteja parannuksia:
+- Ympäristölupa ja rakentamislupa samanaikaisesti (rinnakkainen käsittely)
+- AVI:n ja kunnan lupien koordinointi
+- Sähköinen lupajärjestelmä (Lupajärjestelmä Suomi)
+
+## Energiatehokkuus — EU:n EED-direktiivi 2025–2026
+
+EU:n Energiatehokkuusdirektiivi (2023/1791) velvoittaa datakeskukset raportoimaan:
+- IT-teho ja kokonaissähkönkulutus
+- PUE, WUE (vedenkäyttö), CUE (hiilidioksidi)
+- Uusiutuvan energian osuus
+- Hukkalämmön palautusmäärä kaukolämpöön
+
+Suomessa Energiavirasto kerää tiedot (kirjaamo@energiavirasto.fi). Ensimmäinen raportointi 15.5.2026.
+

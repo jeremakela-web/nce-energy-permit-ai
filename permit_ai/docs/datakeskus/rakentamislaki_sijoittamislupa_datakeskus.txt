@@ -1,0 +1,77 @@
+SOURCE: https://finlex.fi/fi/laki/ajantasa/2023/20230751
+COUNTRY: FI
+TOPIC: Datakeskus sijoittamislupa puhtaan siirtymän hanke Rakentamislaki 751/2023 AVI lupamenettely
+DATE: 2025-01-01
+
+# Rakentamislaki 751/2023 — Sijoittamislupa datakeskuksille (Puhtaan siirtymän hankkeet)
+
+## Sijoittamislupa (Luku 10, § 52–63)
+
+Rakentamislaki 751/2023 toi uuden lupainstrumentin: **sijoittamislupa**, joka on erityinen rakentamislupa strategisesti tärkeille, puhtaan siirtymän mukaisille hankkeille. Sijoittamislupa myönnetään aluehallintovirastossa (AVI) — ei kunnassa — ja se ohittaa tarvittaessa kaavoituksen esteet.
+
+### Puhtaan siirtymän hankkeiden lista
+
+Rakentamislaki 751/2023 ja sen nojalla annettu valtioneuvoston asetus määrittelevät, mitkä hankkeet kuuluvat puhtaan siirtymän luokkaan ja voivat hakea sijoittamislupaa:
+
+1. Uusiutuvan energian tuotantolaitokset (tuulivoima, aurinkovoima, vesivoima)
+2. Energian varastointilaitokset (BESS, akkuvarastot)
+3. Vetytalouden infrastruktuuri (elektrolyysi, varastointi, jakelu)
+4. **Datakeskukset** — luokiteltu puhtaan siirtymän hankkeiksi vuodesta 2024 alkaen (VNA/2024)
+5. Sähkönsiirron infrastruktuuri (kantaverkko, suurjännitelajitteet)
+
+### Sijoittamisluvan edellytykset datakeskukselle
+
+Datakeskushanke voi hakea sijoittamislupaa AVIlta jos:
+- Hanke palvelee vähähiilisten palveluiden digitaalista infrastruktuuria
+- IT-teho on yleensä ≥10 MW tai kokonaisenergiankulutus merkittävä kansallisesti
+- Hankkeesta vastaava osoittaa energiatehokkuuden (PUE ≤1,4) ja hukkalämmön hyödyntämissuunnitelman
+- Sijainti teollisuusalueella tai alueella, jonne kunta on antanut puoltavan lausunnon
+
+### Sijoittamisluvan käsittely AVI:ssa
+
+Aluehallintoviraston (AVI) käsittelyaika sijoittamisluvalle on lain nojalla enintään **12 kuukautta** hakemuksen jättämisestä. Tavoite on 6 kuukautta yksinkertaisissa tapauksissa.
+
+AVI kerää lausunnot:
+- Kunnalta (pakollinen, 30 vrk)
+- ELY-keskukselta (ympäristövaikutukset)
+- Fingridiltä (verkkovaikutukset, jos kantaverkkoliityntä)
+- Traficomilta (tietoturvanäkökohdat kriittiselle infrastruktuurille)
+- Naapuritilojen omistajilta (kuuleminen)
+
+### Sijoittamisluvan suhde muihin lupiin
+
+Sijoittamislupa ei korvaa kaikkia muita lupia. Datakeskukselle tarvitaan edelleen:
+- Rakentamislupa (Rakentamislaki 751/2023, 4 luku) rakennustöiden aloittamiseen
+- Ympäristölupa (YSL 527/2014) jos toiminnasta aiheutuu merkittäviä ympäristövaikutuksia
+- Mahdollinen asemakaavan muutos kunnassa, ellei AVI myönnä sijoittamislupaa kaavasta poiketen
+- Sähköliityntäsopimus (jakeluverkko tai Fingrid)
+
+### Sijoittamislupa vs. normaali rakentamislupa (datakeskus)
+
+| Kriteeri | Normaali rakentamislupa | Sijoittamislupa (AVI) |
+|---|---|---|
+| Päättäjä | Kunta (rakennusvalvonta) | Aluehallintoviraston lupapäätös |
+| Kaava vaatimus | Kaavan mukainen | Voidaan myöntää kaavasta poiketen |
+| Käsittelyaika | 3–12 kuukautta | 6–12 kuukautta (lain enimmäisaika) |
+| Soveltuvuus DC | Pienemmät hankkeet (<10 MW IT) | Suuret, kansallisesti merkittävät DC |
+| Valitukset | Hallinto-oikeus | Korkein hallinto-oikeus (yhdellä kierroksella) |
+
+## Kaavoitus ja datakeskus — Asemakaavanmuutos
+
+Jos datakeskushankkeelle ei ole olemassa sopivaa asemakaavaa (teollisuus- tai erityisaluekaavaa), tarvitaan asemakaavanmuutos. Asemakaavanmuutos:
+- Kunta käynnistää tai hyväksyy hakemuksen (MRL 132/1999 → uudistuu MRL:n päivityksessä)
+- Kesto: 1–4 vuotta
+- Edellyttää osallistumis- ja arviointisuunnitelma (OAS)
+- ELY-keskus valvoo kaavaprosessia
+
+Datakeskushanke: jos sijoittamislupa myönnetään AVIlta, asemakaavanmuutos ei ole välttämätön edellytys.
+
+## Puhtaan siirtymän sijoittamislupa — Mikkeli-tyyppinen case
+
+Mikkelin kaltaisessa hankkeessa (4 MW IT-teho, teollisuustontti, hukkalämpö kaukolämpöverkkoon):
+- Tonttikoko 0,4–0,5 ha riittää tyypilliseen 4 MW DC-rakennukselle
+- Sijoittamislupa AVI:lta mahdollinen, jos kunta antaa puoltavan lausunnon
+- Vaihtoehtoisesti: rakentamislupa kunnalta, jos alue on jo teollisuuskaavassa (T-alue)
+- Ympäristölupa: harkittava, jos jäähdytyslaitteet ylittävät melurajan (45 dB yöllä asutuksen lähellä)
+- Fingrid: 4 MW liittyy jakeluverkkoon (ei kantaverkkoon) — Elenia tai muu paikallinen DSO
+

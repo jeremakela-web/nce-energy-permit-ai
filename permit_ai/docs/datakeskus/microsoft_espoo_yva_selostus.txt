@@ -1,0 +1,2100 @@
+SOURCE: https://www.ymparisto.fi/sites/default/files/documents/Microsoft_Espoo_datak_YVA_Selostus_20240129_0.pdf
+COUNTRY: FI
+TOPIC: Datakeskus YVA-selostus ympäristövaikutusten arviointi kaavoitus luvat rakennuslupa ympäristölupa
+DATE: 2024-01-29
+
+[SIVU 1]
+1 
+ 
+  
+ 
+ 
+ 
+ 
+Ympäristövaikutusten arviointi 
+Arviointiselostus 
+ 
+Espoon datakeskus 
+29.01.2024 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Microsoft 3465 Finland Oy
+
+[SIVU 2]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+i 
+ 
+Hankkeen yhteystiedot 
+ 
+Hankkeesta vastaava: Microsoft 3465 Oy 
+Mervi Airaksinen 
++358 71800 8000 
+mairaksinen@microsoft.com 
+ 
+Projektinjohtaja: Deirdre Gorman 
++33 15775 2603 
+deirdreg@microsoft.com 
+ 
+Suomen yhteyshenkilö: Inna Harju 
++358 40 833 1236 
+inna.harju@afry.com 
+ 
+ 
+Hankkeen verkkosivusto: 
+https://local.microsoft.com/communities/em
+ea/suomidc/  
+ 
+Yhteysviranomainen: Uudenmaan ELY-
+keskus  
+Erika Heikkinen 
++358 2950 21142 
+erika.heikkinen@ely-keskus.fi 
+ 
+ 
+Raportin tarkistus 
+ 
+ 
+YVA-konsultit: 
+Sweco UK Ltd 
+Bernadina Da Silva 
+bernadina.dasilva@sweco.co.uk 
+ 
+Sipti Environment Oy 
+Petra Pihlainen 
++358 40 7579931 
+petra.pihlainen@siptienvi.fi 
+ 
+Tarkistus Päivämäärä Raportin tila Hyväksynyt 
+0 28 marraskuu 2023 Luonnos tilaajan tarkistukseen Rod Ellison 
+1 14 joulukuu 2023 Luonnos seurantaryhmälle Inna Harju 
+2 22 tammikuu 2024 Luonnos tilaajalle Rod Ellison 
+3 29 tammikuu 2024 Lopullinen ELY-keskukseen Inna Harju
+
+[SIVU 3]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+ii 
+ 
+SISÄLLYSLUETTELO 
+ 
+1 Johdanto ............................................................................................................................................... 1 
+2 Hankkeen kuvaus .................................................................................................................................. 3 
+2.1 Johdanto ................................................................................................................................... 3 
+2.2 Hankkeen tarve ......................................................................................................................... 3 
+2.3 Hankevaihtoehdot .................................................................................................................... 3 
+2.4 Hankealue ................................................................................................................................. 6 
+2.5 Hankkeen keskeiset osatekijät .................................................................................................. 7 
+2.6 Hankkeen rakentamisvaihe ...................................................................................................... 9 
+2.7 Datakeskuksen operatiivinen toiminta ................................................................................... 22 
+2.8 Liitännäishankkeet ja infra ...................................................................................................... 35 
+2.9 Toiminnan päättyminen ......................................................................................................... 39 
+2.10 Microsoftin sitoumukset ......................................................................................................... 39 
+3 Hankkeen edellyttämät luvat, suunnitelmat ja päätökset ................................................................. 41 
+3.1 Kaavoitus ................................................................................................................................ 41 
+3.2 Ympäristövaikutusten arviointi ............................................................................................... 41 
+3.3 Ympäristölupa ja vesitalouslupa ............................................................................................. 41 
+3.4 Maankäyttö- ja rakennuslain mukaiset luvat.......................................................................... 43 
+3.5 Kemikaalilain mukaiset luvat .................................................................................................. 43 
+3.6 Päästölupa .............................................................................................................................. 43 
+3.7 Muut luvat ja velvoitteet ........................................................................................................ 43 
+4 Ympäristövaikutusten arviointimenettely (YVA-menettely) .............................................................. 44 
+4.1 YVA-menettely ja sen aikataulu .............................................................................................. 44 
+4.2 YVA-menettelyn vaiheet ......................................................................................................... 45 
+4.3 YVA-menettelyn osapuolet ..................................................................................................... 48 
+4.4 Arviointimenettelyn ja osallistumisen järjestäminen ............................................................. 50 
+4.5 YVA-menettelyn aikataulu ...................................................................................................... 52 
+4.6 YVA-ohjelmasta saadut lausunnot ja mielipiteet .................................................................... 54 
+4.7 Yhteysviranomaisen lausunnon huomioiminen ..................................................................... 54 
+5 Yleistä hankkeen YVA-arvioinnista ja menetelmistä .......................................................................... 56 
+5.1 Arvioinnin lähtökohdat ja rajaukset ....................................................................................... 56 
+5.2 Arviointityön painottuminen – merkittävimmät vaikutukset ................................................. 57 
+5.3 Tarkastelu- ja vaikutusalueiden rajaus ................................................................................... 57 
+5.4 Arvioinnin toteutus, käytetyt aineistot ja tehdyt selvitykset .................................................. 57 
+5.5 Yhteisvaikutukset .................................................................................................................... 58 
+5.6 Vaihtoehtojen vertailu ja toteuttamiskelpoisuus ................................................................... 58 
+5.7 Haittojen ehkäisy ja lieventäminen ........................................................................................ 60 
+5.8 Arvioinnin epävarmuustekijät................................................................................................. 61
+
+[SIVU 4]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+iii 
+ 
+6 Maankäyttö ja kaavoitus .................................................................................................................... 62 
+6.1 Maankäyttö ja kaavoitus – Johdanto ...................................................................................... 62 
+6.2 Maankäyttö ja kaavoitus – Nykytila ........................................................................................ 64 
+6.3 Haitallisten vaikutusten ehkäisy ja lieventäminen ................................................................. 75 
+6.4 Maankäyttö ja kaavoitus – Vaikutusten arviointi ................................................................... 75 
+6.5 Maankäyttö ja kaavoitus – Yhteisvaikutukset ........................................................................ 79 
+6.6 Maankäyttö ja kaavoitus – Arvioinnin epävarmuustekijät ..................................................... 79 
+6.7 Maankäyttö ja kaavoitus – Yhteenveto ja vaikutusten merkittävyys ..................................... 79 
+7 Ihmisten terveys, elinolot, viihtyvyys ja elinkeinot ............................................................................ 81 
+7.1 Terveys ja elinkeinot – Johdanto ............................................................................................ 81 
+7.2 Terveys ja elinkeinot – Nykytila .............................................................................................. 86 
+7.3 Terveys ja elinkeinot – Haitallisten vaikutusten ehkäisy ja lieventäminen ............................. 90 
+7.4 Terveys ja elinkeinot – Vaikutusten arviointi .......................................................................... 91 
+7.5 Terveys ja elinkeinot – Yhteisvaikutukset ............................................................................... 97 
+7.6 Terveys ja elinkeinot – Arvioinnin epävarmuustekijät ............................................................ 97 
+7.7 Terveys ja elinkeinot – Yhteenveto ja vaikutusten merkittävyys ........................................... 97 
+8 Maaperä ja pohjavesi ....................................................................................................................... 100 
+8.1 Maaperä ja pohjavesi – Johdanto ......................................................................................... 100 
+8.2 Maaperä ja pohjavesi – Nykytila ........................................................................................... 104 
+8.3 Maaperä ja pohjavesi – Haitallisten vaikutusten ehkäisy ja lieventäminen ......................... 115 
+8.4 Maaperä ja pohjavesi – Vaikutusten arviointi ...................................................................... 115 
+8.5 Maaperä ja pohjavesi – Yhteisvaikutukset ........................................................................... 118 
+8.6 Maaperä ja pohjavesi – Epävarmuustekijät .......................................................................... 118 
+8.7 Maaperä ja pohjavesi – Yhteenveto ja vaikutusten merkittävyys ........................................ 118 
+9 Pintavedet ........................................................................................................................................ 120 
+9.1 Pintavedet – Johdanto .......................................................................................................... 120 
+9.2 Pintavedet – Nykytila ............................................................................................................ 123 
+9.3 Pintavedet – Vaikutusten arviointi ....................................................................................... 135 
+9.4 Pintavedet – Haitallisten vaikutusten ehkäisy ja lieventäminen .......................................... 143 
+9.5 Pintavedet – Vaikutukset ehkäisemis- ja lieventämistoimenpiteiden jälkeen ..................... 153 
+9.6 Pintavedet – Yhteisvaikutukset............................................................................................. 153 
+9.7 Pintavedet – Epävarmuustekijät ........................................................................................... 154 
+9.8 Pintavedet – Esitys rakentamisen aikaisesta pintavesien tarkkailusuunnitelmasta ............. 154 
+9.9 Pintavedet – Yhteenveto ja vaikutusten merkittävyys ......................................................... 155 
+10 Liikenne ............................................................................................................................................ 156 
+10.1 Liikenne – Johdanto .............................................................................................................. 156 
+10.2 Liikenne – Nykytila ................................................................................................................ 158 
+10.3 Liikenne – Hankkeen ominaispiirteet ................................................................................... 169 
+10.4 Liikenne – Haitallisten vaikutusten estäminen ..................................................................... 171
+
+[SIVU 5]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+iv 
+ 
+10.5 Liikenne – Vaikutusten arviointi ........................................................................................... 172 
+10.6 Liikenne – Yhteisvaikutukset ................................................................................................. 185 
+10.7 Liikenne – Epävarmuustekijät ............................................................................................... 185 
+10.8 Liikenne – Yhteenveto ja vaikutusten merkittävyys ............................................................. 185 
+11 Ilmanlaatu ja pöly ............................................................................................................................. 188 
+11.1 Ilmanlaatu ja pöly – Johdanto ............................................................................................... 188 
+11.2 Ilmanlaatu ja pöly – Nykytila ................................................................................................. 200 
+11.3 Ilmanlaatu ja pöly – Haitallisten vaikutusten ehkäisy ja lieventäminen ............................... 203 
+11.4 Ilmanlaatu ja pöly – Vaikutusten arviointi ............................................................................ 208 
+11.5 Ilmanlaatu ja pöly – Yhteisvaikutukset ................................................................................. 225 
+11.6 Ilmanlaatu ja pöly – Epävarmuustekijät................................................................................ 226 
+11.7 Ilmanlaatu ja pöly – Yhteenveto ja vaikutusten merkittävyys .............................................. 226 
+12 Melu ja tärinä ................................................................................................................................... 229 
+12.1 Melu ja tärinä – Johdanto ..................................................................................................... 229 
+12.2 Melu ja tärinä – Nykytila ....................................................................................................... 233 
+12.3 Melu ja tärinä – Haitallisten vaikutusten ehkäisy ja lieventäminen ..................................... 235 
+12.4 Melu ja tärinä – Vaikutusten arviointi .................................................................................. 237 
+12.5 Melu ja tärinä – Yhteisvaikutukset ....................................................................................... 255 
+12.6 Melu ja tärinä – Epävarmuustekijät ...................................................................................... 255 
+12.7 Melu ja tärinä – Yhteenveto ja vaikutusten merkittävyys .................................................... 256 
+13 Ekologia ja luonnon monimuotoisuus .............................................................................................. 259 
+13.1 Ekologia – Johdanto .............................................................................................................. 259 
+13.2 Ekologia – Nykytila ................................................................................................................ 266 
+13.3 Ekologia – Haitallisten vaikutusten ehkäisy ja lieventäminen .............................................. 278 
+13.4 Ekologia – Vaikutusten arviointi ........................................................................................... 280 
+13.5 Ekologia – Jäännösvaikutukset ............................................................................................. 284 
+13.6 Ekologia – Yhteisvaikutukset ................................................................................................ 285 
+13.7 Ekologia – Epävarmuustekijät ............................................................................................... 286 
+13.8 Ekologia – Yhteenveto ja vaikutusten merkittävyys ............................................................. 286 
+14 Maisema- ja kulttuuriympäristö ....................................................................................................... 289 
+14.1 Maisema- ja kulttuuriympäristö – Johdanto ......................................................................... 289 
+14.2 Maisema- ja kulttuuriympäristö – Nykytila........................................................................... 291 
+14.3 Maisema- ja kulttuuriympäristö – Haitallisten vaikutusten ehkäisy ja lieventäminen ......... 301 
+14.4 Maisema- ja kulttuuriympäristö – Vaikutusten arviointi ...................................................... 303 
+14.5 Maisema- ja kulttuuriympäristö – Yhteisvaikutukset ........................................................... 314 
+14.6 Maisema- ja kulttuuriympäristö – Arvioinnin epävarmuustekijät ........................................ 315 
+14.7 Maisema- ja kulttuuriympäristö – Yhteenveto ja vaikutusten merkittävyys ........................ 315 
+15 Luonnonvarojen hyödyntäminen ja jätteet ...................................................................................... 318 
+15.1 Luonnonvarat ja jätteet – Johdanto ..................................................................................... 318
+
+[SIVU 6]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+v 
+ 
+15.2 Luonnonvarat ja jätteet – Nykytila ....................................................................................... 320 
+15.3 Luonnonvarat ja jätteet – Haitallisten vaikutusten ehkäisy ja lieventäminen ...................... 320 
+15.4 Luonnonvarat ja jätteet – Vaikutusten arviointi ................................................................... 321 
+15.5 Luonnonvarat ja jätteet – Yhteisvaikutukset ........................................................................ 325 
+15.6 Luonnonvarat ja jätteet – Arvioinnin epävarmuustekijät ..................................................... 325 
+15.7 Luonnonvarat ja jätteet – Yhteenveto ja vaikutusten merkittävyys ..................................... 325 
+16 Riskit sekä onnettomuus- ja häiriötilanteet ..................................................................................... 329 
+16.1 Riskit ja onnettomuudet – Johdanto .................................................................................... 329 
+16.2 Riskit ja onnettomuudet – Nykytila ...................................................................................... 331 
+16.3 Riskit ja onnettomuudet – Haitallisten vaikutusten ehkäisy ja lieventäminen ..................... 331 
+16.4 Riskit ja onnettomuudet – Vaikutusten arviointi .................................................................. 331 
+16.5 Riskit ja onnettomuudet – Yhteisvaikutukset ....................................................................... 338 
+16.6 Riskit ja onnettomuudet – Arvioinnin epävarmuustekijät .................................................... 338 
+16.7 Riskit ja onnettomuudet – Yhteenveto ja vaikutusten merkittävyys .................................... 338 
+17 Ilmasto .............................................................................................................................................. 341 
+17.1 Ilmasto – Johdanto ............................................................................................................... 341 
+17.2 Ilmasto – Nykytila ................................................................................................................. 351 
+17.3 Ilmasto – Haitallisten vaikutusten ehkäisy ja lieventäminen ................................................ 355 
+17.4 Ilmasto – Vaikutusten arviointi ............................................................................................. 356 
+17.5 Ilmasto – Yhteisvaikutukset .................................................................................................. 363 
+17.6 Ilmasto – Epävarmuustekijät ................................................................................................ 363 
+17.7 Ilmasto – Yhteenveto ja vaikutusten merkittävyys ............................................................... 363 
+18 Yhteenveto vaikutusten merkittävyydestä....................................................................................... 366 
+18.1 Yleistä .................................................................................................................................... 366 
+18.2 Vertailun lähtökohdat ........................................................................................................... 367 
+18.3 Vaikutusten merkittävyyden arviointi ja vaihtoehtojen vertailu .......................................... 368 
+18.4 Vaihtoehtojen toteuttamiskelpoisuus .................................................................................. 383 
+19 Lähdeluettelo ................................................................................................................................... 385 
+20 Liitteet .............................................................................................................................................. 388 
+Liite A Yleiset.................................................................................................................................... 388 
+Liite B Maaperä ja pohjavesi ............................................................................................................ 388 
+Liite C Pintavesi ................................................................................................................................ 388 
+Liite D Ilmanlaatu ja pöly ................................................................................................................. 388 
+Liite E Melu ja tärinä ........................................................................................................................ 388 
+Liite F Ekologia ja luonnon monimuotoisuus .................................................................................. 388 
+Liite G Ilmasto .................................................................................................................................. 388
+
+[SIVU 7]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+vi 
+ 
+TIIVISTELMÄ 
+Tässä tiivistelmässä on esitetty yhteenveto Microsoft 3465 Finland Oy:n (jatkossa Microsoft) 
+Espoon datakeskushankkeesta ja sen tarkoituksesta, ympäristövaikutusten arviointimenettelyn 
+(YVA-menettely) vaiheista ja sisällöstä sekä hankkeen eri toteutusvaiht oehdoista ja niiden 
+ympäristövaikutuksista. Tarkempi kuvaus mm. YVA -menettelystä, hankkeesta ja sen 
+vaihtoehdoista, arviointityön rajauksista, arvioinnissa käytetyistä menetelmistä, ympäristön 
+nykytilasta, eri hankevaihtoehtojen vaikutuksista, haitallisten  vaikutusten ehkäisemisestä, 
+arvioinnin epävarmuuksista sekä vaihtoehtojen vertailu ja toteuttamiskelpoisuuden arviointi on 
+esitetty jäljempänä tässä ympäristövaikutusten arviointiselostuksessa (YVA-selostus). 
+Hankkeen tarkoitus  
+Microsoft suunnittelee uud en datakeskuksen rakentamista Espooseen. Datakeskus tarjoaa 
+infrastruktuurin yhteiskunnan ja elinkeinoelämän jatkuvasti kasvavalle tiedon tallennus-, käsittely- 
+ja hallintatarpeelle. Espooseen sijoittuva datakeskus on yksi kolmesta pääkaupunkiseudulle 
+suunnitellusta erillisestä ja itsenäisesti toimivasta Microsoftin datakeskuksesta. Kaksi muuta 
+datakeskushanketta ovat Vihdin ja Kirkkonummen kuntiin sijoittuvat hankkeet, joihin kohdistetaan 
+omat suunnittelu -, YVA - ja lupaprosessinsa. Yhdessä ko. kolme datake skusta muodostaisivat 
+yhden suurimmista tieto- ja viestintäteknologian investoinneista Suomessa.  
+Vaikka Espoon, Vihdin ja Kirkkonummen datakeskukset toimivat itsenäisesti, ne synkronoidaan 
+keskenään. Käytännössä kaikki kolme hanketta ovat riippuvaisia toi sistaan ja niiden toiminta 
+edellyttää mm. kolmea suhteellisen lähekkäistä sijaintipaikkaa sekä hyviä kuituyhteyksiä 
+hankealueille ja hankkeiden välillä. Mahdollisia ja soveltuvia datakeskuksen sijoituspaikkoja koko 
+pääkaupunkiseudun alueella on aiemmin kartoitettu. Sijoituspaikan valinnassa tärkeitä kriteereinä 
+ovat olleet mm. riittävän kokoinen yhtenäinen rakentamisalue, jossa kaavoitus mahdollistaa 
+datakeskuksen rakentamisen alueelle, hyvät liikenneyhteydet, datakeskuksella muodostuvan 
+hukkalämmön hyödynt ämismahdollisuus, hyvät kuitu - ja sähköverkkoyhteydet sekä muun 
+kaupunkitekniikan läheisyys. Hepokorven alue täyttää kaikki em. vaatimukset ja soveltuu siinä 
+suhteessa poikkeuksellisen hyvin datakeskuksen sijoituspaikaksi Espoossa ja koko 
+pääkaupunkiseudulla.  
+Datakeskuksella muodostuvaa hukkalämpöä tullaan hyödyntämään ottamalla sitä talteen Fortum 
+Power and Heat Oy:n lämpöpumppulaitoksella ja siirtämällä sitä alueelliseen 
+kaukolämpöverkostoon hyödynnettäväksi Espoon, Kirkkonummen ja Kauniaisten alueilla. 
+Datakeskuksen hukkalämmön hyödyntämisen myötä kivihiilen käyttöä kaukolämmön 
+tuotannossa voidaan vähentää tai jopa lopettaa, mikä auttaa Espoon kaupunkia ja sen 
+naapurikuntia ja -kaupunkeja pääsemään hiilidioksidipäästöjen vähentämistavoitteeseensa.  
+Hankkeen sijainti 
+Hankealue on laajuudeltaan noin 28 hehtaaria ja sijoittuu noin 3,5 km Espoon keskuksest a 
+koilliseen, Kehä III:n länsi -/pohjoispuoliselle Hepokorven ja Tollinmäen väliselle alueelle. 
+Hankealueen sijoittuminen on esitetty alla olevassa kuvassa.  Hankealue on Microsoftin 
+omistuksessa.  
+Nykytilanteessa hankealue on lähes kokonaan rakentamatonta aluetta, jolle sijoittuu metsä - ja 
+peltoalueita. Myös hankealueiden lähiympäristöön sijoittuu maa - ja metsätalousalueita. 
+Hankealuetta rajaa länsi - ja etelä puolilta Oittaan metsäalue, jonne sijoittuu ulkoilureittejä. 
+Hankealueen luoteispuolelle sijoittuva Bodominjärvi ja sen ympäristö on yksi Espoon 
+merkittävimmistä virkistysalueista. Hankealueen eteläpuolella sijaitsee vilkkaasti liikennöity Kehä
+
+[SIVU 8]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+vii 
+ 
+III ja väli ttömästi sen itäpuolelle sijoittuu Kyläportin teollisuusalue. Itä -länsisuunnassa 
+hankealuetta halkovat voimajohtolinjat. Hankealueen kohdalla Kehä III:n itäpuolella on 
+Pihlajarinteen asuinalue ja pohjoispuolisella lähialueella muutamia asuinrakennuksia. 
+Kauempana hankealueen pohjoispuolella on enemmän asutusta. Alueella voimassa oleva 
+Hepokorvenkallion asemakaava mahdollistaa datakeskuksen rankentamisen hankealueelle.  
+ 
+Hankealueen sijainti. Projekt område.
+
+[SIVU 9]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+viii 
+ 
+Hankkeen kuvaus 
+Hankesuunnitelman mukaan hankealueelle rakennetaan neljä datakeskusrakennusta ja 
+tarvittavat tukitoiminnot, kuten muuntoasemat sähkönjakelua varten, huolto - ja 
+toimistorakennukset, vesienhallintajärjestelmät sekä tarvittavat huoltotiet ja pysäköintialueet.  
+Kussakin datakeskusrakennuksessa on useampi erillinen lohko, joka sisältää tilat IT - ja 
+verkkolaitteille. Rakennukset tehdään teräksestä ja komposiittilevyistä, ja niihin asennetaan 
+ulkoisia ilmajäähdyttimiä ja varavoimageneraattoreita. Hankealueen asemap iirustus on esitetty 
+alla olevassa kuvassa.   
+Datakeskusalue rakennetaan ja otetaan käyttöön vaiheittain. Rakentamisvaiheen aluksi 
+hankealueilla tehdään mm. siellä nykytilanteessa olevan puuston ja kasvillisuuden poistoja, 
+maanperän kaivuja, tasauksia ja t äyttöjä sekä kallion louhintoja. Em. esirakentamisen jälkeen 
+suunnitellut datakeskuksen rakennukset ja rakenteet sekä em. tukitoiminnot rakennetaan ja 
+otetaan käyttöön vaiheittain.  
+Datakeskusalueen rakennusvaiheen arvioidaan kestävän kokonaisuudessaan noi n kahdeksan 
+vuotta. Rakentamisen aikana työmaalla arvioidaan työskentelevän keskimäärin 500 työntekijää 
+kussakin rakennusvaiheessa ja kiireisimpinä aikoina jopa noin 1 500 työntekijää.  
+Arvioidut rakennusvaiheet ja niiden ajoittuminen ovat seuraavat:  
+• Esirakentaminen (mm. louhinnat) ja työmaan valmistelut, 2024–2025;  
+• Vaihe 1, ensimmäinen datakeskusrakennus (HEL 16) ja liitännäistyöt, 2024 –2028;  
+• Vaihe 2, toinen datakeskusrakennus (HEL 17) ja liitännäistyöt, 2026–2029;  
+• Vaihe 3, kolmas datakeskusrakennus (HEL 18) ja liitännäistyöt, 2028–2031; ja  
+• Vaihe 4, neljäs datakeskusrakennus (HEL 19) ja liitännäistyöt, 2029–2031. 
+Ensimmäisen (HEL 16) ja toise n (HEL 17) datakeskusrakennuksen toiminta alkaa, kun 
+kolmannen (HEL 18) ja neljännen (HEL 19) rakennuksen rakentaminen ovat vielä käynnissä. 
+Toimintavaiheessa datakeskus tulee olemaan jatkuvassa toiminnassa 24 tuntia vuorokaudessa, 
+seitsemänä päivänä viikossa.
+
+[SIVU 11]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+x 
+ 
+Ympäristövaikutusten arviointimenettely 
+Ympäristövaikutusten arvioinnissa on tarkasteltu Microsoft 3465 Finland Oy:n Espoon 
+datakeskushankkeen toteuttamisen eri hankevaihtoehtoja sekä niiden vaikutuksia 
+ympäristövaikutusten arviointimenettelystä annetun lain (YVA -laki, 252/2017) ja -asetuksen 
+(YVA-asetus, VNa 277/2017) edellyttämällä tavalla. Espoon datakeskushanke edellyttää YVA -
+menettelyä, koska datakeskuksen suunniteltujen varavoimageneraattoreiden yhteenlaskettu 
+polttoaineteho ylittää YVA -lain liitteen 1 kohdan 7a mukaisen 300 MW:n polttoainetehon raja -
+arvon.  
+Ympäristövaikutusten arvioinnin tavoitteena on tuottaa tietoa hankkeen vaikutuksista ihmisiin  ja 
+ympäristöön, edistää ympäristövaikutusten arviointia ja yhtenäistä huomioon ottamista 
+suunnittelussa ja päätöksenteossa sekä lisätä kansalaisten tiedonsaantia ja 
+osallistumismahdollisuuksia. Hankkeen ympäristövaikutukset on selvitettävä YVA -menettelyssä 
+ennen kuin ryhdytään ympäristövaikutusten kannalta olennaisiin toimiin. Viranomainen ei saa 
+myöntää lupaa hankkeen toteuttamiseen tai tehdä muuta siihen rinnastettavaa päätöstä ennen 
+YVA-menettelyn päättymistä. YVA -menettelyssä ei tehdä hanketta koskevia päätöksiä tai 
+ratkaista lupa-asioita, vaan tuotetaan tietoa päätöksenteon perustaksi.  
+Tässä YVA -selostuksessa on esitetty mm. tiedot hankkeesta ja sen vaihtoehdoista sekä 
+arviointityön tuloksena muodostettu arvio eri hankevaihtoehtojen vaikutuksista. Arvi ointityö on 
+tehty keväällä 2023 laaditun ympäristövaikutusten arviointiohjelman (YVA -ohjelma) ja siitä 
+heinäkuussa 2023 saadun YVA -yhteysviranomaisen (Uudenmaan ELY -keskus) lausunnon 
+mukaisesti. YVA -menettelyn jälkeen hankkeen suunnittelu jatkuu ja toteute ttavalle hankkeelle 
+voidaan hakea mm. ympäristö - ja rakennuslupia. Lupia tai niihin rinnastettavia päätöksiä 
+haettaessa YVA -selostus ja yhteysviranomaisen siitä antama perusteltu päätelmä liitetään 
+hakemuksiin.  
+Arvioidut hankevaihtoehdot 
+Arviointityössä t arkasteltiin kahta datakeskuksen toteutusvaihtoehtoa (VE1, VE2 ) sekä ns. 0 -
+vaihtoehtoa (VE0), jossa hanketta ei toteuteta:  
+Hankevaihtoehto 0 (VE0): Datakeskusta ei rakenneta eikä oteta käyttöön hankealueella.   
+Hankevaihtoehto 1 (VE1): Hankealueelle raken netaan ja otetaan käyttöön neljä (4) 
+datakeskusrakennusta, joista jokaisella on omat varavoimageneraattorit polttoainesäiliöineen. 
+Lisäksi hankealueelle rakennetaan tarvittavat tukitoiminnot.   
+Hankevaihtoehto 2 (VE2): Hankealueelle rakennetaan ja otetaan käyttöön neljä (4) 
+datakeskusrakennusta. Vain yksi datakeskusrakennus varustetaan varavoimageneraattoreilla 
+polttoainesäiliöineen. Lisäksi hankealueelle rakennetaan tarvittavat tukitoiminnot.     
+Arvioidut ympäristövaikutukset 
+Ympäristövaikutusten arvioinn issa on tarkasteltu hankkeeseen liittyvien rakentamisvaiheen, 
+toimintavaiheen sekä toiminnan päättymisvaiheen ympäristövaikutuksia. Ympäristövaikutuksilla 
+tarkoitetaan hankkeen tai toiminnan aiheuttamia välittömiä ja välillisiä  vaikutuksia, jotka 
+kohdistuvat:   
+• väestöön sekä ihmisten terveyteen, elinoloihin ja viihtyvyyteen; 
+• maahan, maaperään, vesiin, ilmaan, ilmastoon, kasvillisuuteen sekä eliöihin ja luonnon 
+monimuotoisuuteen;
+
+[SIVU 12]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xi 
+ 
+• yhdyskuntarakenteeseen, aineellisen omaisuuteen, maisemaan, kaupunkikuvaan ja 
+kulttuuriperintöön; 
+• luonnonvarojen hyödyntämiseen; sekä 
+• edellä mainittujen tekijöiden keskinäisiin vuorovaikutussuhteisiin.  
+Arviointityössä painopiste on asetettu merkittävimmiksi arvioituihin vaikutuksiin, niihin kuitenkaan 
+rajoittumatta. Tässä hankkeessa rakennusvaiheen aikaisten vaikutusten arviointi on painottunut 
+erityisesti maarakentamiseen sekä louhinta - ja murskaustoimintoihin liittyviin melu - ja 
+ilmanlaatuvaikutuksiin, liikennevaikutuksiin, luonto -, maisema -, maaperä -, pohjavesi - ja 
+pintavesivaikutuksiin sekä elinoloihin ja viihtyvyyteen kohdistuviin vaikutuksiin. Toimintavaiheen 
+vaikutusten arviointi on painottunut erityisesti ilmanlaatu - ja meluvaikutuksiin, pinta - ja 
+pohjavesivaikutuksiin, maankäyttö - ja maisemavaikutuksiin sekä elinoloihin ja vi ihtyvyyteen 
+kohdistuviin vaikutuksiin. Toiminnan päättymisen jälkeen vaikutukset ovat pääpiirteissään 
+vastaavia, mutta vähäisempiä kuin rakentamisvaiheessa. Tarkasteluissa on huomioitu välittömät 
+ja välilliset vaikutukset, niiden ajallinen kesto sekä yhtei svaikutukset muiden hankkeiden ja 
+toimintojen kanssa. 
+Maankäyttö ja kaavoitus 
+Datakeskusalueen sijoittumisen edellytykset hankealueelle on arvioitu ja ratkaistu jo alueen 
+asemakaavoituksen (Hepokorvenkallion asemak aava) yhteydessä. Asemakaava mahdollistaa 
+datakeskuksen rakentamisen hankealueelle. Kaava on laadittu maankäyttö - ja rakennuslain 
+edellytysten mukaisesti siten, että se täyttää asemakaavan sisältövaatimukset.  
+Hankevaihtoehdoissa VE1 ja VE2 datakeskusaluee n rakentamisesta ja käyttöönotosta aiheutu u 
+hankealueella merkittävä muutos maankäyttöön, kun maa- ja metsätalousvaltainen alue muuttuu 
+rakennetuksi ympäristöksi. Hankevaihtoehtojen VE1 ja VE2 välillä ei ole merkittäviä eroja 
+vaikutuksissa yhdyskuntarakenteeseen, maankäyttöön ja kaavoitukseen. Mol emmissa 
+hankevaihtoehdoissa rakentaminen kohdistuu samoille alueille ja rakennettavat rakennuksen ja 
+rakenteet ovat pääosin samoja. Hanke ei ole ristiriidassa alueen olemassa olevan tai suunnitellun 
+yhdyskuntarakenteen, eikä voimassa ja vireillä olevien ka avojen ja niiden tavoitteiden kanssa. 
+Datakeskusalue soveltuu alueen olemassa olevaan yhdyskuntarakenteeseen ja maankäyttöön ja 
+hyödyntää olemassa olevaa infrastruktuuria (mm. liikenneyhteydet, muu yhdyskuntatekniikka). 
+Hankkeen toteuttamiseksi muutoksia kaavoitukseen ei tarvita. Datakeskushankkeesta ei aiheudu 
+sellaisia vaikutuksia, jotka olisivat ristiriidassa hankealueen ympäristön muun maankäytön 
+kanssa, tai aiheuttaisivat haittaa hankealueen ympäristön nykyiselle tai kaavoituksen mukaiselle 
+käytölle. A lueen kaavoituksessa on osoitettu hankealuetta ja sen ympäristöä koskevia 
+määräyksiä ja rajauksia, jotka on huomioitu datakeskushankkeen suunnittelussa. Vaikutuksia 
+hankealueen ympäristöön ja sen maankäyttöön ehkäistään mm. jättämällä hankealueelle ja sen 
+ympärille suojavyöhykkeitä ja -puustoa sekä minimoimalla hankkeesta aiheutu vaa 
+ympäristökuormitusta ja -vaikutuksia. Myöhemmässä vaiheessa hanketta koskevien lupien (mm. 
+ympäristölupa, rakennuslupa) lupaehdoilla ja lupaehtojen mukaisella toiminnalla voidaa n 
+ehkäistä hankkeen haittavaikutuksia. Datakeskushankkeen toteuttaminen edistää 
+maakuntakaavan tavoitteita ilmaston kannalta kestävään energiajärjestelmään siirtymisen, 
+uusiutuvan energian tuotannon ja hukkalämmön hyödyntämisen osalta (hukkalämmön 
+hyödyntäminen kaukolämmön tuotannossa) sekä kestävän luonnonvarojen käytön ja 
+kiertotalouden osalta (mm. maa - ja kiviainesten hyötykäyttö). Hankkeen toteuttaminen edistää 
+valtakunnallisten alueidenkäyttötavoitteiden toteuttamista, mm. luomalla työpaikkoja ja 
+tarjoamalla yhteiskunnalle lisää toimivaa ja turvallista tietojenkäsittelykapasiteettia. Hankealue 
+sijoittuu hyvien liikenneyhteyksien varrelle, tukeutuu alueen tehokkaaseen liikennejärjestelmään 
+ja alueen suunnittelussa on huomioitu mahdollisuudet julkisen liikenteen käytölle sekä pyöräilylle
+
+[SIVU 13]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xii 
+ 
+ja kävelylle. Datakeskuksella käytetään hiilineutraalia sähköä ja toiminnassa muodostuvaa 
+hukkalämpöä hyödynnetään kaukolämmön tuotannossa. Em. seikat edistävät alueidenkäytön 
+tavoitteita kestävästä liikkumisesta sekä uusi utumiskykyisestä energiahuollosta. Molemmissa 
+hankkeen toteutusvaihtoehdoissa (VE1 ja VE2) vaikutukset maankäyttöön ja kaavoitukseen ovat 
+suuria ja myönteisiä sekä merkittävyydeltään suuria.  
+Hankevaihtoehdossa VE0 d atakeskusaluetta ei rakenneta ja oteta k äyttöön, vaan hankealueen 
+maankäyttö säilyy ennallaan. Hankkeen toteuttamatta jättämisellä voisi olla lieviä positiivisia 
+vaikutuksia viereisen virkistysalueen kannalta, kun hankkeen toteutukseen liittyviä lieviä 
+ympäristövaikutuksia ei kohdistuisi ko. vir kistyskäytössä oleville alueille. Myös hankealueella 
+virkistyskäyttö voisi jatkua. Hankkeen toteuttamatta jättämisellä (VE0) on alueen suunnitellun 
+maankäytön ja kaavoituksen kannalta suuri kielteinen vaikutus, kun alueen kehitys ei vastaa 
+kaavoituksessa e sitettyä tavoitetilaa. Vaihtoehto VE0 ei myöskään edistä maakuntakaavan 
+tavoitteita eikä valtakunnallisten alueidenkäyttötavoitteiden toteutumista. Mikäli datakeskushanke 
+jäisi hankealueella toteuttamatta, hanke voisi tällöin jäädä kokonaan toteuttamatta t aikka 
+kohdistua sijainniltaan epäedullisemmalle alueelle. Vaihtoehtoista hankealuetta, jonne hanke 
+voitaisiin toteuttaa, ja joka olisi sijainniltaan yhtä hyvä kuin suunniteltu Hepokorvenkallion alue, ei 
+ole tiedossa. 
+Ilmanlaatu 
+Hankevaihtoehtojen VE1 ja VE 2 mukaisessa datakeskushankkeessa rakentamisen aikaiset 
+päästöt ilmaan muodostuvat lähinnä maarakennustoiminnasta, kalliokiviainesten louhinnoista ja 
+kiviainesten murskauksesta sekä liikennöinnistä ja työkoneista. Muodostuvia päästöjä ovat pöly -
+/hiukkaspäästöt, louhintojen räjäytyskaasupäästöt sekä liikenteen ja työkoneiden 
+pakokaasupäästöt. Toimintavaiheessa päästöjä muodostuu varavoimageneraattorei den 
+testauksesta ja käytöstä poikkeustilanteiden aikana (savukaasut) sekä toimintaan liittyvästä 
+liikennöinnistä. Toiminnan päättymisvaiheessa päästöjä muodostuu mahdollisista rakennusten ja 
+rakenteiden purkamisista, käytettävistä työkoneista sekä liikennö innistä (pöly -/hiukkaspäästöt, 
+pakokaasut).  
+Hankevaihtoehtojen VE1 j a VE2 välillä ei ole merkittäviä eroja hankkeen eri vaiheissa 
+muodostuvien ilmapäästöjen tai ilmanlaatuun aiheutuvien vaikutusten suhteen. 
+Varavoimageneraattoreiden käytöstä aiheutuvat pä ästöt ja vaikutukset ovat kuitenkin hieman 
+suurempia hankevaihtoehdossa VE1 kuin vaihtoehdossa VE2 (vaihtoehdossa VE1 
+datakeskuksella käytössä enemmän generaattoreita kuin vaihtoehdossa VE2). Hankkeen eri 
+vaiheissa merkittävimmät vaikutukset ilmanlaatuun kohdistuvat hankealueelle ja sen välittömään 
+läheisyyteen. Vaikutukset ilmanlaatuun hankealueen ympäristön herkissä kohteissa, kuten 
+asuinalueilla, arvioidaan vähäisiksi. Hankkeen toteuttamisen seurauksena ei arvioida aiheutuvan 
+olennaisia muutoksia alueen ilmanlaatuun nykytilanteeseen verrattuna taikka i lmanlaadun raja- 
+ja ohjearvojen ylityksiä hankealueen ympäristössä.  Suunnitelluilla haittojen ehkäisemis - ja 
+lieventämistoimenpiteillä varmistetaan, ettei merkittäviä haitallisia ilmanlaatuun kohdistuvia 
+vaikutuksia aiheudu. Myös päästölähteiden ja herkkien kohteiden välinen etäisyys sekä alueella 
+tyypillisesti vallitsevat tuulen suunnat, jotka todennäköisesti ohjaavat hankealueella muodostuvat 
+ilmapäästöt pois päin herkistä kohteista suurimman osan vuodesta , osaltaan ehkäisevät 
+haitallisten vaikutusten muodostumista. Vaikutusten merkittävyydet hankkeen eri vaiheissa 
+arvioidaan vähäisiksi, lukuun ottamatta varavoimageneraattoreiden käytöstä aiheutuvien 
+vaikutusten merkittävyyttä, joka arvioidaan kohtalaiseksi.   
+Hankevaihtoehdossa VE0 datakeskushanketta ei toteuteta ja ei muod ostu hankkeeseen liittyviä 
+vaikutuksia ilmanlaatuun.
+
+[SIVU 14]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xiii 
+ 
+Ilmasto 
+Hankevaihtoehdoissa VE1 ja VE2 datakeskuksen rakentamisvaiheessa aiheutuu suoria 
+ilmapäästöjä ja ilmastovaikutuksia mm. hankea lueella tehtävissä rakennus - ja louhintatöissä 
+käytettävistä työkoneista ja laitteistoista, louhintaräjäytyksistä sekä työmaaliikenteestä. Lisäksi 
+muodostuu epäsuoria ilmastovaikutuksia hankealueella tehtävistä puuston, kasvillisuuden ja 
+turvemaiden poisto ista sekä datakeskuksen rakennusmateriaalien ja laitteistojen tuotannosta 
+aiheutuvista päästöistä . Datakeskuksen toimintavaiheessa suoria ilmapäästöjä ja 
+ilmastovaikutuksia syntyy varavoimageneraattoreiden käytöstä (polttoaineen/kevyt polttoöljy 
+käyttö) sekä datakeskuksen liikenteestä. Datakeskustoiminnan päättymisvaiheessa ilmapäästöjä 
+ja ilmastovaikutuksia muodostuu käytettävistä työkoneista ja laitteistoista sekä työmaan 
+liikenteestä. Epäsuoria vaikutuksia muodostuu hankkeen eri vaiheissa tapahtuvasta sä hkön 
+kulutuksesta sekä datakeskuksen toiminnassa muodostuvan hukkalämmön hyödyntämisestä.  
+Datakeskushankkeen ilmastovaikutuksiin voidaan vaikuttaa hankkeen kaikissa vaiheissa. 
+Hankkeen ilmastovaikutusten ehkäisemisessä huomioidaan, ja toteutettavien toimen piteiden 
+laatuun ja laajuuteen vaikuttaa, Microsoftin tavoite olla hiilinegatiivinen vuoteen 2030 mennessä. 
+Rakentamisvaiheessa aiheutuvia hiilinielujen (puusto, kasvillisuus, turve) menetyksiä 
+hankealueella lievennetään säästämällä mahdollisimman paljon p uustoa ja kasvillisuutta 
+hankealueen ympäristössä sekä istuttamalla hankealueelle uutta pu ustoa ja kasvillisuutta. 
+Hankealueelta louhittavaa kiviainesta ja kaivettavia maa -aineksia hyödynnetään 
+datakeskusalueen rakentamisessa, millä voidaan vähentää hankea lueen ulkopuolelta tuotavan 
+neitseellisen maa- ja kiviaineksen kuljetuksia sekä hankealueella rakentamisessa muodostuvien 
+massojen kuljetustarvetta pois hankealueelta. Tällä vähennetään kuljetuksista aiheutuvia 
+päästöjä ja niiden ilmastovaikutuksia. Toimin tavaiheessa merkittävimmät ilmastovaikutukset 
+muodostuvat datakeskuksen sähkönkulutuksesta, varavoimageneraattoreiden polttoaineen 
+kulutuksesta sekä datakeskuksen hukkalämmön hyödyntämisestä. Ilmastovaikutusten 
+ehkäisemiseksi datakeskuksella suunnitelman m ukaan käytetään hiilidioksidivapaata sähköä 
+(fossiilisilla polttoaineilla tuotetun sähkön sijaan) ja varavoimageneraattoreissa pyritään 
+käyttämään uusiutuvaa polttoainetta (fossiilisten polttoaineiden sijaan). Datakeskuksen 
+toiminnassa muodostuvaa hukkaläm pöä tullaan hyödyntämään alueellisen kaukolämmön 
+tuotannossa, millä on merkittävä positiivinen ilmastovaikutus, hukkalämmön hyötykäytön 
+vähentäessä fossiilisten polttoaineiden käyttöä Espoon kaukolämmön tuotannossa. 
+Datakeskuksella myös hyödynnetään aurink opaneeleita energian tuotannossa sekä käytetään 
+mahdollisimman energiatehokkaita laitteita, millä on myönteisiä ilmastovaikutuksia. Hankkeen eri 
+vaiheissa pyritään kannustamaan hankealueella työskenteleviä kestävien liikkumismuotojen 
+(joukkoliikenne, pyörä ily, kävely) käyttöön yksityisautoilun sijaan, jolla myös voidaan osaltaan 
+ehkäistä hankkeen ilmastovaikutuksia.  
+Hankevaihtoehtojen VE1 ja VE2 välillä ei ole merkittäviä eroja rakentamis-, toiminta- tai toiminnan 
+päättymisvaiheessa muod ostuvien ilmastovai kutusten suhteen. Varavoimageneraattoreiden 
+käytöstä aiheutuvat päästöt ja niiden ilmastovaikutukset ovat kuitenkin hieman suurempia 
+hankevaihtoehdossa VE1 kuin vaihtoehdossa VE2, sillä hankevaihtoehdossa VE1 
+datakeskuksella on käytössä enemmän generaattor eita ja polttoaineenkulutus on suurempaa 
+kuin vaihtoehdossa VE2. 
+Hankevaihtoehtoon VE0, jossa hanketta ei toteuteta, ei liity datakeskuksen rakentamiseen, 
+toimintaan tai toiminnan päättymisvaiheeseen liittyviä ilmastovaikutuksia.
+
+[SIVU 15]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xiv 
+ 
+Maaperä ja pohjavesi 
+Hankevaihtoehtojen VE1 ja VE2 mukaisessa datakeskushankkeessa muodostuu vaikutuksia 
+maa- ja kallioperään datakeskusalueen rakentamisen seurauksena, kun hankealueella tehdään 
+kallion louhintoja ja pintamaiden poistoja sekä alueiden tasaamista, täyttöjä ja maarakentamista. 
+Vaikutukset maa - ja kallioperään rajautuvat hankealueelle. Hankealueelle nykytilanteessa 
+sijoittuvat metsä - ja peltoalueet muuttuvat rakentamisen myötä rakennetuiksi alueiksi, jolloin 
+aiheutuu vaikutuksia pohjaveden muodostukseen, korkeuteen ja virtauksiin alueella. Molemmissa 
+hankevaihtoehdoissa rakentaminen kohdistuu samoille alueille, rakentaminen tehdään samoilla 
+menetelmillä ja rakennettavat rakennuksen ja rakenteet ovat pääosin samoja . Hankealue ei 
+sijaitse luokitellulla pohj avesialueella eikä sellaisen läheisyydessä, ja pohjaveden 
+muodostumisolosuhteet ovat hankealueella heikot. Tehdyn pohjavesimallinnuksen perusteella 
+molemmissa hankevaihtoehdoissa rak entamisen seurauksena pohjaveden pinnan taso laskee 
+hankealueella, mutta vaikutus ei ulotu hankealueen ulkopuolelle. Hankkeen eri vaiheisiin liittyvistä 
+normaalitoiminnoista ei aiheudu merkittäviä haitallisia päästöjä tai vaikutuksia maaperään tai 
+pohjaveteen. Riskejä maaperälle ja pohjavedelle voi aiheutua lähinnä mahdollista o nnettomuus- 
+tai poikkeustilanteista, kuten mahdollisista hankealueella tapahtuvista polttoaine - tai 
+kemikaalivuodoista (mm. työkoneet ja -laitteistot, kuljetuskalusto, varastosäiliöt). Riskit ovat 
+kuitenkin suhteellisen pieniä ja hallittavissa erilaisin teknisin ja toiminnallisin järjestelyin.  
+Hankevaihtoehdot VE1 ja VE2 eivät rakentamis -, toiminta - tai toiminnan päättymisvaiheessa  
+merkittävästi eroa toisistaan maa - ja kallioperään tai pohjaveteen kohdistuvien vaikutusten 
+suhteen. Molemmissa hankevaihtoehdoissa hankkeen eri vaiheisiin liittyvät toiminnot kattavat 
+saman laajuisen alueen, toiminnot ovat saman tyyppistä ja päästöjä sekä vaikutuksia hallitaan 
+samoin teknisin ja toiminnallisin järjestelyin (mm. datakeskusalueen tiiviit pintarakente et, 
+vesienhallintajärjestelmät, toiminnassa noudatettava huolellisuus). H ankkeen toteuttamisesta ei 
+tällöin aiheudu merkittäviä päästöjä tai vaikutuksia maaperän tai pohjaveteen.  Maaperään ja 
+pohjaveteen kohdistuvat vaikutukset hankkeen eri vaiheissa arvi oidaan merkittävyydeltään 
+vähäisiksi.   
+Hankevaihtoehdossa VE0, kun hanketta ei toteuteta, ei muodostu maaperä - tai 
+pohjavesivaikutuksia. 
+Pintavedet 
+Datakeskushankkeessa pintavesivaikutukset aiheutuvat hankealueelta muodostuvista, 
+kerättävistä ja ympäristöön johdettavista hulevesistä. Datakeskusalueelta ei aiheudu muita suoria 
+päästöjä pintavesiin, sillä alueella muodostuvat jätevedet johdetaan jätevedenpuhdistamolle. 
+Hankealueella muodostuvat hulevedet käsitellään kaavamääräysten ja hankesuunnitelmien 
+mukaisesti. Ympäristöön johdettavien käsiteltyjen hulevesien arvioidaan rakentamisvaiheessa 
+vastaavan laadultaan tyypillisiä rakennusalueiden hulevesiä ja datakeskuksen toimintavaiheessa 
+tyypillisiä taajama -alueiden hulevesiä, joissa vaikutukset muodostuvat lä hinnä vesien 
+sisältämästä kiintoaineesta. Hulevesissä voi esiintyä myös muita rakentamis - ja taajama-alueille 
+tyypillisiä epäpuhtauksia (mm. ravinteet, öljyhiilivedyt). Vaikka hulevesiä hallitaan ja viivytetään 
+hankealueella virtaamien tasaamiseksi, hulevesistä voi aiheutua myös virtaamien äärevöitymistä 
+vesien purkureiteillä.     
+Hankevaihtoehdoilla VE1 ja VE2 ei ole merkittäviä eroja vesistövaikutusten suhteen. Molemmissa 
+vaihtoehdoissa vesistövaikutukset muodostuvat käsitellyistä hulevesistä ja kohdistuv at 
+pintavesiojia pitkin vastaanottaviin vesistöihin, Bodominjärveen ja Glimsinjokeen. Hankealueelta 
+ei aiheudu hulevesikuormitusta tai vaikutuksia Matalajärveen. Hankealueella muodostuvista 
+hulevesistä ei hankkeen eri vaiheissa, toteutettavat vesien hallin ta- ja käsittelytoimenpiteet
+
+[SIVU 16]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xv 
+ 
+huomioiden, arvioida aiheutuvan merkittävää haitallista vesistökuormitusta tai merkittäviä 
+haitallisia vaikutuksia vastaanottavissa vesistöissä. Hankkeen toteuttamisen ei merkittävästi 
+arvioida huonontavan vastaanottavien vesis töjen vedenlaatua, heikentävän vesistön ekologista 
+tilaa tai vaarantavan vesistöjen virkistyskäyttömahdollisuuksia (uiminen, kalastus, tms.). Myös 
+hulevesien purkureittien mahdolliset tulvariskit ovat hallittavissa, kun ne huomioidaan alueen 
+hulevesien hal linnan suunnittelussa ja toteutuksessa. Hankkeen eri vaiheissa kuormitusta 
+pintavesiin ja vesistövaikutuksia tarkkaillaan viranomaisen hyväksymän tarkkailuohjelman 
+mukaisesti. Tarkkailutulosten perusteella voidaan tarvittaessa tehdä korjaavia toimenpiteitä  
+kuormituksen ja mahdollisten vaikutusten ehkäisemiseksi ja lieventämiseksi.  
+Hankevaihtoehtojen VE1 ja VE2 mukaisen datakeskushankkeen vaikutukset Bodominjärvessä ja 
+Glimsinjoessa arvioidaan suuruudeltaan ja merkitykseltään vähäisiksi datakeskuksen 
+rakentamisvaiheessa ja toiminnan lopettamisvaiheessa. Datakeskuksen toimintavaiheessa ei 
+arvioida aiheutuvan merkittäviä vesistövaikutuksia. Datakeskushankkeesta ei hankkeen missään 
+vaiheessa aiheudu merkittäviä vaikutuksia Bodominjärven ja Glimsinjoen alapuolisiin vesistöihin.   
+Hankevaihtoehdossa VE0 hanketta ei toteuteta ja ei siten muodostu datakeskuksen 
+rakentamiseen, toimintaan tai toiminnan päättymisv aiheeseen liittyviä vaikutuksia pintavesiin. 
+Vaihtoehdossa VE0 hankealue säilyy rakentamattomana alueena, lähinnä metsä- ja peltoalueina. 
+Mikäli datakeskushanke ei toteudu, myös hankealueen ympäristöön suunnitellut hulevesien 
+hallinnan parannukset Bodominjärveen laskevien eri lähteistä peräisin olevien hulevesien määrän 
+ja laadun parantamiseksi voivat jäädä tot eutumatta, millä voisi olla haitallisia vaikutuksia 
+pintavesiin. 
+Luonto 
+Hankevaihtoehtojen VE1 ja VE2 mukaisen datakeskushankkeen toteuttamisen suorat 
+luontovaikutukset aiheutuvat rakentamisen seurauksena, kun hankealueella olemassa olevat 
+metsä- ja peltoa lueet (puusto, kasvillisuus, eläimistö) poistuvat rakennettavilta alueilta ja 
+hankealue muuttuu rakennetuksi ympäristöksi. Tämä on hankkeen merkittävin haitallinen 
+luontovaikutus. Hankealueen ympäristössä säilyy kuitenkin datakeskusalueen rakentamisen 
+jälkeenkin edelleen laajoja yhtenäisiä ja luontoarvoiltaan arvokkaampia metsäalueita. 
+Datakeskuksen rakentamisella, kun alueen arvokkaimmat osat on rajattu rakentamisen 
+ulkopuolelle, ei merkittävästi heikennetä  kokonaisuutena alueen luontoa ja sen lajistoa. 
+Datakeskuksen rakennusvaiheessa ei aiheudu merkittäviä suoria tai välillisiä vaikutuksia 
+hankealuetta ympäröivien alueiden luontoon, kasvillisuuteen ja eläimistöön. Lieviä rakentamisen 
+aikaisia vaikutuksia hankealueen lähiympäristön luontoon, kasvillisuuteen  ja eläimistöön voi 
+aiheutua (esim. melu- ja pölyvaikutusten tms. häiriövaikutusten seurauksena), mutta vaikutukset 
+rajoittuvat lähinnä hankealueeseen raj autuviin reunametsiin. Rakentamisvaiheen 
+luontovaikutuksissa ei ole merkittäviä eroja hankevaihtoehtojen VE1 ja VE2 välillä.  
+Datakeskuksen toimintavaiheessa kummastakaan hankkeen toteutusvaihtoehdosta (VE1, VE2) 
+ei aiheudu merkittäviä haitallisia vaikutuksia hankealueen ympäristön luontoon, kasvillisuuteen ja 
+eläimistöön, sillä datakeskuksen toiminnasta e i aiheudu merkittävää haitallista 
+ympäristökuormitusta (kuten merkittäviä melu -, ilma - tai vesistöpäästöjä) tai merkittäviä muita 
+häiriövaikutuksia. Toimintavaiheen vähäiset - kohtalaiset luontovaikutukset rajoittuvat 
+datakeskusalueen välittömään läheisyyt een, jossa toiminnan seurauksena (mm. ajoneuvojen ja 
+ihmisten liikkuminen alueella sekä valaistusolosuhteiden muutokset) voi aiheutua eläimistön 
+siirtymistä kauemmas hankealueen lähiympäristöstä.  
+Toiminnan päättymisvaiheessa luontovaikutukset hankealueen ympäristössä ovat saman 
+tyyppisiä, mutta vähäisempiä ja lyhytkestoisempia, kuin rakentamisvaiheessa.
+
+[SIVU 17]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xvi 
+ 
+Datakeskushankkeen toteutusvaihtoehdoissa VE1 ja VE2 ei missään hankkeen vaiheessa 
+aiheudu merkittäviä suoria eikä välillisiä haitallisia vaikutuksia lähim mille luonnonsuojelualueille, 
+suojelukohteisiin tai ekologisesti herkkiin kohteisiin. Datakeskushankkeen toteuttamisesta 
+aiheutuvia haitallisia luontovaikutuksia ehkäistään ja lievennetään hankkeen kaikissa vaiheissa 
+erilaisin teknisin ja toiminnallisin jä rjestelyin. Hankkeen aiheuttamien luontovaikutusten 
+merkittävyyttä hankealueella ja sen ympäristössä voidaan pitää kokonaisuudessaan vähäisinä - 
+kohtalaisina. 
+Hankevaihtoehdossa VE0 hanketta ei toteuteta ja ei muodostu datakeskuksen rakentamiseen, 
+toimintaan tai toiminnan päättymisvaiheeseen liittyviä luontovaikutuksia hankealueella tai sen 
+ympäristössä. 
+Maisema ja kulttuuriympäristö 
+Hankealueen ja sen lähiympäristön maisemakuva on nykytilanteessa pääosin metsäistä ja osin 
+maatalousalueiden leimaamaa. Merki ttäviä elementtejä alueen maisema - ja kaupunkikuvassa 
+ovat Kehä III:n liikennealue sekä hankealueen läpi kulkevat voimalinjat. Hankealueella voi olla 
+maisemallista arvoa erityisesti lähialueen asukkaille ja alueen virkistyskäyttäjille. Bodominjärven 
+maakunnallisesti arvokas kartano - ja kyläympäristö sijaitsee lähimmillään noin 50 metrin 
+etäisyydellä hankealueen pohjois - ja luoteispuolella sekä Espoonjokilaakson maisema -alue 
+lähimmillään 200 metrin etäisyydellä hankealueen sekä Kehä III:n itä- ja eteläpuolella. 
+Hankevaihtoehdoissa VE1 ja VE2 datakeskusalueen rakentamisesta ja käyttöönotosta aiheutuu 
+hankealueella merkittävä muutos maisemassa, kun nykyinen maa - ja metsätalousvaltainen alue 
+muuttuu rakennetuksi ympäristöksi datakeskuskäyttöön. Rakentamisaikaise t vaikutukset 
+muodostuvat lähinnä hankealueella tehtävistä puuston ja kasvillisuuden poistoista, maaperän 
+kaivuista, tasauksista ja täytöistä, kallion louhinnoista, rakennusten, muiden rakenteiden ja 
+alueiden rakentamisesta sekä työmaalla käytettävistä koneista ja laitteista sekä työmaan yleisistä 
+järjestelyistä. Toimintavaiheessa vaikutuksia aiheutuu datakeskusalueelle sijoittuvista 
+rakennuksista ja rakenteista sekä alueen valaistuksesta. Toiminnan päättymisvaiheessa 
+vaikutukset muodostuvat lähinnä mahdoll isista datakeskuksen rakennusten ja rakenteiden 
+purkamisista sekä alueen tulevasta käytöstä.  
+Datakeskuksen sijoittumisen edellytykset hankealueelle on ra tkaistu jo alueen 
+asemakaavoituksen (Hepokorvenkallion asemakaava) yhteydessä. Alueen kaavoituksessa j a 
+datakeskushankkeen suunnittelussa yhtenä lähtökohtana on ollut minimoida haitalliset 
+maisemavaikutukset sekä vaikutukset lähialueille sijoittuville maakunnallisesti arvokkaille 
+kulttuuriympäristöalueille. Datakeskushankeen maisemavaikutuksia ehkäistään j a lievennetään 
+kaavamääräysten sekä hankesuunnitelmien mukaisella rakentamisella ja toiminnalla, mm. 
+jättämällä hankealueelle ja sen ympärille suojavyöhykkeitä ja -puustoa, istuttamalla hankealueelle 
+uutta puustoa ja kasvillisuutta sekä sopeuttamalla raken nukset ja datakeskusalue 
+mahdollisimman hyvin ympäristöönsä. Rakennusluvan hakemisen yhteydessä ja 
+rakennuslupaehdoissa varmistetaan, että hanke toteutetaan kaavamääräysten mukaisesti, 
+huomioiden myös hankkeen maisemavaikutukset ja niiden minimointi. 
+Hankevaihtoehtojen VE1 ja VE2 välillä ei ole merkittäviä eroja hankkeen eri vaiheissa maisemaan 
+ja kulttuuriympäristöihin kohdistuvien vaikutusten suhteen. Molemmissa hankevaihtoehdoissa 
+merkittävimmät maisemavaikutukset kohdistuvat datakeskusalueen välittömään lähiympäristöön, 
+jotka ovat pääasiassa liikennealueita. Tällaisia alueita ovat Kehä III:n tiealue datakeskusalueen 
+itäpuolella sekä datakeskusalueen pohjoispuolella Paciuksentien ja Puotismäentien sekä 
+Paciuksentien ja Hepokorventien risteysalueet ja  niiden ympäristö. Näiltä alueilta on hankkeen 
+eri vaiheissa suoria näkymiä datakeskusalueelle. Liikennealueille kohdistuvia vaikutuksia ei voida
+
+[SIVU 18]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xvii 
+ 
+pitää merkittävästi haitallisina, sillä niiden voidaan katsoa kestävän suurempiakin maisemallisia 
+muutoksia ympäristössä. Hankkeen vaikutukset kaukomaisemaan ovat vähäisiä, sillä näkymät 
+kauempana datakeskusalueesta sijaitsevilta alueilta ja kohteista datakeskusalueelle 
+pääsääntöisesti katkeavat mm. hankealueen ympäristön maastonmuodoista ja puustoisista 
+alueista sekä hankealueen itäpuolella myös Kehä III:sta ja sen rakenteista johtuen. 
+Datakeskusalueesta ei aiheudu merkittäviä haitallisia maisemavaikutuksia hankealueen 
+ympäristöön sijoittuville asuinalueille tai virkistysalueille, eikä haitallisia vaikutuksia arvokkail le 
+kulttuuriympäristöalueille, rakennetun kulttuuriympäristön kohteille tai kiinteille muinaismuistoille, 
+niiden arvoille ja säilymismahdollisuuksille. Molemmissa hankkeen toteutusvaihtoehdoissa (VE1 
+ja VE2) rakentamis - ja toimintavaiheiden vaikutukset mai semaan ja kulttuuriympäristöihin sekä 
+vaikutusten merkittävyys arvioidaan kohtalaisiksi - suuriksi.   
+Hankevaihtoehdossa VE0, jossa datakeskusaluetta ei r akenneta ja oteta käyttöön, ei muodostu 
+muutoksia alueen nykyiseen maisemaan, eikä vaikutuksia hankeal ueen ympäristöön sijoittuviin 
+arvokkaisiin kulttuuriympäristökohteisiin.  
+Liikenne 
+Hankevaihtoehdoissa VE1 ja VE2 datakeskuksen rakentamisen aikaiset liikennevaikutukset 
+muodostuvat rakennustyömaan työntekijöiden henkilöliikenteestä sekä rakentamiseen liit tyvästä 
+raskaasta liikenteestä, kuten rakennusmateriaalien, työkoneiden ja polttoaineiden kuljetuksista 
+työmaalle. Rakennustöiden arvioidaan alkavan vuoden 2024 jälkipuoliskolla ja kestävän noin 
+kahdeksan vuotta. Kuljetusmäärät vaihtelevat ajallisesti rake nnusvaiheiden mukaisesti. 
+Datakeskuksen toimintavaiheessa liikennevaikutukset muodostuvat datakeskusalueella 
+työskentelevien työmatkaliikenteestä. Lisäksi toimintaan liittyy raskasta liikennettä, lähinnä 
+varavoimageneraattoreiden polttoainekuljetuksia ja m uuta huoltoliikennettä. Toiminnan 
+päättymisvaiheessa liikennevaikutukset muodostuvat hankealueella toteutettaviin toimenpiteisiin 
+liittyvästä työmaan henkilöliikenteestä sekä raskaasta liikenteestä, kuten koneiden, laitteistojen 
+ja purkumateriaalien kuljetuksista ja muusta huoltoliikenteestä. 
+Hankevaihtoehtojen VE1 ja VE2 välillä ei ole merkittäviä eroja hankkeen eri vaiheissa 
+liikenteeseen kohdistuvissa vaikutuksissa. Vaikutukset alueen tieverkostolle ovat melko vähäisiä. 
+Datakeskusalue liittyy hyvin hanke alueen ympäristön olemassa olevaan liikenneverkostoon. 
+Datakeskusalue liittyy hyvin myös kevyen liikenteen verkostoihin ja joukkoliikenneyhteyksiin. 
+Suurin liikennevaikutus kohdistuu Hepokorventielle, jonka kautta järjestetään pääkulkuyhteys 
+datakeskusalueelle. Hepokorventien liikennemäärät hankkeen eri vaiheissa kasvavat 
+huomattavasti nykytilanteeseen verrattuna. Liikennöinti Hepokorventiellä tapahtuu kuitenkin vain 
+lyhyellä tieosuudella, eikä kulje asuintalojen tai muiden herkkien kohteiden ohi, mikä vähe ntää 
+liikennevaikutuksen merkittävyyttä. Hepokorventien lisäksi merkittävin osa 
+datakeskushankkeeseen liittyvästä liikennöinnistä kohdistuu Kehä III:lle, jossa hankkeen vaikutus 
+liikennemääriin on kuitenkin vähäinen. Kehä III:n liikennemäärän arvioidaan kasvavan hankkeen 
+vaikutuksesta enintään noin 1 % verrattuna nykytilanteeseen. Vaikutukset liikenteeseen muilla 
+hankealueen ympäristön liikenneväylillä ovat vähäisiä. Käytettävien liikenneväylien kapasiteetit 
+ovat riittäviä ja ne kestävät hyvin datakeskushan kkeeseen liittyvän liikennöinnin suuntautumisen 
+ko. väylille. Hankkeeseen liittyvästä liikennöinnistä aiheutuvien liikennemäärien muutosten 
+ollessa pieniä hankkeessa käytetyillä liikenneväylillä, myös vaikutukset liikenteen sujuvuuteen ja 
+liikenneturvallisuuteen ko. väylillä ovat vähäisiä. 
+Datakeskushankkeen toteuttamisesta hankevaihtoehdon VE1 tai VE2 mukaisesti ei hankkeen 
+missään vaiheessa aiheudu merkittäviä haitallisia vaikutuksia liikenteelle, liikenteen sujuvuudelle 
+tai liikenneturvallisuudelle hankealueen ympäristön liikenneverkostolla. Vaikutukset ovat 
+kielteisiä, mutta sekä suuruudeltaan että merkittävyydeltään vähäisiä.
+
+[SIVU 19]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xviii 
+ 
+Hankevaihtoehdossa VE0, jo ssa hanketta ei toteuteta, ei muodostu datakeskuksen 
+rakentamiseen, toimintaan tai toiminnan päättymisvaiheeseen liittyviä liikennevaikutuksia.  
+Melu ja tärinä 
+Nykytilanteessa hankealueen ympäristön melutilanteeseen vaikuttaa lähinnä alueen tieliikenne, 
+ennen kaikkea Kehä III:n liikenteen melupäästöt. Alueella ei ole merkittävää tärinää aiheuttavia 
+toimintoja.  
+Datakeskuksen rakentamisvaiheessa muodostuu tavanomaiselle rakennustyömaalle tyypillistä 
+melua ja tärinää. Melua ja tärinää muodostuu kallion louhin noista, kaivettavien pintamaiden ja 
+louhitun kiviaineksen käsittelystä ja siirroista, muista rakentamiseen liittyvistä toimenpiteistä (mm. 
+paalutukset) sekä rakentamiseen liittyvästä raskaasta liikennöinnistä. Datakeskuksen 
+toimintavaiheessa melupäästöjä a iheutuu varavoimageneraattoreiden testauksista ja 
+poikkeustilanteiden aikaisesta käytöstä. Toimintavaiheen r askaasta liikennöinnistä 
+(polttoainekuljetukset, muu huoltoliikenne) aiheutuu liikennöitävillä alueilla melua ja lievää tärinää. 
+Toiminnan päättymis vaiheessa melua ja tärinää muodostuu datakeskusalueella tehtävistä 
+toimenpiteistä (esim. rakennusten ja rakenteiden mahdollinen purkaminen) sekä raskaasta 
+liikenteestä.    
+Rakentamisvaiheen meluvaikutuksissa ei ole merkittäviä eroja hankevaihtoehtojen VE1 ja VE2 
+välillä. Datakeskuksen rakentamisvaiheen meluvaikutusten arvioidaan vastaavan tyypillisen 
+suuren rakennustyömaan meluvaikutuksia. Melutasot vaihtelevat työvaiheiden mukaan. Tehtyjen 
+melumallinnusten perusteella rakentamisesta aiheutuvat melutasot lähimmissä häiriintyvissä 
+kohteissa hankealueen pohjoispuolella voivat ajoittain ylittää melun ohjearvotason. Ajoitta in 
+melutasot ovat selvästi matalampia ja ajoittain voi es iintyä myös lyhytkestoisempia korkeamman 
+melutason tilanteita. Vaikka melutason ohjearvot eivät hankealueen ympäristössä ylittyisikään 
+kuin satunnaisesti (esim. runsaasti meluavia toimintoja käynnissä samanaikaisesti ja/tai melun 
+leviämiselle otolliset olosuhteet), rakentamisvaiheen melupäästöistä arvioidaan voivan aiheutua 
+ajoittaista viihtyvyyshaittaa lähimmissä häiriintyvissä kohteissa. Hankealueen pohjoispuolella 
+lähimmissä häiriintyvissä kohteissa rakentamisen aikainen meluvaikutusten suuruus arvioidaa n 
+vähäiseksi – kohtalaiseksi ja vaikutuksen merkittävyys kohtalaiseksi – suureksi. 
+Rakentamisvaiheen meluvaikutukset muissa hankealueen ympäristön häiriintyvissä kohteissa 
+arvioidaan merkityksettömän pieniksi. Meluvaikutuksia seurataan ja tarvittaessa tote utetaan 
+korjaavia toimenpiteitä, joilla varmistetaan, ettei kohtuutonta meluhaittaa ympäristöön aiheudu.   
+Hankevaihtoehtojen VE1 ja VE2 välillä ei ole merkittäviä eroja datakeskuksen toimintavaiheen 
+meluvaikutuksissa. Tehtyjen melumallinnusten perusteella toimintavaiheen meluvaikutukset ovat 
+vähäisiä ja rajoittuvat pääosin datakeskusalueelle ja sen välittömään läheisyyteen, eivätkä 
+datakeskusalueen ympäristön melutasot kasva merkittävästi nykyisestä . Toimintavaiheen 
+meluvaikutusten merkittävyys hankealueen pohjoispuolella lähimmissä häiriintyvissä kohteissa 
+arvioidaan kokonaisuudessaan merkityksettömäksi – kohtalaiseksi ja muissa hankealueen 
+ympäristön häiriintyvissä kohteissa merkityksettömäksi. Toiminnan päättymisvaiheessa 
+meluvaikutukset ovat saman tyyppi siä, mutta vähäisempiä ja lyhytkestoisempia, kuin 
+rakentamisvaiheessa.  
+Hankkeen eri vaiheissa muodostuvissa tärinävaikutuksissa ei ole merkittäviä eroja 
+hankevaihtoehtojen VE1 ja VE2 välillä. R akentamisvaiheen tärinävaikutukset ovat hallittavissa 
+erilaisin teknisin ja toiminnallisin keinoin ja tärinävaikutukset hankealuetta ympäröivillä alueilla 
+jäävät suhteellisen vähäisiksi. Louhintoihin ja paalutuksiin liittyvät tärinävaikutukset voivat 
+kuitenkin olla ajoittain havaittavissa ja aiheuttaa lievää viihtyvyyshaittaa lähimmissä häiriintyvissä 
+kohteissa. Toimintavaiheessa sekä t oiminnan päättymisvaiheessa aiheutuvat tärinävaikutukset
+
+[SIVU 20]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xix 
+ 
+ovat merkityksettömiä. Hankkeen eri vaiheisiin liittyvästä raskaasta liikennöinnistä aiheutuu lievää 
+tärinää käytettävien liiken neväylien alueilla. Hankkeen tärinävaikutuksista ei hankkeen missään 
+vaiheessa aiheudu vaurioita hankealueen tai sen ympäristön rakennuksille tai rakenteille, eikä 
+kohtuutonta haittaa tai häiriötä ympäristön häiriintyvissä kohteissa. Vaikutusten merkittävy ys 
+ympäristön häiriintyvissä kohteissa arvioidaan merkityksettömäksi . Louhintaräjäytysten 
+tärinävaikutukset tulee arvioida tarkemmin ja riittävät haittojen ehkäisemis - ja 
+lieventämistoimenpiteet suunnitella siinä vaiheessa, kun lopullisia louhintasuunnitelmia laaditaan.   
+Hankevaihtoehdossa VE0 hanketta ei toteuteta ja ei muodostu datakeskuksen rakentamiseen, 
+toimintaan tai toiminnan päättymisvaiheeseen liittyviä melu- tai tärinävaikutuksia. 
+Ihmisten terveys, elinolot, viihtyvyys ja elinkeinot 
+Hankevaihtoehdoissa VE1 ja VE2 datakeskuksen rakentamisesta aiheutuu hankealueen 
+lähiympäristöön ympäristövaikutuksia, kuten melu-, ilmanlaatu-, pintavesi- ja liikennevaikutuksia. 
+Rakentamisen aikaisesta ympäristökuormituksesta ja -vaikutuksista ei arvioid a aiheutuvan 
+haitallisia vaikutuksia ihmisten terveyteen, mutta arvioidaan kuitenkin voivan aiheutua joillakin 
+hankealueen lähiympäristön asuinkiinteistöillä ja ulkoilualueella ajoittaisia , pääosin vähäisiä – 
+kohtalaisia vaikutuksia viihtyvyyteen. Melun os alta rakentamisen aikaiset vaikutukset 
+viihtyvyyteen voivan olla lähialueilla ajoittain kohtalaisia - suuria. Vaikka merkittävämmät 
+vaikutukset ovatkin vain ajoittaisia, vaikutusten merkittävyyttä lisää rakentamisvaiheen 
+suhteellisen pitkä kokonaiskesto. Rakentamisella on kohtalainen - suuri myönteinen vaikutus 
+alueen työllisyyteen, elinkeinoelämään ja talouteen (mm. työllisyysvaikutukset, materiaalien ja 
+palveluiden hankinta). Toimintavaiheessa datakeskuksen ympäristövaikutukset ovat lieviä ja 
+kohdistuvat lähinnä hankealueen läheisyyteen, eivätkä merkittävästi vaikuta ihmisten terveyteen, 
+elinoloihin tai viihtyvyyteen alueella. Myös datakeskuksen toimintavaiheessa muodostuu 
+kohtalainen myönteinen vaikutus alueen työllisyyteen, elinkeinoelämään ja talouteen.  Toiminnan 
+päättymisvaiheessa vaikutukset muodostuvat toiminnan lopettamiseen liittyvistä toimenpiteistä 
+sekä alueen tulevasta käytöstä. Vaikutukset ovat tällöin saman tyyppisiä, mutta vähäisempiä ja 
+lyhytkestoisempia kuin rakentamisvaiheessa. Hankevaihtoehdot VE1 ja VE2 eivät eroa 
+merkittävästi toisistaan terveyteen, elinoloihin ja viihtyvyyteen sekä työllisyyteen, elinkeinoihin ja 
+talouteen kohdistuvien vaikutusten suhteen.     
+Hankevaihtoehdossa VE0, jossa hanketta ei toteuteta, ei aiheudu muutoksia vaik utuksissa 
+ihmisten terveyteen, elinoloihin tai viihtyvyyteen, eikä muodostu datakeskushankkeen myönteisiä 
+vaikutuksia työllisyyteen, elinkeinoihin ja talouteen. Hankevaihtoehdossa VE0 hankealueen 
+nykyisen kaltainen virkistyskäyttö voi jatkua, jolla voidaan arvioida olevan  lievä myönteinen 
+vaikutus elinoloihin ja viihtyvyyteen.   
+Luonnonvarojen hyödyntäminen ja jätteet 
+Datakeskuksen rakentamisen aikaiset vaikutukset luonnonvaroihin muodostuvat rakennusalueilla 
+tehtävästä puuston ja kasvillisuuden poistoista,  maaperän kaivuista ja kallion louhinnoista, 
+rakentamisessa muodostuvien maa - ja kiviainesten käsittelystä ja hyötykäytöstä, hankealueen 
+ulkopuolelta tuotavien maa - ja kiviainesten käytöstä, veden, energian ja polttoaineiden käytöstä 
+sekä rakentamisessa mu odostuvista jätteistä ja niiden käsittelystä. Lisäksi rakentamisesta 
+aiheutuu muiden rakennusmateriaalien käytön kautta välillisiä vaikutuksia luonnonvaroihin 
+muualla, hankealueen ulkopuolella. Hankealueelta louhittavaa kiviainesta sekä kaivettavaa maa-
+ainesta hyödynnetään datakeskusalueen rakentamisessa, mikä vähentää tarvittavan 
+neitseellisen maa - ja kiviaineksen määrää sekä rakentamisessa muodostuvien massojen 
+kuljetustarvetta pois hankealueelta. Tätä voidaan pitää hankkeen myönteisenä vaikutuksena  
+luonnonvaroihin. Molemmissa hankevaihtoehdoissa rakentaminen kohdistuu saman laajuisille
+
+[SIVU 21]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xx 
+ 
+alueille, eikä rakentamisessa, rakennusmenetelmissä, käytettävissä materiaalimäärissä, maa- ja 
+kiviainesten hyödyntämisessä, veden, energian ja polttoaineiden käytöstä tai muodostuvissa 
+jätteissä ja niiden käsittelyssä ole merkittäviä eroja. Rakentamisvaiheen vaikutukset 
+luonnonvaroihin ja jätteisiin sekä vaikutusten merkittävyys arvioidaan kokonaisuudessaan 
+vähäisiksi - kohtalaisiksi. 
+Datakeskuksen toimintavaiheessa vaikutu kset luonnonvaroihin muodostuvat energian, 
+polttoaineiden ja veden käytöstä datakeskuksella, datakeskuksen hukkalämmön 
+hyödyntämisestä kaukolämmön tuotannossa sekä jätteistä ja niiden käsittelystä. Datakeskuksella 
+sähkönkulutus on  suurta, mutta hiilineutra alin sähkön käyttö voidaan katsoa vaikutuksiltaan 
+neutraaliksi. Hankevaihtoehdossa VE1 varavoimageneraattoreita on datakeskuksella käytössä 
+enemmän ja polttoöljyn kulutus on suurempaa kuin hankevaihtoehdossa VE2, jonka vuosi 
+hankevaihtoehdolla VE1 on suure mpi kielteinen vaikutus luonnonvaroihin polttoaineiden käytön 
+osalta. Datakeskuksen hukkalämpöä hyödynnetään alueellisen kaukolämmön tuotannossa ja 
+datakeskuksella kerättäviä sadevesiä hyödynnetään laitoksella ilmankostutuksessa. 
+Hukkalämmön ja sadevesien hyödyntämistä voidaan pitää positiivisina vaikutuksina 
+luonnonvaroihin. Hankevaihtoehtojen VE1 ja VE2 välillä ei ole merkittäviä eroja 
+sähkönkulutuksessa, hukkalämmön ja sadevesien hyödyntämisessä taikka jätteiden 
+muodostumisessa ja käsittelyssä. Toimintav aiheen vaikutukset luonnonvaroihin ja vaikutusten 
+merkittävyys arvioidaan energian käytön ja hukkalämmön hyödyntämisen osalta suuriksi. 
+Vaikutukset polttoaineiden ja veden käytön sekä jätteiden osalta arvioidaan vähäisiksi - 
+kohtalaisiksi.   
+Toiminnan päät tymisvaiheessa vaikutuksia muodostuu mahdollisesta datakeskuksen 
+rakennusten ja rakenteiden purkamisesta sekä muodostuvista purkumateriaaleista, jätteistä ja 
+niiden käsittelystä. Hankevaihtoehtojen VE1 ja VE2 välill ä ei ole merkittäviä eroja toiminnan 
+päättämiseen liittyvissä toimenpiteissä tai niiden vaikutuksissa. Toiminnan päättymisvaiheen 
+vaikutukset luonnonvaroihin ja jätteisiin sekä vaikutusten merkittävyys arvioidaan vähäisiksi - 
+kohtalaisiksi.  
+Hankevaihtoehdoissa VE1 ja VE2 ei muodostu merkittäviä kielteisiä vaikutuksia luonnonvaroihin 
+ja niiden käyttöön, eikä jätteisiin ja niiden käsittelyyn liittyviä haitallisia ympäristövaikutuksia. 
+Hanke estää nykyisen kaltaisen luonnonvarojen hyödyntämisen (maa - ja metsätalous, 
+virkistyskäyttö) hankealueella, m utta vaikutukset hankealueen ympäristössä ovat pääosin 
+vähäisiä - kohtalaisia.  
+Hankevaihtoehdossa VE0 hanketta ei toteuteta ja ei muodostu datakeskuksen rakentamiseen, 
+toimintaan tai toiminnan päättymisvaiheeseen liittyviä vaikutuksia luonnonvaroihin eikä  jätettä. 
+Hankevaihtoehdossa VE0 myös hankkeen toteuttamisen positiiviset vaikutukset jäävät 
+toteutumatta. 
+Toiminnan riskit sekä onnettomuus- ja häiriötilanteet 
+Hankevaihtoehdoissa VE1 ja VE2 rakentamisvaiheen riske jä ovat louhintatöihin liittyvät 
+onnettomuudet, materiaali -, polttoaine - ja huoltokuljetuksiin liittyvät liikenneonnettomuudet, 
+tulipalot sekä haitallisten aineiden (öljy, polttoaine, tms.) vuodot työmaalla käytettävistä koneista, 
+laitteista, kuljetuskalustosta tai öljy -/polttoainevarastoista ymp äristöön. Datakeskuksen 
+toimintavaiheen riskejä ovat lähinnä varavoimageneraattoreiden polttoainekuljetuksiin ja muihin 
+huoltokuljetuksiin liittyvät liikenneonnettomuudet, tulipalot sekä vuodot generaattoreiden 
+polttoainevarastoista/-säiliöalueilta ympäris töön. Datakeskustoiminnan päättyessä 
+datakeskusalueella tehtäviin mahdollisiin purkutöihin sekä materiaalien käsittelyyn ja kuljetuksiin 
+liittyy vastaavia riskejä kuin rakentamisvaiheessa. Hankkeen eri vaiheissa riskeinä ovat myös
+
+[SIVU 22]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xxi 
+ 
+mahdolliset hankealueella liikkuviin ulkopuolisiin kohdistuvat onnettomuustilanteet, ilkivaltariskit 
+sekä ympäristövaikutusten hallitaan liittyvät riskit. Hankevaihtoehtojen VE1 ja VE2 välillä ei ole 
+merkittäviä eroja hankkeen eri vaiheisiin liittyvissä riskeissä. Molemmissa hanke vaihtoehdoissa 
+riskit sekä mahdolliset onnettomuus - ja häiriötilanteet ovat samoja ja hallittavissa teknisin ja 
+toiminnallisin järjestelyin. Molemmissa hankevaihtoehdoissa onnettomuus - ja häiriötilanteet 
+arvioidaan epätodennäköisiksi – mahdollisiksi ja niiden vaikutukset ympäristöön vähäisiksi. Riskit 
+luokitellaan vähäisiksi tai kohtalaisiksi.  
+Hankevaihtoehtoon VE0, jossa hanketta ei toteuteta, ei liity datakeskuksen rakentamiseen, 
+toimintaan tai toiminnan päättymisvaiheeseen liittyviä ympäristöriskejä, eikä onnettomuus - tai 
+häiriötilanteita. 
+Hankkeen toteuttamiskelpoisuus 
+YVA-menettelyssä tarkastellut hankkeen toteutusvaihtoehdot VE1 ja VE2 ovat tehtyjen arviointien 
+perusteella toteuttamiskelpoisia, jos arviointiselostuksessa esitetyt h aitallisten vaikutusten 
+ehkäisemis- ja lieventämiskeinot riittävällä tavoin huomioidaan hankkeen jatkosuunnittelussa ja 
+hankkeen toteutuksessa. Seuraavissa kapp aleissa hankkeen toteuttamiskelposuutta on arvioitu 
+teknisen, yhteiskunnallisen, ympäristöllisen ja sosiaalisen toteuttamiskelpoisuuden näkökulmista. 
+Hankevaihtoehdossa VE0 datakeskushanketta ei toteuteta, jolloin myös hankkeen toteuttamisen 
+vaikutukset (sekä myönteiset että kielteiset vaikutukset) jäävät toteutumatta.  
+Tekninen toteuttamiskelpoisuus  
+Datakeskushankkeen arvioidaan olevan teknisesti toteuttamiskelpoinen molemmissa hankkeen 
+toteutusvaihtoehdoissa (VE1 ja VE2). Vaihtoehtojen VE1 ja VE2 välillä ei ole merkittäviä eroja 
+teknisen toteuttamiskelpoisuuden suhteen. Alueelle on laadittu ja hyvä ksytty asemakaava, joka 
+mahdollistaa datakeskuksen sijoittumisen hankealueelle. Datakeskusalue, sen rakenteet ja 
+tekniset ratkaisut sekä ympäristöpäästöjen ja -vaikutusten hallinta suunnitellaan ja toteutetaan 
+kaavamääräysten sekä hanketta koskevien, YVA -menettelyn päätyttyä haettavien lupien (mm. 
+ympäristölupa ja rakennuslupa) lupaehtojen mukaisina. Ympäristöpäästöjen ja -vaikutusten 
+hallinta on teknisesti, tehokkaasti ja toimivalla tavalla toteutettavissa hankkeen kaikissa vaiheissa. 
+Datakeskusalueesta ei  aiheudu merkittävää maisemallista haittaa. Hankealueelle on hyvät 
+kulkuyhteydet ympäröivien liikenneverkkojen kautta. Hankealueen ja sen ympäristön olosuhteet 
+sekä hankealueen ympäristöön sijoittuvat herkät kohteet huomioidaan datakeskusalueen 
+suunnittelussa, rakentamisessa ja käytössä. Hankekuvauksessa esitetyt datakeskuksen 
+toiminnat, rakenteet, tekniikka ja ympäristövaikutusten hallintamenetelmät ovat vakiintuneita ja 
+toteuttamiskelpoisia. Niistä on kattavasti tietoa ja pitkän aikavälin kokemusta, ja ne  ovat 
+toteutettavissa teknisesti toimivina ratkaisuina. Microsoftilla on pitkäaikainen kokemus 
+datakeskustoiminnoista muissa vastaavissa kohteissa, joten myös suunniteltu Espoon 
+datakeskushanke on hyvin arvioitavissa, suunniteltavissa ja toteutettavissa. H ankkeen eri 
+vaiheisiin liittyvät ympäristövaikutukset ja -riskit ovat suhteellisen pieniä ja hyvin hallittavissa.     
+Yhteiskunnallinen toteuttamiskelpoisuus 
+Datakeskushankkeen arvioidaan olevan yhteiskunnallisesti toteuttamiskelpoinen molemmissa 
+hankkeen toteutusvaihtoehdoissa (VE1 ja VE2). Vaihtoehtojen VE1 ja VE2 välillä ei ole 
+merkittäviä eroja yhteiskunnallisen toteuttamiskelpoisuuden suhteen. Suunniteltu datakeskus 
+tarjoaa tietojenkäsittelykapasiteettia vastaamaan suomalaisen yhteiskunnan lisääntyvään  datan 
+varastointi-, käsittely- ja hallintatarpeeseen. Datakeskus sijoittuu alueelle, joka on kaavoituksella 
+osoitettu datakeskuskäyttöön, ja hanke siten tote uttaa alueen suunniteltua maankäyttöä ja 
+kaavoitusta. Hanke toteuttaa myös valtakunnallisien aluei denkäyttötavoitteiden toteutumista.
+
+[SIVU 23]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xxii 
+ 
+Hankkeen sijainti tehostaa alueen maankäyttöä ja hyödyntää olemassa olevaa infrastruktuuria. 
+Hankealueelle on hyvät liikenneyhteydet sekä mahdollisuus hyödyntää laitoksen hukkalämpöä 
+alueellisen kaukolämmön tuotannossa. Hankkeella on myös merkittävä positiivinen vaikutus 
+alueen työllisyyteen, talouteen ja elinkeinoelämään.  
+Ympäristöllinen toteuttamiskelpoisuus 
+Datakeskushankkeen arvioidaan olevan ympäristöllisesti toteuttamiskelpoinen molemmissa 
+hankkeen toteutusvaihtoeh doissa (VE1 ja VE2). Vaihtoehtojen VE1 ja VE2 välillä ei ole 
+merkittäviä eroja ympäristövaikutuksissa tai ympäristöllisen toteuttamiskelpoisuuden suhteen. 
+Ympäristövaikutusten arvioidaan jäävän molemmissa hankkeen toteutusvaihtoehdossa 
+kokonaisuudessaan me lko vähäisiksi ja merkitykseltään pääosin pieniksi tai kohtalaisiksi. 
+Hankkeen merkittävimmät ympäristövaikutukset rajoittuvat pääosin hankealue elle ja sen 
+välittömään läheisyyteen.  Hankesuunnitelmien mukaisen toiminnan arvioidaan hankkeen 
+kaikissa vaihei ssa täyttävän ympäristönsuojelulain ja jätelain sekä niiden nojalla annettujen 
+asetusten vaatimukset.  Hankkeen toteuttaminen edellyttää mm. ympäristölupaa ja 
+rakennuslupaa, jotka haetaan YVA -menettelyn päätyttyä. Haettavien lupien lupaehdoilla sekä 
+niiden mukaisella rakentamisella ja toiminnalla varmistetaan hankkeen toteuttamisesta 
+aiheutuvien haitallisten vaikutusten ehkäiseminen ja minimointi sekä hankkeen ympäristöllinen 
+toteuttamiskelpoisuus.    
+Sosiaalinen toteuttamiskelpoisuus 
+Datakeskushankkeen arvi oidaan olevan sosiaalisten vaikutusten osalta toteuttamiskelpoinen 
+molemmissa hankkeen toteutusvaihtoehdoissa (VE1 ja VE2). Vaihtoehtojen VE1 ja VE2 välillä ei 
+ole merkittäviä eroja sosiaalisen toteuttamiskelpoisuuden suhteen. Datakeskusalue sijoittuu 
+asemakaavoituksessa ko. käyttöön osoitetulle alueelle, mikä edistää hankkeen sosiaalista 
+toteuttamiskelpoisuutta. Hankkeen ympäristövaikutukset, vaikutukset väestöön, ihmisten 
+terveyteen, elinoloihin ja viihtyvyyteen sekä vaikutusten merkittävyys on arvioitu 
+kokonaisuudessaan melko vähäisiksi – kohtalaisiksi molemmissa hankkeen 
+toteutusvaihtoehdoissa. Hankkeen haitallisten vaikutusten ehkäiseminen ja hankkeen 
+toteuttamisen myönteiset vaikutukset (mm. työllisyys - ja elinkeinovaikutukset, hukkalämmön 
+hyötykäyttö) edistävät hankkeen sosiaalista toteuttamiskelpoisuutta.
+
+[SIVU 24]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xxiii 
+ 
+SAMMANFATTNING 
+I den här sammanfattningen presenteras Microsoft 3465 Finland Oy:s  (nedan Microsoft) 
+datacenterprojekt i Esbo och dess syfte, miljökonsekvensbedömningens (MKB) olika skeden och 
+innehåll samt projektets olika genomförandealternativ och deras miljökonsekvenser. En mer 
+detaljerad beskrivning av bland annat MKB -förfarandet, projektet och dess alternativ, 
+bedömningsarbetets avgränsning, de metoder som använts vid bedömningen, miljöns nuläge, 
+konsekvenserna av olika projektalternativ, förebyggande av negativa effekter, osäkerheter i 
+bedömningen samt jämförelse av alternativ och bedömning av deras genomförbarhet presenteras 
+senare i denna miljökonsekvensbeskrivning (MKB-rapport). 
+Syfte med projektet  
+Microsoft planerar att bygga ett nytt datacenter i Esbo, Finland. Datacentret tillhandahåller 
+infrastrukturen för samhällets och näringslivets ständigt växande behov av att lagra, bearbeta och 
+hantera data. Datacentret i Esbo är ett av tre separata och självständigt fungerande Microsoft -
+datacenter som planeras i huvudstadsregionen. De två andra datacenterprojekten är de som 
+ligger i V ichtis och Kyrkslätt, som kommer att vara föremål för egna planerings -, MKB - och 
+tillståndsprocesser. Tillsammans skulle dessa tre datacenter utgöra en av de största informations- 
+och kommunikationsinvesteringarna i Finland.  
+Även om datacentren i Esbo, Vi chtis och Kyrkslätt var och en fungerar självständigt är de 
+synkroniserade med varandra. I praktiken är alla tre projekten beroende av varandra och för att 
+de skall kunna genomföras krävs bland annat tre relativt nära lägen och goda fiberförbindelser till 
+och mellan projektområdena. Möjliga och lämpliga datacenterplatser i huvudstadsregionen har 
+tidigare kartlagts. Viktiga kriterier vid valet av förläggningsort har varit ett tillräckligt stort enhetligt 
+byggområde där planläggningen möjliggör byggandet av e tt datacenter i området, goda 
+trafikförbindelser, möjlighet att utnyttja spillvärme från datacentret, goda fiber - och 
+elnätsförbindelser samt närheten till annan stadsteknik. Hästkärr -området uppfyller alla 
+ovanstående krav och är i detta avseende exceptionellt lämplig för placeringen av ett datacenter 
+i Esbo och hela huvudstadsregionen.  
+Spillvärmen som datacentret producerar utnyttjas genom att återvinna den i Fortum Power and 
+Heat Oy:s värmepumpsanläggning och överföra den till ett regionalt fjärrvärmenät för användning 
+i Esbo, Kyrkslätt och Grankulla. Genom att utnyttja spillvärme från datacentret kan användningen 
+av stenkol i fjärrvärmeproduktionen minskas eller till och med avslutas, vilket hjälper Esbo stad 
+och dess grannkommuner och städer att nå sitt mål att minska koldioxidutsläppen.  
+Projektets plats 
+Projektområdet omfattar cirka 28 hektar och ligger cirka 3,5 km nordost om Esbo centrum, 
+väster/norr om Ring III mellan Hästkärr och Tollbacken. Projektområdets läge visas i figuren 
+nedan.  Projektområdet ägs av Microsoft.  
+I dagsläget är projektområdet nästan helt obebyggt och omfattar skogs - och åkerområden. I 
+närheten av projektområdena finns också jord - och skogsbruksområden. Projektområdet 
+avgränsas på västra och södra sidan av Oitans skogsområde, där vandringsleder finns. Bodom 
+träsk med omnejd, som ligger nordväst om projektområdet, är ett av Esbos viktigaste 
+rekreationsområden. Söder om projektområdet ligger den livligt trafikerade Ring III och 
+omedelbart öster om den ligger Byportens industriomr åde. I öst -västlig riktning genomkorsas 
+projektområdet av kraftledningar. På projektområdet finns bostadsområdet Rönnebacka öster om 
+Ring III och några bostadshus i närområdet norrut. Längre norrut från projektområdet finns mer
+
+[SIVU 25]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xxiv 
+ 
+bebyggelse. Detaljplanen för  Hästkärrsberget som gäller i området gör det möjligt  att bygga 
+datacentret på projektområdet.  
+ 
+Projektområdets läge  
+Beskrivning av projektet 
+Enligt projektplanen kommer fyra datacenterbyggnader och nödvändiga stödfunktioner, såsom 
+transformatorstationer för eldistribution, underhåll och kontorsbyggnader, 
+vattenhanteringssystem samt nödvändiga servicevägar och parkeringsplatser, att byggas på 
+projektområdet. Varje datacenterbyggnad har flera separata block som innehåller utrymme för IT- 
+och nätverksutrustning. Byggnaderna kommer att uppföras av stål och kompositplåt och externa 
+Projektområdets avgränsning i Esbo
+
+[SIVU 40]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xxxix 
+ 
+Käytetyt termit ja lyhenteet 
+ 
+Lyhenne Selitys 
+a Vuosi (1 a = 365 d), aikayksikkö   
+Käsite/lyhenne Kuvaus 
+AADT Vuosittainen keskimääräinen päivittäinen liikennemäärä 
+Adiabaattinen Suljetussa järjestelmässä energiaa ei häviä, vaan se vain siirtyy paikasta toiseen.  
+Adsorptio Aineen/yhdisteen sitoutuminen toisen aineen pintaan 
+AMP-suodatus Ns. aktiivinen suodatin, virtapiiri, johon on kytketty sähkösuodatin, jossa on 
+aktiivisia komponentteja, tyypillisesti vahvistin. 
+FWMP Sammutusjätevesien hallintasuunnitelma 
+HDV Raskasajoneuvo 
+Hiilidioksidivapaa 
+sähkö 
+Sellaisilla tuotantomuodoilla tuotettu sähkö, jonka tuotannossa ei ole käytetty 
+fossiilisia polttoaineita. 
+Huipputeho Suurin teho, joka voidaan saavuttaa tietyllä laitteella tai jota voidaan tarvita tietyssä 
+kulutuskohteessa. 
+HVO ”Vetykäsitelty kasviöljy”, uusiutuva polttoaine 
+IT-kapasiteetti Tiedon käsittelykapasiteetti (teho, MW) 
+LEED Leadership in Energy and Environmental Design  
+Rakennusten ympäristöjärjestelmä, sertifiointikriteerit 
+Lohko  Datakeskusrakennuksen erillinen yksikkö. Yhden lohkon (colo) IT -kapasiteetti on 
+noin 10 MW. 
+MWel Sähköteho 
+MWit IT-teho (IT-kapasiteetti) 
+MWth Polttoaineteho (energian tuottamiseksi tarvittava polttoaine-energia. 1 MWth - noin 
+0,3 MWel- 0,4 MWel) 
+COD Kemiallinen hapenkulutus, jätevesien laatuparametri 
+d Vuorokausi (1 d = 24 h), aikayksikkö 
+dB Desibeli, äänen voimakkuuden mittayksikkö 
+ELY Elinkeino-, liikenne- ja ympäristökeskus 
+EY Euroopan Yhteisö (nyk. Euroopan Unioni EU) 
+FINIBA-alueet  Suomen tärkeät lintualueet (IBA-alueet, kansainvälisesti tärkeät lintualueet) 
+GJ gigajoule (= 1000 MJ), energiayksikkö 
+GWh Gigawattitunti, energiayksikkö 
+IBA-alueet  Kansainvälisesti tärkeät lintualueet (Important Bird and Biodiversity Areas, IBA)
+
+[SIVU 41]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+xl 
+ 
+Lyhenne Selitys 
+Kondensaatti Tiivistymisprosessin tuote. Kondensaatiossa kaasumainen aine muuttuu 
+nesteeksi. 
+MAALI-alueet Maakunnallisesti tärkeät lintualueet 
+MATTI Viranomaisen tietokanta pilaantuneista tai historiatietojen perusteella mahdollisesti 
+pilaantuneista kohteista. 
+MWh  Megawattitunti, energiayksikkö 
+m3 NTP Kuutiometri kaasua normaalissa ilmanpaineessa 101,3 kPa ja lämpötilassa 0°C. 
+mS/m Sähkönjohtavuuden yksikkö, 1 Siemens = 1 A/V 
+Natura-alue Natura 2000 -alueiden verkostolla suojellaan koko Euroopan unionissa tärkeitä 
+luontotyyppejä ja lajeja. 
+REACH-asetus Asetuksella on luotu järjestelmä kemikaalien rekisteröintiä, arviointia ja 
+lupamenettelyä varten (2006/1907/EY). 
+PM10 Hengitettävät hiukkaset, koko enintään 10 µm 
+PM2.5 Pienhiukkaset, joiden halkaisija on enintään 2,5 µm 
+SAMASE Maaperän pilaantuneisuuden (saastuneisuuden) arvioinnissa ennen VNa 
+214/2007 voimaatuloa käytetyt raja-arvot 
+SO2 Rikkidioksidi, käytetään katalyyttinä 
+SWMP Hulevesien hallintasuunnitelma 
+t Tonni (1000 kg) 
+TUKES Turvallisuus- ja kemikaalivirasto 
+V (tai kV) Voltti (1 kV=1000 V), sähköjänniteyksikkö 
+VE0 Vaihtoehto 0, ns. nollavaihtoehto, hankkeen toteuttamatta jättäminen  
+VE1 Vaihtoehto 1, Hankkeen toteutusvaihtoehto, uuden datakeskuksen toteutus siten, 
+että generaattorit tulevat jokaiseen rakennukseen 
+VE2 Vaihtoehto 2, Hankkeen toteutusvaihtoehto, uuden datakeskuksen toteutus siten, 
+että generaattorit tulevat vain yhteen rakennukseen 
+vrk Vuorokausi, ks. ’d’ 
+VOC Haihtuvat orgaaniset yhdisteet (volatile organic compounds) 
+WHO Maailman terveysjärjestö 
+YSA Ympäristönsuojeluasetus 
+YSL Ympäristönsuojelulaki 
+YVA Ympäristövaikutusten arviointi
+
+[SIVU 42]
+Espoon datakeskus - Ympäristövaikutusten arviointi 
+1 
+ 
+1 Johdanto 
+Microsoft 3465 Finland Oy suunnittelee Espooseen uutta datakeskusta, jo nka tarjoama 
+tietojenkäsittelykapasiteetti vastaa alati lisääntyvään datan varastointi -, käsittely - ja hallintatarpeeseen. 
+Hankealue on kooltaan noin 28 hehtaaria ja sijoittuu noin 3,5 km Espoon keskuksesta koilliseen, Kehä III:n 
+länsi-/pohjoispuoliselle Hepokorven ja Tollinmäen väliselle alueelle. Hankealueen sijoittuminen on esitetty 
+Kuvassa (Kuva 1-1). Tämänhetkisen  hankesuunnitelman mukaan hankealueelle rakennetaan neljä 
+datakeskusrakennusta ja niille tarvittavat tukitoiminnot.  
+Hanke on käynyt läpi YVA-menettelyn mukaisen tarveharkinnan ja saanut Uudenmaan elinkeino-, liikenne- 
+ja ympäristökeskukselta (ELY-keskus) päätöksen asiasta (UUDELY/6968/2022). Uudenmaan ELY-keskus 
+esitti päätöksessään, ettei hankkeesta aiheudu sellaisia ympäristövaikutuksia, joita olisi tarpeen tarkastella 
+YVA-menettelyssä. Hanke on kuitenkin em. päätöksen jälkeen muuttunut erityisesti 
+varavoimageneraattoreiden määrän ja tehon osalta, minkä seurauksena YVA-menettelyn toteuttaminen tuli 
+tarpeelliseksi. 
+Hankkeen ympäristövaikutusten arvioinnissa tarkastellaan Micros oft 3465 Finland Oy:n Espoon 
+datakeskushankkeen toteuttamisen eri hankevaihtoehtoja sekä niiden vaikutuksia ympäristövaikutusten 
+arviointimenettelystä annetun lain (YVA -laki, 252/2017) ja asetuksen (YVA -asetus, 277/2017) 
+edellyttämällä tavalla. Hankevaihto ehtona VE1 arvioidaan tilannetta, jossa hankealueelle rakennetaan ja 
+otetaan käyttöön neljä (4) datakeskusrakennusta, joista jokaisella on omat varavoimageneraattorit 
+polttoainesäiliöineen. Hankevaihtoehtona VE2 arvioidaan tilannetta, jossa hankealueelle r akennetaan ja 
+otetaan käyttöön neljä (4) datakeskusrakennusta, mutta vain yksi datakeskusrakennus varustetaan 
+varavoimageneraattoreilla polttoainesäiliöineen. Lisäksi yhtenä hankevaihtoehtona tarkasteluissa on 
+hankkeen toteuttamatta jättäminen (hankevaihto ehto VE0), jolloin datakeskusta ei rakennettaisi eikä 
+otettaisi käyttöön hankealueella. 
+Ympäristövaikutusten arvioinnin tavoitteena on tuottaa tietoa hankkeen vaikutuksista ihmisiin ja 
+ympäristöön sekä lisätä kansalaisten tiedonsaantia ja osallistumismahdo llisuuksia. Arviointi on edellytys 
+sille, että hankkeen toteuttamiselle voidaan YVA -menettelyn päätyttyä seuraavissa lupaprosesseissa 
+myöntää tarvittavat luvat (mm. ympäristölupa ja rakennuslupa). 
+Arviointityö on tehty aiemmin laaditun ympäristövaikutusten arviointiohjelman (YVA -ohjelma) ja 
+yhteysviranomaisen siitä antaman lausunnon mukaisesti, huomioiden myös YVA -menettelyn 
+kuulemisvaiheiden aikana esitetyt muut viranomaislausunnot ja asianosaisten  mielipiteet.
+
+[SIVU 44]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+3 
+ 
+2 Hankkeen kuvaus 
+2.1 Johdanto 
+Hankkeen kuvauksessa luodaan yleiskatsaus hankkeeseen, sen rakentamistapaan, toimintatapoihin sekä 
+mahdolliseen käytöstä poistamiseen. Sen tarkoituksena on määritellä yleiskonteksti ympäristövaikutusten 
+arvioinnille (YVA) ja YVA -selostukselle. Hankkeen kuvaus sisältää tietoja mm. hankkeen tarkoituksesta, 
+hankealueesta ja sen ympäristöstä, hankevaihtoehdoista, suunnittelun kehitysprosessista ja 
+vaihtoehdoista, rakentamismenetelmistä ja -ohjelmasta sekä hankealueelle tulevasta infrastruktuurista. 
+Varsinaisen hankekuvauksen lisäksi lisätietoja hankkeesta on esitetty myös vaikutusarviointien 
+yhteydessä. Tietoja koskien esimerkiksi  datakeskusalueelle sijoittuvien rakennusten ja rakenteiden 
+korkeudesta, massasta ja sijoittelusta (visuaalisten vaikutusten arviointia varten), rakenteiden 
+suunnittelusta ja sijoittelusta (mm . meluvaikutusten arviointia varten) sekä toiminnasta ilmakehään 
+joutuvien päästöjen luonteesta (kemiallinen koostumus ja pitoisuudet, ilmanlaadun arviointia varten) on 
+käytetty vaikutusten arviointien perustana.  
+Ympäristövaikutusten arviointi on laadittu  tämänhetkisten hankesuunnitelmien pohjalta , ja hankkeen 
+jatkosuunnittelun myötä  hankesuunnitelmat voivat edelleen jossain määrin muuttua. Tällä hetkellä 
+suunnitelmana on  rakentaa neljä datakeskusrakennusta , joista jokainen edellyttää erillistä 
+rakennuslupahakemusta. Ympäristövaikutusten arvioinneissa on pyritty käyttämään "kohtuullisia pahimpia 
+mahdollisia skenaarioita”, jolla mahdollistetaan luotettava vaikutusten arviointi ja samalla säilytetään 
+jatkosuunnitteluun riittävä joustavuus. 
+2.2 Hankkeen tarve 
+Microsoft 3465 Finland Oy (Microsoft) suunnittelee uuden datakeskuksen rakentamista Espooseen. 
+Datakeskus tarjoaa infrastruktuurin jatkuvasti kasvavalle  tiedon tallennus -, käsittely - ja hallintatarpeelle. 
+Espooseen sijoittuva datakeskus  on yksi kolmesta erillisestä ja itsenäisesti toimivasta datakeskuksesta 
+(kaikki lähellä Helsinkiä), jot ka ovat osa Microsoftin datakeskuskonseptia. Kaksi muuta datakeskusta 
+sijoittuvat Vihtiin ja Kirkkonummelle. Yhdessä nämä kolme datakeskusta muodostavat yhden suurimmista 
+tieto- ja viestintäteknologisista investoinneista Suomessa. Vaikka datakeskukset toim ivat itsenäisesti, ne 
+synkronoidaan keskenään datakeskusalueeksi. Näin varmistetaan, että asiakkaiden tiedot turvataan 
+mahdollisimman lyhyellä vasteajalla kaikissa olosuhteissa. Vihtiin ja Kirkkonummelle sijoittuviin 
+datakeskuksiin kohdistetaan erilliset YVA- ja lupaprosessit. 
+Datakeskuksia tarvitaan , sillä yhteiskunta on yhä riippuvaisempi tietotekniikasta, tiedon hallinnasta ja 
+tiedonsiirrosta. Suurissa datakeskuksissa säilytetään, hallinnoidaan ja käsitellään dataa luotettavasti ja 
+turvallisesti. Microsoftin datakeskushankkeilla pyritään vastaamaan digitaalisen yhteiskunnan ja 
+elinkeinoelämän kasvaviin tietojenkäsittely - ja hallintatarpeisiin tarjoamalla lisää 
+tietojenkäsittelykapasiteettia. Datakeskusalue on osa Microsoftin globa alia pilvi -infrastruktuuria, johon 
+kuuluu yli 60 datakeskusaluetta, yli 200 datakeskusta ja yli 280 000 kilometriä valokuitukaapelia. Microsoftin 
+pilvi-infrastruktuuri palvelee yli miljardia asiakasta 140 maassa. 
+Microsoftin datakeskuksella muodostuvaa hukkalämpöä hyödynnetään ottamalla sitä talteen Fortum Power 
+and Heat Oy  (myöhemmin Fortum)  lämpöpumppulaitoksella ja siirtämällä sitä alueelliseen 
+kaukolämpöverkostoon hyödynnettäväksi Espoon, Kirkkonummen ja Kauniaisten alueilla. Kyseessä on 
+tähän mennessä maailman suurin datakeskusten hukkalämmön kierrätysjärjestelmä. Datakeskuksen 
+hukkalämmön hyödyntämisen myötä kivihiilen käyttöä kaukolämmön tuotannossa voidaan vähentää tai se 
+voidaan jopa kokonaan lopettaa, mikä  auttaa Espoon kaupunkia ja sen naapurikunt ia ja -kaupunkeja 
+pääsemään hiilidioksidipäästöjen vähentämistavoitteeseensa. 
+2.3 Hankevaihtoehdot 
+Ympäristövaikutusten arviointia koskevassa lainsäädännössä, tämän YVA -selostuksen luvussa 4 
+esitetyissä voimassa olevissa ohjeissa sekä parhaissa käytännöissä edellytetään, että
+
+[SIVU 45]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+4 
+ 
+ympäristövaikutusten arvioinnissa tarkastellaan esimerkiksi hankkeen suunnitte lun, teknologian, sijainnin, 
+koon ja mittakaavan osalta sellaisia "kohtuullisia vaihtoehtoja", joita on tutkittu ja jotka ovat merkityksellisiä 
+hankkeen ja sen erityispiirteiden kannalta. Lisäksi arviointiselostuksessa on kuvattava tärkeimmät syyt 
+toteutettavaksi valitun vaihtoehdon valinnalle, mukaan luettuna vaihtoehtojen vertailu.  
+ELY-keskuksen YVA -ohjelmasta antaman lausunnon ja kuulemispalautteen perusteella hanketta 
+tarkastellaan kolmen vaihtoehdon kautta lain ympäristövaikutusten arviointimenettelys tä (252/2017) ja 
+valtioneuvoston asetuksen ympäristövaikutusten arviointimenettelystä (277/2017) mukaisesti. Arvioinnissa 
+on tarkasteltu seuraavia hankevaihtoehtoja: 
+• Hankevaihtoehto VE0:  Ympäristövaikutusten arviointia koskevien asetusten mukaisesti yksi 
+YVA-menettelyssä tarkasteltavista vaihtoehdoista on "ei tehdä mitään" -vaihtoehto, jossa 
+hanketta ei toteuteta. Hankevaihtoehdossa VE0 aluetta tarkastellaan siinä tilassa kuin se on tätä 
+ympäristövaikutusten arviointiselostusta laadittaessa.  
+• Hankevaihtoehto VE1:  Hankevaihtoehdossa VE1 hankealueelle suunniteltu datakeskus 
+rakennetaan ja otetaan käyttöön. Microsoftin tämänhetkisen hankesuunnitelman mukaan 
+hankealueelle, jonka pinta-ala on noin 28 hehtaaria, rakennetaan neljä datakeskusrakennusta ja 
+tukitiloja. Datakeskusten IT -kapasiteetti on noin 173 MW. Hankevaihtoehdossa VE1 kaikki 
+rakennettavat datakeskusrakennukset varustetaan vara voimageneraattoreilla 
+(polttoainekapasiteetti yhteensä noin 600 MW vuodessa). 
+• Hankevaihtoehto VE2:  Hankevaihtoehdossa VE2 hankealueelle suunniteltu datakeskus 
+rakennetaan ja se otetaan käyttöön, mutta generaattoreita tulee vain yhteen rakennukseen 
+(polttoainekapasiteetti yhteensä noin 165 MW). 
+Hankevaihtoehto V E2 ei sisältynyt tämän hankkeen YVA -ohjelmaan, joka toimitettiin ELY -keskukselle 
+25.4.2023. YVA-ohjelmasta 6.7.2023 antamassaan lausunnossa ELY-keskus totesi hankevaihtoehdoista 
+seuraavaa: 
+”Vaihtoehtotarkastelussa on valittu käsiteltäväksi vain yksi kokolu okaltaan suurin tarpeellinen varavoiman 
+määrä. Vaikutusarvioinnissa voi olla tarkoituksenmukaista käsitellä yhtenä hankevaihtoehtona myös 
+pienempää, esimerkiksi hankkeen ensimmäisen vaiheen kattavaa varavoiman määrää. Myös ohjelmassa 
+todettiin olevan mahdo llista, että vara voimageneraattorit asennetaan vain ensimmäiseen 
+datakeskusrakennukseen. Mikäli generaattoreiden enimmäismäärän haittavaikutusten todettaisiin olevan 
+merkittäviä, osavaikutusten arviointi saattaa jatkossa osoittautua tarpeelliseksi. Vaihtoe htoasettelua on 
+syytä tarkastella tästä näkökulmasta.” 
+Mahdollisen vähäisemmän varavoimatarpeen arvioinnin va rmistamiseksi tarkasteluun sisällytettiin 
+vaihtoehto VE2, jossa arvioidaan vain yhdessä rakennuksessa sijaitsevien generaattoreiden vaikutuksia.  
+2.3.1 Harkitut vaihtoehtoiset sijoituspaikat 
+Vaikka Espoon, Vihdin ja Kirkkonummen datakeskukset toimivat itsenäisesti, ne synkronoidaan keskenään. 
+Käytännössä kaikki kolme hanketta ovat riip puvaisia toisistaan ja niiden toiminta edellyttää hankkeiden 
+välisiä kuituyhteyksi ä. Sijoituspaikan valintaprosessissa tuli siten huomioida s ijoituspaikan tekniset 
+vaatimukset. Microsoftin etsiessä sopivia sijoituspaikkoja Helsingin läheisyydestä, Espoo, V ihti ja 
+Kirkkonummi todettiin sopiviksi seuraavien seikkojen perusteella: 
+• ehdotetun käyttötarkoituksen mukainen kaavoitussuunnitelma; 
+• hyvät kuituyhteydet hankealueille ja hankkeiden välillä (vähintään neljä mahdollista kuituyhteyttä 
+tonttia kohti); 
+• hyvät sähköverkkoyhteydet; 
+• vähintään kaksi liikenneyhteyttä alueille; ja 
+• Kirkkonummen ja Espoon osalta kohteet soveltuivat hyvin hukkalämmön hyödyntämiseen;  
+• riittävän suuri rakennusala; 
+• tulva-alueiden välttäminen.
+
+[SIVU 46]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+5 
+ 
+Edellä esitetyt sijaintipaikan vaatimukset huomioiden hankealue edusti Microsoftille ainoaa käyttökelpoista 
+sijaintia Helsingin läheisyydessä (yhdessä Vihdin ja Kirkkonummen sijaintipaikkojen kanssa) ja täytti 
+tärkeän kuituyhteyden ja kolmen lähekkäisen sijaintipaikan kriteerit. 
+2.3.2 Vuorovaikutus ja suunnittelun ohjaus 
+Ympäristövaikutusten arvioinnin sekä arkkitehtuuri - ja teknisten suunnitelmien välinen vuorovaikutus on 
+keskeinen osa  ympäristövaikutusten arviointiprosessia . Vuorovaikutuksella varmistetaan, että 
+arkkitehtuuri- ja teknisissä suunnitelmissa otetaan huomioon hankkeen mahdolliset ympäristövaikutukset , 
+ja että niihin sisällytetään toimenpiteitä havaittujen vaikutusten lieventämiseksi tai minimoimiseksi.  
+Hankealueen yleissuunnitelma ja tekniset suunnitelmat muodostavat tämän ympäri stövaikutusten 
+arvioinnin perustan, ja niitä on kehitetty vaiheittain rakennuslupahakemusta varten seuraavasti:  
+• 30 prosentin suunnittelu; 
+• 60 prosentin suunnittelu; ja 
+• 90 prosentin suunnittelu. 
+Kussakin edellä mainitussa vaiheessa suoritettiin ympäristöarviointi sen varmistamiseksi, että kaikki 
+ympäristönäkökohdat ja niihin liittyvät lieventämistoimet on otettu huomioon. Seuraavassa esitetään joitakin 
+esimerkkejä havaituista muutostarpeista. 
+Pohja- ja pintavesien näkökulmasta suunnitteluun on sisällytetty seuraavat toimenpiteet: 
+• Todettiin, että jätevesisäiliö voi olla altis kellumiselle. Suunnitelmia suositeltiin muutettavaksi 
+siten, että jätevesisäiliön ja muiden maanalaisten säiliöiden kelluminen estetään alueilla, joilla 
+pohjaveden on todettu olevan korkealla.  
+• Todettiin, että akkuhuoneen vesisäiliössä (johon kerätään akkuhuoneista valu mavedet) on 
+ylivuotoyhde. Neuvottiin, että tätä ei pitäisi liittää sadevesijärjestelmään. Suunnitelmassa on nyt 
+ylimitoitettu säiliö, jossa ylivuodon tarvetta ei ole, mikä vähentää paikallisten 
+vesistöjen/maaperän pilaantumisvaaraa. 
+• Todettiin, että osana sammutusjäteveden hallintasuunnitelmaa tarvitaan hälytys - tai 
+aktivointimenetelmä, jolla työntekijöille ilmoitetaan, että sammutusjäteveden hallintasäiliö 
+ylivuotaa ja sen sisältö leviää ympäröivälle alueelle. Tämä on nyt sisällytetty suunnitelmaan, ja 
+se varoittaa hä iriötilanteista vastaavia henkilöitä  sulkemaan puroon johtavan patomuurin 
+purkuvesistön suojelemiseksi. 
+• Varavoimageneraattoreiden polttoainesäiliöt suositeltiin kaksoisvaipallisiksi, koska generaattorit 
+saattavat sijaita arteesisella alueella, jossa pohjavesi on korkealla (olemassa olevat pohjaveden 
+tarkkailupisteet eivät ole riittävän lähellä varavoimageneraattoreiden tulevaa sijaintia tämän 
+vahvistamiseksi, mutta se on erittäin todennä köistä käytettävissä olevien tarkkailupisteiden 
+tarkastelun perusteella).  
+Ekologisen monimuotoisuuden näkökulmasta suunnitteluun on sisällytetty seuraavat toimenpiteet: 
+• Alueen pohjoisraja on yhdistetty etelärajaan viheryhteydellä, joka vahvistaa nykyistä 
+elinympäristöä. Yhteys on toteutettu metsäpuiden muodostamana puskurivyöhykkeenä.  
+• Viherkäytävä mahdollistaa liito -oravien liikkumisväylän säilymisen ja samalla on pyritty 
+säilyttämään mahdollisimman paljon lahokaviosammalesiintymiä.  
+• Valaistukseen on sovellettu strategista lähestymistapaa, jo nka avulla  lepakoiden 
+ravinnonhankinta- ja kulkureittien kannalta elintärkeät  pimeät käytävät alueen reunoilla ja 
+läheisillä luontotyypeillä säilytetään. 
+Ilmanlaadun näkökulmasta suunnitteluun on sisällytetty seuraavat toimenpiteet: 
+• Mallinnuksen avulla datakeskuksen piipulle määritettiin vähimmäiskorkeus , jo nka avulla 
+varmistetaan, ettei generaattorien pakokaasujen sisältämien epäpuhtauksien laskeutumisella ei
+
+[SIVU 47]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+6 
+ 
+ole merkittäviä vaikutuksia ihmisiin ja ekologisisiin kohteisiin. Korkeudeltaan 24 metrin piippujen 
+todettiin mahdollistavan pakokaasujen riittävän leviämisen. 
+2.3.3 Energian käytön ja rakentamisen BAT-tarkastelu 
+Datakeskusten maailmanlaajuinen kehitys on johtanut merkittäviin rakennusten suunnitteluun ja 
+rakentamiseen liittyviin energiatehokkuuden parannuksiin. Vaihtoehtoisten energiatekniikoiden käyttöä 
+tutkittiin osana prosessia.  
+Toimitilojen ympäristövaikutukset on minimoitu energiaa säästävillä tekniikoilla, kuten aurinkopaneeleilla, 
+energiatehokkaalla valaistuksella, valaistuksen liiketunnistinohjauksella ja taajuusmuuttajapumpuilla. 
+Toimistotiloihin asennetaan poistoilman lämmön t alteenottojärjestelmät, joissa on ilmalämpöpumput. 
+Laitoksella käytetään taajuusmuuttajia sekä mahdollisuuksien mukaan energiatehokkaita suoravetoisia 
+sähköisillä kommutaattoreilla varustettuja tuulettimia ja moottoreita.  
+Kaikissa laitteissa käytetään eri ttäin energiatehokkaita moottoreita. Kaikkia tiedon varastointipalvelujen 
+teknisiä ratkaisuja on tarkasteltu yksityiskohtaisesti energianäkökulmasta.  
+Varavoimasta aiheutuvia päästöjä vähennetään nykyaik aisella katalyyttisella pelkistyksellä (SCR), jolla 
+NOx-päästöjä saadaan vähennettyä jopa  90 % verrattuna tilanteeseen, jossa puhdistusta ei tehtäisi 
+lainkaan. 
+Kohteen rakentamisessa noudatetaan parhaita paikallisia käytäntöjä, paikallisia määräyksiä ja standardeja. 
+Rakennuslupahakemuksia valmistellaan YVA -menettelyn ohessa . YVA-menettelyn päätyttyä sen 
+päätelmien perusteella  laaditaan erillinen ohjeistus  ympäristövaikutusten hallintaan , jonka avulla  
+varmistetaan, että kaikki tarvittavat lieventämismenetelmät ja havainnot ymmärretään  hankkeen 
+rakentamisvaiheessa. Esimerkiksi melun ja tärinän vaikutusten hallinnan osalta tullaan toteuttamaan 
+parhaita käytäntöjä  sekä rakentamis- että toimintavaiheess a (kuten rakentamisen aikaiset tilapäiset 
+meluesteet ja toiminnan aikaiset talotekniset ratkaisut). 
+Kohteeseen rakennettavassa sähköasemassa käytetään uusimpia ja nykyaikaisimpia sähköntuotanto- ja 
+siirtoprosesseja, joita Fingrid käyttää myös muissa laitoksissaan Suomessa . Fingrid harkitsee  
+toiminnoissaan jatkuvasti vaihtoehtoisia prosesseja useiden tekijöiden, kuten teknisen toteutettavuuden, 
+ympäristövaikutusten, tehokkuuden, turvallisuuden, luotettavuuden ja kustannusten näkökulmasta. Näin 
+ollen Microsoftilla ei ole prosessisuunnittelun näkökulmasta jou stavuutta valita vaihtoehtoisia prosesseja 
+integroitavaksi nykyiseen kansalliseen verkkoon.  
+2.4 Hankealue 
+Suuruudeltaan 28 hehtaarin hankealue sijaitsee noin 3,5 kilometriä Espoon keskuksesta koilliseen, Kehä 
+III:n länsi-/pohjoispuolella Hepokorven ja Tollinmäen välillä. Kohdealue on Microsoftin omistuksessa. 
+Hankealueella voimassa oleva asemakaava mahdollistaa datakeskuksen rakentamisen alueelle. Espoon 
+kaupunginvaltuusto hyväksyi Hepokorvenkallion asemakaavan ja asemakaavan muutoksen vuonna 2021. 
+Kaavoituksesta valitettiin Helsingin hallinto -oikeuteen, joka hylkäsi valituksen 27.1.2023 antamallaan 
+päätöksellä. Helsingin hallinto -oikeuden päätöksestä valitettiin korkeimpaan hallinto -oikeuteen, joka ei 
+myöntänyt valituslupaa ja asemakaava tuli lainvoimaiseksi. 
+Hankealueen ja sen ympäristön maisemaan Kehä III:n pohjoispuolella kuuluu pelto aukeita ja metsää. 
+Hankealueen pohjoispuolella sijaitsee maakunnallisesti arvokas Bodominjärven kartano- ja kyläympäristö 
+ja noin 200 m hankealueesta ja Kehä III:sta kaakkoon sijaitsee Espoonjokilaakson maakunnallisesti 
+arvokas kulttuuriympäristö, jonka maisema-alueella on myös useita muinaisjäännöksiä. Myös hankealueen 
+länsi-luoteispuolella sijaitsevan Glimsinjoen varrella on muinaisjäännöksiä 
+Datakeskushankkeen suunnittelussa ja hankkeen YVA -menettelyssä on otettu huomioon paikalliset 
+asuinalueet ja palvelut. Hankealueen kaakkoispuolella Kehä III:n itäpuolella sijaitsee Pihlajarinteen 
+asuinalue. Hankealueen lähialueella sen pohjoispuolella on asuinrakennuksia ja yksi vapaa -ajan asunto.
+
+[SIVU 48]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+7 
+ 
+Hieman pohjoisempana on lisää vapaa-ajan asuinrakennuksia. Hankealuetta lähimmät asuinrakennukset 
+sijaitsevat noin 100 metrin etäisyydellä hankealueen itäpuolella ja noin 150 metrin etäisyydellä alueen 
+pohjoispuolella. Noin 400 metrin etäisyydellä alueesta Kehä III:n itäpuolella on urheilukenttä ja 700 metrin 
+etäisyydellä alueesta itään sijaitsee Jorvin sairaala. Lähin koulu on noin 650 metrin ja lähin päiväkoti noin 
+250 metrin päässä hankealueesta. Lähimmät luonnonsuojelualueet sijaitsevat 450–900 metrin päässä 
+hankealueesta. 
+2.5 Hankkeen keskeiset osatekijät 
+Alueelle rakennetaan yhteensä neljä pinta-alaltaan noin 13 800 m 2, 16 800 m 2, 16 800 m 2 ja 3 700 m2 
+datakeskusrakennusta (Kuva 2-1). Kussakin datakeskusrakennuksessa on useampi erillinen lohko, joka 
+sisältää tilat IT - ja verkkolaitteille. Rakennukset tehdään teräksestä ja komposiittilevyistä, ja n iihin 
+asennetaan ulkois ia ilmajäähdyttimiä ja varavoimageneraattoreita. Lisäksi datakeskuksen alueelle on 
+suunniteltu rakennettavaksi muuntoasemat sähkönjakelua varten, huolto - ja toimistorakennukset, 
+pintavesien viemäröinti ja viiv ytyssäiliö sekä altaat sekä tarvittavat huoltotiet ja pysäköintialueet. 
+Datakeskus tulee olemaan jatkuvassa toiminnassa vuoden jokaisena päivänä. Alustavien valmistelutöiden 
+jälkeen rakennukset rakennetaan yksi kerrallaan . N äin ollen ensimmäinen (ensimmäiset) 
+datakeskusrakennus (datakeskusrakennukset) on/ovat toiminnassa loppujen rakennuskokonaisuuksien 
+rakentamisen ollessa vielä kesken. 
+Osana hanketta rakennetaan myös tarvittavat tukitoiminnot, kuten huolto - ja toimistorakennukset, 
+huoltotiet, pysäköintialueet, sähköasema ja viemäröintijärjestelmät. Ehdotettu hankesuunnitelma esitetään 
+Kuvassa (Kuva 2-1).  
+Yhteenvetona hankkeen todetaan sisältävän seuraavat keskeiset osatekijät: 
+• neljä datakeskusrakennusta, joita kutsutaan nimillä HEL16, HEL17, HEL18 ja HEL19;  
+• hallintorakennus; 
+• hanketta palveleva sähköasema (Bodom); 
+• varavoimageneraattorit, jotka on kytketty neljään datakeskusrakennukseen ja 
+hallintorakennukseen; 
+• aidat ja niihin liittyvät turvajärjestelyt; 
+• hätäpoistumistiet; ja 
+• autojen pysäköintialueet, polkupyöräpaikat, maisemoidut alueet ja sisäiset tiet.  
+Käyttörakennuksiin kuuluvat: 
+• vartiointirakennus; 
+• huoltorakennus; 
+• pumppuhuone; 
+• vedenkäsittely;  
+• väestönsuoja; ja 
+• lämmön talteenotto.
+
+[SIVU 49]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+8 
+ 
+ 
+Kuva 2-1: Hankkeen kuvaus – Hankkeen ehdotettu asemapiirros ja kulkuyhteydet . Bild 2–1 
+Projektbeskrivning – Förslag på situationsplanen och trafikförbindelserna.
+
+[SIVU 50]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+9 
+ 
+2.6 Hankkeen rakentamisvaihe 
+Alla esitetyssä yhteenvedossa kuvataan yleisellä tasolla , miten hanke tällä hetkellä oletetaan 
+rakennettavan. Tärkeimmät toimet ovat seuraavat: 
+• Alueen raivaus, työmaan valmistelu ja ojien käsittely ja hallinta;  
+• Kallion louhinta ja murskaaminen, mukaan lukien murskeen varastointi; 
+• Pysyvä liityntäinfrastruktuuri rakennusvaihetta 1 (HEL16 ja liitännäistyöt) sekä tulevia vaiheita 
+(HEL17, HEL18, HEL19 ja liitännäistyöt) varten, mukaan luettuna teiden rakentami nen; 
+• 500–1500 työntekijän sosiaalitilat (mukaan lukien toimistot, ruokala ja sosiaalitilat);  
+• Raskaan koneiston pysäköintialue ja henkilöpysäköintialue (500 paikkaa);  
+• Kokoontumispaikka 
+• Rakennustyömaan varastointialue; 
+• Jätehuoltoalue; 
+• Perustusten ja teräsrunkojen rakentaminen, kunnallistekniikan asentaminen, maanrakennustyöt 
+ja pohjatyöt päärakennusten ja sähköaseman rakentamista varten; 
+• Datakeskusrakennusten (HEL 16, HEL 17, HEL 18 ja HEL 19) rakentaminen erillisiin 
+rakennuskokonaisuuksiin, mikä edellyttää verhous- ja kattotöitä, rakennuksen säänkestävyyden 
+varmistamista ja sisätilojen kunnostamista, 
+• Muiden hankkeeseen liittyvien rakennusten, kuten hallinto - ja apurakennusten, rakentaminen 
+sekä pihan ja ulkoisten teiden rakentaminen.  
+Datakeskusrakennusten rakennustyöt on tarkoitus aloittaa vuonna 2024, ja niiden odotetaan valmistuvan 
+vuonna 2031. Rakennustyöt toteutetaan Taulukko 2-1 esitetyssä järjestyksessä . Rakennusten oletetaan 
+aloittavan toimintansa niiden valmistuttua. 
+ 
+Taulukko 2-1: Hankkeen kuvaus – Yhteenveto rakentamisen aikataulusta. Tabell 2–1: Projektbeskrivning –
+Sammanfattning av projekt tidtabellen. 
+Alustava  
+aikajana 
+elokuu - 24 
+syyskuu - 24 
+lokakuu - 24 
+marraskuu - 24 
+joulukuu - 24 
+tammikuu - 25 
+helmikuu - 25 
+maaliskuu - 25 
+huhtikuu - 25 
+toukokuu - 25 
+kesäkuu - 25 
+heinäkuu - 25 
+elokuu - 25 
+syyskuu - 25 
+lokakuu - 25 
+marraskuu - 25 
+joulukuu - 25 
+tammikuu - 26 
+helmikuu - 26 
+maaliskuu - 26 
+huhtikuu - 26 
+toukokuu - 26 
+kesäkuu - 26 
+Vuosi 2027 
+tammikuu - 28 
+helmikuu - 28 
+Vuosi 2028 
+Vuosi 2029 
+Vuosi 2030 
+tammikuu - 31 
+helmikuu - 31 
+maaliskuu - 31 
+huhtikuu - 31 
+toukokuu - 31 
+Espoo 
+Esirakentaminen                                                 
+Louhintatyöt                                           
+Rakentaminen  
+HEL 16                                                         
+Rakentaminen  
+Tulevat vaiheet
+
+[SIVU 51]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+10 
+ 
+2.6.1 Rakentamisjärjestys 
+Rakentaminen aloitetaan työma atilojen rakentamisella hankealueen pohjoiso saan, jonka jälkeen 
+toteutetaan työmaatiet pohjoiselle ja eteläiselle alueelle sekä niiden välille. Eteläinen alue jaetaan edelleen 
+kolmeen osa -alueeseen (eteläisen alueen pohjois -, keski - ja eteläosa). Eteläisen alueen p ohjoisosaan 
+rakennetaan sosiaalitilat, kokoontumispaikka ja raskaiden laitteiden pysäköintialue. Työmaatilat sisältävät 
+toimiston, ruokalan ja taukotiloja, jotka  palvelevat rakennusvaiheen 500:aa työntekijää. K iireisimpinä 
+aikoina työntekijöitä voi olla jopa 1500. Eteläisen alueen keskiosaan rakennetaan 500 -paikkainen 
+pysäköintialue ja kokoontumispaikka. Eteläisen alueen eteläisimmässä osassa sijaitsevat 
+rakennustyömaalle keskeiset varastointialue, jätepiste ja polttoaineen tankkausasema. 
+Vuoden 2024 jälkipuoliskolla ja vuoden 2025 puoliväliin saakka toteutetaan rakennustyön ensivaiheessa 
+alueen raivaus ja kallio n louhinta . Maanrakennustyöt edellyttävät huomattavan määrän materiaalin 
+siirtämistä. Osa tästä ma teriaalista, kuten kallio ja maa -aines, hyödynnetään hankealueella ja loput 
+materiaalista sijoitetaan muualle kuin työmaalle. Tämä on kuvattu yksityiskohtaisemmin  taulukossa 
+(Taulukko 2-2). 
+Pohjoisen alueen pohjatöiden odotetaan valmistuvan huhtikuuhun 2025 ja eteläisen alueen toukokuuhun 
+2025 mennessä. Kallion louhintayöt on suunniteltu aloitettaviksi marraskuussa 2024, ja niiden odotetaan 
+päättyvän hel mikuuhun 2025 mennessä koko alueella. Tämän jälkeen, toukokuuhun 2025 asti, 
+viimeistellään rakennustyömaan varastointialueet, sosiaalitilat ja pysäköintialueet osana esirakennustöitä.  
+Sähköaseman rakennustyöt aloitetaan vuoden 2025 alkupuolella. Vuoden 20 25 jälkipuoliskolla, kun 
+esirakennustyöt ja louhintatyöt on saatu päätökseen, aloitetaan HEL16:n rakennustyöt.  
+Vuonna 2026 aloitetaan HEL17:n rakennustyöt. HEL16:n lohkon 1 ja hallintorakennuksen on määrä 
+valmistua marraskuuhun 2026 mennessä lohkojen 2–5 sisätilojen valmistelun ollessa käynnissä. Kyseisen 
+vuoden aikana valmistuvat myös apurakennusten, maisemointitöiden ja sähköaseman rakennustyöt. IT -
+laitteisto siirtyy käyttämään pysyvää sähköä. 
+Vuoden 2027 aikana HEL17:n lohko 1 ja hallintorakennus viimeistellään, ja HEL16:n lohkojen 2–4 sisätiloja 
+valmistellaan. 
+Vuonna 2028 HEL16:n lohko 5 valmistuu, HEL18:n rakennustyöt alkavat - ja HEL17:n lohkojen 2 –6 
+rakennustyöt ovat käynnissä. HEL 18:n ja HEL19:n rakennustöiden odotetaan jatkuvan vuoteen 2031 asti.
+
+[SIVU 52]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+11 
+ 
+ 
+Kuva 2-2: Hankkeen kuvaus – Rakentamisen vaiheistus  ja vaiheiden kehitys . Bild 2 –2:  Projektbeskrivning – Byggskedets förslag och  skedens 
+utveckling.
+
+[SIVU 53]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+12 
+ 
+2.6.2 Hankkeen vaatima maanrakentaminen 
+Hankkeeseen liittyy merkittäviä maanrakennustöitä, mukaan lukien pintamaan poisto ja kallion louhinta 
+(marraskuun 2024 ja helmikuun 2025 välisenä aikana). Hankealueen raivauksen aikana poistettu 
+ylimääräinen pintamaa käytetään mahdollisuuksien mukaan datakeskusalueen rakentamisessa, 
+esimerkiksi istutettujen ja maisemoitujen alueiden täyttämiseen. Jäljelle jäävä rakentamiseen kelpaamaton 
+pintamaa-aines kuljetetaan asianmukaiseen vastaanottopaikkaan . Poistettua pintamaat a käytetään 
+mahdollisuuksien mukaan datakeskusalueen rakentamisessa, esimerkiksi sisäpihan istutettujen ja 
+maisemoitujen alueiden täyttämiseen. Suurin osa louhinnasta saatavasta kiviaineksesta murskataan ja 
+hyödynnetään paikan päällä alueen täytöissä ja rakennekerroksissa.  
+Louhintaan liittyvät r äjäytykset pyritään toteuttamaan  mattoräjäytyksinä eli peittämällä räjäytyskentät 
+rengasmatoilla. Louhintatöiden suunnittelu sta ja valvon nasta vastaa ulkopuolinen louhintakonsultti 
+(pääurakoitsijan aliurakoitsija). Räjähdyspanoksena käytetään  tavallisesti dynamiittia. Virheräjähdysten 
+riskin minimoimiseksi käytetään elektronista räjäytysjärjestelmää. Räjäytysikkunan suojavyöhykkeet 
+suunnitellaan huolellisesti siten, että henkilövahinkojen/onnettomuuksien tai omaisuusvahinkojen riski on 
+mahdollisimman pieni. Tärinää seurataan, siitä pidetään kirjaa ja siitä raportoidaan 
+tärinänseurantajärjestelmän avulla. 
+Hankealueen valmistelun (esim. puiden kaataminen, kaivaminen, tasoittaminen, täyttäminen) jälkeen 
+tehdään rakennusten ja muiden rakenteiden perustukset, pystytetään rakennukset ja muut rakenteet, 
+asennetaan laitteet ja maisemoidaan hankealue maisemointisuunnitelmien mukaisesti. 
+Taulukossa esitettyjen maanrakennustöiden määrät mahdollistavat seuraavien lopullisten lattiatasojen 
+saavuttamisen (N2000): 
+• HEL16 = + 34,00; 
+• HEL17 = + 34,66; 
+• HEL18 = + 52,00; ja 
+• HEL19 = + 51,50. 
+ 
+Taulukko 2-2: Hankkeen kuvaus – Kaivuu-, louhinta - ja täyttömäärien yhteenveto.  Tabell 2–2: 
+Projektbeskrivning – Grävning-, brytning- och fyllningsmängdernas sammandrag. 
+ Hyödyntämiskelvoton 
+maa- ja kallioaines 
+(m3) 
+Alueen täytöissä 
+hyödynnettävä 
+maa- ja 
+kallioaines (m3) 
+Ulkopuolelta 
+tuotava 
+täyttömäärä 
+(m3) 
+Huomautus 
+Vaihe 1 (HEL16) 405 442 80 240 209 410 Kallioleikkaus yhteensä =  
+66 640m3 
+Tulevat vaiheet  
+(HEL17, HEL18 & 
+HEL19) 
+91 040 113 760 62 708 Kallioleikkaus yhteensä = 
+126 400m3 
+Kokonaisleikkaus (m3) 690 482  
+Kallioleikkaus 
+hankealueella yhteensä = 
+193 040m3 
+Täyttö yhteensä (m3)  466 118  
+ 
+Yhteenvetona: 
+• Kaivuun ja louhinnan kokonaismäärä alueella on 690 482 m3, josta kallion louhintaa on 193 040 
+m3. 
+• Vaihe 1, kaivuun ja louhinnan kokonaismäärä on 485 682 m 3, josta kallion louhintaa on 66 640 
+m3.
+
+[SIVU 54]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+13 
+ 
+• Tulevat vaiheet, kaivuun ja louhinnan kokonaismäärä on 204 800 m 3, josta kallion louhintaa on 
+126 400 m3. 
+• Ylijäämämaan ja kallioaineksen kokonaismäärä koko työmaalla on 496 482 m3. 
+• Koko työmaan täyttöaineksen määrä on yhteensä 466 118 m 3, josta työmaalta louhitun kallion 
+osuus on 194 000 m3 ja tuodun kiviaineksen osuus on 272 118 m3. 
+Alla kuvassa (Kuva 2-3) on esitetty hankealueen alustavat louhinta - ja kaivutasot. Keltaisesta punaiseen 
+olevat alueet ovat alueen alentamista ja sinertävät ja vihreät alueet alueiden täyttöä. 
+ 
+Kuva 2-3: Hankkeen kuvaus – Hankealueen alustavat louhinta - ja kaivutasot (AECOM). Bild 2 –3: 
+Projektbeskrivning – Projektområdets preliminär brytning- och grävningsnivå (AECOM).
+
+[SIVU 55]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+14 
+ 
+2.6.3 Räjähdysaineiden sisältämä typpi 
+Räjäytysaineet koostuvat yleensä eri komponenttien, kuten nitroglyseriinin, nitroglykolin, dinitrotolueenin ja 
+trinitrotolueenin seoksista. Räjähdysaineita on saatavana eri muodoissa, kuten muovi -, jauhe - ja 
+vesipitoisina räjähdysaineina. Suurin osa nykyis in käytetyistä räjähdysaineista on nitraattipohjaisia, ja 
+yleisin räjähdysaine on ammoniumnitraatti, jonka typpipitoisuus on 35 –65 prosenttia kokonaismassasta. 
+Räjähteiden typpiyhdisteiden aiheuttama pilaantuminen voi ilmetä kahdella eri tavalla. Ensinnäki n 
+ammoniumnitraatti (NH4NO3), joka on veteen hyvin liukeneva suola, aiheuttaa räjähtämättömistä räjähteistä 
+typpivuotoja veteen joko panostuksen aikana tai räjäytyksen jälkeen. Toiseksi räjäytyksessä syntyy 
+typpikaasua, N 2. Epätäydellisen räjäytyksen yhtey dessä voi kuitenkin muodostua myös myrkyllisiä 
+typpikaasuja, kuten typpioksidia (NOx) tai typpidioksidia (NO 2). Joistakin räjähdysaineista, kuten 
+nitroglyseriinistä ja nitroglykolista, voi jopa syntyä vähäisiä N 2(g)-määriä panostuksen aikana. 
+Typpipohjaiset räjähdysaineet voivat vaikuttaa ympäristöön pääasiassa seuraavien reittien kautta:  
+• vuotaminen kuljetuksen tai panostuksen aikana; 
+• räjähdysaineen liukeneminen (huuhtoutuminen) märissä räjähdysrei'issä; ja  
+• räjäytyksen jälkeen kalliossa tai kiviaineksen seassa oleva räjähtämätön räjähdysaine.  
+Räjäytyksistä peräisin oleva typpijäännös on suoraan yhteydessä kallion räjäyttämiseen käytetyn 
+räjähdysaineen tyyppiin ja määrään (tunnetaan myös nimellä jauhekerroin) sekä käytettyihin 
+räjäytysmenetelmiin. Räjäytysolosuhteet ja jauhekerroin voivat vaihdella päivittäin erilaisten olosuhteiden 
+vuoksi. Typen huuhtoutumista valvotaan soveltamalla hyviä räjäytyskäytäntöjä, joilla minimoidaan 
+räjähtämättömien räjähteiden hävikki ennen räjäytystä. Samalla myös minimoidaan rä jähtämättömien 
+räjähteiden ja räjähdysainejäämien jääminen räjäytetyn kallion pinnalle räjäytyksen jälkeen. Hyvä 
+räjähteiden kulutuksen tehokkuus saavutetaan toteuttamalla oikein valittuja räjäytyskäytäntöjä. Tällä 
+minimoidaan räjähteiden käytöstä aiheutuvat typpijäämät. 
+Typpipohjaiset räjäytysreagenssit ovat tyypillisesti tärkein räjäytyksellä louhituilta kallioalueilta vapautuvien 
+vesiliukoisten typpiyhdisteiden lähde. Ammoniumnitraattipohjaisten räjähdysaineiden pääkomponentteja 
+ovat typpiyhdisteet ammon ium (NH 4+) ja nitraatti (NO 3-), kun taas nitriittiä (NO 2-) muodostuu tyypillisesti 
+räjäytysten aikana ja niiden jälkeen. Nämä typpilajit ovat hyvin vesiliukoisia ja liukenevat nopeasti veteen. 
+Ihanteellisissa räjäytysolosuhteissa ammonium (NH 4+) ja nitraat ti (NO 3-) muuttuvat typpikaasuksi. 
+Käytännössä ihanteelliset räjäytysolosuhteet saavutetaan kuitenkin harvoin, jos koskaan, ja pienet määrät 
+räjähdysaineita jäävät jäänteinä räjäytetyille pinnoille ja huuhtoutuvat nopeasti räjäytetystä kalliosta 
+pintavalunnan mukana. Typpeä vapautuu tyypillisesti ennen louhintaa räjäytettyjen kalliopintojen 
+jäännöksistä. Merkittävä osa räjähdysainejäämistä jää kuitenkin räjäytettyyn kiviainekseen, joten typpeä 
+voi vapautua myös väliaikaisista tai pysyvistä varastokasoista sadannan aiheuttaman huuhtouman kautta. 
+Typen huuhtoutumisen ajoitukseen ja suuruuteen vaikuttavat hydrologiset prosessit, joissa erilaiset 
+virtausreitit voivat johtaa typen vaihtelevaan ja viivästyneeseen huuhtoutumiseen. Typen vapautuminen 
+kiviaineskasoista voi myös viivästyä ja jatkua vuosia kiviaineksen sijoittamisen jälkeen.  
+Myös muut räjäytystöissä käytettävät räjähdysainetuotteet, kuten sytyttimet ja tehostimet, sisältävät typpeä, 
+mutta rutiinitoiminnan aikana näitä tuotteita käytetään kuitenkin suhte ellisen pieniä määriä verrattuna 
+emulsioon.  
+Merkittävimmät ympäristöriskit 
+Ammoniumnitraatti on hyvin liukenevaa, joten, jos räjäytystöitä ei hoideta asianmukaisesti, voi siitä aiheutua 
+riski pinta- ja pohjavedelle typpiyhdisteiden (ammoniakki, nitraatti ja nitriitti) vapautumisen kautta. 
+Typpiyhdisteiden päästöjen määrä ympäristöön määräytyy ensisijaisesti käytetyn käsittely - ja 
+räjäytystekniikan perusteella ja toiseksi räjähdysaineen tyypin tai sen typpipitoisuuden perusteella. Näin 
+ollen ympäristöön jou tuvan typen määrään vaikuttavat räjähdysaineen määrä ja räjäytysmenetelmä. 
+Tutkimusten mukaan räjähdysaineiden kokonaistyppipitoisuudesta arviolta 1 –10 prosenttia kulkeutuu
+
+[SIVU 56]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+15 
+ 
+vesifaasiin1. Tulkintaa kuitenkin hankaloitti typpiyhdisteiden luonnollisen taustapitoisuuden määrä, joka voi 
+vaihdella eri kohteissa. Suurin riski liittyi pinta - ja pohjaveteen kohdistuviin vaikutuksiin 
+ravinnekuormituksen kautta. Lisäksi vaikutuksia havaittiin myös pohjaveden laatuun tai ekologisiin 
+luontotyyppeihin liittyen. 
+Typen jakautuminen vesiympäristössä 
+Vaikka räjähdysaineissa oleva typpi jakautuu lähes tasaisesti ammoniumin ja nitraatin kesken, niiden 
+suhteellista osuutta jätevesipäästöissä ja vastaanottavassa ympäristössä muuttavat useat prosessit, kuten 
+mikrobiperäiset hapet us- ja/tai pelkistysprosessit sekä ioninvaihtoprosessit. Mikrobiprosessit voivat 
+muuntaa typpeä kemiallisesta muodosta toiseen hankkeen rakennusvaiheen vesienhallintajärjestelmässä 
+ja kohdevesistöissä. Typpi voi esiintyä vesiympäristössä kokonaisammoniakki na (NH3 + NH4+), nitraattina 
+ja nitriittinä sekä liuenneena typpikaasuna. Typen suhteellinen jakautuminen kokonaisammoniakin, 
+nitraatin ja nitriitin välillä määräytyy ensisijaisesti vesijärjestelmän pelkistymis - ja hapettumispotentiaalin ja 
+muuntumisreaktioita katalysoivien mikrobipopulaatioiden läsnäolon perusteella. Hapettavat olosuhteet 
+suosivat kokonaisammoniakin ja nitriitin muuttumista nitraatiksi, kun taas pelkistävät olosuhteet suosivat 
+nitraatin ja nitriitin muuttumista typpikaasuksi. Ammoniumioni ja liuennut ammoniakkikaasu ovat 
+tasapainossa keskenään, ja jakautumista ammoniumionin ja ammoniakkikaasun välillä säätelevät 
+pääasiassa pH ja lämpötila. Hapettavat olosuhteet esiintyvät tyypillisesti hapellisissa vesissä, kun taas 
+hapettomassa vedessä voi syntyä pelkistäviä olosuhteita. 
+Haitallisten vaikutusten estäminen 
+Louhinnan mahdolliset typpipäästöt hallitaan ottamalla käyttöön räjähteiden käyttöä ja räjäytyksiä koskevat 
+parhaat käytännöt, seuraamalla veden laatua ja virtauksia, tarkastamalla säännöl lisesti räjähteiden 
+käsittelyä ja räjäytyksiä koskevat käytännöt sekä määrittämällä kynnysarvot, joiden perusteella voidaan 
+ryhtyä lisätoimiin vedenlaatutavoitteiden ylläpitämiseksi. 
+Kaikessa räjäytystoiminnassa on noudatettava parhaita hallintakäytäntöjä pinta- ja pohjaveden 
+pilaantumisen estämiseksi, mukaan lukien räjäytyssuunnitelman laatiminen, tarkistaminen ja 
+noudattaminen, asianmukaiset poraamis -, räjähteiden käsittely - ja panostusmenettelyt, koko 
+räjäytysmenettelyn tarkkailu, räjäytystyön tehokkuude n arviointi sekä räjäytetyn kiviaineksen käsittely ja 
+varastointi.  
+Ympäristövaikutusten minimoimiseksi on noudatettava seuraavia räjähdysreikien panostuskäytäntöjä:  
+• Poraajan on pidettävä porauspäiväkirjaa, joka toimitetaan suoraan räjäyttäjälle. Pöytäkirjoista on 
+käytävä ilmi tyhjien tilojen, onkaloiden ja rikkonaisuusvyöhykkeiden tai muiden heikkojen 
+vyöhykkeiden syvyydet ja pituudet sekä pohjavesiolosuhteet.  
+• Räjähdysaineita on hallinnoitava paikan päällä siten, että ne joko käytetään porausreiäs sä, 
+palautetaan kuljetusajoneuvoon tai sijoitetaan turvallisiin säiliöihin hävitettäväksi paikan 
+ulkopuolella.  
+• Ylimääräinen räjähdysaine on poistettava porausreiän ympäriltä. 
+• Panostetut räjähteet on räjäytettävä mahdollisimman pian eikä niitä saa jättää räjähdys reikiin 
+yöksi, ellei sää tai muut turvallisuusnäkökohdat kohtuudella vaadi räjäytyksen lykkäämistä.  
+• Panostuslaitteet on puhdistettava alueella, jossa jätevedet voidaan pitää asianmukaisesti kurissa 
+ja käsitellä tavalla, joka estää epäpuhtauksien pääsyn ympäristöön.  
+• Räjähteet on panostettava siten, että pylväskuormassa säilyy hyvä jatkuvuus täydellisen 
+räjähtämisen edistämiseksi. On noudatettava alan hyväksyttyjä panostuskäytäntöjä, jotka 
+koskevat pohjustusta, kantta, kansia ja pylvään nousua.  
+ 
+ 
+1 Håkansson, K. 2016. Kvävehalter i berg. Kunskapssammanställning bakgrundshalter. Fallstudie och 
+vattenprovtagningar TASS, Äspö. SKB R-10–32, Svensk Kärnbränslehantering AB.
+
+[SIVU 57]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+16 
+ 
+Räjähdysaineen valintaan liittyviä käytäntöjä:  
+• Räjähdysaineet on valittava siten, että ne soveltuvat työmaaolosuhteisiin ja räjähdyksen 
+turvalliseen toteuttamiseen.  
+• Räjähdysaineet on valittava siten, että niiden vedenkestävyys on sopiva paikan olosuhteisiin 
+nähden, jotta minimoidaan tuotteen mahdollinen vaikutus pohjaveteen.  
+• Harhalaukausten estäminen. On kehitettävä ja otettava käyttöön asianmukaiset käytännöt 
+väärinkäytösten estämiseksi.  
+Varastokasojen hallinta. Raivausmassojen (räjäytettyjen kalliokappaleiden) ja louhekasojen varastointia on 
+hoidettava siten, että pilaantumisen mahdollisuus vähenee seuraavien toimenpiteiden avulla:  
+• Siirretään varastokasat pois räjähdysalueelta alueelle, jossa vedet ovat hallittuja niin pian kuin 
+se on kohtuudella mahdollista.  
+• Hallitaan räjäytettyjen kivikasojen ja sadevesien vuorovaikutusta  esimerkiksi kasojen peitolla , 
+jotta estetään vesistövaikutukset. 
+Pilaantuneet räjähdysaineet hävitetään räjäyttämällä tai palauttamalla räjähdysainejätteet valmistajalle 
+hävitettäväksi. 
+Valvonta 
+Louhintaurakoitsija laatii hankeko htaisen räjäytys - ja louhintasuunnitelman, jonka hankevastaava 
+tarkastaa. Hankevastaava varmistaa, että räjäytys - ja louhintasuunnitelmaan sisältyy YVA -menettelyssä 
+esille nostettu hallinta- ja seurantatoimet. 
+Louhinnan aikana typpihuuhtouman kannalta keskeisiä seurattavia asioita ovat: 
+• Louhintasuunnitelman mukainen toteutus 
+• Pintavedenlaatu purkupisteistä, viivytysaltaista sekä mahdollisista kaivannoista 
+• Pohjavedenlaatu 
+2.6.4 Vesienhallinta rakentamisen aikana 
+Rakentamiseen liittyy myös työmaan pintavesien hallin nan suunnittelu ja toteuttaminen. Rakentamisen 
+aikana hulevedet kerätään ja johdetaan pois työmaalta  hallitusti pintavesien hallintajärjestelmien ja 
+viemärirakenteiden avulla. Suunnitelmat sisältävät seuraavat toimenpiteet ja ratkaisut: 
+• Kaikki hulevesien hallintaan liittyvät järjestelmät (haitta-aineiden leviämistä ehkäisevät 
+sulkuventtiilit, sensorit yms.) yhdistetään kiinteistön automaatiojärjestelmään. Järjestelmää 
+hallinnoi ulkopuolinen taho, joka on vastuussa myös tarkkailusta ja säännöllisestä huollosta; 
+• Pohjaveden tason ylläpitämiseksi p ysäköintialueet p eitetään v eden läpäisevällä 
+pintamateriaalilla, joka edistävää hulevesien imeytymistä;  
+• Maanalaiset sadeveden keräysaltaat (liitetty päähulevesiviemäriin); ja 
+• Viivytysaltaat. 
+Rakentamisen aikainen hulevesien alustava hallintasuunnitelma on esitetty kuvissa (Kuva 2-4) ja (Kuva 
+2-5). Alla esitetyt kuvat ovat alustav ia suunnitelmia, joita täydennetään ennen rakentam isen aloittamista. 
+Hankealueen puuston poiston ja tasauksen yhteydessä on tarkoitus ker ätä hankealueen ulkopuol elta 
+muodostuva hulevedet erillisiin aluetta reunustaviin ojiin ja ohjata hulevesien viivytysaltaisiin, joista vesiä 
+johdetaan hallitusti eteenpäin. Pintamaiden ja puuston poiston yhteydessä alue on tarkoitus jakaa erillisiin 
+osiin, joista kustakin ohjataa n vesiä tarkoituksenmukaisiin viivytysaltaisiin.  Kuivana pidettävät kaivannot 
+pumpataan työmaa ojiin, joista vesi ohjautuu viivytysaltaisiin. Työmaavesien viivytys tapahtuu pinnoitetussa 
+tiiviissä altaassa . Tarvittaessa työmaan  sisäisiä ojia voidaan hallit a silttiverhoin tai patoratkaisuin  
+kiintoaineksen kulkeutumisen estämiseksi.
+
+[SIVU 58]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+17 
+ 
+Työmaan aikaisten hulevesien laatua valvotaan silmämääräisesti päivittäin  varsinkin mahdollisten 
+öljyvuotojen varalta. Lisäksi työmaalta pois johdettavien vesien laatua  seurataan erikseen viranomaisen 
+kanssa sovittavan ohjelman mukaisesti. Mikäli pois johdettavassa hulevedessä havaitaan mittauksissa 
+poikkeuksellisia pitoisuuksia tai silmämääräisesti epäpuhtauksia , sovitaan korjaavista toimenpiteistä 
+ympäristöviranomaisen kanssa. 
+Rakentamisen ajaksi hulevesien hallintaa varten toteutetaan pinnoitetut hulevesien viivytysaltaat , joiden 
+tilavuus ja huippuvirtaus perustuu asemakaava määräyksiin  (1 m 3 tilavuus jokaista 100 m 2 pinta-alaa 
+kohden). Hankealueelle on rakentamisen ajaksi alustavasti suunniteltu seuraavat viivytysaltaat:  
+• Pohjoiselle alueelle 1 300 m3, huippuvirtaus 150 l/s 
+• Eteläisen alueen itäreunalle 423 m3, huippuvirtaus 30 l/s 
+• Eteläisen alueen eteläpäähän 180 m3, huippuvirtaus 29 l/s 
+• Eteläisen alueen läntiseen kulmaan 511 m3, huippuvirtaus 84 l/s 
+Hepokorvenkaaren hulevesien hallinnasta vastaa Espoon kaupunki ja siinä tullaan huomioimaan myös 
+tiealueiden ja vierustonttien vesienhallinta.  Espoon kaupungilla on aikomuksena parantaa alueen yleis iä 
+hulevesienhallinta mahdollisuuksia mm. suurentamalla olemassa olev aa Puotismäentien alittavaa 
+rumpuputkea sekä lisäämällä viivytyskapasiteettia alueelle.  Espoon suunnittelemien parannuksi en 
+aikataulu ei ole YVA -menettelyn aikana täysin varmistunut joten , jos suunnitellut parannukset eivät ole 
+valmiita ennen pohjoisen alueen rakentamista, tullaan vesien hallintaa lisäämään hankealueella.  
+ 
+Kuva 2-4: Hankkeen kuvaus – Alustava rakentamisen aikainen hulevesienhallintasuunnitelma hankealueen 
+pohjoisosalle (AECOM). Bild 2–4: Projektbeskrivning – Preliminär dagvattenhanteringsplan för norrsidan 
+under byggskedet (AECOM).
+
+[SIVU 59]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+18 
+ 
+ 
+Kuva 2-5: Hankkeen kuvaus – Alustava rakentamisen aikainen hulevesienhallintasuunnitelma hankealueen 
+eteläosalle (AECOM) . Bild 2–5: Projektbeskrivning – Preliminär dagvattenhanteringsplan för södrasidan 
+under byggskedet (AECOM). 
+2.6.5 Kemikaalien ja polttoaineiden varastointi rakentamisvaiheessa 
+Taulukossa ( Taulukko 2–3) esitetään rakennusvaiheen aikana työmaalla odotettavissa olevien 
+polttoaineiden ja kemikaalien määrät . Useimpiin jäljempänä lueteltuihin tuotteisiin ei liity erityisiä toimitus- 
+tai kuljetusvaatimuksia, lukuun ottamatta louhintatöissä tarvittavia räjähdysaineita. 
+Rakentamisen aikaisista  polttoaineen varastointi - ja tankkausjärjestelyistä vastaa urakoitsija. Tankkaus 
+tapahtuu yhdessä tai kahdessa valvotussa paikassa. Polttoaineen tankkaus tapahtuu valvotussa 
+ympäristössä, jossa yksi palveluntarjoaja perustaa liikkuvat polttoaineasemat (ka ikki sopimuspuolet 
+käyttävät samoja valvottuja tankkausasemia , polttoainetta kerralla varastossa alle 10 m 3). 
+Tankkausasemien alueet varustetaan suojarakenteilla, joihin sisältyy PE -kalvokerroksia ja öljynerottimia 
+mahdollisuuksien mukaan. Polttoaineasemie n säiliöjärjestelmä on kaksi vaippainen. Polttoaineasemat 
+varustetaan kattavilla vuoto suojilla mahdollisten vuotojen varalta. Suuremmissa hätätapauksissa 
+(konerikko) noudatetaan erityistä eskalointiprosessia, jossa alueet rajoitetaan ja eristetään ja alueel liseen 
+hätäkeskukseen otetaan yhteyttä jatkotoimia varten.
+
+[SIVU 60]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+19 
+ 
+Taulukko 2–3: Hankkeen kuvaus - Rakentaminen – arvioidut kemikaalit ja polttoaineet . Tabell 2 –3: 
+Projektbeskrivning – Byggandet – förmodligen kemikalier och bränslen. 
+Kohde 
+(polttoaine/kemikaali) Käyttö 
+Arvioitu 
+enimmäisvarastointimäärä 
+ja päivittäinen käyttö 
+Arvioitu sijainti ja 
+varastointivaatimukset 
+Diesel Kone 36 000 l varastoitu / päivittäinen 
+käyttö 5 000–10 000 l 
+polttoainesäiliö tankkausta 
+varten 
+Öljy Kone 250 l varastosäiliössä 
+Hydrauliikkaöljy Kone 250 l varastosäiliössä 
+AdBlue Kone 9 000 l varastoitu / päivittäinen 
+käyttö 300–600 l varastosäiliössä 
+Voiteluaine Kone 50 l useita säiliöitä varastosäiliössä 
+Kaasu Kone 100 l useita säiliöitä varastosäiliössä, kaasusäiliö 
+Räjähteet Kallion louhinta 2 500 kg paikan päällä, ei varastointia 
+yön yli 
+Jäätymisenestoaine/jäähdytysneste Kone 300 l varastosäiliössä 
+Sideaine (sementti, tuhka, kuona) stabilointi päivittäinen käyttö 40 m3 alueella säiliöautoissa 
+Kaasu Palo- ja hitsaustyöt useita kaasusäiliöitä, 100 l paikan päällä 
+Betonimateriaalit, lisäaineet Rakentaminen päivittäinen käyttö 500 l paikan päällä 
+Betonin lisäaineet (kiihdyttävät, 
+hidastavat) Rakentaminen päivittäinen käyttö 500 l paikan päällä 
+Bitumi Tie- ja 
+kattorakentaminen päivittäinen käyttö 1000 l alueella säiliöautoissa 
+Pinnoite (maali, liuotin, liima jne.) Rakentaminen useita pieniä tölkkejä 20 l kpl paikan päällä 
+Pesuaine/puhdistusaine Tarvittaessa useita pieniä tölkkejä 20 l kpl paikan päällä 
+Aerosolit Kone/ 
+Rakentaminen 200 l   
+ 
+2.6.6 Jätteet ja jätehuolto rakentamisvaiheessa 
+Jätehuollon periaatteena on ennen kaikkea välttää jätteen syntyminen. Syntyvä jäte käytetään 
+mahdollisuuksien mukaan uudelleen. Jos jätteen uudelleenkäyttö ei ole mahdollista, se hyödynnetään 
+ensisijaisesti materiaalina (kierrätettävänä) ja toissijaisesti energian tuotannossa. Viimeinen vaihtoehto on 
+jätteen loppusijoittaminen. Sekä hankkeen rakennus - että toimintavaiheessa  kaatopaikalle sijoitettavan 
+jätteen määrä pyritään minimoimaan. 
+Rakentamisen aikana työmaalla syntyy samanlaista jätettä kuin millä tahansa muullakin teollisella 
+rakennustyömaalla Suomessa. Tärkeimmät jätelajit ov at puu, metalli ja kierrätettävä sekalainen 
+rakennusjäte. Kaivuu ja louhintamateriaalia, jota ei käytetä uudelleen rakennustyön aikana täytöissä tai 
+kerrostöissä, käsitellään luvussa 2.6.1.
+
+[SIVU 61]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+20 
+ 
+Hankkeesta vastaavan a rvio datakeskuksen rakentamisen aikana syntyvästä jätteestä on esitetty 
+taulukossa (Taulukko 2-4).  
+Taulukko 2-4: Hankkeen kuvau s – Rakentamisvaiheen j ätehuolto. Tabell 2–4: Projektbeskrivning – 
+Byggskedets avfallshantering. 
+Jätetyyppi 
+Rakentamisen aikana 
+vuosittain syntyvä jäte 
+(ton) 
+Käsittelymenetelmä/kohde 
+Käytöstä poistetut tietotekniikkalaitteet 0 Uudelleenkäyttö tai materiaalien 
+hyödyntäminen 
+Ilmansuodattimet 0 Energian hyödyntäminen 
+Paperi ja pahvi 40 Materiaalin hyödyntäminen 
+Metalli 95 Materiaalin hyödyntäminen 
+Muovi 65 Materiaalin hyödyntäminen 
+Biojäte 15 Biojätteen hyödyntäminen 
+Lasi 3 Materiaalin hyödyntäminen 
+Puujäte  
+(rakennuspuujäte ja kuormalavat) 150 Uudelleenkäyttö / energian 
+hyödyntäminen 
+Polttokelpoinen jäte, kotitalousjäte, 
+sekajäte 150 Energian hyödyntäminen 
+Rakennusjätteet, polttokelvottomat (kipsi, 
+eristeet jne.) 65 Materiaalin hyödyntäminen / 
+kaatopaikalle sijoittaminen 
+Vaaralliset jätteet  
+(paristot, lamput, öljy, öljynsuodattimet 
+jne.) 
+2,5 Vaarallisten jätteiden käsittely 
+ 
+2.6.7 Rakennusvaiheen sähköverkkoliitynnät 
+Keskijännitteinen 20 kV:n väliaikainen kaapeliyhteys toiminnan käynnistämistä ja verkon ylösajoa varten  
+Hanke k äsittää kahden 20 kV / 13 MVA:n maakaapelilinjan rakentamisen jakeluverkkoyhtiö Carunan 
+Auroranportin sähköaseman ja Microsoftin datakeskuksen väliaikaisen sähköaseman välille. Kaapelireitin 
+pituus on noin 1,5 km. Kaapelireitti kulkee pääosin nykyisen käve lytien ja hiljattain rakennetun kunnallisen 
+tien alitse. Kaapelireitti toteutetaan kaivamalla. Käytettävä kaapeli on 1 -johtiminen ≥ 20 kV 
+nimellisjännitteinen 1x500 mm² kaapeli, joka asennetaan 110 mm A -luokan kaapelikanavaan. Kaapelit 
+asennetaan ensisijaisesti kolmiomuodostelmaan. 
+Hankkeen töitä varten on saatu tarvittavat luvat, ja alustava konseptisuunnittelu on saatu päätökseen. 
+Keskijännitteinen 20 kV:n väliaikainen kaapeliyhteys rakentamisvaiheen tarpeisiin 
+Hanke käsittää kahden 20 kV / 2 MVA:n maakaapelilinjan rakentamisen jakeluverkkoyhtiö Carunan 
+lähimmän Espoossa sijaitsevan verkkoliityntäpisteen ja Microsoftin datakeskuksen tilapäisen 
+rakennussähköaseman välille . Kaapeliyhteys toteutetaan  rakennustyömaalla tarvittavaa sähköä varten. 
+Kaapelireitin pituus on noin 300 m. Kaapelireitti sijoittuu pääosin rakentamattomalle maalle. Kaapelireitti 
+toteutetaan kaivamalla. Kaapelina käytetään 3-johtimista ≥ 20 kV nimellisjännitteistä 3x240 mm² kaapelia. 
+Hankkeen alustava konseptisuunnittelu ja tekninen suunnittelu on saatu päätökseen. Toteutusta varten 
+tullaan hakemaan sijoituslupa.
+
+[SIVU 62]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+21 
+ 
+2.6.8 Rakentamisen aikainen melu 
+Ihmisille ja ympäristölle aiheutuvan meluhaitan vähe ntämiseksi Microsoft sitoutuu toteuttamaan 
+melutasoltaan korkeimmat toiminnot arkisin päiväsaikaan. Toteutuksessa otetaan huomioon myös 
+asemakaavassa esitetyt aikataulurajoitukset lintujen pesimäkauden kunnioittamiseksi ja muuttohuipun 
+rauhoittamiseksi. Rakentamisen aikana melua aiheutuu lähinnä maanrakennustöistä, louhinnasta ja 
+paalutuksesta. 
+2.6.9 Rakentamisen hankekohtainen ympäristönhallintasuunnitelma 
+Valittu urakoitsija laatii ja panee täytäntöön rakentamisen hankekohtaisen ympäristönhallintasuunnitelman. 
+Suunnitelman tavoitteena on minimoida rakentamisen aikaiset ympäristövaikutukset ja noudattaa 
+asiaankuuluvia sääntöjä ja lakeja rakennustyön aikana. Suunnitelmaa päivitetään säännöllisesti työmaalla 
+tehtävien tarkastusten sekä valvontaviranomaisilta ja suunnittelijoilta saadun palautteen perusteella. 
+Suunnitelman keskeisiä elementtejä ovat yleiskatsaus rakennusohjelmaan, nykytila, 
+lieventämistoimenpiteet, seuranta, hätätilanteissa toimiminen, hallintorakenne, korjaavat toimet, yhteydet 
+muihin suunnitelmiin, roolit ja vastuut sekä viestintä. Urakoitsija on vastuussa suunnitelman 
+noudattamisesta ja tarvittavien lisälupien hankkimisesta. Microsoft valvoo edellä mainittujen suunnitelmien 
+toteutumista. Suunnitelma sovitetaan yhteen YVA-selostuksen kanssa. 
+Suunnitelman tarkoituksena on varmistaa, että hankkeen rakentamisvaiheeseen liittyviä ympäristöriskejä 
+hallitaan ympäristöluvan , lakisääteisten velvoitteide n ja ehtojen sekä hankkeen muiden asiaankuuluvien 
+ympäristövaatimusten mukaisesti. Suunnitelmassa arvioidaan riskejä, jotka liittyvät toteutettaviin 
+rakennustoimiin. Ympäristösuunnitelman tavoitteena on antaa koko henkilöstölle selkeä käsitys toimin nan 
+mahdollisista ympäristövaikutuksista ja niiden lieventämisestä  ja osoittaa selkeästi  toimenpiteiden 
+toteuttamiseen liittyvät vastuut. Näin saadaan varmistettua, että hankkeesta ei aiheudu ympäristölle haittaa 
+ja esimerkiksi mahdollisissa häiriö- tai onnettomuustilanteissa jokaisen rooli on selkeä.  
+Ympäristönhallintasuunnitelma sisältää mm. seuraavat asiat: 
+• Suunnitelman tarkoitus : ympäristövaatimukset (hallinta - ja lieventämistoimenpiteet), jotka on 
+toteutettava rakennusvaiheen aikana ja joita sovelle taan kaikkiin toimintoihin, myös 
+alihankkijoiden toimintoihin.  
+• Rakentamista edeltävät vaatimukset: alueen rajaami nen, luontoarvojen huomioimisen ja 
+tarvittavan suojaamisen, kulttuurihistoriallisten näkökohtien suojelun.  
+• Roolit ja vastuut: kaikkien olennaisten osapuolten vastuut ja velvollisuudet.  
+• Työmaan perustaminen ja infrastruktuurin sijoittaminen: mm. urakoitsijoiden työmaatukikohdan 
+perustaminen, tiet ja kulkuyhteydet, portit ja aidat, hulevedet.  
+• Ajoneuvot ja varusteet: mm. polttoaineiden säilytys - ja tankkausalueet, huoltoalueet ja 
+pelastustoimet sekä vaarallistenaineiden kuljetukset.  
+• Maa-aineksen ja pilaantumisen hallinta: maa- ja kiviainesmateriaalien hallinta.  
+• Varastointi: materiaalien varastoinnin (polttoaineet, öljyt, kemikaalit jne.)  
+• Ympäristötietoisuus ja -koulutus: perehdytyskoulutus, mahdollinen erityiskoulutus ja muu paikan 
+päällä tapahtuva koulutus.  
+• Seuranta ja raportointi: mm. poikkeus- ja läheltä piti-, tapaturma- ja vaaratilanteiden läpikäynti ja 
+raportointi- ja toimenpidemenettelyt.  
+• Hätätilanteet: hätätilannesuunnitelman.  
+• Muutokset ja päivitykset: esitetään, miten suunnitelmaa päivitetään säännöllisesti auditointien 
+sekä viranomaisilta ja suunnittelijoilta saadun palautteen perusteella.
+
+[SIVU 63]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+22 
+ 
+2.6.10 Terveys ja turvallisuus 
+Microsoft hallinnoi rakennushankkeita Microsoftin oman kansainvälisen rakennusturvallisuuspolitiikan 
+(2020–0227 Global Construction Safety Policy 1.0) mukaisesti. Pääurakoitsijoiden odotetaan  noudattavan 
+tämän turvallisuuspolitiikan sisältämiä vähimmäisvaatimuksia sekä kehittävän ja hallinnoivan 
+hankekohtaista ympäristö -, terveys - ja turvallisuussuunnitelmaa, joka täyttää tai ylittää tässä  Microsoftin 
+politiikassa ja Suomen työturvallisuuslain säädännössä esitetyt määräykset . Suunnitelman tulee sisältää 
+ympäristö-, terveys - ja turvallisuusnäkökohtia koskevat mitattavissa olevat tavoitteet, jotka urakoitsijan 
+odotetaan saavuttavan. Viittauksia työturvallisuutta ja työterveyttä koskeviin kansainvälisiin standardeihin 
+tulee käyttää vertailuarvoina, ja vaatimuksena on, että vähintään vastaavat standardit saavutetaan kaikilla 
+paikallisilla lainkäyttöalueilla.  
+2.6.11 Rakennusvaiheen työllisyys 
+Rakennusvaiheen aikana rakennustyömaalla arvioidaan säännöllisesti työskentelevän enintään 500 
+rakennustyöntekijää. Vilkkaimpina aikoina  useiden eri rakentamistoim ien limittyessä 
+rakennustyöntekijöiden määrä voi kuitenkin nousta jopa 1500:een. 
+Rakentamisen aikana noudatetaan todennäköisesti seuraavia työaik oja (ovat olleet YVA:n perustana, 
+vahvistetaan lupavaiheessa): 
+• Klo 06:30-18:00…20:00 (arkipäivinä); ja 
+• Mahdolliset yövuorot sisäisen kalustusvaiheen aikana. 
+• Meluilmoituksella rajoitettu rakentaminen rajoitetaan klo 07:00 -20:00 väliselle ajalle 
+maanantaista perjantaihin. 
+Jopa 500 rakennustyöntekijää voi saapua ja poistua työmaalta samaan aikaan joka aamu ja iltapäivä. 
+Rakennustyömaalle on suunniteltu järjestettävän  bussikuljetus, jolla rakennustyöntekijät kuljetetaan 
+kohteeseen ja sieltä takaisin joko työnantajan toimipisteestä, paikallisi lta liityntäpysäköintipaikoi lta tai 
+muusta keskeisestä , myöhemmin määritettävästä  paikasta. Kuljetukset järjestetään rakentamisvaiheen 
+keston ajan. 
+2.7 Datakeskuksen operatiivinen toiminta 
+2.7.1 Yleistä 
+Datakeskus on keskitetty tietokonepalvelinjärjestelmä, joka on suunniteltu tarjoamaan tietojen tallennus -, 
+hallinta- ja jakamistoimintoja yksit yishenkilöille, yrityksille ja organisaatioille. Koska toiminta verkossa 
+lisääntyy ja tietomäärät kasvavat jatkuv asti, tallennustilan maailmanlaajuinen kysyntä kasvaa nopeasti. 
+Tulevan datakeskuksen avulla Microsoft pystyy vastaamaan tähän kysyntään.  
+Datakeskusalueen teknologia perustuu malliin, joka tunnetaan englanniksi termillä ”Colo” (Colocation 
+facility eli laitetilapalveluyksikkö). Mallissa datakeskuksen IT-, palvelin- ja verkkolaitteet sijoitetaan erillisiin 
+huolellisesti eristettyihin datakeskusrakennuksen lohkoihin. Lohkot mahdollistavat sen, että 
+yksityishenkilöt, yritykset tai organisaatiot voivat perinteisten, talon sisäisten tiedonhallintajärjestelmän 
+sijaan tallentaa tietojaan turvalliseen ja luotettavaan paikkaan omi en tilojensa ulkopuolelle mutkattomasti, 
+mahdollisimman pienin kustannuksin sekä energiatehokkaasti . Perinteisiin tiedonhallintaratkaisuihin 
+(yrityksen omat palvelimet) verrattuna d atakeskukset rakennetaan yleensä suhteellisen suuressa 
+mittakaavassa, mikä johtaa huomattaviin mittakaavaetuihin:  
+• suurempi luotettavuus sisäänrakennettujen varmennusjärjestelmien ansiosta;  
+• henkilökunta valvoo laitosta ja sen järjestelmiä 24 tuntia vuorokaudessa / seitsemän päivää 
+viikossa; 
+• alhaisempi verkon viive ja suurempi kaistanleveys alhaisemmilla kustannuksilla; ja
+
+[SIVU 64]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+23 
+ 
+• erikoistuneet verkko - ja laitosinsinöörit eivät yleensä ole kannattavi a yksityishenkilöiden, 
+yritysten tai organisaatioiden palveluksessa. 
+Lohkojen ilmastointi tapahtuu pääasiassa vapaajäähdytyksellä seinään asennettujen ilmanvaihtokoneiden 
+kautta. Suomen olosuhteet ovat otolliset vapaajäähdytykselle, jossa ulkoa otettava lla ilmalla palvelimet 
+jäähdytetään ja ylimääräinen lämpö hyödynnetään kaukolämpönä. Datakeskuksessa on joitakin tiloja, jotka 
+tarvitsevat ylimääräistä jäähdytystä mm.  huoneet, jossa ydinverk on laitteisto sijaitsee, mutta kuitenkin 
+suurin osa datakeskuksen jä ähdytyksestä toteutuu vapaajäähdytyksen avulla.  Kullakin lohkolla on oma 
+sähkökeskus, jonka tarjoaman virran avulla lohkot toimivat aina optimaalisesti. 
+Edistyksellistä suunnitellussa teknologiassa on se, että se on huomattavasti aiempaa teknologiaa 
+energiatehokkaampi. Suunnitteluaineiston mukaan laitoksen PUE-arvo (Power Utilisation Effectiveness) on 
+noin 1,2 (hyvä tai erittäin hyvä). Tämä tarkoittaa sitä, että jokainen kulutettu tietotekniikan tehoyksikkö vaatii 
+vähemmän sähköä verkosta , kuin yleisesti vastaavilla laitoksilla . Tehokkuus on saavutettu 
+yksinkertaistamalla suunnittelua ja rakentamalla tietotekniikkajärjestelmiin joustavuutta raskaiden sähkö- ja 
+mekaanisten järjestelmien sijaan. Myös ilmanvaihto - ja valaistussuunnitelmia sekä mekanismeja 
+sähkönjakeluhäviöiden vähentämiseksi on paranneltu.  
+Vaikka kussakin datakeskusrakennuksessa on hallinnon tiloja ja mahdollisuus ruokailuun , 
+keskushallintorakennukseen sijoitetaan henkilös töravintola, kuntosali ja muita yhteisiä toimistotiloja / 
+kokoushuoneita. Ylemmissä kerroksissa on toimistotiloja datakeskuksen henkilöstölle. 
+2.7.2 Datakeskuksen IT-kapasiteetti 
+Hankkeen IT-kapasiteetti (tietotekniikkalaitteiden kuten palvelimien, tallennustilo jen, verkkolaitteiden jne. 
+käyttämiseen tarvittava teho) on seuraava:  
+• kapasiteetti per lohko: 9,6 MWit; 
+• lohkojen määrä: 18;  
+• IT-kapasiteetti yhteensä 172,8 MWit 
+Sähkökapasiteetti (koko kapasiteetti, joka sisältää  myös hallinto- ja apurakennukset IT -laitteita varten, 
+jäähdytysjärjestelmät, valaistuksen jne.) on 211,36 MWe. 
+2.7.3 Jäähdytys ja hukkalämmön talteenotto 
+Datakeskusten jäähdytykseen käytetään suoraa ilmajäähdytystä adiabaattisella kostutuksella. Se  on 
+erittäin tehokas tapa jäähdyttää datakeskuksia, kun mekaanisen ilmastoinnin sijaan jäähdyttämiseen 
+käytetään ulkoilmaa.  Ilmajäähdytystekniikka ei edellytä merkittävien vesimäärien ottamista 
+talousvesiverkosta, minkä ansiosta sitä  pidetään kestävyyden näkökulmasta vesijäähdytystä parempana. 
+Aiemmissa datakeskuksissa on usein ollut käytössä vesijäähdytys, jossa syntyy jäännösvettä (esim. vettä, 
+jota ei menetetä haihtumisessa), joka palautetaan luonnonvesistöön usein lämpimämpänä kuin otettaessa. 
+Datakeskuksen j äähdytyksessä hyödynnetään suljettua ilma-vesijäähdytysjärjestelmää, joka ei tarvitse 
+toimiakseen talousvettä. Datakeskusta on jäähdytettävä jatkuva sti, ja  suunniteltu jäähdytysjärjestelmä 
+toimii siten, että viileä ilma johdetaan ilmanvaihtoyksikön suodattimien ja lämmönvaihtimen  läpi 
+datakeskuksen laitteille, jolloin viileä ilma jäähdyttää laitteita ja ilma niin ikään lämpe nee. Lämmennyt ilma 
+johdetaan erillisiä kanavia pitkin ilma-vesijäähdytysjärjestelmän lämmönvaihtimille, jossa ilman 
+lämpöenergia siirtyy suljettuun vesipiiriin ja edelleen joko lauhduttimille jäähdytettäväksi, hyödynnettäväksi 
+kaukolämpöverkossa tai talviaikaan viileän tuloilman lämmitykseen.  
+Espoon ja Kirkkonummen datakeskuksien osalta lämpö siirretään Fortumin lämpöpumppulaitokselle, jossa 
+erillisellä lämmönvaihtimella ja lämpöpumpulla  lämpö siirretään kaukolämpöverkkoon ja viilentynyt vesi 
+takaisin datakes kuksen ilma -vesijäähdytysjärjestelmään. Datakeskuksen h ukkalämmön hyödyntäminen 
+kaukolämpöverkossa on alan uusinta teknologiaa, eikä sitä ole  vielä käytössä suurimmassa osassa 
+Euroopan datakeskuksista.  Kun datakeskuksissa käytettävä sähkö tulee kokonaan CO 2-vapaasta
+
+[SIVU 65]
+Espoon datakeskus - Ympäristövaikutusten arviointi   
+24 
+ 
+lähteestä, on kyseessä merkittävä CO2-vapaan lämpöenergian lähde Suomen mittakaavassa.  
+Hukkalämmöstä saatu lämpöenergia voi korvata myös fossiilisista polttoaineista peräisin olevaa 
+lämpöenergiaa ja täten vaikuttaa positiivisesti Suomen ilmastotavoitteiden saavuttamiseen.  
+Datakeskuksesta p oistetun lämpöenergian määrä vaihtelee ulkoisten olosuhteiden ja datakeskuksen 
+kuormituksen mukaan. Ilman lämmöntalteenotto a täydellä kuormituksella kuumimpina kes äpäivinä 
+lämpimän ilman määrä voi olla jopa 157,5 m³/s datakeskuksen lohkoa kohti. Suunnittelun tavoitteena on, 
+että lohkojen  toimiessa lämmöntalteenottotilassa,  kaikki lohkojen ilma johdetaan hukkalämmön 
+talteenottojärjestelmän läpi lämmönsiirron maksimoimiseksi, jolloin hukkalämmön talteenottotilassa lämpöä 
+ei poisteta lainkaan ulkoilmaan. Prosessi on esitetty tiivistetysti  kuvassa (Kuva 2-6Error! Reference 
+source not found. ). Talteenoton energiatase on esitetty kuvassa (Kuva 2-7). Talvisin noin 7 0 % 
+hukkalämmöstä voidaan hyödyntää kaukolämmössä. Kesäisin lämmön talteenoton tehokkuus putoaa noin 
+10 %. 
+Hukkalämpö, jota ei voida hyödyntää, poistetaan kes kuksesta ulkoilmaan (tavoitteena on saada kaikki 
+lämpö hyödynnettäväksi, jolloin ilmaan ei jouduttaisi johtamaan lainkaan lämpöä). Tällä ei arvioida olevan 
+mainittavia ympäristövaikutuksia  välittömän lämmön poistokohdan ulkopuolella. Lämpötilaero ilmassa 
+tasoittuu nopeasti. 
+Talvella kylmien jaksojen aikana datakeskusrakennukse n tuloilma  kostutetaan johtamalla ilma vedellä 
+kyllästetyn väliaineen läpi, jolloin vesi haihtuu nostaen tuloilman kosteutta. Kostutukseen käytetään kerättyä 
+sadevettä, jolla on tavoitteena kattaa  100 prosenttia ilmankostutuksen vedentarpeesta. Tässä 
+menetelmässä on  otettu huomioon ilmastonmuutos ja yleisesti maapallo lla kohoava lämpötila.  
+Suunnittelussa on otettu huomioon  ulkoilman lämpötilat Helsingissä kesäkuukausina , ja 
+jäähdytysjärjestelmä pysyy tehokkaana myös lämpötilahuippujen aikana. 
+Suunniteltu jäähdytystekniikka kuluttaa vain murto -osan sähköä  perinteisten datakeskusten 
+sähkönkulutukseen verrattuna. Lisäksi se mahdollistaa talvikuukausina ilmankostutuksessa käytetyn veden 
+talteenoton ja uusiokäytön . Kyseinen jäähdytystekniikka kuluttaa noin 79–90 prosent tia perinteistä 
+jäähdytystekniikkaa vähemmän sähköä . Samalla se  on kuitenkin jäähdytysteholtaan noin 30 prosenttia 
+perinteistä jäähdytystekniikkaa heikompi.  
+Yhteenvetona: 
+• viileä ulkoilma imetään ilmanvaihtolaitteilla datakeskukseen; 
+• viileän ilman virratessa laitteiston läpi, laitteistot lämmittävät sitä; 
+• lämmennyt ilma johdetaan lämmönvaihtimelle, jossa  ilman lämpö siirretään suljettuun 
+lämmöntalteenottojärjestelmään; 
+• lämmöntalteenottojärjestelmässä lämpö  ohjataan tehokkaasti joko datakeskuksen ulkopuolelle 
+tai käytetään uudelleen tulevan ulkoilman lämmittämiseen; ja 
+• äärimmäisen kylmänä aikana ulkoilma kostutetaan johtamalla se vedellä kyllästetyn väliaineen 
+läpi.

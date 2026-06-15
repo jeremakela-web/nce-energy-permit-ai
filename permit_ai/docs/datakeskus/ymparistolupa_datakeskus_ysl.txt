@@ -1,0 +1,96 @@
+SOURCE: https://www.ymparisto.fi/fi/luvat-ja-velvoitteet/ymparistolupa
+COUNTRY: FI
+TOPIC: Ympäristölupa datakeskus YSL 527/2014 jäähdytys meluhaitat AVI kunta lupamenettely
+DATE: 2025-01-01
+
+# Ympäristölupa datakeskukselle — Ympäristönsuojelulaki 527/2014
+
+## Milloin datakeskus tarvitsee ympäristöluvan?
+
+Ympäristönsuojelulaki (YSL 527/2014) edellyttää ympäristölupaa toiminnalta, josta aiheutuu merkittäviä ympäristövaikutuksia. Datakeskukselle ympäristölupa vaaditaan tyypillisesti seuraavissa tilanteissa:
+
+### Meluhaitat (jäähdytyslaitteisto)
+
+Datakeskusten jäähdytysjärjestelmät (ulkoilmajäähdyttimet, tornijäähdyttimet, kompressorit) aiheuttavat jatkuvaa melua 24/7. Ympäristölupa vaaditaan kun:
+- Päiväajan melutaso asutuksen lähellä ylittää 55 dB(A)
+- Yöajan melutaso ylittää 45 dB(A) (asumiseen käytetyillä alueilla)
+- Laitteisto sijaitsee < 200 m asuinrakennuksista
+
+Ratkaisuja: meluaidat, rakennusten äänieristys, yöllinen tehonrajoitus, sijoittelu kauaksi asutuksesta.
+
+### Kemikaalit ja kylmäaineet
+
+Ympäristölupa vaaditaan jos:
+- Käytetään yli 200 kg F-kaasuja (HFC-kylmäaineet): YSL + Kemikaaliturvallisuuslaki 390/2005
+- Diesel-generaattorit: polttoainesäiliöt yli 10 m³ vaativat kemikaaliluvan
+- Sijainti pohjavesialueella: erityisselvitys vesistövaikutuksista
+
+### Energia ja lämpökuorma
+
+Datakeskukset, joiden kokonaisenergiankulutus ylittää 300 GWh/vuosi, saattavat vaatia ympäristölupaa energiatuotantolaitoksena (lämpöpumppu + hukkalämpö). Ratkaisuna: hukkalämmön hyödyntäminen kaukolämpöverkkoon poistaa lupatarpeen.
+
+## Ympäristöluvan myöntäjä
+
+### Aluehallintovirasto (AVI) myöntää luvan kun:
+- IT-teho ≥ 50 MW tai kokonaisenergiankulutus ≥ 200 GWh/vuosi
+- Toiminnasta aiheutuu merkittäviä vesistövaikutuksia
+- Hanke on YVA-menettelyn alainen
+
+### Kunta (ympäristönsuojeluviranomainen) myöntää luvan kun:
+- Toiminta on YSL:n liitteen 1 mukaista mutta pienempimuotoista
+- Meluhaitat tai kemikaaliongelmat paikallisia
+- 4 MW datakeskus ilman vesistövaikutuksia → tyypillisesti kuntatasoinen lupapäätös
+
+## Ympäristölupahakemuksen sisältö
+
+Datakeskuksen ympäristölupahakemukseen kuuluu:
+1. **Toiminnan kuvaus**: IT-teho, PUE, jäähdytysjärjestelmä, käytettävät kemikaalit
+2. **Päästöselvitys**: melu (mittaukset tai mallinnukset), lämpöpäästöt ilmaan, jätevesi
+3. **Pohjavesivaikutukset**: etäisyys pohjavesialueeseen, vuotovarosuunnitelma
+4. **Energiatehokkuusselvitys**: EU EED-direktiivin mukainen PUE-tavoite, hukkalämmön hyödyntämissuunnitelma
+5. **Jätehuoltosuunnitelma**: akkujäte (UPS), elektroniikkajäte, pakkausjäte
+6. **Häiriötilanteiden hallinta**: generaattoreiden käyttö sähkökatkossa, savukaasupäästöt
+
+## YVA ja datakeskus
+
+Ympäristövaikutusten arviointimenettely (YVA, laki 252/2017) koskee datakeskuksia tapauskohtaisesti:
+
+**Pakollinen YVA** (YVA-asetus 277/2017, liite 1) — ei suoraan datakeskusten osalta, mutta seuraavat voivat laukaista YVA:n:
+- Yli 200 MW lämpöteho tai merkittävä energiantuotantolaitos
+- Suuri kemikaalimäärä (Seveso III -direktiivi)
+- Sijainti Natura 2000 -alueella tai sen lähellä
+
+**Harkinnanvarainen YVA** (YVA-asetus, liite 2): ELY-keskus päättää tapauskohtaisesti. Microsoft Espoon datakeskus (2024) vaati YVA-menettelyn, koska:
+- Kokonaisteho yli 100 MW
+- Sijainti Espoon kaupunkialueella, lähellä asutusta
+- Merkittävät vesistövaikutukset (vedenkäyttö jäähdytykseen)
+
+**4 MW datakeskus (Mikkeli-tyyppi)**: Ei pakollista YVAa. ELY-keskuksen harkinnanvarainen YVA-päätös tehdään hankkeen ominaispiirteiden perusteella. Tyypillisesti ei edellytetä YVAa, jos:
+- IT-teho < 50 MW
+- Ei vesistövaikutuksia
+- Sijainti teollisuusalueella kaukana asutuksesta
+
+## Luvan hakeminen käytännössä
+
+### Prosessin vaiheet datakeskukselle (4 MW, Mikkeli-tyyppi)
+
+1. **Ennakkoneuvottelu** rakennusvalvonnan ja ympäristöviranomaisen kanssa (1–2 vk)
+   - Selvitetään kaavoitustilanne, lupatarpeet, naapureiden kuuleminen
+2. **Ympäristöluvan tarvearvio** kunnalta (kirjallinen pyyntö, 2–4 vk)
+3. Jos ympäristölupa tarvitaan: **lupahakemus kunnalle tai AVIlle** (riippuen koosta)
+   - Käsittelyaika: 6–18 kuukautta
+4. **Rakentamislupahakemus** rakennusvalvonnalle
+   - Edellyttää: arkkitehtipiirustukset, LVIA, sähkö, energiaselvitys
+   - Käsittelyaika: 3–6 kuukautta
+5. **Sähköliityntäneuvottelu** jakeluverkkoyhtiön kanssa (Elenia Oy Mikkelissä)
+   - Liittymissopimus, verkkopalvelusopimus, suunnittelusopimus
+   - Rakennusaika liittymälle: 3–18 kuukautta kapasiteetin mukaan
+
+## Energia-asetukset 2025–2026
+
+EU:n Energiatehokkuusdirektiivi (EED 2023/1791) ja Suomen kansallinen toimeenpano:
+- Vähintään 500 kW IT-tehon datakeskukset raportoi energiatehokkuustiedot EU-tietokantaan (Energiavirasto)
+- Raportoitavat tiedot: PUE, WUE, vedenkäyttö, uusiutuvan energian osuus, hukkalämpö
+- Ensimmäinen raportointi: 15.5.2026 (tiedot vuodelta 2025)
+- Uudet hankkeet: PUE-tavoite ≤1,3 (jäähdytys tehokas), suunnitelma hukkalämmön hyödyntämisestä
+
