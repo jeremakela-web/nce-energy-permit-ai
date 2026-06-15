@@ -36,10 +36,22 @@ def _chunk(text: str) -> list[str]:
     return [c for c in chunks if len(c) > 100]
 
 
-def build() -> None:
+def build(force: bool = False) -> None:
     from pypdf import PdfReader
     from sentence_transformers import SentenceTransformer
     import chromadb
+
+    # Persistent-disk safety: if an index already exists and force=False, skip rmtree.
+    # This prevents wiping a pre-seeded disk on every deploy restart or startup fallback.
+    if not force and DB_DIR.exists():
+        uuid_dirs = [c for c in DB_DIR.iterdir() if c.is_dir()]
+        if uuid_dirs:
+            print(
+                f"[build_index] Existing index found ({DB_DIR}, "
+                f"{len(uuid_dirs)} segment(s)) — skipping rebuild. "
+                f"Call build(force=True) or delete {DB_DIR} to force a fresh index."
+            )
+            return
 
     pdfs = sorted(DOCS_DIR.rglob("*.pdf"))
     txts = sorted(DOCS_DIR.rglob("*.txt"))
