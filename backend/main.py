@@ -2127,6 +2127,46 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
     return resp
 
 
+@app.get("/api/permits")
+async def get_permits(
+    type: Optional[str] = Query(default=None, alias="type"),
+    country: Optional[str] = Query(default=None),
+):
+    """
+    Permit/authority configuration per project type and country.
+    GET /api/permits                     → full config keyed by country
+    GET /api/permits?type=bess&country=FI → resolved single entry (with FI fallback)
+    """
+    data_file = os.path.join(_BACKEND_DIR, "permits_data.json")
+    with open(data_file, "r", encoding="utf-8") as f:
+        all_data = json.load(f)
+
+    fi_base = all_data.get("FI", {})
+
+    if type:
+        country = (country or "FI").upper()
+        country_data = all_data.get(country, {})
+        resolved = country_data.get(type) or fi_base.get(type)
+        if not resolved:
+            raise HTTPException(status_code=404, detail=f"Tyyppiä '{type}' ei löydy")
+        kasittelyaika = fi_base.get(type, {}).get("kasittelyaika")
+        return JSONResponse({"type": type, "country": country, "kasittelyaika": kasittelyaika, **resolved})
+
+    # Full config: FI base + overrides keyed by country
+    result = {"FI": fi_base}
+    for cc, overrides in all_data.items():
+        if cc != "FI":
+            # Enrich each override entry with kasittelyaika from FI if not set
+            enriched = {}
+            for t, cfg in overrides.items():
+                entry = dict(cfg)
+                if "kasittelyaika" not in entry:
+                    entry["kasittelyaika"] = fi_base.get(t, {}).get("kasittelyaika")
+                enriched[t] = entry
+            result[cc] = enriched
+    return JSONResponse(result)
+
+
 @app.get("/api/stats")
 async def get_stats():
     # Direct SQLite read — bypasses the lru_cached ChromaDB client so count is

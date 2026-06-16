@@ -1,0 +1,104 @@
+{
+  "FI": {
+    "bess": {
+      "kasittelyaika": "6–18 kk",
+      "esiselvitys":  { "kohdeviranomainen": "Fingrid / DSO",               "viranomaiset": ["Fingrid", "DSO (alueellinen)", "Kunta"],                       "luvat": ["Sijaintiselvitys (kaavoitus)", "Sähköliityntäkapasiteettiselvitys (Fingrid/DSO)", "YVA-tarveharkinta"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta", "LVV", "Fingrid / DSO", "Tukes"],                      "luvat": ["Sijoittamislupa (kunta)", "Rakentamislupa (kunta)", "Ympäristölupa (LVV/kunta, tarvitt.)", "Kemikaalilupa (Tukes)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "Tukes", "Pelastuslaitos"],                            "luvat": ["Sähköliityntäsopimus (Fingrid/DSO)", "Tukesin käyttöönottotarkastus", "Paloturvallisuushyväksyntä (Pelastuslaitos)"] }
+    },
+    "smr": {
+      "kasittelyaika": "10–15 vuotta",
+      "esiselvitys":  { "kohdeviranomainen": "TEM / STUK",                  "viranomaiset": ["Valtioneuvosto", "TEM", "STUK", "ELY-keskus"],                 "luvat": ["Periaatepäätöshakemus (VN)", "STUK pre-licensing review", "YVA-ohjelma (ELY-keskus / LVV)"] },
+      "lupavaihe":    { "kohdeviranomainen": "STUK (ydinlupa)",              "viranomaiset": ["STUK", "TEM", "LVV", "ELY-keskus", "Kunta"],                  "luvat": ["Rakentamislupa (STUK)", "YVA-menettely (ELY/LVV)", "Ympäristölupa (LVV)", "Kaavoitus (kunta, 6–8 v)", "Rakentamislupa (kunta)"] },
+      "rakentaminen": { "kohdeviranomainen": "STUK",                         "viranomaiset": ["STUK", "Kunta", "Pelastuslaitos"],                            "luvat": ["Käyttölupa (STUK)", "Käyttöönottotarkastus", "Rakennusvalvonta (kunta)"] }
+    },
+    "tuulivoima_maa": {
+      "kasittelyaika": "4–7 vuotta",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta / ELY-keskus",           "viranomaiset": ["Kunta", "ELY-keskus", "Maanomistajat"],                       "luvat": ["Tuulimittausohjelma", "Maanomistajasopimukset (esisopimukset)", "YVA-tarveharkinta (ELY)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta + ELY-keskus",           "viranomaiset": ["Kunta", "ELY-keskus", "LVV", "Fingrid"],                      "luvat": ["Osayleiskaava (kunta + ELY)", "YVA-menettely (ELY, yhteysviranomainen)", "Rakentamislupa (kunta)", "Ympäristölupa (LVV)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "Fingrid"],                                           "luvat": ["Sähköliityntäsopimus (Fingrid/DSO)", "Aloitusilmoitus", "Loppukatselmus"] }
+    },
+    "tuulivoima_meri": {
+      "kasittelyaika": "7–12 vuotta",
+      "esiselvitys":  { "kohdeviranomainen": "Metsähallitus / ELY-keskus",   "viranomaiset": ["Metsähallitus", "Puolustusvoimat", "Traficom", "ELY-keskus"], "luvat": ["Merialuesuunnitelman tarkistus", "Puolustusvoimien ennakkolausunto", "Tutkavaikutusselvitys"] },
+      "lupavaihe":    { "kohdeviranomainen": "LVV + Metsähallitus",          "viranomaiset": ["LVV", "Metsähallitus", "ELY-keskus", "Traficom", "Energiavirasto", "Kunta"], "luvat": ["Metsähallitus-vuokrasopimus (valtion merialue)", "YVA-menettely (ELY)", "Vesilupa (LVV)", "Ympäristölupa (LVV)", "Rakentamislupa (kunta)", "Hankelupa 110 kV (Energiavirasto)"] },
+      "rakentaminen": { "kohdeviranomainen": "LVV",                          "viranomaiset": ["LVV", "Fingrid", "Kunta", "Traficom"],                        "luvat": ["Sähköliityntäsopimus (Fingrid)", "Merenkulkuilmoitus (Traficom)", "Loppukatselmus"] }
+    },
+    "aurinkovoima": {
+      "kasittelyaika": "1–3 vuotta",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta / Fingrid / DSO",        "viranomaiset": ["Kunta", "ELY-keskus", "Fingrid / DSO"],                       "luvat": ["Sijaintiselvitys (kaavoitus)", "Sähköliityntäselvitys", "YVA-tarveharkinta (>50 MWp tai merkittävät vaikutukset)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta", "ELY-keskus", "LVV"],                                 "luvat": ["Kaavoitusratkaisu (>10 ha, kunta + ELY)", "YVA-menettely (ELY/LVV, tarvittaessa)", "Rakentamislupa (kunta)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "Fingrid / DSO"],                                     "luvat": ["Sähköliityntäsopimus (Fingrid/DSO)", "Sähköturvallisuusilmoitus (Tukes)", "Loppukatselmus"] }
+    },
+    "vesivoima": {
+      "kasittelyaika": "5–10 vuotta",
+      "esiselvitys":  { "kohdeviranomainen": "LVV / ELY-keskus",             "viranomaiset": ["LVV", "ELY-keskus", "Kalatutkimuslaitos"],                    "luvat": ["Vesistöselvitykset (hydrologinen analyysi)", "YVA-tarveharkinta (ELY)", "Ekologinen virtaama-arvio"] },
+      "lupavaihe":    { "kohdeviranomainen": "LVV (vesilupa — KRIITTISIN)",  "viranomaiset": ["LVV", "ELY-keskus", "Kunta"],                                 "luvat": ["YVA-menettely (ELY)", "Vesilupa (LVV) — KRIITTISIN", "Ympäristölupa (LVV)", "Rakentamislupa (kunta)"] },
+      "rakentaminen": { "kohdeviranomainen": "LVV",                          "viranomaiset": ["LVV", "ELY-keskus", "Kunta", "Fingrid / DSO"],                "luvat": ["Sähköliityntäsopimus (Fingrid/DSO)", "Kalatalousmaksu", "Patoturvallisuussuunnitelma (PATL 494/2009)"] }
+    },
+    "asuinrakennus": {
+      "kasittelyaika": "1–3 kk",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta",                        "viranomaiset": ["Kunta"],                                                      "luvat": ["Kaavoitustilanne (rakennusoikeus)", "Suunnittelutarveratkaisu (tarvittaessa)", "Ennakkoneuvottelu rakennusvalvonnassa"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta", "Pelastuslaitos"],                                    "luvat": ["Rakentamislupa (kunta, max 3 kk käsittelyaika)", "Vastaavan työnjohtajan nimeäminen (pakollinen 1.1.2025)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "Pelastuslaitos"],                                    "luvat": ["Aloitusilmoitus", "Katselmukset (pohja, runko, loppukatselmus)", "Käyttöönottotarkastus"] }
+    },
+    "teollisuus": {
+      "kasittelyaika": "3–12 kk",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta / ELY-keskus",           "viranomaiset": ["Kunta", "ELY-keskus", "Tukes"],                               "luvat": ["Kaavaselvitys", "Ympäristövaikutusten arviointi (tarvittaessa)", "Kemikaalilupaselvitys (Tukes)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta", "LVV", "Tukes"],                                      "luvat": ["Rakentamislupa (kunta)", "Ympäristölupa (LVV, tarvittaessa)", "Kemikaalilupa (Tukes, tarvittaessa)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "Tukes", "Pelastuslaitos"],                           "luvat": ["Vastaavan työnjohtajan nimeäminen", "Käyttöönotto (Tukes)", "Pelastuslaitoksen tarkastus"] }
+    },
+    "maatalous": {
+      "kasittelyaika": "1–3 kk",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta",                        "viranomaiset": ["Kunta", "ELY-keskus"],                                        "luvat": ["Kaavaselvitys", "Ympäristölupaselvitys (suuri kotieläintalous)", "Maaseutuviraston tukikelpoisuustarkistus"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta", "LVV"],                                               "luvat": ["Rakentamislupa (kunta)", "Ympäristölupa (LVV — suuri kotieläintalous)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "ELY-keskus"],                                        "luvat": ["Vastaavan työnjohtajan nimeäminen", "Loppukatselmus"] }
+    },
+    "liikerakennus": {
+      "kasittelyaika": "1–3 kk",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta",                        "viranomaiset": ["Kunta", "Pelastuslaitos"],                                    "luvat": ["Kaavaselvitys", "Suunnittelutarveratkaisu (tarvittaessa)", "Paloturvallisuuden ennakkosuunnitelma"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta", "Pelastuslaitos"],                                    "luvat": ["Rakentamislupa (kunta)", "Pelastuslaitoksen hyväksyntä (tarvittaessa)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "Pelastuslaitos"],                                    "luvat": ["Vastaavan työnjohtajan nimeäminen", "Pelastuslaitoksen tarkastus", "Loppukatselmus"] }
+    },
+    "muu": {
+      "kasittelyaika": "1–6 kk",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta",                        "viranomaiset": ["Kunta"],                                                      "luvat": ["Kaavaselvitys", "Lupaselvitys (lupajärjestelmä tarkistettava)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta"],                                                      "luvat": ["Rakentamislupa (kunta, mahdollinen)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta"],                                                      "luvat": ["Vastaavan työnjohtajan nimeäminen", "Loppukatselmus"] }
+    },
+    "ymparistolupa": {
+      "kasittelyaika": "3–12 kk",
+      "esiselvitys":  { "kohdeviranomainen": "LVV / kunta",                  "viranomaiset": ["LVV", "Kunnan ympäristönsuojeluviranomainen"],                "luvat": ["Tarveharkinta (YSL 527/2014 §27)", "Ennakkoneuvottelu (LVV tai kunta)", "Hakemuksen valmistelu"] },
+      "lupavaihe":    { "kohdeviranomainen": "LVV tai kunta",                "viranomaiset": ["LVV (isot hankkeet)", "Kunta (pienet hankkeet)", "ELY-keskus (lausunto)"], "luvat": ["Ympäristölupahakemus (LVV tai kunta)", "Kuuleminen (naapurit, lausunnot)", "Lupapäätös (LVV ~10 kk, kunta 3–6 kk)"] },
+      "rakentaminen": { "kohdeviranomainen": "LVV / kunta",                  "viranomaiset": ["LVV tai kunta"],                                              "luvat": ["Tarkkailuohjelma", "Ilmoitukset poikkeamatilanteista", "Vuosiyhteenveto"] }
+    },
+    "datakeskus": {
+      "kasittelyaika": "2–5 vuotta",
+      "esiselvitys":  { "kohdeviranomainen": "Kunta / Fingrid",              "viranomaiset": ["Kunta", "ELY-keskus", "Fingrid"],                             "luvat": ["Sijaintiselvitys (kaavoitus)", "Sähköliityntäkapasiteettiselvitys (Fingrid/DSO)", "YVA-tarveharkinta (>50 MW)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Kunta (rakentamislupa)",       "viranomaiset": ["Kunta", "ELY-keskus", "LVV", "Fingrid"],                     "luvat": ["Asemakaavanmuutos (kunta + ELY, tarvitt.)", "YVA-menettely (ELY/LVV, ≥50 MW)", "Rakentamislupa (kunta)", "Ympäristölupa (LVV — jäähdytys, melu)"] },
+      "rakentaminen": { "kohdeviranomainen": "Kunta (rakennusvalvonta)",     "viranomaiset": ["Kunta", "LVV", "Fingrid / DSO"],                             "luvat": ["Sähköliityntäsopimus (Fingrid/DSO)", "Loppukatselmus (kunta)", "Käyttöönottotarkastus"] }
+    }
+  },
+  "PL": {
+    "smr": {
+      "esiselvitys":  { "kohdeviranomainen": "PAA (ydinlupa)", "viranomaiset": ["PAA (Państwowa Agencja Atomistyki)", "RDOŚ / GDOŚ", "Wody Polskie"], "luvat": ["Prawo atomowe — pre-licensing", "OOŚ (Ustawa środowiskowa)", "Pozwolenie wodnoprawne"] },
+      "lupavaihe":    { "kohdeviranomainen": "PAA (ydinlupa)", "viranomaiset": ["PAA (Państwowa Agencja Atomistyki)", "RDOŚ / GDOŚ", "Wody Polskie", "Starostwo Powiatowe"], "luvat": ["Zezwolenie na budowę (PAA)", "OOŚ", "Prawo wodne", "Prawo budowlane"] },
+      "rakentaminen": { "kohdeviranomainen": "PAA (ydinlupa)", "viranomaiset": ["PAA (Państwowa Agencja Atomistyki)", "Starostwo Powiatowe", "Straż pożarna"], "luvat": ["Nadzór budowlany (PAA)", "Odbiór budynku", "Kontrola bezpieczeństwa pożarowego"] }
+    },
+    "bess": {
+      "esiselvitys":  { "kohdeviranomainen": "Kunta / RDOŚ",  "viranomaiset": ["Gmina (kunta)", "RDOŚ (ympäristöpäätös)"], "luvat": ["MPZP-selvitys (paikallinen asemakaava)", "Decyzja środowiskowa — tarveharkinta (RDOŚ)", "Sieciowa zdolność przyłączeniowa (DSO/PSE)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Starostwo (pozwolenie na budowę)", "viranomaiset": ["RDOŚ / GDOŚ", "Starostwo Powiatowe", "URE"], "luvat": ["Decyzja środowiskowa (RDOŚ/GDOŚ)", "Pozwolenie na budowę (Starostwo)", "Koncesja URE (rekisteröinti > 1 MW)", "Umowa przyłączeniowa (DSO)"] },
+      "rakentaminen": { "kohdeviranomainen": "Starostwo / URE", "viranomaiset": ["Starostwo Powiatowe", "URE", "DSO"], "luvat": ["Odbiór budynku (Nadzór Budowlany)", "Wpis do rejestru URE", "Umowa dystrybucyjna (DSO)"] }
+    },
+    "tuulivoima_maa": {
+      "esiselvitys":  { "kohdeviranomainen": "Gmina / RDOŚ",  "viranomaiset": ["Gmina (kunta)", "RDOŚ", "Marszałek Województwa"], "luvat": ["MPZP (miejscowy plan zagospodarowania przestrzennego)", "OOŚ-tarveharkinta (RDOŚ)", "Odległość 10H (Ustawa wiatrowa 2016/2023)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Starostwo / Voivodi", "viranomaiset": ["RDOŚ / GDOŚ", "Starostwo Powiatowe / Voivodi", "PSE", "URE"], "luvat": ["Decyzja środowiskowa (RDOŚ)", "Pozwolenie na budowę (Starostwo/Voivodi)", "Umowa przyłączeniowa (PSE/DSO)", "Koncesja na wytwarzanie energii (URE)"] },
+      "rakentaminen": { "kohdeviranomainen": "Nadzór budowlany", "viranomaiset": ["Nadzór Budowlany", "URE", "PSE / DSO"], "luvat": ["Odbiór budynku", "Wpis do rejestru wytwórców (URE)", "Umowa dystrybucyjna / przesyłowa"] }
+    },
+    "aurinkovoima": {
+      "esiselvitys":  { "kohdeviranomainen": "Gmina / Starosta", "viranomaiset": ["Gmina (kunta)", "Starosta", "DSO"], "luvat": ["MPZP tai WZ-päätös (Warunki Zabudowy)", "Sieciowa zdolność przyłączeniowa (DSO)", "OOŚ-tarveharkinta (>1 MW)"] },
+      "lupavaihe":    { "kohdeviranomainen": "Starosta (pozwolenie na budowę)", "viranomaiset": ["Starosta (>150 kW)", "DSO / PSE", "URE"], "luvat": ["Pozwolenie na budowę (Starosta, yli 150 kW)", "Zgłoszenie budowlane (alle 150 kW)", "Umowa przyłączeniowa (DSO)", "Koncesja URE (yli 500 kW)"] },
+      "rakentaminen": { "kohdeviranomainen": "Nadzór budowlany", "viranomaiset": ["Nadzór Budowlany", "DSO", "URE"], "luvat": ["Odbiór budynku", "Wpis do rejestru mikroinstalacji tai wytwórców (URE)", "Umowa dystrybucyjna (DSO)"] }
+    }
+  }
+}
