@@ -915,9 +915,11 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
     job_id = uuid.uuid4().hex[:10]
     _proofread_store[job_id] = {
         "status": "pending", "pdf_bytes": None, "error": None,
-        "lang":        req.lang or "FI",
-        "hanketyyppi": req.hanketyyppi or "doc",
-        "kunta":       req.kunta or "hanke",
+        "lang":          req.lang or "FI",
+        "hanketyyppi":   req.hanketyyppi or "doc",
+        "kunta":         req.kunta or "hanke",
+        "session_id":    req.session_id or "",
+        "hankkeen_vaihe": req.hankkeen_vaihe or "",
     }
 
     _client_ip = get_remote_address(request)
@@ -934,6 +936,15 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             _proofread_store[job_id]["status"] = "done"
             _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
                        req.hankkeen_vaihe or "", job_id, "done")
+            # Auto-complete phase when PDF is generated (no user click required)
+            if _PHASE_LOCK_OK and req.session_id and req.hankkeen_vaihe:
+                _phase_num = {"esiselvitys": 1, "lupavaihe": 2, "rakentaminen": 3,
+                              "rakentamisvaihe": 3}.get(req.hankkeen_vaihe.lower().strip(), 0)
+                if _phase_num:
+                    _phase_status = _unlock_next_phase(
+                        req.session_id, req.hanketyyppi, _phase_num, "generated"
+                    )
+                    _proofread_store[job_id]["phase_status"] = _phase_status
         except InsufficientSourcesError as exc:
             _proofread_store[job_id]["status"] = "insufficient_sources"
             _proofread_store[job_id]["error"] = str(exc)
@@ -980,7 +991,12 @@ async def proofread_status(job_id: str):
                 "avg_relevance": job.get("avg_relevance", 0.0),
             },
         )
-    return {"status": job["status"], "error": job.get("error"), "debug_sections": job.get("debug_sections")}
+    return {
+        "status": job["status"],
+        "error": job.get("error"),
+        "debug_sections": job.get("debug_sections"),
+        "phase_status": job.get("phase_status"),
+    }
 
 
 _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
@@ -1732,6 +1748,7 @@ try:
         check_phase_allowed as _check_phase,
         get_phase_status as _get_phase_status,
         unlock_next_phase as _unlock_next_phase,
+        skip_phases as _skip_phases,
     )
     _PHASE_LOCK_OK = PHASE_LOCK_ENABLED
 except Exception as _pl_err:
@@ -1843,7 +1860,25 @@ async def complete_phase(request: Request, req: CompletePhaseRequest):
         return JSONResponse({"ok": True, "next_phase": req.phase + 1})
     if req.phase not in (1, 2, 3):
         raise HTTPException(status_code=400, detail="phase oltava 1, 2 tai 3")
-    status = _unlock_next_phase(req.session_id, req.hanketyyppi, req.phase)
+    status = _unlock_next_phase(req.session_id, req.hanketyyppi, req.phase, "generated")
+    return JSONResponse({"ok": True, **status})
+
+
+class SkipPhaseRequest(BaseModel):
+    session_id:         str
+    hanketyyppi:        str
+    skip_through_phase: int   # 1 | 2 | 3  — merkitsee vaiheet 1..N ohitetuiksi
+
+
+@app.post("/api/skip-phase")
+@limiter.limit("30/hour")
+async def skip_phase(request: Request, req: SkipPhaseRequest):
+    """Merkitsee aiemmat vaiheet 'skipped' (asiakas liittyy kesken matkan)."""
+    if not _PHASE_LOCK_OK:
+        return JSONResponse({"ok": True, "next_phase": req.skip_through_phase + 1})
+    if req.skip_through_phase not in (1, 2, 3):
+        raise HTTPException(status_code=400, detail="skip_through_phase oltava 1, 2 tai 3")
+    status = _skip_phases(req.session_id, req.hanketyyppi, req.skip_through_phase)
     return JSONResponse({"ok": True, **status})
 
 

@@ -1138,7 +1138,11 @@
     .pl-done    { background: rgba(0,194,168,0.15); color: #00C2A8; border: 1px solid rgba(0,194,168,0.4); }
     .pl-active  { background: rgba(74,159,212,0.15); color: #4a9fd4; border: 1px solid rgba(74,159,212,0.4); }
     .pl-locked  { background: rgba(255,255,255,0.03); color: #4a6a9a; border: 1px solid #1e3a5a; }
+    .pl-skipped { background: rgba(150,150,170,0.1); color: #8a9ab0; border: 1px solid rgba(150,150,170,0.3); }
+    .pl-skipped-label { font-size: 0.72em; opacity: 0.75; font-style: italic; }
     .pl-sep     { color: #2a4a6a; font-size: 0.9rem; }
+    .pl-skip-link { color: #4a7a9a; font-size: 0.72rem; text-decoration: none; opacity: 0.7; }
+    .pl-skip-link:hover { opacity: 1; text-decoration: underline; }
     .gf-lupatyypit-bar {
       display: flex;
       align-items: center;
@@ -5640,6 +5644,28 @@ async function _markPhaseComplete(hanketyyppi, phase) {
   } catch (_) {}
 }
 
+async function doSkipPhase(hanketyyppi, skipThroughPhase) {
+  const phaseLabels = { 1: 'esiselvitys', 2: 'lupavaihe', 3: 'rakentaminen' };
+  const label = phaseLabels[skipThroughPhase] || skipThroughPhase;
+  if (!confirm(`Merkitäänkö vaihe "${label}" ohitetuksi (suoritettu muualla)?\nSeuraava vaihe avautuu välittömästi.`)) return;
+  try {
+    const r = await fetch(`${API_BASE}/api/skip-phase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: _sessionId, hanketyyppi, skip_through_phase: skipThroughPhase }),
+    });
+    if (!r.ok) return;
+    const d = await r.json();
+    _phaseState[hanketyyppi] = d;
+    _renderVaihepolku(hanketyyppi, d);
+    _applyVaiheLock(hanketyyppi, d);
+    // Update the phase dropdown to point to the next available phase
+    const sel = document.getElementById('gf-vaihe');
+    const nextName = { 1: 'Lupavaihe', 2: 'Rakentaminen' }[skipThroughPhase];
+    if (sel && nextName) sel.value = nextName;
+  } catch (_) {}
+}
+
 function _renderVaihepolku(hanketyyppi, status) {
   const el = document.getElementById('phase-lock-bar');
   // Don't render the bar in demo / phase-lock-disabled mode
@@ -5647,12 +5673,39 @@ function _renderVaihepolku(hanketyyppi, status) {
   const labels = { esiselvitys: t('opt_vaihe_esiselvitys'), lupavaihe: t('opt_vaihe_lupavaihe'), rakentaminen: t('opt_vaihe_rakentaminen') };
   const icons  = { done: '✓', active: '●', locked: '🔒' };
   const html = status.phases.map((p, i) => {
-    const cls = `pl-step pl-${p.state}`;
+    const isSkipped = p.state === 'done' && p.completion_type === 'skipped';
+    const cls = isSkipped ? 'pl-step pl-skipped' : `pl-step pl-${p.state}`;
+    const icon = isSkipped ? '✓' : icons[p.state];
+    const label = labels[p.name] || p.name;
+    const suffix = isSkipped ? ' <span class="pl-skipped-label">ohitettu</span>' : '';
     const sep = i < 2 ? '<span class="pl-sep">→</span>' : '';
-    return `<span class="${cls}" title="${p.name}">${icons[p.state]} ${labels[p.name] || p.name}</span>${sep}`;
+    return `<span class="${cls}" title="${p.name}">${icon} ${label}${suffix}</span>${sep}`;
   }).join('');
   el.innerHTML = html;
   el.style.display = 'flex';
+
+  // Show "ohita vaihe" link for the currently active phase (if it's not esiselvitys)
+  const skipBar = document.getElementById('phase-skip-bar');
+  if (skipBar) {
+    const activePhase = status.phases.find(p => p.state === 'active');
+    const nextPhaseNum = activePhase ? activePhase.phase : 0;
+    // Show skip link for the phase *before* the active one (the one just completed would not need skipping)
+    // Actually: show skip for the active phase — user can say "I already did this elsewhere"
+    if (activePhase && nextPhaseNum > 1) {
+      // Skip the previous phase(s) up to completed+1-1 = completed
+      const skipTo = status.completed_phase; // skip through the last completed, making the active one available
+      // Offer to skip the current active phase
+      const skipLabel = { esiselvitys: 'esiselvitys', lupavaihe: 'lupavaihe', rakentaminen: 'rakentaminen' }[activePhase.name] || activePhase.name;
+      skipBar.innerHTML = `<a href="#" class="pl-skip-link" onclick="event.preventDefault();doSkipPhase('${hanketyyppi}',${activePhase.phase})">Ohita ${skipLabel} →</a>`;
+      skipBar.style.display = 'block';
+    } else if (activePhase && nextPhaseNum === 1) {
+      // First phase active — offer to skip esiselvitys
+      skipBar.innerHTML = `<a href="#" class="pl-skip-link" onclick="event.preventDefault();doSkipPhase('${hanketyyppi}',1)">Ohita esiselvitys →</a>`;
+      skipBar.style.display = 'block';
+    } else {
+      skipBar.style.display = 'none';
+    }
+  }
 }
 
 function _applyVaiheLock(hanketyyppi, status) {
@@ -5774,6 +5827,7 @@ function selectProjectType(typeId) {
       <div class="gen-form-title" data-i18n="gf_title_${typeId}">${t('gf_title_' + typeId)}</div>
       <div class="gen-form-sub" data-i18n="gf_form_sub">${t('gf_form_sub')}</div>
       <div id="phase-lock-bar" class="phase-lock-bar" style="display:none;"></div>
+      <div id="phase-skip-bar" style="display:none;text-align:right;margin-top:-6px;margin-bottom:8px;font-size:0.72rem;"></div>
       ${lupaTagsHtml ? `<div class="gf-lupatyypit-bar"><span class="gf-lupatyypit-label" data-i18n="gf_luvat_heading">${t('gf_luvat_heading')}</span>${lupaTagsHtml}</div>` : ''}
       ${rowsHtml}
       <div id="gen-progress-wrap" class="gen-progress-wrap">
@@ -6047,13 +6101,20 @@ async function submitGeneratorForm() {
             if (progFill) progFill.style.width = '100%';
             if (progPct)  progPct.textContent  = '100%';
             if (progMsg)  progMsg.textContent  = t('progress_done');
+            // Auto-complete phase (backend already did it; update UI from response or call locally)
+            const _backendTypeComplete = (BACKEND_TYPE_MAP && BACKEND_TYPE_MAP[selectedProjectType]) || selectedProjectType;
+            if (sd.phase_status) {
+              _phaseState[_backendTypeComplete] = sd.phase_status;
+              _renderVaihepolku(_backendTypeComplete, sd.phase_status);
+              _applyVaiheLock(_backendTypeComplete, sd.phase_status);
+            } else {
+              const _completedPhaseNum = { 'Esiselvitys': 1, 'Lupavaihe': 2, 'Rakentaminen': 3 }[payload.hankkeen_vaihe] || 1;
+              _markPhaseComplete(_backendTypeComplete, _completedPhaseNum);
+            }
             if (proofBox) {
               proofBox.style.cssText = 'display:block;margin-top:10px;text-align:center;';
-              const _backendTypeComplete = (BACKEND_TYPE_MAP && BACKEND_TYPE_MAP[selectedProjectType]) || selectedProjectType;
-              const _completedPhaseNum = { 'Esiselvitys': 1, 'Lupavaihe': 2, 'Rakentaminen': 3 }[payload.hankkeen_vaihe] || 1;
               proofBox.innerHTML =
-                `<a class="gen-dl-btn" href="${API_BASE}/api/proofread/${jobId}/download" ` +
-                `onclick="_markPhaseComplete('${_backendTypeComplete}',${_completedPhaseNum})">` +
+                `<a class="gen-dl-btn" href="${API_BASE}/api/proofread/${jobId}/download">` +
                 `&#x2B07; ${t('btn_download_pdf')}</a>`;
             }
           } else if (sd.status === 'error') {

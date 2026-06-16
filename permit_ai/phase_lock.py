@@ -55,19 +55,21 @@ def get_phase_status(session_id: str, hanketyyppi: str) -> dict:
     Palautus:
         {
             "completed_phase": int,   # 0 = ei mitään, 1 = esiselvitys, 2 = lupavaihe, 3 = rakentaminen
-            "completed_name":  str,   # "esiselvitys" | "lupavaihe" | "rakentaminen" | ""
-            "next_phase":      int,   # seuraava avautuva vaihe (0 jos kaikki tehty)
+            "completed_name":  str,
+            "next_phase":      int,
             "phases": [
-                {"name": "esiselvitys", "phase": 1, "state": "done"|"active"|"locked"},
-                {"name": "lupavaihe",   "phase": 2, "state": ...},
-                {"name": "rakentaminen","phase": 3, "state": ...},
+                {"name": "esiselvitys", "phase": 1, "state": "done"|"active"|"locked",
+                 "completion_type": "generated"|"skipped"|""},
+                ...
             ]
         }
     """
     with _lock:
         data = _load()
     sessions = data.get(session_id, {})
-    completed = sessions.get(hanketyyppi, {}).get("completed_phase", 0)
+    hanke_data = sessions.get(hanketyyppi, {})
+    completed = hanke_data.get("completed_phase", 0)
+    phase_details = hanke_data.get("phases", {})
     next_phase = completed + 1 if completed < 3 else 0
 
     phases = []
@@ -78,7 +80,8 @@ def get_phase_status(session_id: str, hanketyyppi: str) -> dict:
             state = "active"
         else:
             state = "locked"
-        phases.append({"name": PHASE_NAMES[n], "phase": n, "state": state})
+        ct = phase_details.get(str(n), {}).get("completion_type", "generated") if n <= completed else ""
+        phases.append({"name": PHASE_NAMES[n], "phase": n, "state": state, "completion_type": ct})
 
     return {
         "completed_phase": completed,
@@ -88,21 +91,65 @@ def get_phase_status(session_id: str, hanketyyppi: str) -> dict:
     }
 
 
-def unlock_next_phase(session_id: str, hanketyyppi: str, completed_phase: int) -> dict:
+def unlock_next_phase(
+    session_id: str,
+    hanketyyppi: str,
+    completed_phase: int,
+    completion_type: str = "generated",
+) -> dict:
     """
     Merkitsee vaiheen valmiiksi. Päivittää vain jos uusi vaihe on suurempi.
+    completion_type: "generated" | "skipped"
     Palauttaa päivitetyn phase_status-dictin.
     """
     with _lock:
         data = _load()
         if session_id not in data:
             data[session_id] = {}
-        current = data[session_id].get(hanketyyppi, {}).get("completed_phase", 0)
+        hanke = data[session_id].get(hanketyyppi, {})
+        current = hanke.get("completed_phase", 0)
         if completed_phase > current:
+            phase_details = hanke.get("phases", {})
+            phase_details[str(completed_phase)] = {"completion_type": completion_type}
             data[session_id][hanketyyppi] = {
                 "completed_phase": completed_phase,
+                "phases": phase_details,
                 "updated_at": _now(),
             }
+        _save(data)
+    return get_phase_status(session_id, hanketyyppi)
+
+
+def skip_phases(session_id: str, hanketyyppi: str, skip_through_phase: int) -> dict:
+    """
+    Merkitsee vaiheet 1..skip_through_phase ohitetuiksi ('skipped').
+    Käytetään kun asiakas liittyy kesken matkan (jo suorittanut vaiheet muualla).
+    Ei ylikirjoita jo 'generated'-tilassa olevia vaiheita.
+    Palauttaa päivitetyn phase_status-dictin.
+    """
+    if skip_through_phase not in (1, 2, 3):
+        return get_phase_status(session_id, hanketyyppi)
+
+    with _lock:
+        data = _load()
+        if session_id not in data:
+            data[session_id] = {}
+        hanke = data[session_id].get(hanketyyppi, {})
+        current = hanke.get("completed_phase", 0)
+        phase_details = hanke.get("phases", {})
+
+        for n in range(1, skip_through_phase + 1):
+            # Don't overwrite a phase already completed via generation
+            existing_ct = phase_details.get(str(n), {}).get("completion_type", "")
+            if existing_ct != "generated":
+                phase_details[str(n)] = {"completion_type": "skipped"}
+
+        new_completed = max(current, skip_through_phase)
+        data[session_id][hanketyyppi] = {
+            "completed_phase": new_completed,
+            "phases": phase_details,
+            "updated_at": _now(),
+        }
         _save(data)
     return get_phase_status(session_id, hanketyyppi)
 
