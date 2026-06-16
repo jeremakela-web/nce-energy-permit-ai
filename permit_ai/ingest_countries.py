@@ -202,6 +202,11 @@ def ingest(
         existing_ids.update(new_ids)
         totals[country] = len(new_docs)
         print(f"  ✅ {len(new_docs)} chunkkia lisätty ({country})")
+        # Force WAL checkpoint so data lands in the main DB file before process exits
+        _wal_checkpoint(DB_DIR)
+
+    # Final checkpoint after all countries
+    _wal_checkpoint(DB_DIR)
 
     # Yhteenveto
     print(f"\n{'─'*50}")
@@ -216,6 +221,22 @@ def ingest(
     print(f"{'─'*50}")
 
     return totals
+
+
+def _wal_checkpoint(db_dir: Path) -> None:
+    """Force SQLite WAL checkpoint so chunks survive process exit / container restart."""
+    import sqlite3 as _sql
+    db_file = db_dir / "chroma.sqlite3"
+    if not db_file.exists():
+        return
+    try:
+        con = _sql.connect(str(db_file), check_same_thread=False)
+        con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        con.commit()
+        con.close()
+        print("  [WAL] checkpoint OK")
+    except Exception as e:
+        print(f"  [WAL] checkpoint epäonnistui: {e}")
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
