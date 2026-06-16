@@ -381,6 +381,7 @@ _TOOL_EXEMPT = {"/api/stats", "/api/access-request", "/api/health", "/api/rag-st
 
 SMTP_USER     = os.getenv("SMTP_USER", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+_INGEST_SECRET = os.getenv("INGEST_SECRET", "")
 
 _401_HTML = """<!doctype html>
 <html lang="fi">
@@ -519,6 +520,9 @@ class ApplicationRequest(BaseModel):
 # ── Oikolukutehtävien in-memory-varasto ──────────────────────────────────────
 # {job_id: {status: pending|running|done|error, pdf_bytes: bytes|None, error: str|None}}
 _proofread_store: dict = {}
+
+# ── Admin ingest -tehtävien in-memory-varasto ─────────────────────────────────
+_ingest_jobs: dict = {}
 
 
 class ReportRequest(BaseModel):
@@ -1929,6 +1933,104 @@ async def rtb_cockpit():
     """RTB Compliance Cockpit -sivu."""
     path = os.path.join(_STATIC_DIR, "rtb.html")
     return FileResponse(path)
+
+
+# ── Admin: RAG-indeksointi ────────────────────────────────────────────────────
+
+def _check_ingest_auth(request: Request) -> None:
+    if not _INGEST_SECRET:
+        raise HTTPException(status_code=503, detail="INGEST_SECRET ei asetettu")
+    auth = request.headers.get("authorization", "")
+    if not auth.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Authorization: Bearer <token> vaaditaan")
+    if not secrets.compare_digest(auth[7:].encode(), _INGEST_SECRET.encode()):
+        raise HTTPException(status_code=401, detail="Väärä Bearer-token")
+
+
+@app.post("/api/admin/ingest")
+async def admin_ingest(request: Request):
+    """
+    Käynnistää RAG-indeksoinnin taustasäikeessä.
+    Authorization: Bearer <INGEST_SECRET>
+    Body: {"countries": ["SE", "DA", "NO", "PL"], "reindex": false}
+    """
+    _check_ingest_auth(request)
+
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+
+    _valid = {"SE", "DA", "NO", "PL"}
+    raw_countries = body.get("countries", list(_valid))
+    countries = [c.upper() for c in raw_countries if c.upper() in _valid]
+    if not countries:
+        raise HTTPException(status_code=400, detail=f"countries oltava jokin: {', '.join(sorted(_valid))}")
+    reindex = bool(body.get("reindex", False))
+
+    job_id = uuid.uuid4().hex[:10]
+    _ingest_jobs[job_id] = {
+        "status":      "running",
+        "countries":   countries,
+        "reindex":     reindex,
+        "started_at":  time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "finished_at": None,
+        "result":      None,
+        "error":       None,
+        "log":         [],
+    }
+
+    def _bg_ingest():
+        import contextlib
+        import io as _sio
+        log = _ingest_jobs[job_id]["log"]
+        buf = _sio.StringIO()
+        try:
+            import ingest_countries as _ic
+            with contextlib.redirect_stdout(buf):
+                result = _ic.ingest(countries, dry_run=False, reindex=reindex)
+            log.extend(buf.getvalue().splitlines())
+            _ingest_jobs[job_id]["status"] = "done"
+            _ingest_jobs[job_id]["result"] = result
+        except SystemExit as exc:
+            log.extend(buf.getvalue().splitlines())
+            log.append(f"[VIRHE] sys.exit({exc.code})")
+            _ingest_jobs[job_id]["status"] = "error"
+            _ingest_jobs[job_id]["error"] = f"sys.exit({exc.code})"
+        except Exception as exc:
+            log.extend(buf.getvalue().splitlines())
+            log.append(f"[VIRHE] {exc}")
+            _ingest_jobs[job_id]["status"] = "error"
+            _ingest_jobs[job_id]["error"] = str(exc)
+        _ingest_jobs[job_id]["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+    Thread(target=_bg_ingest, daemon=True).start()
+
+    return Response(
+        content=json.dumps({"job_id": job_id, "countries": countries, "reindex": reindex}),
+        status_code=202,
+        media_type="application/json",
+    )
+
+
+@app.get("/api/admin/ingest/{job_id}")
+async def admin_ingest_status(job_id: str, request: Request):
+    """Tarkistaa ingest-tehtävän tilan. Vaatii saman Bearer-tokenin."""
+    _check_ingest_auth(request)
+    job = _ingest_jobs.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Tehtävää ei löydy")
+    return JSONResponse({
+        "job_id":      job_id,
+        "status":      job["status"],
+        "countries":   job["countries"],
+        "started_at":  job["started_at"],
+        "finished_at": job.get("finished_at"),
+        "result":      job.get("result"),
+        "error":       job.get("error"),
+        "log_tail":    job["log"][-40:],
+    })
 
 
 # ── IFC parser ────────────────────────────────────────────────────────────────
