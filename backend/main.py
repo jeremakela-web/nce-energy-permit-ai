@@ -263,11 +263,9 @@ def _run_startup_fallback_index() -> None:
         _get_embed_model.cache_clear()
         _permit_ai_module._get_collection.cache_clear()
         _permit_ai_module._get_embed_model.cache_clear()
-        # Warm up the definitive client now that the DB is fully written
-        _get_embed_model()
         count = _get_chroma_col().count()
         _log.info(f"[startup-fallback] Done — {count} chunks in permit_docs, ready for queries")
-        print(f"[startup-fallback] ✓ {count} chunkkia indeksoitu — RAG valmis")
+        print(f"[startup-fallback] ✓ {count} chunkkia indeksoitu — RAG valmis (malli ladataan laiskasti ensimmäisellä kyselyllä)")
     except Exception as exc:
         logging.getLogger("startup-fallback").exception(f"[startup-fallback] Unexpected error: {exc}")
 
@@ -298,9 +296,8 @@ try:
             logging.getLogger("startup").info(
                 "[startup] permit_docs_v2 not ready — set ENABLE_REINDEX=true to enable"
             )
-        _get_embed_model()
         count = _get_chroma_col().count()
-        print(f"[startup] Embedding-malli ja ChromaDB ladattu ({count} chunkkia)")
+        print(f"[startup] ChromaDB ladattu ({count} chunkkia) — malli ladataan laiskasti ensimmäisellä kyselyllä")
 except Exception as _e:
     print(f"[startup] Varoitus: RAG-lataus epäonnistui: {_e}")
 
