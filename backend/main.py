@@ -543,6 +543,18 @@ async def root(request: Request):
     return FileResponse(os.path.join(_STATIC_DIR, "index.html"))
 
 
+@app.get("/sitemap.xml")
+async def sitemap():
+    path = os.path.join(_LANDING_DIR, "sitemap.xml")
+    return FileResponse(path, media_type="application/xml")
+
+
+@app.get("/robots.txt")
+async def robots():
+    path = os.path.join(_LANDING_DIR, "robots.txt")
+    return FileResponse(path, media_type="text/plain")
+
+
 @app.get("/privacy")
 async def privacy():
     return FileResponse(os.path.join(_STATIC_DIR, "privacy.html"))
@@ -1917,11 +1929,28 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
 
 @app.get("/api/stats")
 async def get_stats():
+    # Direct SQLite read — bypasses the lru_cached ChromaDB client so count is
+    # always current even after Shell ingest writes to the same persistent disk.
     try:
-        col = _get_chroma_col()
-        chunk_count = col.count()
+        import sqlite3 as _sqlite3
+        _db_file = os.path.join(
+            os.path.dirname(__file__),
+            "..", "permit_ai", "embeddings", "chroma.sqlite3"
+        )
+        _db_file = os.path.normpath(_db_file)
+        _con = _sqlite3.connect(_db_file, check_same_thread=False)
+        chunk_count = _con.execute(
+            "SELECT COUNT(*) FROM embeddings e"
+            " JOIN segments s ON e.segment_id = s.id"
+            " JOIN collections c ON s.collection = c.id"
+            " WHERE c.name = 'permit_docs'"
+        ).fetchone()[0]
+        _con.close()
     except Exception:
-        chunk_count = 10316  # fallback
+        try:
+            chunk_count = _get_chroma_col().count()
+        except Exception:
+            chunk_count = 0
     return {
         "chunks_total":  chunk_count,
         "countries":     6,
