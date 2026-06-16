@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTB Compliance Cockpit — NCE Permit AI</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #080f1e;
+    color: #c8d8e8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px;
+  }
+  .logo-bar {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 36px;
+  }
+  .logo-bar a { color: #4a9fd4; font-size: 0.82rem; text-decoration: none; opacity: 0.7; }
+  .logo-bar a:hover { opacity: 1; }
+  h1 { font-size: 1.35rem; color: #e8f0ff; margin-bottom: 4px; }
+  .subtitle { font-size: 0.8rem; color: #4a7a9a; margin-bottom: 32px; }
+
+  .search-box {
+    display: flex; gap: 8px; width: 100%; max-width: 520px; margin-bottom: 32px;
+  }
+  .search-box input {
+    flex: 1; background: #0d1f38; border: 1px solid #1e3a5a; border-radius: 8px;
+    color: #c8d8e8; padding: 10px 14px; font-size: 0.9rem; outline: none;
+    font-family: 'Courier New', monospace;
+  }
+  .search-box input:focus { border-color: #4a9fd4; }
+  .search-box button {
+    background: #1a3a6a; border: 1px solid #2a5a9a; border-radius: 8px;
+    color: #c8d8e8; padding: 10px 20px; font-size: 0.9rem; cursor: pointer;
+    white-space: nowrap;
+  }
+  .search-box button:hover { background: #2a4a8a; }
+
+  .card {
+    background: #0d1f38; border: 1px solid #1e3a5a; border-radius: 12px;
+    padding: 24px 28px; width: 100%; max-width: 520px; margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px;
+    color: #4a7a9a; margin-bottom: 16px;
+  }
+  .meta-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .meta-chip {
+    background: rgba(74,159,212,0.1); border: 1px solid rgba(74,159,212,0.2);
+    border-radius: 20px; padding: 3px 10px; font-size: 0.72rem; color: #4a9fd4;
+  }
+
+  .module-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .module-row:last-child { border-bottom: none; }
+  .module-name { font-size: 0.88rem; }
+  .module-sub  { font-size: 0.7rem; color: #4a7a9a; margin-top: 2px; }
+  .status-badge {
+    display: flex; align-items: center; gap: 6px; font-size: 0.82rem;
+    font-weight: 600; white-space: nowrap;
+  }
+  .status-done    { color: #00C2A8; }
+  .status-pending { color: #4a7a9a; }
+
+  .rtb-banner {
+    width: 100%; max-width: 520px; border-radius: 12px;
+    padding: 20px 28px; text-align: center;
+    font-weight: 700; font-size: 1.05rem;
+  }
+  .rtb-ready {
+    background: rgba(0,194,168,0.12); border: 1px solid rgba(0,194,168,0.4);
+    color: #00C2A8;
+  }
+  .rtb-pending {
+    background: rgba(74,159,212,0.07); border: 1px solid rgba(74,159,212,0.2);
+    color: #4a7a9a;
+  }
+  .rtb-banner .sub { font-size: 0.75rem; font-weight: 400; margin-top: 6px; opacity: 0.8; }
+
+  .not-found {
+    color: #4a7a9a; font-size: 0.88rem; padding: 20px 0; text-align: center;
+  }
+  .phase-tag {
+    background: rgba(74,159,212,0.1); border: 1px solid rgba(74,159,212,0.2);
+    border-radius: 4px; padding: 1px 7px; font-size: 0.68rem; color: #4a9fd4; margin-left: 6px;
+  }
+  .ts { font-size: 0.68rem; color: #2a4a6a; margin-top: 4px; }
+
+  #loading { color: #4a7a9a; font-size: 0.85rem; padding: 24px 0; display: none; }
+  #result  { display: none; }
+  #error   { color: #e94560; font-size: 0.85rem; padding: 16px 0; display: none; }
+</style>
+</head>
+<body>
+
+<div class="logo-bar">
+  <a href="/">← NCE Permit AI</a>
+</div>
+
+<h1>RTB Compliance Cockpit</h1>
+<p class="subtitle">Ready-to-Build status — Lupa-asiakirja + Maankäyttöselvitys</p>
+
+<div class="search-box">
+  <input id="hanke-id-input" type="text"
+    placeholder="Hanke ID (esim. 1234567_8__091_001_0001_0001)"
+    spellcheck="false" />
+  <button onclick="lookup()">Hae</button>
+</div>
+
+<div id="loading">Haetaan...</div>
+<div id="error"></div>
+
+<div id="result">
+  <div class="card">
+    <div class="card-title">Hankkeen tiedot</div>
+    <div class="meta-row" id="meta-chips"></div>
+    <div class="module-row">
+      <div>
+        <div class="module-name">Lupa-asiakirja</div>
+        <div class="module-sub" id="permit-sub">—</div>
+        <div class="ts" id="permit-ts"></div>
+      </div>
+      <div class="status-badge" id="permit-status"></div>
+    </div>
+    <div class="module-row">
+      <div>
+        <div class="module-name">Maankäyttöselvitys</div>
+        <div class="module-sub" id="land-sub">—</div>
+        <div class="ts" id="land-ts"></div>
+      </div>
+      <div class="status-badge" id="land-status"></div>
+    </div>
+  </div>
+
+  <div class="rtb-banner" id="rtb-banner">
+    <div id="rtb-banner-text"></div>
+    <div class="sub" id="rtb-banner-sub"></div>
+  </div>
+</div>
+
+<script>
+const API_BASE = window.location.origin;
+
+function fmtTs(ts) {
+  if (!ts) return '';
+  try {
+    return new Date(ts).toLocaleString('fi-FI', {dateStyle:'short', timeStyle:'short'});
+  } catch { return ts; }
+}
+
+async function lookup() {
+  const id = document.getElementById('hanke-id-input').value.trim();
+  if (!id) return;
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('result').style.display  = 'none';
+  document.getElementById('error').style.display   = 'none';
+
+  try {
+    const r = await fetch(`${API_BASE}/api/rtb/${encodeURIComponent(id)}`, {
+      headers: { 'Authorization': 'Basic ' + btoa('nce:Pilottest123!') }
+    });
+    if (!r.ok) throw new Error(r.statusText);
+    const d = await r.json();
+
+    // Meta chips
+    const chips = [];
+    if (d.y_tunnus)         chips.push(d.y_tunnus);
+    if (d.kiinteistotunnus) chips.push(d.kiinteistotunnus);
+    if (d.hanketyyppi)      chips.push(d.hanketyyppi);
+    if (d.maa)              chips.push(d.maa);
+    document.getElementById('meta-chips').innerHTML =
+      chips.map(c => `<span class="meta-chip">${c}</span>`).join('') ||
+      `<span style="color:#4a7a9a;font-size:0.78rem">Hanke ID: ${d.hanke_id}</span>`;
+
+    // Permit doc
+    const pd = d.permit_doc || {};
+    const permitDone = pd.status === 'done';
+    document.getElementById('permit-status').innerHTML = permitDone
+      ? '<span class="status-done">✓ Valmis</span>'
+      : '<span class="status-pending">— Kesken</span>';
+    const phaseTag = pd.phase ? `<span class="phase-tag">${pd.phase}</span>` : '';
+    document.getElementById('permit-sub').innerHTML = permitDone
+      ? `PDF generoitu${phaseTag}` : 'Odottaa generointia';
+    document.getElementById('permit-ts').textContent = pd.updated_at ? fmtTs(pd.updated_at) : '';
+
+    // Land use
+    const lu = d.land_use || {};
+    const luDone = lu.status === 'done';
+    document.getElementById('land-status').innerHTML = luDone
+      ? '<span class="status-done">✓ Valmis</span>'
+      : '<span class="status-pending">— Kesken</span>';
+    document.getElementById('land-sub').textContent = luDone
+      ? 'Selvitys generoitu' : 'Odottaa generointia';
+    document.getElementById('land-ts').textContent = lu.updated_at ? fmtTs(lu.updated_at) : '';
+
+    // RTB banner
+    const banner = document.getElementById('rtb-banner');
+    banner.className = 'rtb-banner ' + (d.rtb_ready ? 'rtb-ready' : 'rtb-pending');
+    document.getElementById('rtb-banner-text').textContent =
+      d.rtb_ready ? '✓ Valmis RTB-paketiksi' : '○ RTB-paketti kesken';
+    document.getElementById('rtb-banner-sub').textContent = d.rtb_ready
+      ? 'Molemmat moduulit valmiina — hanke valmis seuraavaan vaiheeseen.'
+      : `Puuttuu: ${[!permitDone && 'Lupa-asiakirja', !luDone && 'Maankäyttöselvitys'].filter(Boolean).join(', ')}`;
+
+    if (!d.found) {
+      document.getElementById('meta-chips').innerHTML =
+        `<span style="color:#4a7a9a;font-size:0.78rem">Hanketta ei löydy — ID: ${d.hanke_id}</span>`;
+    }
+
+    document.getElementById('result').style.display = 'block';
+  } catch (err) {
+    document.getElementById('error').textContent = 'Virhe: ' + err.message;
+    document.getElementById('error').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+
+// Support ?hanke_id= query param for direct links
+const params = new URLSearchParams(location.search);
+const qId = params.get('hanke_id') || params.get('id');
+if (qId) {
+  document.getElementById('hanke-id-input').value = qId;
+  lookup();
+}
+
+document.getElementById('hanke-id-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') lookup();
+});
+</script>
+</body>
+</html>

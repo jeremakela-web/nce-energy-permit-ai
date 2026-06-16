@@ -1426,9 +1426,15 @@
         <div class="sidebar-section">
           <h3 data-i18n="h3_kiinteisto">Kiinteistö</h3>
           <div class="kt-input-row" style="margin-bottom:8px;">
-            <input type="text" id="kt-input" placeholder="KKK-VVV-RR-PPPP" spellcheck="false" />
+            <input type="text" id="kt-input" placeholder="KKK-VVV-RR-PPPP" spellcheck="false" oninput="_updateMapHankeId()" />
             <button class="btn" id="btn-fetch-property" data-i18n="btn_fetch">Hae</button>
           </div>
+          <div class="proj-field" style="margin-top:6px;" id="map-hanke-id-wrap">
+            <label style="font-size:0.68rem;color:#4a7a9a;">Hanke ID <span style="font-weight:400;opacity:0.7;">(RTB-seuranta)</span></label>
+            <input type="text" id="map-hanke-id" placeholder="auto" spellcheck="false"
+              style="font-family:'Courier New',monospace;font-size:0.78rem;" />
+          </div>
+          <a id="map-rtb-link" href="#" target="_blank" style="display:none;margin-top:6px;font-size:0.72rem;color:#4a9fd4;text-decoration:none;">→ Avaa RTB Cockpit</a>
         </div>
 
         <div class="sidebar-section">
@@ -5992,6 +5998,10 @@ async function submitGeneratorForm() {
   payload.lang       = activeLang;
   payload.country    = selectedCountry;
   payload.session_id = _sessionId;
+  // RTB hanke_id: derived from y_tunnus + kiinteistotunnus
+  const _rtbYt = (payload.y_tunnus || '').replace(/[^a-zA-Z0-9]/g, '_').replace(/^_+|_+$/g, '').toLowerCase();
+  const _rtbKt = (payload.kiinteistotunnus || '').replace(/[^a-zA-Z0-9]/g, '_').replace(/^_+|_+$/g, '').toLowerCase();
+  payload.hanke_id = [_rtbYt, _rtbKt].filter(Boolean).join('__');
 
   // Auto-detect country from kunta/sijainti if user hasn't changed it
   if (selectedCountry === 'FI') {
@@ -6761,6 +6771,19 @@ function applyManualOverrides() {
 // ─────────────────────────────────────────────
 // PDF report
 // ─────────────────────────────────────────────
+function _normalizeRtbPart(s) {
+  return (s || '').replace(/[^a-zA-Z0-9]/g, '_').replace(/^_+|_+$/g, '').toLowerCase();
+}
+function _updateMapHankeId() {
+  const kt = (document.getElementById('kt-input')?.value || '').trim();
+  const el = document.getElementById('map-hanke-id');
+  if (el && !el._userEdited) el.value = _normalizeRtbPart(kt);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('map-hanke-id');
+  if (el) el.addEventListener('input', () => { el._userEdited = !!el.value; });
+});
+
 async function generateReport() {
   const kt = document.getElementById('kt-input').value.trim();
   if (!kt) { log(t('log_enter_kt_first'), 'err'); return; }
@@ -6784,8 +6807,10 @@ async function generateReport() {
     const mapType  = document.getElementById('map-hanketyyppi')?.value || 'hanke';
     const typeName = ptName(PROJECT_TYPES.find(pt => pt.id === mapType)) || mapType;
 
+    const _mapHankeId = document.getElementById('map-hanke-id')?.value?.trim() || _normalizeRtbPart(kt);
     const projPayload = {
       kiinteistotunnus: kt,
+      hanke_id:         _mapHankeId,
       property_geojson: propertyGeoJson,
       analysis_result:  lastAnalysis,
       project_owner:   document.getElementById('proj-owner').value.trim(),
@@ -6816,6 +6841,15 @@ async function generateReport() {
     a.click();
     URL.revokeObjectURL(url);
     log(t('log_report_done'), 'ok');
+    // Show RTB cockpit link after successful report
+    const _rtbHankeId = document.getElementById('map-hanke-id')?.value?.trim() || _normalizeRtbPart(kt);
+    if (_rtbHankeId) {
+      const _rtbLink = document.getElementById('map-rtb-link');
+      if (_rtbLink) {
+        _rtbLink.href = `/rtb?hanke_id=${encodeURIComponent(_rtbHankeId)}`;
+        _rtbLink.style.display = 'inline-block';
+      }
+    }
   } catch (err) {
     log(`Raporttivvirhe: ${err.message}`, 'err');
   } finally {

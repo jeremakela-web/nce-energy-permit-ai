@@ -53,6 +53,7 @@ from ai_strategy import get_lupaprosessi_strategy
 from report import generate_bess_report
 from permit_ai import query_permit_ai
 import permit_ai as _permit_ai_module
+import rtb_store as _rtb
 
 # permit_ai-moduuli on ~/bess_tool/permit_ai/ — lisätään polkuun
 import sys as _sys
@@ -505,6 +506,7 @@ class ApplicationRequest(BaseModel):
     lang:                         Optional[str]   = "FI"
     country:                      Optional[str]   = "FI"
     session_id:                   Optional[str]   = ""
+    hanke_id:                     Optional[str]   = ""   # RTB cockpit linkitys
     # IFC esitäyttö (valinnainen)
     ifc_floor_area:               Optional[float] = 0.0
     ifc_building_height:          Optional[float] = 0.0
@@ -523,6 +525,7 @@ class ReportRequest(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     kiinteistotunnus: str
+    hanke_id:         Optional[str] = ""   # RTB cockpit linkitys
     title: Optional[str] = None
     map_image: Optional[str] = None          # base64 PNG (vanhentunut, käytetään vain fallbackina)
     property_geojson: Optional[dict] = None  # GeoJSON frontendilta – vältetään kaksoisnouto
@@ -860,6 +863,19 @@ async def generate_report(req: ReportRequest):
         market=req.market,
         lang=req.lang or "FI",
     )
+    # RTB tracking — record land use completion
+    _rtb_id = (req.hanke_id or "").strip() or _rtb.make_hanke_id("", kt)
+    if _rtb_id:
+        try:
+            _rtb.update_land_use(
+                _rtb_id,
+                kiinteistotunnus=kt,
+                hanketyyppi=getattr(req, "hanketyyppi", "") or "",
+                maa="FI",
+            )
+        except Exception:
+            pass
+
     filename = f"BESS_raportti_{kt.replace('-', '_')}.pdf"
     return Response(
         content=pdf_bytes,
@@ -945,6 +961,24 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
                         req.session_id, req.hanketyyppi, _phase_num, "generated"
                     )
                     _proofread_store[job_id]["phase_status"] = _phase_status
+            # RTB tracking — record permit doc completion
+            _rtb_id = (req.hanke_id or "").strip() or _rtb.make_hanke_id(
+                req.y_tunnus or "", req.kiinteistotunnus or ""
+            )
+            if _rtb_id:
+                try:
+                    _rtb.update_permit_doc(
+                        _rtb_id,
+                        job_id=job_id,
+                        phase=req.hankkeen_vaihe or "",
+                        y_tunnus=req.y_tunnus or "",
+                        kiinteistotunnus=req.kiinteistotunnus or "",
+                        hanketyyppi=req.hanketyyppi or "",
+                        maa=req.country or "FI",
+                    )
+                    _proofread_store[job_id]["hanke_id"] = _rtb_id
+                except Exception:
+                    pass
         except InsufficientSourcesError as exc:
             _proofread_store[job_id]["status"] = "insufficient_sources"
             _proofread_store[job_id]["error"] = str(exc)
@@ -1881,6 +1915,23 @@ async def skip_phase(request: Request, req: SkipPhaseRequest):
     status = _skip_phases(req.session_id, req.hanketyyppi, req.skip_through_phase)
     return JSONResponse({"ok": True, **status})
 
+
+# ── RTB / Compliance Cockpit ─────────────────────────────────────────────────
+
+@app.get("/api/rtb/{hanke_id}")
+async def rtb_status(hanke_id: str):
+    """Palauttaa RTB-projektin molempien moduulien tilan ja valmius-indikaattorin."""
+    return JSONResponse(_rtb.rtb_summary(hanke_id))
+
+
+@app.get("/rtb")
+async def rtb_cockpit():
+    """RTB Compliance Cockpit -sivu."""
+    path = os.path.join(_STATIC_DIR, "rtb.html")
+    return FileResponse(path)
+
+
+# ── IFC parser ────────────────────────────────────────────────────────────────
 
 class IFCApprovalRequest(BaseModel):
     """Insinöörin hyväksymät IFC-kentät + hakemuksen perustiedot."""
