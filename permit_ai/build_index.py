@@ -42,8 +42,26 @@ def build(force: bool = False) -> None:
     import chromadb
 
     # Persistent-disk safety: if an index already exists and force=False, skip rmtree.
-    # This prevents wiping a pre-seeded disk on every deploy restart or startup fallback.
+    # Primary check: query SQLite directly — more reliable than UUID subdir presence
+    # because ChromaDB 1.5.x stores all data in SQLite; binary segment dirs may be
+    # absent after Shell-based ingestion or a partial rebuild that crashed mid-write.
     if not force and DB_DIR.exists():
+        db_file = DB_DIR / "chroma.sqlite3"
+        if db_file.exists():
+            try:
+                import sqlite3 as _sql
+                _con = _sql.connect(str(db_file))
+                _count = _con.execute("SELECT COUNT(*) FROM embeddings").fetchone()[0]
+                _con.close()
+                if _count > 0:
+                    print(
+                        f"[build_index] Existing index found ({_count} chunks in SQLite) "
+                        f"— skipping rebuild. Call build(force=True) to force a fresh index."
+                    )
+                    return
+            except Exception:
+                pass
+        # Fallback: UUID subdir check (legacy)
         uuid_dirs = [c for c in DB_DIR.iterdir() if c.is_dir()]
         if uuid_dirs:
             print(

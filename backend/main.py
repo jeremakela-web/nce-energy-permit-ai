@@ -207,16 +207,31 @@ def _run_background_reindex() -> None:
 
 def _db_needs_index() -> bool:
     """
-    Return True if the embeddings directory has no ChromaDB collection.
-    Uses only filesystem ops — NO ChromaDB client is opened.
-    ChromaDB creates UUID-named subdirs when a collection is first populated;
-    a freshly-initialised (empty) DB has only chroma.sqlite3 and no subdirs.
+    Return True if the embeddings directory has no ChromaDB data.
+
+    Primary check: count rows in chroma.sqlite3 directly. This is reliable
+    across ChromaDB versions regardless of whether binary HNSW segment dirs
+    exist — ChromaDB 1.5.x stores all data in SQLite; UUID subdirs may not
+    be present after Shell-based ingestion or partial rebuilds.
+
+    Fallback: UUID subdir check (legacy behaviour, kept for safety).
     """
-    from pathlib import Path as _Path
-    db_dir = _Path(_DB_PATH)
-    if not db_dir.exists():
+    import sqlite3 as _sql
+    db_file = os.path.join(_DB_PATH, "chroma.sqlite3")
+    if not os.path.exists(db_file):
         return True
-    return not any(child.is_dir() for child in db_dir.iterdir())
+    try:
+        _con = _sql.connect(db_file, check_same_thread=False)
+        count = _con.execute("SELECT COUNT(*) FROM embeddings").fetchone()[0]
+        _con.close()
+        return count == 0
+    except Exception:
+        # SQLite unreadable — fall back to UUID subdir check
+        from pathlib import Path as _Path
+        db_dir = _Path(_DB_PATH)
+        if not db_dir.exists():
+            return True
+        return not any(child.is_dir() for child in db_dir.iterdir())
 
 
 def _run_startup_fallback_index() -> None:
