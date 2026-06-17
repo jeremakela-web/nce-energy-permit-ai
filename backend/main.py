@@ -2051,6 +2051,42 @@ async def admin_ingest_status(job_id: str, request: Request):
     })
 
 
+@app.post("/api/admin/rtb/seed")
+async def admin_rtb_seed(request: Request):
+    """
+    Luo tai päivittää RTB-tietueen suoraan testikäyttöön.
+    Authorization: Bearer <INGEST_SECRET>
+    Body: {"hanke_id": "...", "permit_done": true, "land_use_done": true,
+           "y_tunnus": "...", "kiinteistotunnus": "...", "hanketyyppi": "...", "maa": "FI"}
+    """
+    _check_ingest_auth(request)
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+    hanke_id = (body.get("hanke_id") or "").strip()
+    if not hanke_id:
+        raise HTTPException(status_code=400, detail="hanke_id vaaditaan")
+    y_tunnus        = body.get("y_tunnus", "")
+    kiinteistotunnus = body.get("kiinteistotunnus", "")
+    hanketyyppi     = body.get("hanketyyppi", "")
+    maa             = body.get("maa", "FI")
+    updated = {}
+    if body.get("permit_done", False):
+        updated["permit_doc"] = _rtb.update_permit_doc(
+            hanke_id, job_id="admin-seed", phase="admin",
+            y_tunnus=y_tunnus, kiinteistotunnus=kiinteistotunnus,
+            hanketyyppi=hanketyyppi, maa=maa,
+        )
+    if body.get("land_use_done", False):
+        updated["land_use"] = _rtb.update_land_use(
+            hanke_id, kiinteistotunnus=kiinteistotunnus,
+            hanketyyppi=hanketyyppi, maa=maa,
+        )
+    return JSONResponse({"hanke_id": hanke_id, "summary": _rtb.rtb_summary(hanke_id)})
+
+
 # ── IFC parser ────────────────────────────────────────────────────────────────
 
 class IFCApprovalRequest(BaseModel):

@@ -2,7 +2,7 @@
 RTB (Ready-to-Build) project tracking — PoC tason JSON-varasto.
 
 Avain: hanke_id = normalize(y_tunnus) + "__" + normalize(kiinteistotunnus)
-Tiedosto: backend/rtb_projects.json
+Tiedosto: permit_ai/embeddings/rtb_projects.json  (persistent disk — survives deploys)
 """
 from __future__ import annotations
 
@@ -12,7 +12,17 @@ import re
 import threading
 from datetime import datetime, timezone
 
-_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rtb_projects.json")
+# Store on the persistent disk (same mount as ChromaDB embeddings) so data
+# survives container restarts and Render deploys. Falls back to backend/ dir
+# in local dev environments where the embeddings dir may not exist.
+_PERSISTENT_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "permit_ai", "embeddings"
+)
+_FILE = (
+    os.path.join(_PERSISTENT_DIR, "rtb_projects.json")
+    if os.path.isdir(_PERSISTENT_DIR)
+    else os.path.join(os.path.dirname(os.path.abspath(__file__)), "rtb_projects.json")
+)
 _lock = threading.Lock()
 
 
