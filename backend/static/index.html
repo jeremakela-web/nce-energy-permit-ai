@@ -1293,6 +1293,11 @@
         <span class="tab-label-full"  data-i18n="tab_map">Maankäyttöselvitys</span>
         <span class="tab-label-short" data-i18n="tab_map_short">Sijainti</span>
       </button>
+      <button class="tab-btn" data-tab="rtb" onclick="switchTab('rtb')">
+        &#x2713;
+        <span class="tab-label-full">RTB-tarkistus</span>
+        <span class="tab-label-short">RTB</span>
+      </button>
     </nav>
 
     <div class="header-right">
@@ -1712,6 +1717,30 @@
 
     </div><!-- .main-container -->
   </div><!-- #tab-bess -->
+
+  <!-- ── Tab: RTB-tarkistus ── -->
+  <div id="tab-rtb" class="tab-content">
+    <div style="max-width:480px;margin:48px auto;padding:0 16px;">
+      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.8px;color:#4a7a9a;margin-bottom:12px;">RTB Compliance Cockpit</div>
+      <div style="font-size:1.1rem;font-weight:600;color:#e8f0ff;margin-bottom:8px;">RTB-tarkistus</div>
+      <div style="font-size:0.82rem;color:#4a7a9a;margin-bottom:24px;">Tarkista hankkeen Ready-to-Build -valmius hanke ID:n perusteella.</div>
+      <div style="display:flex;gap:8px;">
+        <input id="rtb-nav-hanke-id" type="text"
+          placeholder="Hanke ID (esim. 1234567_8__091_001)"
+          spellcheck="false"
+          style="flex:1;background:#0d1f38;border:1px solid #1e3a5a;border-radius:8px;color:#c8d8e8;padding:10px 14px;font-size:0.88rem;font-family:'Courier New',monospace;outline:none;"
+          onkeydown="if(event.key==='Enter')openRtbCockpit()"
+          onfocus="this.style.borderColor='#4a9fd4'"
+          onblur="this.style.borderColor='#1e3a5a'"
+        />
+        <button onclick="openRtbCockpit()"
+          style="background:#1a3a6a;border:1px solid #2a5a9a;border-radius:8px;color:#c8d8e8;padding:10px 20px;font-size:0.88rem;cursor:pointer;white-space:nowrap;"
+          onmouseover="this.style.background='#2a4a8a'"
+          onmouseout="this.style.background='#1a3a6a'"
+        >Avaa</button>
+      </div>
+    </div>
+  </div><!-- #tab-rtb -->
 
 </div><!-- .tab-area -->
 
@@ -4783,6 +4812,12 @@ function log(msg, type = 'info') {
 // ─────────────────────────────────────────────
 // Tab switching
 // ─────────────────────────────────────────────
+function openRtbCockpit() {
+  const id = (document.getElementById('rtb-nav-hanke-id').value || '').trim();
+  const url = '/rtb' + (id ? '?hanke_id=' + encodeURIComponent(id) : '');
+  window.open(url, '_blank');
+}
+
 function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === tabId);
@@ -7076,7 +7111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   try {
     const savedTool = localStorage.getItem('nce_tool');
-    if (savedTool && ['generator', 'bess'].includes(savedTool)) switchTab(savedTool);
+    if (savedTool && ['generator', 'bess', 'rtb'].includes(savedTool)) switchTab(savedTool);
   } catch (_) {}
 
   const ta = document.getElementById('pai-textarea');
