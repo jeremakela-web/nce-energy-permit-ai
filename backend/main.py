@@ -357,6 +357,24 @@ async def add_charset(request, call_next):
     if "application/json" in response.headers.get("content-type", ""):
         response.headers["content-type"] = "application/json; charset=utf-8"
     return response
+
+
+@app.middleware("http")
+async def head_as_get(request: Request, call_next):
+    """HEAD requests must behave like GET with no body (RFC 7231 §4.3.2).
+    FastAPI/Starlette routes registered with @app.get() do not auto-handle HEAD,
+    causing crawlers and Search Console to receive 405."""
+    if request.method != "HEAD":
+        return await call_next(request)
+    request.scope["method"] = "GET"
+    response = await call_next(request)
+    if hasattr(response, "body_iterator"):
+        async for _ in response.body_iterator:
+            pass
+    return Response(
+        status_code=response.status_code,
+        headers=dict(response.headers),
+    )
 _BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 _REPO_DIR    = os.path.dirname(_BACKEND_DIR)
 _STATIC_DIR  = os.path.join(_BACKEND_DIR, "static")
