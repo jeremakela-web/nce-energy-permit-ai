@@ -2177,8 +2177,24 @@ _SYSTEM = (
     "ÄLÄ KOSKAAN kirjoita 'a' tai 'o' silloin kun oikea merkki on 'ä' tai 'ö'. "
     "Tämä on kriittinen vaatimus. "
     "Olet NCE Permit AI -asiantuntija, joka avustaa energia-alan lupahakemusten "
-    "laadinnassa Suomessa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
+    "laadinnassa. Kirjoitat selkeää, virallista kieltä konsulttiraporttityyliin. "
     "Viittaat aina voimassa olevaan lainsäädäntöön. "
+    "AJATTELUKETJU — ENNEN KIRJOITTAMISTA käy jokainen hakemus läpi tässä järjestyksessä:\n"
+    "1. ANALYSOI: Tunnista hankkeen ominaispiirteet ja riskitekijät "
+    "(hanketyyppi, sijainti, koko, maa, relevantit viranomaiset).\n"
+    "2. HAE: Paikanna relevanteimmat säädösvaatimukset JA ennakkotapaukset "
+    "tälle hankeprofiilille annetusta RAG-kontekstista.\n"
+    "3. VERTAA: Vertaa hanketta ennakkotapauksiin — mitkä riskit olivat läsnä, "
+    "miten ne ratkaistiin, mikä teki hankkeista onnistuneita tai epäonnistuneita.\n"
+    "4. ARVIOI: Määritä mitkä riskit ovat kriittisimpiä hyväksyntätodennäköisyyden kannalta.\n"
+    "5. SUOSITTELE: Ehdota konkreettisia toimia hyväksyntätodennäköisyyden parantamiseksi — "
+    "tietyt asiakirjat, selvitykset tai suunnittelumuutokset.\n"
+    "6. ELINKAARI: Laajenna suositukset hankkeen seuraavaan elinkaarivaiheeseen VAIN JOS "
+    "haetusta kontekstista löytyy riittävästi tietoa kyseisestä vaiheesta. Jos haettu data "
+    "ei kata myöhempiä vaiheita (esim. rakentaminen tai käyttö), kirjoita eksplisiittisesti: "
+    "'Haettu lähdeaineisto ei riitä myöhemmän vaiheen suosituksiin.' Älä generoi spekulatiivisia "
+    "suosituksia vaiheille, joista ei ole haettua säädös- tai ennakkotapausaineistoa.\n"
+    "Jokainen vaihe näkyy tulosraportissa omana alaotsikkonaan (### ANALYSOI jne.). "
     "KRIITTINEN SÄÄNTÖ — EPÄVARMA TIETO: Jos jokin yksittäinen fakta, vaatimus tai "
     "lakiviite on epävarma, puuttuu annetusta kontekstista tai vaatii erikoisasiantuntemusta, "
     "lisää välittömästi kyseisen lauseen tai kappaleen jälkeen merkintä "
@@ -2199,7 +2215,11 @@ _SYSTEM = (
     "Vältä pitkiä luettelomaisesti yhdisteltyjä juridisia lauseita. "
     "KIRJOITUSOHJE: Kirjoita kaikki suomenkieliset sanat oikein diakriittimerkein — "
     "ä (ei a), ö (ei o), å (ei a). Esimerkkejä: käytettävyys, jäähdytys, häiriötilanne, "
-    "yhteydenotto, järjestelmä, ympäristö, lämpö, päätös, näkökulma, tärkeä, löytää."
+    "yhteydenotto, järjestelmä, ympäristö, lämpö, päätös, näkökulma, tärkeä, löytää. "
+    "TÄRKEÄÄ: Perusta JOKAINEN suositus, riskiarvio ja elinkaarisuositus yksinomaan haettuihin "
+    "säädöslähteisiin ja ennakkotapauksiin tästä kontekstista. Jos jonkin ajatteluketjun vaiheen "
+    "tieto puuttuu, ilmoita eksplisiittisesti mikä puuttuu oletuksien tekemisen sijaan. "
+    "Älä koskaan generoi sisältöä joka ei perustu haettuihin lähteisiin."
 )
 
 _LANG_INSTRUCTIONS: dict[str, str] = {
@@ -2300,36 +2320,64 @@ _HANKE_CFG["egs"]           = _HANKE_CFG["aurinkovoima"]
 
 _WRITE_INSTRUCTION: dict[str, str] = {
     "FI": ("Kirjoita suomeksi seuraavat neljä osiota selkeästi eroteltuna otsikoilla. "
+           "Jokainen osio sisältää ajatteluketjun vaiheet näkyvinä alaotsikkoina (### ANALYSOI, ### HAE jne.). "
            "Viittaa lakeihin lyhentein hakasulkeissa, esim. [YSL §27] tai [Rakentamislaki 751/2023]. "
            "Kirjoita lyhyitä virkkeitä — enintään kaksi lausetta per kappale, ei pitkiä juridisia luettelolauseita. "
            "PAKOLLINEN VAATIMUS: Lisää merkintä '⚠️ Asiantuntijatarkistus suositellaan' TÄSMÄLLEEN 2–3 kertaa koko vastauksessa — ei vähemmän, ei enemmän. "
            "Sijoita merkinnät Hankkeen kuvaus- ja Perustelut-osioihin epävarmojen tai asiantuntemusta vaativien kohtien jälkeen. "
-           "Älä spekuloi äläkä täytä tietopuutteita oletuksilla:"),
+           "Älä spekuloi äläkä täytä tietopuutteita oletuksilla. "
+           "TÄRKEÄÄ: Perusta jokainen suositus, riskiarvio ja elinkaarisuositus yksinomaan haettuihin säädöslähteisiin ja ennakkotapauksiin. "
+           "Jos tietoa puuttuu, ilmoita eksplisiittisesti mikä puuttuu — älä koskaan generoi sisältöä joka ei perustu haettuihin lähteisiin:"),
     "EN": ("Write the following four sections in English, clearly separated by headings. "
+           "Each section contains the reasoning-chain steps as visible sub-headings (### ANALYZE, ### RETRIEVE, etc.). "
            "Include inline law citations in brackets, e.g. [EIA Act] or [Building Act 751/2023]. "
            "If any information is uncertain, missing or requires specialist expertise, "
            "add the marker '⚠️ Expert review recommended' immediately after that point — "
-           "do not speculate or fill gaps with assumptions:"),
+           "do not speculate or fill gaps with assumptions. "
+           "IMPORTANT: Base every recommendation, risk assessment and lifecycle extension strictly on "
+           "retrieved regulatory sources and precedent cases found in this context. "
+           "If information is missing for any reasoning step, explicitly state what is missing. "
+           "Never generate content that is not grounded in the retrieved sources:"),
     "SE": ("Skriv följande fyra avsnitt på svenska, tydligt åtskilda med rubriker. "
+           "Varje avsnitt innehåller resonemangsstegen som synliga underrubriker (### ANALYSERA, ### HÄMTA osv.). "
            "Inkludera lagcitat i hakparentes, t.ex. [PBL 2010:900] eller [MB 1998:808]. "
            "Om någon uppgift är osäker, saknas eller kräver specialistkunskap, "
            "lägg till märkningen '⚠️ Expertgranskning rekommenderas' direkt efter det berörda stycket — "
-           "spekulera inte och fyll inte i kunskapsluckor med antaganden:"),
+           "spekulera inte och fyll inte i kunskapsluckor med antaganden. "
+           "VIKTIGT: Basera varje rekommendation, riskbedömning och livscykelavsnitt strikt på "
+           "hämtade regulatoriska källor och prejudikatfall i denna kontext. "
+           "Om information saknas för något resonemangssteg, ange explicit vad som saknas. "
+           "Generera aldrig innehåll som inte är grundat i de hämtade källorna:"),
     "DA": ("Skriv følgende fire afsnit på dansk, tydeligt adskilt med overskrifter. "
+           "Hvert afsnit indeholder ræsonnementstrinnene som synlige underoverskrifter (### ANALYSER, ### HENT osv.). "
            "Inkluder lovcitater i kantede parenteser, f.eks. [PBL §12] eller [MBL]. "
            "Hvis en oplysning er usikker, mangler eller kræver specialistviden, "
            "tilføj mærket '⚠️ Ekspertgennemgang anbefales' umiddelbart efter det pågældende afsnit — "
-           "spekuler ikke og udfyld ikke videnshuller med antagelser:"),
+           "spekuler ikke og udfyld ikke videnshuller med antagelser. "
+           "VIGTIGT: Basér enhver anbefaling, risikovurdering og livscyklusudvidelse strengt på "
+           "hentede regulatoriske kilder og præcedenssager i denne kontekst. "
+           "Hvis oplysninger mangler for et ræsonnementstrin, anfør eksplicit hvad der mangler. "
+           "Generer aldrig indhold, der ikke er baseret på de hentede kilder:"),
     "NO": ("Skriv følgende fire seksjoner på norsk, tydelig atskilt med overskrifter. "
+           "Hver seksjon inneholder resonnementstrinnene som synlige underoverskrifter (### ANALYSER, ### HENT osv.). "
            "Inkluder lovhenvisninger i hakeparenteser, f.eks. [PBL §12-1] eller [NVE-forskrift]. "
            "Hvis en opplysning er usikker, mangler eller krever spesialistkompetanse, "
            "legg til merket '⚠️ Ekspertgjennomgang anbefales' umiddelbart etter det aktuelle avsnittet — "
-           "ikke spekuler og ikke fyll kunnskapshull med antakelser:"),
+           "ikke spekuler og ikke fyll kunnskapshull med antakelser. "
+           "VIKTIG: Baser enhver anbefaling, risikovurdering og livssyklusutvidelse strengt på "
+           "hentede regulatoriske kilder og presedenssaker i denne konteksten. "
+           "Hvis informasjon mangler for et resonnementstrinn, angi eksplisitt hva som mangler. "
+           "Generer aldri innhold som ikke er grunnlagt i de hentede kildene:"),
     "PL": ("Napisz następujące cztery sekcje po polsku, wyraźnie oddzielone nagłówkami. "
+           "Każda sekcja zawiera kroki łańcucha rozumowania jako widoczne podtytuły (### ANALIZA, ### POBIERZ itp.). "
            "Umieść odniesienia do przepisów w nawiasach kwadratowych, np. [Ustawa OOŚ] lub [Prawo budowlane Art. 28]. "
            "Jeśli jakakolwiek informacja jest niepewna, brakuje jej lub wymaga wiedzy specjalistycznej, "
            "dodaj oznaczenie '⚠️ Zalecana weryfikacja przez eksperta' bezpośrednio po danym fragmencie — "
-           "nie spekuluj i nie uzupełniaj luk w wiedzy założeniami:"),
+           "nie spekuluj i nie uzupełniaj luk w wiedzy założeniami. "
+           "WAŻNE: Każdą rekomendację, ocenę ryzyka i rozszerzenie cyklu życia opieraj wyłącznie na "
+           "pobranych źródłach regulacyjnych i sprawach precedensowych w tym kontekście. "
+           "Jeśli informacje dla jakiegokolwiek kroku rozumowania są niedostępne, explicite podaj co brakuje. "
+           "Nigdy nie generuj treści, która nie jest oparta na pobranych źródłach:"),
 }
 
 # Hanketyypit joissa epävarmuusmerkintä on erityisen kriittinen
@@ -2388,24 +2436,46 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "perustelut":   "PERUSTELUT JA TARVE",
         "luvat":        "LUPAMENETTELYJEN KUVAUS",
         "toimenpiteet": "SEURAAVAT TOIMENPITEET",
-        "kuvaus_inst":  ("Kirjoita 4–5 kappaleen perusteellinen kuvaus hankkeesta: tarkoitus, tekniset "
-                         "tiedot, sijainti, liityntä verkkoon ja ympäristövaikutukset. Mainitse "
-                         "hanketyypille tyypilliset tekniset parametrit. Osion on oltava riittävän "
+        "kuvaus_inst":  ("Kirjoita tämä osio kahdessa näkyvässä vaiheessa:\n\n"
+                         "### ANALYSOI\n"
+                         "Tunnista hankkeen ominaispiirteet ja riskitekijät: hanketyyppi, sijainti, koko, "
+                         "maa ja relevantit viranomaiset. Mainitse hanketyypille tyypilliset tekniset parametrit.\n\n"
+                         "### HAE\n"
+                         "Paikanna relevanteimmat säädösvaatimukset ja ennakkotapaukset tälle hankeprofiilille. "
+                         "Kirjoita 3–4 kappaleen kuvaus: tarkoitus, tekniset tiedot, sijainti, "
+                         "verkkoon liittyminen ja ympäristövaikutukset. Osion on oltava riittävän "
                          "kattava ennakkoneuvottelua varten."),
         "kuvaus_extra": " Ota huomioon annettu sijainti- ja ympäristövaikutustieto.",
-        "perustelut_inst": ("Kirjoita 3–4 kappaleen perustelu miksi hanke on tarpeellinen "
+        "perustelut_inst": ("Kirjoita tämä osio kahdessa näkyvässä vaiheessa:\n\n"
+                            "### VERTAA\n"
+                            "Vertaa tätä hanketta RAG-kontekstin ennakkotapauksiin: mitkä riskit olivat läsnä, "
+                            "miten ne ratkaistiin, mikä teki hankkeista onnistuneita tai epäonnistuneita.\n\n"
+                            "### ARVIOI\n"
+                            "Määritä kriittisimmät riskit hyväksyntätodennäköisyyden kannalta. "
+                            "Kirjoita 2–3 kappaleen perustelu miksi hanke on tarpeellinen "
                             "(energiajärjestelmän näkökulma, Suomen ilmastotavoitteet, "
-                            "aluetaloudelliset vaikutukset, teknologiset edut)."),
-        "luvat_inst":   ("Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa "
-                         "koskee ja miksi se vaaditaan tälle hankkeelle."),
+                            "aluetaloudelliset vaikutukset, teknologiset edut) ja nimeä "
+                            "suurin yksittäinen hyväksyntäriski."),
+        "luvat_inst":   ("### HAE — LUPAMENETTELYT\n"
+                         "Selitä lyhyesti (1–2 lausetta per lupa) mitä kukin tarvittava lupa "
+                         "koskee, miksi se vaaditaan tälle hankkeelle ja mikä viranomainen käsittelee sen. "
+                         "Viittaa relevantteihin ennakkotapauksiin tai erityisvaatimuksiin tarvittaessa."),
         "luvat_extra":  " Viittaa erityisesti kohdeviranomaisen {auth} prosesseihin ja vaatimuksiin.",
         "toimenpiteet_first": ("Kunnan rakennusvalvonnan ennakkoneuvottelu + kaavatarkastus — "
                                "Hakija / {kunta}n rakennusvalvonta — 1–2 viikon sisällä"),
-        "toimenpiteet_inst": ("Ensimmäinen toimenpide on AINA: \"{first}\".\n"
-                              "Listaa sen jälkeen täsmälleen 5 muuta konkreettista askelta "
-                              "aikatauluineen (kk tarkkuudella). "
-                              "Muoto: numero. Toimenpide – Vastuutaho – Aikataulu\n"
-                              "Yhteensä 6 vaihetta."),
+        "toimenpiteet_inst": ("Kirjoita tämä osio kahdessa näkyvässä vaiheessa:\n\n"
+                              "### SUOSITTELE\n"
+                              "Ensimmäinen toimenpide on AINA: \"{first}\".\n"
+                              "Listaa sen jälkeen täsmälleen 4 konkreettista toimenpidettä, jotka "
+                              "parantavat hyväksyntätodennäköisyyttä (selvitykset, lausunnot, "
+                              "suunnittelumuutokset, asiakirjat). "
+                              "Muoto: numero. Toimenpide – Vastuutaho – Aikataulu\n\n"
+                              "### ELINKAARI\n"
+                              "Vaihe 6: Laajenna suositukset hankkeen seuraavaan elinkaarivaiheeseen "
+                              "VAIN JOS haetusta kontekstista löytyy riittävästi aineistoa kyseisestä "
+                              "vaiheesta. Jos aineisto ei kata myöhempiä vaiheita, kirjoita: "
+                              "'Haettu lähdeaineisto ei riitä myöhemmän vaiheen suosituksiin.' "
+                              "Muoto: 6. Toimenpide – Vastuutaho – Aikataulu"),
         "toimenpiteet_vaihe": " Ota huomioon hankkeen nykyinen vaihe: {vaihe}.",
         "phase_label":        "Hankkeen vaihe",
         "viranomainen_ohje":  ("TÄRKEÄÄ: Hakemus osoitetaan viranomaiselle '{auth}'. "
@@ -2419,20 +2489,44 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "perustelut":   "JUSTIFICATION AND NEED",
         "luvat":        "PERMIT PROCEDURE DESCRIPTION",
         "toimenpiteet": "NEXT STEPS",
-        "kuvaus_inst":  ("Write a 3–5 paragraph description of the project: purpose, technical details, "
-                         "location, grid connection and environmental impacts. Include typical technical "
-                         "parameters for this project type."),
+        "kuvaus_inst":  ("Write this section in two visible steps:\n\n"
+                         "### ANALYZE\n"
+                         "Identify the project's key characteristics and risk factors: type, location, size, "
+                         "country, relevant authorities. Include typical technical parameters for this project type.\n\n"
+                         "### RETRIEVE\n"
+                         "Identify the most relevant regulatory requirements and precedent cases for this "
+                         "project profile from the RAG context. Write a 3–4 paragraph description: purpose, "
+                         "technical details, location, grid connection and environmental impacts. "
+                         "The section must be comprehensive enough for pre-consultation."),
         "kuvaus_extra": " Take into account the provided location and environmental impact information.",
-        "perustelut_inst": ("Write a 2–3 paragraph justification for why the project is necessary "
+        "perustelut_inst": ("Write this section in two visible steps:\n\n"
+                            "### COMPARE\n"
+                            "Compare this project against precedent cases from the RAG context: what risks "
+                            "were present, how were they resolved, what made projects succeed or fail.\n\n"
+                            "### ASSESS\n"
+                            "Determine which risks are most critical for approval likelihood in this case. "
+                            "Write a 2–3 paragraph justification for why the project is necessary "
                             "(energy system perspective, Finland's climate targets, "
-                            "regional economic impacts)."),
-        "luvat_inst":   ("Briefly explain (1–2 sentences per permit) what each required permit covers "
-                         "and why it is required for this project."),
+                            "regional economic impacts) and name the single greatest approval risk."),
+        "luvat_inst":   ("### RETRIEVE — PERMITS\n"
+                         "Briefly explain (1–2 sentences per permit) what each required permit covers, "
+                         "why it is required for this project and which authority handles it. "
+                         "Reference relevant precedents or special requirements where applicable."),
         "luvat_extra":  " Refer especially to the target authority {auth}'s processes and requirements.",
         "toimenpiteet_first": ("Pre-consultation with municipality building control + zoning review — "
                                "Applicant / {kunta} Building Control — within 1–2 weeks"),
-        "toimenpiteet_inst": ("The first step is ALWAYS: \"{first}\".\n"
-                              "Then list 5 more concrete steps with timelines (in months)."),
+        "toimenpiteet_inst": ("Write this section in two visible steps:\n\n"
+                              "### RECOMMEND\n"
+                              "The first step is ALWAYS: \"{first}\".\n"
+                              "Then list 4 concrete actions that improve approval probability "
+                              "(studies, statements, design changes, documents). "
+                              "Format: number. Action – Responsible party – Timeline\n\n"
+                              "### LIFECYCLE\n"
+                              "Step 6: Extend the recommendations to the next project lifecycle phase "
+                              "ONLY IF the retrieved context contains sufficient data about that phase. "
+                              "If retrieved sources do not cover later phases, explicitly state: "
+                              "'Insufficient source data for later phase recommendations.' "
+                              "Format: 6. Action – Responsible party – Timeline"),
         "toimenpiteet_vaihe": " Take into account the current project phase: {vaihe}.",
         "phase_label":        "Project phase",
         "viranomainen_ohje":  ("IMPORTANT: The application is addressed to authority '{auth}'. "
@@ -2446,20 +2540,44 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "perustelut":   "MOTIVERING OCH BEHOV",
         "luvat":        "TILLSTÅNDSFÖRFARANDEN BESKRIVNING",
         "toimenpiteet": "NÄSTA STEG",
-        "kuvaus_inst":  ("Skriv en beskrivning på 3–5 stycken av projektet: syfte, tekniska detaljer, "
-                         "plats, nätanslutning och miljöpåverkan. Inkludera typiska tekniska parametrar "
-                         "för denna projekttyp."),
+        "kuvaus_inst":  ("Skriv detta avsnitt i två synliga steg:\n\n"
+                         "### ANALYSERA\n"
+                         "Identifiera projektets nyckelkarakteristika och riskfaktorer: typ, plats, storlek, "
+                         "land och relevanta myndigheter. Inkludera typiska tekniska parametrar.\n\n"
+                         "### HÄMTA\n"
+                         "Identifiera de mest relevanta lagkraven och prejudikatfallen för denna profil "
+                         "från RAG-kontexten. Skriv en 3–4 stycken beskrivning: syfte, tekniska detaljer, "
+                         "plats, nätanslutning och miljöpåverkan. "
+                         "Avsnittet måste vara tillräckligt utförligt för förkonsultation."),
         "kuvaus_extra": " Beakta den angivna plats- och miljöpåverkansinformationen.",
-        "perustelut_inst": ("Skriv en 2–3 stycken motivering till varför projektet är nödvändigt "
+        "perustelut_inst": ("Skriv detta avsnitt i två synliga steg:\n\n"
+                            "### JÄMFÖR\n"
+                            "Jämför detta projekt med prejudikatfall från RAG-kontexten: vilka risker förekom, "
+                            "hur löstes de, vad gjorde projekten framgångsrika eller misslyckade.\n\n"
+                            "### BEDÖM\n"
+                            "Fastställ vilka risker är mest kritiska för godkännandesannolikheten. "
+                            "Skriv en 2–3 stycken motivering till varför projektet är nödvändigt "
                             "(energisystemets perspektiv, Finlands klimatmål, "
-                            "regionala ekonomiska effekter)."),
-        "luvat_inst":   ("Förklara kortfattat (1–2 meningar per tillstånd) vad varje nödvändigt "
-                         "tillstånd gäller och varför det krävs för detta projekt."),
+                            "regionala ekonomiska effekter) och namnge den enskilt största risken."),
+        "luvat_inst":   ("### HÄMTA — TILLSTÅND\n"
+                         "Förklara kortfattat (1–2 meningar per tillstånd) vad varje nödvändigt tillstånd "
+                         "gäller, varför det krävs och vilken myndighet handlägger det. "
+                         "Hänvisa till relevanta prejudikat eller särskilda krav vid behov."),
         "luvat_extra":  " Hänvisa särskilt till målmyndighetens {auth} processer och krav.",
         "toimenpiteet_first": ("Förkonsultation med kommunens byggnadstillsyn + planläggningsöversyn — "
                                "Sökande / {kunta}s byggnadstillsyn — inom 1–2 veckor"),
-        "toimenpiteet_inst": ("Det första steget är ALLTID: \"{first}\".\n"
-                              "Lista sedan 5 fler konkreta steg med tidslinjer (i månader)."),
+        "toimenpiteet_inst": ("Skriv detta avsnitt i två synliga steg:\n\n"
+                              "### REKOMMENDERA\n"
+                              "Det första steget är ALLTID: \"{first}\".\n"
+                              "Lista sedan 4 konkreta åtgärder som förbättrar godkännandesannolikheten "
+                              "(utredningar, yttranden, designändringar, dokument). "
+                              "Format: nummer. Åtgärd – Ansvarig part – Tidslinje\n\n"
+                              "### LIVSCYKEL\n"
+                              "Steg 6: Utöka rekommendationerna till nästa projektlivscykelfas "
+                              "ENDAST OM hämtad kontext innehåller tillräckliga data om den fasen. "
+                              "Om källmaterialet inte täcker senare faser, ange explicit: "
+                              "'Otillräckliga källdata för rekommendationer för senare faser.' "
+                              "Format: 6. Åtgärd – Ansvarig part – Tidslinje"),
         "toimenpiteet_vaihe": " Beakta projektets nuvarande fas: {vaihe}.",
         "phase_label":        "Projektfas",
         "viranomainen_ohje":  ("VIKTIGT: Ansökan riktas till myndigheten '{auth}'. "
@@ -2473,19 +2591,44 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "perustelut":   "BEGRUNDELSE OG BEHOV",
         "luvat":        "BESKRIVELSE AF TILLADELSES­PROCEDURER",
         "toimenpiteet": "NÆSTE SKRIDT",
-        "kuvaus_inst":  ("Skriv en beskrivelse på 3–5 afsnit af projektet: formål, tekniske detaljer, "
-                         "placering, nettilslutning og miljøpåvirkninger. Medtag typiske tekniske "
-                         "parametre for denne projekttype."),
+        "kuvaus_inst":  ("Skriv dette afsnit i to synlige trin:\n\n"
+                         "### ANALYSER\n"
+                         "Identificer projektets nøglekarakteristika og risikofaktorer: type, placering, størrelse, "
+                         "land og relevante myndigheder. Medtag typiske tekniske parametre.\n\n"
+                         "### HENT\n"
+                         "Identificer de mest relevante lovkrav og præcedenssager for denne profil "
+                         "fra RAG-konteksten. Skriv en beskrivelse på 3–4 afsnit: formål, tekniske detaljer, "
+                         "placering, nettilslutning og miljøpåvirkninger. "
+                         "Afsnittet skal være tilstrækkeligt fyldestgørende til forhåndskonsultation."),
         "kuvaus_extra": " Tag hensyn til de angivne oplysninger om placering og miljøpåvirkning.",
-        "perustelut_inst": ("Skriv en begrundelse på 2–3 afsnit for, hvorfor projektet er nødvendigt "
-                            "(energisystemperspektiv, Finlands klimamål, regionale økonomiske virkninger)."),
-        "luvat_inst":   ("Forklar kort (1–2 sætninger pr. tilladelse), hvad hver nødvendig tilladelse "
-                         "dækker, og hvorfor den kræves for dette projekt."),
+        "perustelut_inst": ("Skriv dette afsnit i to synlige trin:\n\n"
+                            "### SAMMENLIGN\n"
+                            "Sammenlign dette projekt med præcedenssager fra RAG-konteksten: hvilke risici "
+                            "var til stede, hvordan blev de løst, hvad gjorde projekterne succesrige eller mislykkede.\n\n"
+                            "### VURDER\n"
+                            "Fastslå hvilke risici er mest kritiske for godkendelsessandsynligheden. "
+                            "Skriv en begrundelse på 2–3 afsnit for, hvorfor projektet er nødvendigt "
+                            "(energisystemperspektiv, Finlands klimamål, regionale økonomiske virkninger) "
+                            "og nævn den største enkeltrisiko."),
+        "luvat_inst":   ("### HENT — TILLADELSER\n"
+                         "Forklar kort (1–2 sætninger pr. tilladelse) hvad hver nødvendig tilladelse dækker, "
+                         "hvorfor den kræves og hvilken myndighed behandler den. "
+                         "Henvis til relevante præcedenser eller særlige krav efter behov."),
         "luvat_extra":  " Henvis især til målmyndighedens {auth} processer og krav.",
         "toimenpiteet_first": ("Forhåndskonsultation med kommunens byggesagsafdeling + planrevision — "
                                "Ansøger / {kunta} byggesagsafdeling — inden for 1–2 uger"),
-        "toimenpiteet_inst": ("Det første trin er ALTID: \"{first}\".\n"
-                              "Angiv derefter 5 yderligere konkrete trin med tidslinjer (i måneder)."),
+        "toimenpiteet_inst": ("Skriv dette afsnit i to synlige trin:\n\n"
+                              "### ANBEFAL\n"
+                              "Det første trin er ALTID: \"{first}\".\n"
+                              "Angiv derefter 4 konkrete handlinger, der forbedrer godkendelsessandsynligheden "
+                              "(undersøgelser, udtalelser, designændringer, dokumenter). "
+                              "Format: nummer. Handling – Ansvarlig part – Tidslinje\n\n"
+                              "### LIVSCYKLUS\n"
+                              "Trin 6: Udvid anbefalingerne til næste projektlivscyklusfase "
+                              "KUN HVIS den hentede kontekst indeholder tilstrækkelige data om den fase. "
+                              "Hvis kilderne ikke dækker senere faser, anfør eksplicit: "
+                              "'Utilstrækkelige kildedata til anbefalinger for senere faser.' "
+                              "Format: 6. Handling – Ansvarlig part – Tidslinje"),
         "toimenpiteet_vaihe": " Tag hensyn til projektets nuværende fase: {vaihe}.",
         "phase_label":        "Projektfase",
         "viranomainen_ohje":  ("VIGTIGT: Ansøgningen er rettet til myndighed '{auth}'. "
@@ -2499,19 +2642,44 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "perustelut":   "BEGRUNNELSE OG BEHOV",
         "luvat":        "BESKRIVELSE AV TILLATELSESPROSEDYRER",
         "toimenpiteet": "NESTE STEG",
-        "kuvaus_inst":  ("Skriv en beskrivelse på 3–5 avsnitt av prosjektet: formål, tekniske detaljer, "
-                         "plassering, nettilknytning og miljøpåvirkning. Inkluder typiske tekniske "
-                         "parametere for denne prosjekttypen."),
+        "kuvaus_inst":  ("Skriv denne seksjonen i to synlige trinn:\n\n"
+                         "### ANALYSER\n"
+                         "Identifiser prosjektets nøkkelkarakteristikker og risikofaktorer: type, plassering, størrelse, "
+                         "land og relevante myndigheter. Inkluder typiske tekniske parametere.\n\n"
+                         "### HENT\n"
+                         "Identifiser de mest relevante lovkravene og presedenssaker for denne profilen "
+                         "fra RAG-konteksten. Skriv en beskrivelse på 3–4 avsnitt: formål, tekniske detaljer, "
+                         "plassering, nettilknytning og miljøpåvirkning. "
+                         "Seksjonen må være tilstrekkelig utfyllende for forhåndskonsultasjon."),
         "kuvaus_extra": " Ta hensyn til oppgitt informasjon om plassering og miljøpåvirkning.",
-        "perustelut_inst": ("Skriv en begrunnelse på 2–3 avsnitt for hvorfor prosjektet er nødvendig "
-                            "(energisystemperspektiv, Finlands klimamål, regionale økonomiske virkninger)."),
-        "luvat_inst":   ("Forklar kortfattet (1–2 setninger per tillatelse) hva hver nødvendig tillatelse "
-                         "dekker og hvorfor den kreves for dette prosjektet."),
+        "perustelut_inst": ("Skriv denne seksjonen i to synlige trinn:\n\n"
+                            "### SAMMENLIGN\n"
+                            "Sammenlign dette prosjektet med presedenssaker fra RAG-konteksten: hvilke risikoer "
+                            "var til stede, hvordan ble de løst, hva gjorde prosjektene vellykkede eller mislykkede.\n\n"
+                            "### VURDER\n"
+                            "Fastslå hvilke risikoer er mest kritiske for godkjenningssannsynligheten. "
+                            "Skriv en begrunnelse på 2–3 avsnitt for hvorfor prosjektet er nødvendig "
+                            "(energisystemperspektiv, Finlands klimamål, regionale økonomiske virkninger) "
+                            "og navngi den største enkeltrisikoen."),
+        "luvat_inst":   ("### HENT — TILLATELSER\n"
+                         "Forklar kortfattet (1–2 setninger per tillatelse) hva hver nødvendig tillatelse "
+                         "dekker, hvorfor den kreves og hvilken myndighet behandler den. "
+                         "Henvis til relevante presedenser eller spesielle krav ved behov."),
         "luvat_extra":  " Henvis spesielt til målmyndighetens {auth} prosesser og krav.",
         "toimenpiteet_first": ("Forhåndskonsultasjon med kommunens byggesaksavdeling + reguleringsgjennomgang — "
                                "Søker / {kunta} byggesaksavdeling — innen 1–2 uker"),
-        "toimenpiteet_inst": ("Det første trinnet er ALLTID: \"{first}\".\n"
-                              "List deretter 5 andre konkrete trinn med tidslinjer (i måneder)."),
+        "toimenpiteet_inst": ("Skriv denne seksjonen i to synlige trinn:\n\n"
+                              "### ANBEFAL\n"
+                              "Det første trinnet er ALLTID: \"{first}\".\n"
+                              "List deretter 4 konkrete tiltak som forbedrer godkjenningssannsynligheten "
+                              "(utredninger, uttalelser, designendringer, dokumenter). "
+                              "Format: nummer. Tiltak – Ansvarlig part – Tidslinje\n\n"
+                              "### LIVSSYKLUS\n"
+                              "Trinn 6: Utvid anbefalingene til neste prosjektlivssyklusfase "
+                              "KUN HVIS hentet kontekst inneholder tilstrekkelige data om den fasen. "
+                              "Hvis kildene ikke dekker senere faser, angi eksplisitt: "
+                              "'Utilstrekkelige kildedata for anbefalinger for senere faser.' "
+                              "Format: 6. Tiltak – Ansvarlig part – Tidslinje"),
         "toimenpiteet_vaihe": " Ta hensyn til prosjektets nåværende fase: {vaihe}.",
         "phase_label":        "Prosjektfase",
         "viranomainen_ohje":  ("VIKTIG: Søknaden er adressert til myndighet '{auth}'. "
@@ -2525,20 +2693,45 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "perustelut":   "UZASADNIENIE I POTRZEBA",
         "luvat":        "OPIS PROCEDUR ZEZWOLEŃ",
         "toimenpiteet": "NASTĘPNE KROKI",
-        "kuvaus_inst":  ("Napisz opis projektu w 3–5 akapitach: cel, dane techniczne, "
-                         "lokalizacja, przyłączenie do sieci i wpływ na środowisko. Uwzględnij typowe "
-                         "parametry techniczne dla tego typu projektu."),
+        "kuvaus_inst":  ("Napisz tę sekcję w dwóch widocznych krokach:\n\n"
+                         "### ANALIZA\n"
+                         "Zidentyfikuj kluczowe cechy i czynniki ryzyka projektu: typ, lokalizacja, rozmiar, "
+                         "kraj i właściwe organy. Uwzględnij typowe parametry techniczne.\n\n"
+                         "### POBIERZ\n"
+                         "Zidentyfikuj najbardziej istotne wymogi prawne i sprawy precedensowe dla tego profilu "
+                         "z kontekstu RAG. Napisz opis w 3–4 akapitach: cel, dane techniczne, "
+                         "lokalizacja, przyłączenie do sieci i wpływ na środowisko. "
+                         "Sekcja musi być wystarczająco wyczerpująca do wstępnych konsultacji."),
         "kuvaus_extra": " Uwzględnij podane informacje o lokalizacji i oddziaływaniu na środowisko.",
-        "perustelut_inst": ("Napisz uzasadnienie w 2–3 akapitach, dlaczego projekt jest konieczny "
+        "perustelut_inst": ("Napisz tę sekcję w dwóch widocznych krokach:\n\n"
+                            "### PORÓWNAJ\n"
+                            "Porównaj ten projekt ze sprawami precedensowymi z kontekstu RAG: jakie ryzyka "
+                            "wystąpiły, jak zostały rozwiązane, co sprawiło, że projekty zakończyły się "
+                            "sukcesem lub niepowodzeniem.\n\n"
+                            "### OCEŃ\n"
+                            "Określ, które ryzyka są najbardziej krytyczne dla prawdopodobieństwa uzyskania zgody. "
+                            "Napisz uzasadnienie w 2–3 akapitach, dlaczego projekt jest konieczny "
                             "(perspektywa systemu energetycznego, fińskie cele klimatyczne, "
-                            "regionalne skutki gospodarcze)."),
-        "luvat_inst":   ("Krótko wyjaśnij (1–2 zdania na zezwolenie), czego dotyczy każde wymagane "
-                         "zezwolenie i dlaczego jest wymagane dla tego projektu."),
+                            "regionalne skutki gospodarcze) i wskaż największe pojedyncze ryzyko."),
+        "luvat_inst":   ("### POBIERZ — ZEZWOLENIA\n"
+                         "Krótko wyjaśnij (1–2 zdania na zezwolenie) czego dotyczy każde wymagane zezwolenie, "
+                         "dlaczego jest wymagane i który organ je rozpatruje. "
+                         "W razie potrzeby odwołaj się do precedensów lub szczególnych wymagań."),
         "luvat_extra":  " Odwołaj się szczególnie do procesów i wymagań organu docelowego {auth}.",
         "toimenpiteet_first": ("Wstępna konsultacja z gminnym wydziałem budowlanym + przegląd planistyczny — "
                                "Wnioskodawca / wydział budowlany {kunta} — w ciągu 1–2 tygodni"),
-        "toimenpiteet_inst": ("Pierwszym krokiem jest ZAWSZE: \"{first}\".\n"
-                              "Następnie wymiń 5 kolejnych konkretnych kroków z harmonogramem (w miesiącach)."),
+        "toimenpiteet_inst": ("Napisz tę sekcję w dwóch widocznych krokach:\n\n"
+                              "### REKOMENDUJ\n"
+                              "Pierwszym krokiem jest ZAWSZE: \"{first}\".\n"
+                              "Następnie wymiń 4 konkretne działania poprawiające prawdopodobieństwo uzyskania zgody "
+                              "(badania, opinie, zmiany projektowe, dokumenty). "
+                              "Format: numer. Działanie – Strona odpowiedzialna – Harmonogram\n\n"
+                              "### CYKL ŻYCIA\n"
+                              "Krok 6: Rozszerz rekomendacje na następną fazę cyklu życia projektu "
+                              "TYLKO JEŚLI pobrany kontekst zawiera wystarczające dane dotyczące tej fazy. "
+                              "Jeśli źródła nie obejmują późniejszych faz, napisz explicite: "
+                              "'Niewystarczające dane źródłowe dla rekomendacji późniejszych faz.' "
+                              "Format: 6. Działanie – Strona odpowiedzialna – Harmonogram"),
         "toimenpiteet_vaihe": " Uwzględnij aktualną fazę projektu: {vaihe}.",
         "phase_label":        "Faza projektu",
         "viranomainen_ohje":  ("WAŻNE: Wniosek jest skierowany do organu '{auth}'. "
