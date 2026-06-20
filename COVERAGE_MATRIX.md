@@ -16,9 +16,9 @@ Legend: ✅ = `_COUNTRY_LUVAT` entry + adequate RAG · ⚠️ = entry exists but
 | Norway | NO | 1,270 | Full |
 | Poland | PL | 2,799 | Full |
 | Germany | DE | 2,433 | Full |
-| **Estonia** | **EE** | **~450 est.** | **New — 6 source docs (2026-06-20); run ingest to confirm count** |
+| **Estonia** | **EE** | **~79 est.** | **New — 9 source TXT docs (2026-06-20); run ingest to confirm count** |
 | EU/IAEA | EU | 738 | Partial — IAEA + EIA Directive indexed; GSR docs missing |
-| **Total** | | **~10,766** | |
+| **Total** | | **~10,395** | |
 
 ---
 
@@ -153,7 +153,7 @@ New metadata dimensions added 2026-06-12 via `ingest_precedent.py`.
 - **DA**: all ⚠️ regardless of config — low chunk count (~467) means RAG answers will be thin
 - **DE**: upgraded to Full — BauGB (476 chunks) + EnWG (900 chunks) indexed 2026-06-12; BImSchG already present
 - **EU/IAEA**: SMR safety standards indexed 2026-06-12 — SSR-2/1 Rev.1 (275 chunks), SSG-52 (171 chunks), NS-R-5 Rev.1 (183 chunks); GSR Part 1/3/4 not yet indexed
-- **EE**: 6 new source documents added 2026-06-20; run `python3 permit_ai/ingest_countries.py --country EE` to index and confirm chunk count
+- **EE**: 9 new source TXT documents added 2026-06-20 (~79 estimated chunks); run `python3 permit_ai/ingest_countries.py --country EE` to index and confirm chunk count
 - **Steps 7+8 SPA sources**: Playwright resolved the 404/202 blocking; all 15 targeted SPA sources now have at least a landing-page chunk indexed. Most yield 1–2 chunks (minimal text on index pages) — actual decision lists/documents are behind dynamic pagination or search UIs requiring deeper interaction. High-value exception: EU EIA Directive (36 chunks, full text).
 - **FI EGS**: aliased to `aurinkovoima` config — EGS-specific guidance is thin
 - **FI asuinrakennus/teollisuus/maatalous/liikerakennus**: generic `_HANKE_CFG` entries, limited RAG depth
