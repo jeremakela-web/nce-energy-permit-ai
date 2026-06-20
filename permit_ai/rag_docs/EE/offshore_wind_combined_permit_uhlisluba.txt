@@ -1,0 +1,226 @@
+OFFSHORE WIND COMBINED PERMIT (ÜHISLUBA) — ESTONIA
+Source: Offshore Wind Development Reform (2023–2024)
+        Amendments to: Elektrituruseadus (ETS), Keskkonnaseadustiku üldosa seadus (KeÜS),
+        Majandusvööndi seadus (Exclusive Economic Zone Act), Planeerimisseadus (PlanS)
+        EU State Aid SA.110117 (2024/N) — Estonia Offshore Wind Support Scheme
+Authority: Majandus- ja Kommunikatsiooniministeerium, Keskkonnaamet, Elering AS
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: BACKGROUND AND REFORM ===
+
+Estonia introduced a major reform of offshore wind permitting between 2022 and 2024, replacing the former three-step sequential permit process with a single Combined Permit (Ühisluba). This reform was part of:
+1. Estonia's Recovery and Resilience Plan (RRP) commitments to streamline energy permitting
+2. Implementation of the EU Renewable Energy Directive (RED II) requirements to reduce permitting timelines
+3. Preparation for large-scale offshore wind development to meet national and EU climate targets
+
+Former three-step process (pre-2023):
+Step A: Zone reservation (tsoneerimine) — designation of offshore area in maritime spatial plan
+Step B: Environmental Impact Assessment (KMH — Keskkonnamõju hindamine) — separate procedure
+Step C: Construction permit / electricity production license — third separate procedure
+
+Problems with former process:
+- Cumulative timeline: 8–12 years from start to construction permit
+- Duplications between steps (same information required multiple times)
+- Unclear decision points and coordination between ministries
+- Deterred investment in Estonian offshore wind despite excellent wind resource
+
+=== PART 2: THE COMBINED PERMIT (ÜHISLUBA) ===
+
+The Ühisluba (Combined Permit) is a single administrative procedure that integrates the following formerly separate approvals into one unified process:
+
+1. Maritime Zone Designation (Tsoneerimine): approval of the use of the specific maritime area for offshore wind generation
+2. Environmental Impact Assessment Approval (KMH heakskiit): approval of the EIA report within the combined process
+3. Construction Permit (Ehitusluba / Rajamisluba): authorization to construct the offshore wind structures
+4. Electricity Production License (Elektrienergia tootmise luba): authorization to operate as an electricity generator
+
+The Ühisluba does NOT replace:
+- Elering grid connection agreement (liitumisleping) — concluded separately with Elering
+- Navigation/aviation safety approvals (Transpordiamet) — concurrent process
+- Natura 2000 / habitats assessments (Keskkonnaamet) — integrated into EIA within combined process
+
+Key features of the Ühisluba:
+- Single application submitted to a lead authority (koordineeriv asutus)
+- Lead authority: Majandus- ja Kommunikatsiooniministeerium (MKM) for offshore wind
+- Statutory maximum timeline: 36 months from complete application to permit decision
+  (with possibility of extension for complex EIA processes)
+- All participating authorities (Keskkonnaamet, Transpordiamet, Elering, Kaitseministeerium, Veeteede Amet) give opinions within the combined process
+- Public consultation: minimum 6-week consultation period for the combined application
+- Appeals: administrative court (halduskohus) — one-stage appeals process
+
+=== PART 3: APPLICATION REQUIREMENTS FOR ÜHISLUBA ===
+
+An application for the Ühisluba must include:
+
+Technical Documentation:
+1. Project description: number, size, and type of turbines; total installed capacity (MW); hub height, rotor diameter, spacing
+2. Location plan: precise coordinates of the wind farm footprint in the maritime zone
+3. Grid connection plan: pre-connection study from Elering; proposed cable route from wind farm to onshore grid connection point
+4. Construction method statement: foundation type (monopile, jacket, floating), installation sequence, transport routes
+5. Decommissioning plan: scope and estimated cost of future decommissioning
+
+Environmental Documentation (integrated EIA):
+6. EIA scoping document (KMH programm): must be submitted first and approved by Keskkonnaamet before the main EIA
+7. Full EIA report (KMH aruanne) including:
+   - Baseline environmental survey (minimum 2 years of monitoring data recommended)
+   - Ornithological impact assessment (bird migration studies — critical for Baltic Sea)
+   - Marine ecology impact assessment (benthic habitats, marine mammals — especially harbour porpoise)
+   - Visual impact assessment (viewshed analysis)
+   - Noise impact (construction and operational noise modelling)
+   - Electromagnetic interference assessment
+   - Cumulative impact assessment with other planned projects
+
+Safety and Navigation:
+8. Maritime traffic safety assessment (IALA recommendations compliance)
+9. Navigation light marking plan (Transpordiamet / Veeteede Amet requirements)
+10. Aircraft warning lighting plan (Transpordiamet approval)
+11. Military radar assessment (Kaitseministeerium pre-clearance strongly recommended before application)
+
+Socio-economic:
+12. Fisheries impact assessment and mitigation plan (coordination with fishing industry)
+13. Local community consultation evidence
+14. Economic impact assessment (employment, local supply chain)
+
+Financial:
+15. Evidence of financial capacity (project finance term sheets, equity commitments, or bank letter of comfort)
+16. Decommissioning financial security plan
+
+=== PART 4: EU STATE AID SCHEME €2.6 BILLION ===
+
+European Commission Decision SA.110117 (2024/N) — Estonia Offshore Wind Support Scheme:
+- Total budget: approximately €2.6 billion over the support period
+- Form of support: Contracts for Difference (CfD) — two-way settlement mechanism
+- Strike price: determined through competitive auction (competitive CfD)
+- Support duration: 20 years from first electricity generation
+- Eligible technology: offshore wind turbines in Estonian maritime zones
+- Capacity target: approximately 1,000–2,000 MW offshore wind capacity to be supported
+
+CfD mechanism:
+- When market price < strike price: MKM/auction administrator pays the difference to the generator
+- When market price > strike price: generator pays back the difference (two-way CfD)
+- Payments based on actual metered generation
+- Indexed to inflation to maintain real value of support
+
+Auction design:
+- Technology-specific (offshore wind only) competitive auction
+- Selection criteria: strike price (primary), local content and supply chain commitments (secondary)
+- Pre-qualification requirements: completed EIA, Ühisluba application submitted or Ühisluba obtained
+- Timeline: first auction anticipated 2025/2026
+
+Project economics significance:
+- €2.6 billion state aid scheme provides long-term revenue certainty for project financing
+- CfD structure eliminates electricity price risk for lenders
+- Enables project finance (non-recourse) structures for Estonian offshore wind
+- First EU-approved state aid for Estonian offshore wind — historic milestone for the market
+
+=== PART 5: MARITIME SPATIAL PLANNING ===
+
+Majandusvööndi seadus (Exclusive Economic Zone Act):
+- Governs use of Estonian territorial sea and EEZ
+- Estonian maritime zones available for offshore wind:
+  - Territorial sea: 12 nautical miles from baseline
+  - EEZ: up to 200 nautical miles (though Estonian EEZ is relatively small, bounded by Finland, Latvia, Russia)
+
+Maritime spatial plan (Mereala planeering):
+- Estonia adopted a national Maritime Spatial Plan (2023) identifying zones for:
+  - Offshore wind development (priority areas identified in Gulf of Finland and Baltic Sea)
+  - Nature protection zones (Natura 2000 marine sites — significant coverage)
+  - Shipping lane preservation
+  - Fisheries areas
+  - Military exercise areas
+
+Integration with Ühisluba:
+- The Ühisluba process includes verification that the project is in a designated offshore wind zone in the maritime spatial plan
+- Projects outside designated zones require amendment to the maritime spatial plan (additional procedure, significant delay)
+
+=== PART 6: KEY AUTHORITIES FOR OFFSHORE WIND ===
+
+Majandus- ja Kommunikatsiooniministeerium (MKM — Ministry of Economic Affairs):
+- Lead authority for Ühisluba procedure
+- Administers offshore wind CfD auctions
+- Issues final Ühisluba decision
+
+Keskkonnaamet (Environmental Board):
+- Conducts EIA assessment within Ühisluba
+- Natura 2000 / habitats assessment
+- Noise and marine ecology assessment
+
+Transpordiamet (Transport Administration):
+- Maritime traffic safety (navigation lanes, warning lights)
+- Aviation safety (aircraft warning lights on turbines)
+- Civil aviation and maritime authority functions
+
+Veeteede Amet (Maritime Administration / part of Transpordiamet):
+- Waterway navigation safety
+- Ice navigation requirements (Baltic Sea)
+
+Kaitseministeerium (Ministry of Defence):
+- Military radar interference clearance — CRITICAL
+- Estonian Defence Forces operate coastal radar systems
+- Pre-consultation essential; negative opinion can block project
+- Mandatory military impact assessment for all offshore wind projects
+
+Elering AS:
+- TSO; provides pre-connection study
+- Grid connection agreement (separate from Ühisluba but parallel process)
+- Offshore cable route approval
+
+Kalapüügiõiguste haldur (Fisheries authority):
+- Fisheries impact assessment review
+- Fishing exclusion zone negotiations
+
+=== PART 7: TIMELINE FOR OFFSHORE WIND PROJECT UNDER NEW PROCESS ===
+
+Phase 1 — Pre-development (12–24 months before Ühisluba application):
+- Maritime spatial plan zone confirmation
+- Wind and metocean resource measurement (minimum 1 year recommended)
+- Baseline environmental survey initiation (birds, marine mammals, benthic habitats)
+- Military radar pre-consultation with Kaitseministeerium
+- Pre-connection feasibility study with Elering
+- Stakeholder engagement (fishermen, local communities)
+
+Phase 2 — EIA Scoping (3–6 months):
+- KMH programm (scoping) submitted to Keskkonnaamet
+- Public consultation on scoping document (2-week minimum)
+- Keskkonnaamet issues approved scoping decision
+
+Phase 3 — EIA and Ühisluba Application (12–18 months):
+- Full EIA report preparation (parallel with Phase 2)
+- Complete Ühisluba application submitted to MKM
+- MKM declares application complete (validity check)
+- Statutory consultation period begins: 6 weeks public consultation + concurrent agency consultations
+
+Phase 4 — Assessment and Decision (12–18 months within the 36-month statutory deadline):
+- MKM coordinates responses from Keskkonnaamet, Transpordiamet, Kaitseministeerium, etc.
+- Public hearing (avalik arutelu) organized
+- MKM issues Ühisluba (or rejection with reasons)
+
+Phase 5 — Grid Connection (parallel with Phases 3–4):
+- Elering connection conditions issued
+- Grid connection agreement signed
+- Onshore cable and substation works planned
+
+Phase 6 — Construction (24–48 months):
+- Procurement of turbines, foundations, cables
+- Offshore construction (weather-dependent)
+- Onshore substation construction
+
+Phase 7 — Commercial Operation:
+- Pre-commissioning tests with Elering
+- Commercial connection approval
+- CfD auction activation (if participating in support scheme)
+
+Total timeline from start to commercial operation: 5–10 years (significantly shorter than pre-2023 process of 8–15 years).
+
+=== PART 8: COMPARISON WITH FORMER 3-STEP PROCESS ===
+
+Aspect                    | Former 3-Step Process       | New Ühisluba
+--------------------------|-----------------------------|---------------------------
+Number of procedures      | 3 separate                  | 1 integrated
+Lead authority            | Multiple, unclear           | MKM (single point)
+Maximum statutory timeline| No statutory max            | 36 months (statutory)
+EIA placement             | Separate step               | Integrated into Ühisluba
+Public consultation       | 3× separate rounds          | 1 unified round
+Agency consultations      | Sequential                  | Concurrent
+Overlap between phases    | Not allowed                 | Required (concurrent)
+Typical total timeline    | 8–15 years                  | 4–8 years
+Appeal mechanism          | Administrative + court      | Administrative court only

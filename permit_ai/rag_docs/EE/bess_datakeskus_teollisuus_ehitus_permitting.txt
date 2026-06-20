@@ -1,0 +1,243 @@
+BESS, DATAKESKUS, TEOLLISUUS, ASUINRAKENNUS, LIIKERAKENNUS JA MAATALOUS
+BATTERY STORAGE, DATA CENTRES, INDUSTRIAL, RESIDENTIAL, COMMERCIAL AND AGRICULTURAL
+PERMITTING IN ESTONIA — GENERAL FRAMEWORK
+Source: Ehitusseadustik (EhS RT I, 23.03.2015, 1), Keskkonnaseadustiku üldosa seadus (KeÜS),
+        Elektrituruseadus (ETS), Planeerimisseadus (PlanS),
+        Jäätmeseadus (Waste Act), Kemikaaliseadus (Chemicals Act)
+Authority: Kohaliku omavalitsus, Keskkonnaamet, Konkurentsiamet, Elering/Elektrilevi
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: BATTERY ENERGY STORAGE SYSTEMS (BESS) — AKUENERGIASALVESTUS ===
+
+REGULATORY NOTE: No dedicated BESS-specific legislation exists in Estonia as of 2024.
+General electricity market framework (Elektrituruseadus) and building regulations (Ehitusseadustik) apply.
+Flag in reports: "General electricity market framework applies; no dedicated BESS regulation found."
+
+Applicable legislation:
+1. Elektrituruseadus (ETS): electricity production/storage license if discharging > 1 MW
+2. Ehitusseadustik (EhS): building permit required for BESS containers/buildings
+3. Kemikaaliseadus (Chemicals Act): lithium batteries classified as hazardous chemicals above certain thresholds; notification to Keskkonnaamet required for large installations
+4. Jäätmeseadus (Waste Act): battery waste management obligations (battery end-of-life)
+5. Tuleohutusseadus (Fire Safety Act): fire safety plan required for large BESS installations
+6. KeÜS / KMH-KSH seadus: EIA screening if significant environmental impact (large installations in sensitive areas)
+
+Permitting process for utility-scale BESS (> 1 MW):
+
+Step 1 — Site and Zoning:
+- Check land use designation: BESS may require detailplaneering if land not already zoned for energy/industrial use
+- Municipality consultation recommended before planning application
+
+Step 2 — Environmental Screening:
+- Application to Keskkonnaamet for KMH screening if installation is large (> 10 MW) or near sensitive receptors
+- Typical outcome for BESS on industrial land: no EIA required
+- Chemical hazard assessment: if lithium battery threshold exceeded (varies by specific chemistry; consult Kemikaaliseadus)
+
+Step 3 — Building Permit (Ehitusluba):
+- Application to municipality
+- Documents required:
+  - Site plan showing container layout, access, fire lanes
+  - Structural/foundation design for battery containers
+  - Electrical installation design (DC battery system, AC inverters, MV/HV connection)
+  - Fire safety plan (Tuleohutuse lahendus): sprinkler/suppression system design, smoke detection, emergency procedures
+  - Spill containment design (battery electrolyte)
+  - Ventilation design (off-gas management for thermal runaway scenarios)
+- Building permit from municipality: 30-day statutory; 60 days for complex projects
+
+Step 4 — Electricity License / Registration:
+- If discharging > 1 MW: electricity production license from Konkurentsiamet
+- Application includes: building permit, Elering/Elektrilevi grid connection agreement
+- If < 1 MW: registration notification (teatis) to Konkurentsiamet
+
+Step 5 — Grid Connection:
+- Apply to Elering (if > 10 MW or 110 kV connection) or Elektrilevi (if < 10 MW, 20 kV connection)
+- BESS grid connection: must demonstrate both charging (consumer) and discharging (generator) compliance with EU Network Codes (RfG 2016/631 for generator mode; DCC 2016/1388 for consumer mode)
+- Bidirectional meter required: metered separately for import and export
+
+Step 6 — Fire Authority Inspection:
+- Päästeamet (Rescue Board / Fire Authority) inspection required before commissioning
+- Inspection verifies: suppression systems, emergency disconnect, fire lanes, signage
+- Use permit (kasutusluba) from municipality after Päästeamet clearance
+
+Technical standards for BESS:
+- IEC 62619: Safety requirements for secondary lithium cells and batteries
+- IEC 62933: Electrical energy storage systems (grid-connected)
+- IEC 61000-6-x: Electromagnetic compatibility
+- NFPA 855 (US standard, referenced in some EU guidance): Standard for Installation of Stationary Energy Storage Systems
+- EN 50604-1: Lead-acid batteries (if applicable)
+- Fire safety: Estonian standard EVS 812-7 and Tuleohutuse nõuded hoone projekteerimisel
+
+Specific note — no dedicated BESS regulation:
+Estonia has not yet adopted specific BESS regulations defining:
+- Safe setback distances from buildings/roads
+- Specific fire suppression technology requirements
+- Capacity thresholds for environmental permitting
+- Revenue/balancing market participation rules for standalone BESS
+The competent authority (Päästeamet + municipality) applies general industrial construction standards and fire safety regulations in the absence of BESS-specific rules. Developers should consult Päästeamet and municipality early to align on applicable standards.
+
+=== PART 2: DATA CENTRES (DATAKESKUS) ===
+
+Estonia's data centre sector has grown significantly due to:
+- Strong digital infrastructure (Estonia is a leading digital society — e-Residency, i-Voting, X-Road)
+- Competitive electricity prices (historically)
+- Reliable grid connections
+- Cool climate (beneficial for free cooling)
+
+Applicable legislation:
+1. Ehitusseadustik (EhS): building permit (ehitusluba) required; all data centre buildings are permanent structures
+2. Planeerimisseadus (PlanS): detailplaneering typically required (land use change or large building in new location)
+3. KeÜS / KMH-KSH seadus: EIA screening for large data centres (> 100 MW total IT load may trigger screening)
+4. Elektrituruseadus (ETS): grid connection agreement with Elering or Elektrilevi; production license if generating electricity (backup generators, CHP)
+5. Energiamajanduse korralduse seadus (ESOS): energy efficiency audits for large energy consumers
+6. Kemikaaliseadus: diesel fuel storage for backup generators if above threshold quantities
+
+Building permit requirements for data centres:
+- Structural design: modular expansion capability, raised floor or hot/cold aisle design
+- Electrical installation: redundant power supply (N+1 or 2N UPS), generator backing, MV/HV connection
+- Cooling systems: free cooling capability, heat recovery option
+- Fire suppression: clean agent systems (FM-200, Inergen, Novec 1230) preferred for server rooms
+- Security: access control, CCTV — not regulated by building permit but contractual requirement
+
+Energy efficiency for data centres:
+- EU Energy Efficiency Directive (EED 2023) data centre provisions apply from 2024:
+  - Data centres > 1 MW must register with national authority (Majandus- ja Kommunikatsiooniministeerium)
+  - Annual reporting of PUE (Power Usage Effectiveness), water usage, renewable energy percentage
+  - Target PUE: ≤ 1.5 (existing) or ≤ 1.3 (new construction by 2030)
+- Estonian ESOS: energy audit obligation for enterprises > 250 employees
+
+Grid connection for data centres:
+- Load > 10 MW: direct 110 kV Elering connection typical
+- Load 1–10 MW: Elektrilevi 20 kV connection typical
+- Redundant connection paths strongly recommended; Elering/Elektrilevi can provide N-1 secure supply at premium
+- UPS and battery backup: typically 10–15 minutes hold-up time; > 15 minutes may require BESS grid connection registration
+
+=== PART 3: INDUSTRIAL PROJECTS (TEOLLISUUS) ===
+
+Applicable legislation:
+1. Ehitusseadustik (EhS): building permit (ehitusluba) for all industrial buildings
+2. Planeerimisseadus (PlanS): detailplaneering if changing land use or new industrial zone
+3. KeÜS / KMH-KSH seadus:
+   - Complex environmental permit (kompleksluba) for IPPC installations
+   - EIA mandatory for large industrial facilities (> 75 MW thermal input, or listed Annex I/II projects)
+   - EIA screening for medium installations
+4. Kemikaaliseadus (Chemicals Act): chemical storage and handling permit if threshold quantities
+5. Tuleohutusseadus (Fire Safety Act): fire safety plan and Päästeamet inspection
+6. Töötervishoiu ja tööohutuse seadus (Occupational Health and Safety Act): workplace safety management
+
+IPPC installations (Integrated Pollution Prevention and Control):
+- Large combustion plants, chemical manufacturing, waste treatment, metal production — specific thresholds in KeÜS
+- Complex environmental permit (kompleksluba) required: covers air, water, waste, soil in one permit
+- Competent authority: Keskkonnaamet
+- BAT (Best Available Techniques) compliance required; EU BAT Reference Documents (BREFs) apply
+
+Building permit for industrial buildings:
+- Fire resistance class: F60 or higher for industrial buildings
+- Explosion protection: ATEX zones if flammable substances
+- Accessibility: must comply with EVS requirements
+- Waste water: connection to municipal sewage or separate treatment plant if industrial effluent
+- Noise: acoustic assessment if noise-generating processes near residential areas
+
+=== PART 4: RESIDENTIAL BUILDINGS (ASUINRAKENNUS) ===
+
+Applicable legislation:
+1. Ehitusseadustik (EhS): building permit (ehitusluba) for all new residential buildings; simplified notification (ehitusteatis) for small additions
+2. Planeerimisseadus (PlanS): detailplaneering typically required in urban areas
+3. Korteriomandiseadus (Apartment Ownership Act): for apartment buildings, condominium rules
+4. Ehitise energiatõhususe miinimumnõuded (Minimum Energy Performance Requirements): EU EPBD implemented through Estonian regulation
+
+Building permit for residential:
+- Architectural design by licensed architect (arhitekt)
+- Structural design by licensed structural engineer
+- Energy performance calculation: must meet Nearly Zero-Energy Building (NZEB) standard
+  - New residential buildings: ≤ 100 kWh/m²/year primary energy (from 2020)
+  - EPC class B minimum for new construction (class A recommended)
+- Fire safety: EVS 812 standards; smoke alarms mandatory; fire escape routes
+- Accessibility: disability access requirements for multi-family buildings
+- Neighbor consultation: adjacent landowners informed; objections may delay permit
+
+Municipality processing time: 30 days statutory; typically 15–30 days in practice.
+
+=== PART 5: COMMERCIAL BUILDINGS (LIIKERAKENNUS / ÄRIHOONE) ===
+
+Applicable legislation:
+1. Ehitusseadustik (EhS): building permit (ehitusluba) required
+2. Planeerimisseadus (PlanS): detailplaneering if new location or significant land use change
+3. KeÜS: environmental permit if discharges/emissions above thresholds
+4. NZEB requirements: commercial buildings must meet energy performance standard (slightly less stringent than residential per square meter)
+
+Building permit for commercial:
+- Architectural design (licensed architect)
+- Structural design
+- HVAC, plumbing, electrical installation designs
+- Fire safety plan (Tuleohutuse lahendus) — Päästeamet consultation
+- Accessibility: barrier-free access for public buildings (Invahoone design requirements)
+- Parking: municipality requirement varies
+
+For large retail/commercial developments:
+- Kaubanduslike suurpindade loa nõue: large retail formats may require special commercial development approval from county authority
+
+=== PART 6: AGRICULTURAL BUILDINGS (MAATALOUS) ===
+
+Applicable legislation:
+1. Ehitusseadustik (EhS): building permit for permanent agricultural structures; notification (ehitusteatis) for smaller farm buildings under certain thresholds
+2. Planeerimisseadus (PlanS): agricultural land zoning is protected; building on agricultural land generally limited to agricultural use buildings only
+3. Maaparandusseadus (Land Improvement Act): drainage systems, soil conservation
+4. Kemikaaliseadus: fertilizer and pesticide storage if above threshold
+5. Loomakaitseseadus (Animal Welfare Act): standards for livestock buildings
+6. KeÜS: environmental permit for large livestock farms (IPPC threshold: > 750 sows, > 2,000 pigs, > 40,000 poultry)
+
+Building notification (ehitusteatis) sufficient for:
+- Farm buildings < 60 m² floor area
+- Greenhouses < 60 m²
+- Temporary structures
+
+Full building permit required for:
+- Any permanent farm building > 60 m²
+- Livestock buildings regardless of size
+- Agricultural machinery storage > 60 m²
+- Manure storage (slurry tanks, composting areas)
+
+Biogas from agricultural waste:
+- Agricultural biogas plants may qualify for renewable energy support
+- Electricity production license if > 1 MW output
+- Combined heat and power (CHP) encouraged
+
+=== PART 7: GENERAL PERMITTING TIMELINE SUMMARY ===
+
+Project Type            | Detailplaneering | EIA         | Building Permit | Use Permit | Total Typical
+------------------------|-----------------|-------------|-----------------|------------|---------------
+BESS (utility, >1MW)    | Maybe (6–18 mo) | Screening   | 2–4 months      | 1–2 months | 12–36 months
+Data centre (>10MW)     | Yes (12–24 mo)  | Screening   | 3–6 months      | 2–3 months | 18–36 months
+Industrial (IPPC)       | Yes (12–24 mo)  | Mandatory   | 3–6 months      | 2–3 months | 24–48 months
+Industrial (non-IPPC)   | Maybe (6–18 mo) | Screening   | 2–4 months      | 1–2 months | 12–30 months
+Residential (new)       | Yes (12–18 mo)  | Usually No  | 1–3 months      | 1 month    | 12–24 months
+Commercial (new)        | Yes (12–18 mo)  | Screening   | 2–4 months      | 1–2 months | 12–24 months
+Agricultural building   | No (ag zone)    | Screening   | 1–2 months      | 1 month    | 3–6 months
+
+=== PART 8: KEY AUTHORITIES SUMMARY ===
+
+Kohaliku omavalitsuse volikogu (Municipality council):
+- Adopts detailed plans
+- Issues building permits and use permits
+
+Keskkonnaamet (Environmental Board):
+- EIA decisions
+- Complex environmental permits (kompleksluba)
+- Nature protection oversight
+
+Päästeamet (Rescue Board / Fire Authority):
+- Fire safety inspections
+- Approval for BESS, industrial, and large commercial buildings
+
+Konkurentsiamet (Competition Authority):
+- Electricity production licenses
+- Grid operator regulation
+
+Terviseamet (Health Board):
+- Radiation practice licenses (for BESS installations with certain radiation sources — limited)
+
+Põllumajandusamet (Agricultural Board):
+- Agricultural land use change approvals
+- Oversight of agricultural subsidies
+
+Muinsuskaitseamet (Heritage Board):
+- Construction near or in heritage protection zones

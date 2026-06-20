@@ -1,0 +1,183 @@
+PÄIKESEENERGIA ARENDAMINE EESTIS — SOLAR PV DEVELOPMENT AND PERMITTING IN ESTONIA
+Source: Majandus- ja Kommunikatsiooniministeerium, Keskkonnaamet, Konkurentsiamet,
+        Elektrituruseadus (ETS), Ehitusseadustik (EhS), Planeerimisseadus (PlanS)
+Authority: Kohaliku omavalitsus (Municipality), Keskkonnaamet, Konkurentsiamet, Elektrilevi
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: ESTONIA SOLAR ENERGY SECTOR ===
+
+Estonia's solar energy sector is growing rapidly:
+- Installed capacity (end 2023): approximately 160 MW (predominantly distributed rooftop)
+- National target by 2030: approximately 415 MW
+- Growth requirement: approximately 255 MW new capacity needed
+
+Solar resource: Estonia has moderate solar irradiance (approximately 950–1,050 kWh/m²/year global horizontal irradiance), similar to southern Scandinavia. Best months: April–August. Significant snow cover in winter months (November–February) reduces winter generation.
+
+Cost environment: Solar PV costs have fallen significantly; grid parity for commercial installations achieved by 2022–2023 in Estonia.
+
+=== PART 2: PERMITTING — TWO-TRACK SYSTEM ===
+
+Estonia operates a two-track permitting system for solar PV based on project size:
+
+TRACK A — SMALL ROOFTOP SOLAR (Katusele paigaldatav päikeseenergiajaam, < 15 kW / < 50 kW):
+
+For household installations < 15 kW and commercial rooftop installations < 50 kW:
+- No electricity production license required (Elektrituruseadus §14(2))
+- Simplified registration (teatis) to Konkurentsiamet sufficient
+- Building permit NOT required if:
+  (a) Panels are mounted flat on existing building roof
+  (b) Total additional load on roof is within existing structural capacity
+  (c) Panels do not significantly alter the building's external appearance
+  (d) Building is not in a heritage conservation zone
+- Ehitusteatis (building notification) is sufficient in most cases for rooftop systems
+- Electrical installation permit: licensed electrician (atesteeritud elektriinsener) required for grid connection
+- Net metering (netomõõtmine) available: excess generation fed to grid at spot market price
+- Elektrilevi: simplified grid connection process; Elektrilevi must respond within 30 days
+
+For household installations < 15 kW:
+- Registration notification (teatis) to Konkurentsiamet only
+- Connect to Elektrilevi distribution; smart meter installed by Elektrilevi
+- Annual reporting to Elering (for RES statistics)
+
+TRACK B — UTILITY-SCALE GROUND-MOUNTED SOLAR (Maapealse päikeseenergiajaam, > 50 kW or > 1 MW):
+
+Full permitting process applies:
+
+Phase 1 — Site Selection (6–12 months):
+1a. Land ownership or lease agreement
+1b. Zoning assessment: is land zoned for energy production or agriculture?
+   - Agricultural land conversion: approval from Põllumajandusamet (Agricultural Board) required
+   - Protected agricultural land: stronger restrictions; conversion often impossible
+1c. Environmental sensitivity screening: Natura 2000, protected habitats, water bodies
+1d. Grid connection pre-study: Elering or Elektrilevi feasibility assessment
+1e. Shading analysis: horizon profile, row spacing optimization
+
+Phase 2 — Spatial Planning (12–24 months):
+2a. Detailplaneering (detailed spatial plan) required if:
+   - Land use change from agriculture/forest to energy production
+   - Site > 0.5 ha
+   - Municipality requires for any PV farm in their jurisdiction
+2b. Detailplaneering process:
+   - Application to municipality (kohaliku omavalitsuse volikogu)
+   - KSH (Strategic Environmental Assessment) screening
+   - Public consultation periods
+   - Municipal council adoption vote
+2c. Some municipalities may waive detailplaneering requirement for small solar farms on already-industrial/brownfield land
+
+Phase 3 — Environmental Impact Assessment (9–18 months, if triggered):
+3a. EIA screening by Keskkonnaamet: mandatory EIA if ≥ 50 MW
+3b. EIA triggered for < 50 MW if site is:
+   - Within or adjacent to Natura 2000 protected area
+   - On priority habitat (rare vegetation types)
+   - Adjacent to protected watercourse or wetland
+   - In landscape protection zone
+3c. If EIA required: KMH programm → KMH aruanne → expert review → public hearing → Keskkonnaamet decision (same process as wind, but typically simpler scope)
+3d. Most ground-mounted solar farms 1–50 MW: no EIA required if standard agricultural/industrial land; EIA screening typically negative result
+
+Phase 4 — Building Permit (2–4 months):
+4a. Application to municipality: ehitusluba (building permit)
+4b. Required documents:
+   - Site plan with panel layout, row spacing, installation height
+   - Structural calculations for mounting systems and foundations
+   - Electrical installation design (DC cables, inverters, AC collection, substation)
+   - Environmental permit if EIA conditions apply
+   - Ground anchoring design (screw piles preferred on agricultural land to avoid foundation disturbance)
+4c. Building permit issued by municipality: 30-day statutory timeline
+
+Phase 5 — Electricity Production License:
+5a. Application to Konkurentsiamet for license (if > 1 MW)
+5b. Required: building permit + Elering/Elektrilevi grid connection agreement (or pre-agreement)
+5c. License issued within 30 days
+
+Phase 6 — Grid Connection Agreement:
+6a. For systems > 10 MW: Elering 110 kV connection
+6b. For systems 1–10 MW: typically Elektrilevi 20 kV connection
+6c. Connection conditions (liitumistingimused) issued; connection agreement (liitumisleping) signed
+6d. Metering: smart meter installed at grid connection point; production metered
+
+Phase 7 — Construction and Commissioning:
+7a. Panel installation, inverter installation, substation works
+7b. Elering / Elektrilevi commissioning tests
+7c. Use permit (kasutusluba) from municipality
+7d. Commercial operation
+
+=== PART 3: KEY TECHNICAL REQUIREMENTS ===
+
+Grid connection standards:
+- IEC 62109: Safety of power converters for use in photovoltaic power systems
+- IEC 62116: Anti-islanding requirements for grid-connected inverters
+- EU Network Code RfG 2016/631: Type B (< 1 MW) or Type C (1–75 MW) generator requirements
+- Elektrilevi/Elering: power factor correction, voltage regulation requirements
+
+Structural requirements:
+- Snow load design: ground-mounted panels must withstand 2.4–3.2 kPa snow load (Estonian standard EVS-EN 1991-1-3)
+- Wind load design: 25 m/s reference wind speed coastal/open areas (EVS-EN 1991-1-4)
+- Module standards: IEC 61215 (crystalline silicon), IEC 61730 (safety)
+- Inverter standards: IEC 62109-1, IEC 62109-2
+- DC cable standards: IEC 60228, IEC 60364
+
+Fire safety:
+- DC arc fault detection required for utility-scale systems
+- Combiner boxes and inverters: IEC 60947-2 or equivalent
+- Emergency disconnection within 30 seconds requirement (Päästesüsteemide nõuded — fire brigade requirements)
+
+=== PART 4: AGRICULTURAL LAND PROTECTION ===
+
+Maaparandusseadus (Land Improvement Act) and Põllumajandusliku tegevuse toetuse seadus (Agricultural Support Act):
+- Agricultural land in Estonia is classified:
+  - Highly productive agricultural land (kõrgväärtuslikud põllumajandusmaa): conversion to energy use strongly restricted
+  - Other agricultural land: conversion possible with Põllumajandusamet approval
+- Agrivoltaics (dual-use solar — panels over crops): being developed as regulatory concept but not yet formally defined in Estonian law
+- Ground-mounted solar on agricultural land requires:
+  - Application to Põllumajandusamet for land use change (maaparandus)
+  - Justification for removal of agricultural land from production
+  - Compensation payment to agricultural support scheme if previously receiving EU CAP payments
+
+=== PART 5: BUILDING INTEGRATED SOLAR (BIPV) ===
+
+For building-integrated solar panels (BIPV — panels replacing roofing material, facade elements):
+- Building permit (ehitusluba) required: BIPV is structural modification of building
+- If in heritage zone (kultuurimälestis): Muinsuskaitseamet (Heritage Board) approval required
+- Fire safety: additional requirements for BIPV systems (access for firefighting, EV disconnection)
+- Structural engineer sign-off on roof/facade load bearing capacity
+
+=== PART 6: NET METERING AND PROSUMER RULES ===
+
+Net metering (Netomõõtmine) — Elektrituruseadus §§47-55:
+- Available for all generators < 1 MW connected to distribution network
+- Electricity consumed from grid: standard consumer tariff
+- Electricity exported to grid: spot market price (Nordpool day-ahead) settled monthly by Elektrilevi
+- Settlement: Elektrilevi settles net import/export on monthly basis
+- Smart meter requirement: Elektrilevi installs smart meter at no additional cost for new PV connections
+
+Prosumer aggregation: Landlord or housing association may collectively install solar PV and distribute generation across multiple tenants — pilot framework being developed in Estonian legislation (2023).
+
+=== PART 7: FINANCIAL SUPPORT ===
+
+Utility-scale (> 1 MW):
+- RES competitive auction administered by MKM
+- Solar PV technology-neutral in most auction rounds (competes with wind)
+- CfD or premium tariff for winning bidders
+- Pre-qualification: completed planning, building permit, grid connection agreement
+
+Small commercial (50 kW – 1 MW):
+- Investment support programs via Estonian Environmental Investment Centre (KIK)
+- EU Structural Funds co-financing available for specific sectors (agriculture, SMEs)
+
+Residential rooftop (< 15 kW):
+- Investment grants through KIK (Keskkonnainvesteeringute Keskus)
+- State programs: "Solar Energy at Home" support scheme (specific rounds)
+- VAT exemption for solar panels installed on residential buildings
+
+=== PART 8: SUMMARY TABLE — SOLAR PV PERMITTING BY SIZE ===
+
+Category               | Capacity      | Ehitusteatis | Ehitusluba | EIA      | Prod. License | Grid
+------------------------|---------------|--------------|------------|----------|---------------|-------
+Household rooftop       | < 15 kW       | Yes (if any) | Usually No | No       | Teatis only   | Elektrilevi
+Commercial rooftop      | 15–50 kW      | Usually Yes  | Sometimes  | No       | Teatis only   | Elektrilevi
+Small ground-mounted    | 50 kW–1 MW    | No           | Yes        | Screening| Yes (KA)      | Elektrilevi
+Medium ground-mounted   | 1–10 MW       | No           | Yes        | Screening| Yes (KA)      | Elektrilevi
+Large ground-mounted    | 10–50 MW      | No           | Yes        | Screening| Yes (KA)      | Elering
+Utility-scale           | > 50 MW       | No           | Yes        | Mandatory| Yes (KA)      | Elering
+
+KA = Konkurentsiamet; EIA screening = Keskkonnaamet screening decision required

@@ -1,0 +1,124 @@
+ELEKTRITURUSEADUS (ELECTRICITY MARKET ACT) — ESTONIA
+Source: Riigiteataja RT I, 28.06.2012, 1 (consolidated version with amendments through 2024)
+Authority: Riigikogu (Parliament of Estonia)
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: GENERAL PROVISIONS ===
+
+The Electricity Market Act (Elektrituruseadus, ETS) is the primary legislation governing electricity generation, transmission, distribution, and market operations in Estonia. The Act establishes the legal framework for all electricity producers, including renewable energy and conventional generation.
+
+Key definitions under ETS §2:
+- Electricity producer (elektrienergia tootja): any natural or legal person who produces electricity for sale or own use above thresholds set in the Act.
+- Electricity production facility (elektrienergia tootmisseade): installation that converts primary energy into electrical energy.
+- Transmission network (põhivõrk): high-voltage grid operated by Elering AS (Estonia's Transmission System Operator, TSO).
+- Distribution network (jaotusvõrk): medium and low voltage grid operated by distribution system operators (DSOs), primarily Elektrilevi OÜ.
+- Balance responsible party: entity responsible for balancing electricity produced and consumed within a designated balance area.
+
+=== PART 2: ELECTRICITY PRODUCTION LICENSE ===
+
+ETS §14 — Electricity Production License (Elektrienergia tootmise luba):
+Any person wishing to produce electricity with an installation having a net output capacity exceeding 1 MW must obtain an electricity production license from the Competition Authority (Konkurentsiamet).
+
+Applications for the electricity production license must include:
+1. Description of the production facility (type, location, capacity in MW)
+2. Description of technical characteristics (fuel type, efficiency, grid connection parameters)
+3. Environmental permits already obtained or planned
+4. Grid connection agreement or pre-agreement with Elering (transmission) or distribution operator
+5. Evidence of financial capability to operate the facility
+6. Ownership documents for the site or agreement with landowner
+
+Processing time for electricity production license: approximately 30 days under ETS §14(5), though in practice 30–60 days including technical review by Elering.
+
+For generation facilities up to 1 MW: registration notification (teatis) to Konkurentsiamet is sufficient; no license required. This is the standard path for small rooftop solar PV installations.
+
+ETS §15 — Conditions of license:
+The license specifies:
+- Authorized capacity in MW
+- Fuel type or energy source (wind, solar, biomass, etc.)
+- Location and grid connection point
+- Technical minimum requirements
+- Reporting obligations to Elering and Konkurentsiamet
+
+ETS §16 — Modification and revocation:
+Konkurentsiamet may modify or revoke a license if the operator violates terms, ceases operations, or fails to maintain technical capability.
+
+=== PART 3: RENEWABLE ENERGY AND SUPPORT SCHEME ===
+
+ETS §§56–72 — Renewable Energy Support (Taastuvenergia toetus):
+Estonia applies a feed-in tariff / premium support system for qualifying renewable energy facilities. Support is administered through Elering and requires:
+- Separate application to Elering for subsidy eligibility
+- Demonstration that the facility is grid-connected and metered
+- Compliance with technical connection standards
+
+Wind energy (tuuleenergia): Eligible for renewable energy support if capacity ≥ 50 kW. The national target for onshore wind is approximately 1,200 MW by 2030 (from baseline of ~310 MW in 2020). Recent legislative reforms under Estonia's Recovery and Resilience Plan (2021–2026) streamlined wind energy permitting, including reduced EIA timelines and designation of "wind priority development areas" (tuuleenergia arendusalad) where approximately 1,000 MW of technical potential has been identified.
+
+Solar PV (päikeseenergia): Eligible for renewable energy support for utility-scale installations. National target approximately 415 MW by 2030 (from baseline ~100 MW in 2020). Small rooftop solar installations (below 15 kW for households, below 50 kW for businesses) may use net metering without requiring a production license.
+
+Offshore wind: Estonia has introduced a combined permit process (ühisluba) for offshore wind energy replacing the former three-step sequential permit process. This is a significant simplification. Additionally, Estonia has an EU-approved state aid scheme of approximately €2.6 billion for offshore wind support (approved by European Commission in 2024), providing long-term market visibility for offshore wind project economics.
+
+Battery Energy Storage Systems (BESS / akuenergiasalvestus): No dedicated BESS-specific legislation exists as of 2024. BESS facilities are governed under the general electricity market framework of the Electricity Market Act. Grid connection requires agreement with Elering (if connecting to transmission network) or Elektrilevi (if connecting to distribution network). Battery storage facilities that store and release electricity commercially must comply with ETS §14 licensing threshold if their net output capacity exceeds 1 MW.
+
+=== PART 4: GRID CONNECTION AND NETWORK ACCESS ===
+
+ETS §§73–90 — Network Connection (Võrguühendus):
+Any electricity producer or consumer has the right to connect to the electricity network under non-discriminatory conditions (ETS §73).
+
+Grid connection to the transmission network (Elering):
+- For production facilities of significant scale (typically ≥ 10 MW or directly connected to 110 kV), connection is made to Elering's transmission network.
+- Pre-connection feasibility study (liitumiseelne uuring) must be requested from Elering before finalizing site selection.
+- Connection agreement (liitumisleping) is concluded with Elering following technical review.
+- Connection fees are regulated and published in Elering's connection price list.
+
+Grid connection to distribution network (Elektrilevi):
+- For smaller production facilities (typically < 10 MW or connecting to 20 kV or lower), connection is made to Elektrilevi.
+- Same right to connection applies; Elektrilevi must provide connection within regulated timelines.
+
+ETS §83 — Technical Requirements:
+All connecting facilities must meet the technical requirements specified in the network operator's Technical Connection Conditions (Tehniline tingimused), which are based on EU network codes (Commission Regulations 2016/631 RfG, 2016/1447 HVDC, 2016/1388 DCC).
+
+=== PART 5: MARKET OPERATIONS ===
+
+ETS §§91–120 — Electricity Trading:
+Estonia is part of the Nord Pool electricity exchange. Market participants must be registered with Elering as balance responsible parties. Elering operates the metering and settlement system.
+
+ETS §§121–140 — Obligations and Monitoring:
+Elering and Konkurentsiamet conduct compliance monitoring. Elering publishes:
+- 10-year network development plan
+- Annual adequacy report
+- Grid connection queue and capacity allocation
+
+=== PART 6: ENFORCEMENT AND PENALTIES ===
+
+ETS §§141–160 — Administrative supervision and penalties:
+Konkurentsiamet supervises compliance. Administrative fines for violations of licensing requirements up to €32,000 per violation (ETS §150).
+
+=== RELEVANCE TO PROJECT TYPES ===
+
+Onshore wind (tuulivoima_maa / maismaa tuulepark):
+- ETS §14: electricity production license required for capacity > 1 MW
+- ETS §§73-83: grid connection agreement with Elering or Elektrilevi
+- National target 1,200 MW by 2030 supports new applications
+- Wind priority development areas (tuuleenergia arendusalad) streamline planning
+
+Offshore wind (tuulivoima_meri / meretuulepark):
+- ETS §14: electricity production license required
+- Combined permit (ühisluba) replaces former 3-step process
+- EU state aid scheme €2.6 billion (approved 2024) provides economic support
+- Connection to Elering transmission network
+
+Solar PV (aurinkovoima / päikeseenergiajaam):
+- Ground-mounted utility-scale: ETS §14 license if > 1 MW
+- Rooftop < 15 kW household: simplified registration (teatis) only
+- Commercial rooftop < 50 kW: simplified registration (teatis) only
+- Grid connection to Elektrilevi distribution network typical
+
+BESS (battery storage / akuenergiasalvestus):
+- General ETS framework applies
+- No dedicated BESS regulation — use electricity market framework
+- License if > 1 MW output capacity
+- Note: ETS does not yet address storage-specific revenue streams or capacity mechanisms
+
+SMR (Small Modular Reactor / väike moodulreaktor):
+- ETS §14 applies for generation license
+- Nuclear-specific permits governed by separate legislation (Kiirgusseadus / Radiation Act)
+- No dedicated nuclear power plant licensing law as of 2024 — regWarning applies
