@@ -1,0 +1,188 @@
+SMR (VÄIKE MOODULREAKTOR) — NUCLEAR REGULATORY FRAMEWORK ESTONIA — REGULATORY WARNING
+Source: Kiirgusseadus (Radiation Act) RT I, 09.04.2019, 1;
+        Draft nuclear power framework (seisuga 2024 — as of 2024, in development);
+        IAEA Nuclear Security and Safety Review of Estonia (2022);
+        Terviseamet (Health Board — radiation safety authority)
+Authority: Terviseamet (Health Board), Majandus- ja Kommunikatsiooniministeerium, IAEA
+Language: Estonian (summary in English for RAG indexing)
+
+!!! REGULATORY WARNING — REGWARNING !!!
+ESTONIA DOES NOT HAVE A DEDICATED NUCLEAR POWER PLANT LICENSING LAW AS OF 2024.
+The Kiirgusseadus (Radiation Act) governs radiation sources and radioactive materials generally
+but does NOT contain provisions for licensing a nuclear power reactor or SMR.
+A dedicated nuclear energy law (Tuumaenergia seadus) is under development but was not yet
+adopted as of the knowledge cutoff. Any SMR project in Estonia faces fundamental legal gaps.
+Projects MUST NOT proceed past feasibility stage without confirming the legislative status.
+All regulatory requirements below are indicative based on the draft framework and IAEA guidance.
+
+=== PART 1: CURRENT LEGAL STATUS ===
+
+Existing radiation safety legislation:
+1. Kiirgusseadus (Radiation Act, RT I, 09.04.2019, 1): Governs use of ionizing radiation sources, radioactive materials, radiation protection, and nuclear material safeguards. Does NOT cover power reactor licensing.
+2. Tuumamaterjalide ja radioaktiivsete jäätmete käitlemise seadus (Act on Handling Nuclear Materials and Radioactive Waste): Covers radioactive waste management and transport.
+3. No Atomic Energy Act equivalent: Estonia has no analogue to Finland's Ydinenergia laki (990/1987), Sweden's Kärntekniklag (1984:3), or Germany's Atomgesetz.
+
+Draft nuclear energy law (Tuumaenergia seadus):
+- Under development by Majandus- ja Kommunikatsiooniministeerium (MKM)
+- Draft concept paper circulated 2023; full draft law not yet published as of 2024
+- Key elements expected in draft law:
+  - Site siting license (asukoha luba)
+  - Construction permit (ehitusluba — nuclear-specific provisions)
+  - Operating license (tegevusluba)
+  - Decommissioning permit
+  - Radioactive waste fund obligation
+  - Public interest determination (riigikogu otsus / parliamentary decision)
+- Timeline: draft law expected for Riigikogu (Parliament) consideration 2025–2026
+- Likelihood of adoption: uncertain; nuclear energy is politically sensitive in Estonia
+
+Historical context:
+- Soviet-era Latvia had a nuclear power plant (Ignalina NPP was in Lithuania, not Estonia)
+- No nuclear power plants have ever operated in Estonia
+- Estonia imports nuclear electricity from Finland and Sweden via Estlink interconnectors
+- Public opinion on nuclear energy: mixed; Baltic security concerns add complexity
+- Baltic states' energy security discussion (post-2022 Russian invasion of Ukraine) has revived nuclear interest
+
+=== PART 2: CURRENT APPLICABLE FRAMEWORK (GAP ANALYSIS) ===
+
+In the absence of a nuclear energy law, an SMR project would theoretically need to navigate:
+
+A. Radiation Safety (Kiirgusseadus):
+- Terviseamet (Health Board) issues radiation practice licenses
+- Existing law covers: X-ray equipment, medical isotopes, industrial radiation sources, radioactive material transport
+- NOT designed for: nuclear reactor fuel, reactor operation, nuclear safety systems
+- Gap: No license category for nuclear power generation exists
+
+B. Environmental Permitting (KMH-KSH seadus):
+- Environmental Impact Assessment (KMH) would be mandatory for any nuclear facility
+- KMH-KSH seadus §6: nuclear facilities are explicitly listed as requiring mandatory full EIA
+- Competent authority: Keskkonnaamet; for nationally significant projects, Riigikogu vote may be required
+- IAEA Environmental Impact Assessment guidance would apply
+
+C. Building Permitting (Ehitusseadustik):
+- Building permit (ehitusluba) required for construction of any building/structure
+- No nuclear-specific provisions in Ehitusseadustik
+- Gap: Nuclear safety-grade construction standards not referenced in Estonian building code
+
+D. Energy Market (Elektrituruseadus):
+- Electricity production license (ETS §14) required as for any generator
+- No nuclear-specific provisions in ETS
+
+E. Spatial Planning (Planeerimisseadus):
+- Riigi eriplaneering (national spatial plan) would be required for nuclear facility
+- Riigikogu (Parliament) vote on national significance classification likely needed
+- Timeline for riigi eriplaneering: typically 5–8 years
+
+F. International Obligations:
+- IAEA membership: Estonia is a member of IAEA and party to NPT (Non-Proliferation Treaty)
+- Joint Convention on Safety of Spent Fuel Management: Estonia is a signatory
+- Convention on Nuclear Safety: Estonia is NOT currently a party (no nuclear power plants)
+  — Accession would be required before nuclear power plant operation
+- Nuclear and Radiation Safety Convention: being reviewed
+- Euratom Treaty: Estonia is an EU member state and subject to Euratom Treaty
+  (Chapter 4: supply of ores and nuclear materials; Chapter 7: safeguards)
+- IAEA Safeguards Agreement: Estonia has Comprehensive Safeguards Agreement with IAEA (INFCIRC/695)
+- Additional Protocol: Estonia has concluded IAEA Additional Protocol
+
+=== PART 3: DRAFT REGULATORY PATHWAY (INDICATIVE) ===
+
+Based on IAEA guidance (IAEA-TECDOC-1681: Licensing of advanced reactors; IAEA Safety Guide SSG-12)
+and draft Estonian nuclear energy law concepts, the anticipated regulatory pathway would be:
+
+Step 1 — National Policy Decision (Riigikogu):
+- Riigikogu (Parliament) adopts a policy decision (otsus) authorizing nuclear power development
+- This is the "principle decision" analogous to Finland's periaatepäätös
+- Timeline: political process; potentially 2–4 years
+
+Step 2 — Site Siting License (Asukoha luba):
+- Granted by Terviseamet or new nuclear regulatory authority (yet to be established)
+- Requirements: site safety analysis, geological survey, seismic hazard assessment, population density, coolant water availability
+- EIA must be completed (Keskkonnaamet)
+- Spatial plan adopted (riigi eriplaneering)
+- Timeline: 3–5 years from decision to begin
+
+Step 3 — Construction Permit (Ehitusluba / Tuumaluba):
+- Issued by nuclear regulatory authority (Terviseamet or new body)
+- Requirements: detailed design safety review, fuel supply contracts, waste management plan, financial security
+- Compliance with IAEA safety standards (SSR-2/1 Rev.1 mandatory)
+- Timeline: 2–4 years from siting license
+
+Step 4 — Operating License (Tegevusluba):
+- Issued after construction completion
+- Pre-operational testing required (fuel load, low-power physics tests, power ascension tests)
+- Timeline: 1–2 years
+
+Step 5 — Decommissioning Plan:
+- Required at time of operating license application
+- Financial security for decommissioning must be demonstrated
+- Radioactive waste management plan approved
+
+=== PART 4: IAEA SAFETY STANDARDS APPLICABLE ===
+
+Even without Estonian nuclear law, IAEA safety standards provide the international benchmark:
+
+SSR-2/1 Rev.1 — Safety of Nuclear Power Plants: Design
+- Fundamental safety design requirements for all nuclear power plants including SMRs
+- Defence-in-depth principle, safety systems, redundancy and diversity requirements
+- Chapter 6: Multiple barrier system (fuel matrix, fuel cladding, reactor coolant boundary, containment)
+
+SSG-52 — Design of Reactor Coolant Systems and Associated Systems
+- Coolant system design for light water reactors (most SMR designs)
+- Passive safety systems (natural circulation, passive core cooling)
+
+NS-R-5 Rev.1 — Safety of Research Reactors
+- Applicable to smaller SMR designs similar in scale to research reactors
+
+IAEA Safety Guide SSG-12:
+- Site survey and evaluation for nuclear installations
+- Geological, seismic, meteorological, and hydrological siting criteria
+
+IAEA Nuclear Security Series No. 13:
+- Nuclear security of nuclear facilities
+- Physical protection requirements (Canberra Document, INFCIRC/225/Rev.6)
+
+=== PART 5: TERVISEAMET (HEALTH BOARD) ===
+
+Current nuclear-related functions of Terviseamet:
+- Issues radiation practice licenses (kiirgustegevusluba) for existing radiation uses
+- Supervises radiation safety in medical, industrial, and research applications
+- Maintains national registry of radiation sources
+- Coordinates with IAEA on safeguards reporting
+- Does NOT currently have capacity to regulate nuclear power plant construction or operation
+- Building capacity for nuclear oversight is being discussed in government but not yet funded
+
+Contact:
+- Terviseamet: terviseamet.ee
+- Ionizing radiation safety: kiirgus@terviseamet.ee
+
+=== PART 6: SUMMARY OF REGULATORY GAPS (REGWARNING) ===
+
+The following gaps must be addressed before any SMR project can proceed in Estonia:
+
+Gap 1: No nuclear power law — CRITICAL
+Status: Draft under development; adoption timeline uncertain (est. 2025–2026 earliest)
+Impact: No legal basis for any nuclear construction or operation license
+
+Gap 2: No nuclear regulatory authority — CRITICAL
+Status: Terviseamet has limited nuclear capacity; no dedicated nuclear safety authority
+Impact: No authority exists to review nuclear safety analyses or issue construction permit
+
+Gap 3: No convention membership for nuclear power — HIGH
+Status: Estonia not party to Convention on Nuclear Safety; accession needed
+Impact: International obligations not met; EU peer review not available
+
+Gap 4: No nuclear waste facility — HIGH
+Status: No disposal facility for high-level radioactive waste in Estonia
+Impact: Waste management strategy must be developed (potentially Baltic joint facility)
+
+Gap 5: Public acceptance — MEDIUM
+Status: Mixed public opinion; no national debate yet
+Impact: Social license to operate uncertain
+
+Gap 6: Grid size — MEDIUM
+Status: Estonia's total installed electricity capacity ~1,700 MW; single SMR unit (300 MW) would be ~18% of total capacity
+Impact: Grid stability analysis required; significant grid investment needed
+
+REGWARNING CONCLUSION: Estonia is at the very early stage of nuclear energy consideration.
+Any SMR project analysis must clearly note that the regulatory framework is fundamentally incomplete
+and that the primary objective in the near term is legislative development, not construction.
+All cost and timeline estimates are highly speculative pending nuclear law adoption.

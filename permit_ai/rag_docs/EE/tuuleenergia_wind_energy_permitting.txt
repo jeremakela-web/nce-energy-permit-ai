@@ -1,0 +1,211 @@
+TUULEENERGIA ARENDAMINE EESTIS — WIND ENERGY DEVELOPMENT AND PERMITTING IN ESTONIA
+Source: Majandus- ja Kommunikatsiooniministeerium (MKM), Keskkonnaamet,
+        Planeerimisseadus reforms 2023, Estonia RRP Wind Energy Component,
+        Kaitseministeerium (Ministry of Defence) wind turbine clearance procedures
+Authority: Multiple (MKM, Keskkonnaamet, Kohaliku omavalitsuse, Elering, Kaitseministeerium)
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: ESTONIA WIND ENERGY SECTOR OVERVIEW ===
+
+Estonia has one of the highest onshore wind energy capacity factors in Europe due to coastal and open landscape topography. The Baltic Sea coast and islands (Saaremaa, Hiiumaa) have average wind speeds of 7–9 m/s at hub height (100 m), comparable to Denmark's North Sea coast.
+
+Current situation (2024):
+- Installed onshore wind capacity: approximately 350 MW (as of end 2023)
+- Target by 2030: approximately 1,200 MW (onshore + some nearshore)
+- Growth requirement: approximately 850 MW new capacity needed by 2030
+
+Recent legislative reforms (2022–2024):
+Under Estonia's Recovery and Resilience Plan (RRP), approved by the European Commission, Estonia committed to streamlining wind energy permitting. Key reforms include:
+
+1. Wind Priority Development Areas (Tuuleenergia arendusalad):
+- County plans (maakonnaplaneering) amended to designate specific areas as priority wind development zones
+- Approximately 1,000 MW of technical potential identified in priority areas (predominantly Pärnumaa, Läänemaa, Saaremaa, Hiiumaa)
+- Detailed plan (detailplaneering) in priority areas may use streamlined track
+
+2. Concurrent EIA and Planning:
+- Previously, EIA could only start after detailed plan was adopted
+- Reform allows EIA process and detailed plan process to run concurrently
+- Reduces total permitting timeline by approximately 12–18 months
+
+3. Military Radar Modernization:
+- Kaitseministeerium committed to radar technology upgrades (2023–2026) that reduce exclusion zones
+- Some previously blocked areas now available for wind development
+- Remaining exclusion zones clearly mapped and published
+
+4. Grid Connection Queue Reform:
+- Elering introduced capacity-based grid connection queue management
+- Prevents speculative reservations from blocking legitimate projects
+- Projects must demonstrate project maturity (permits, financing) to hold queue position
+
+=== PART 2: ONSHORE WIND PERMITTING PROCESS ===
+
+The standard permitting process for an onshore wind farm in Estonia:
+
+Phase 1 — Site Selection and Pre-Studies (12–18 months):
+1a. Wind resource measurement: minimum 1 year of meteorological mast data; LiDAR surveys accepted
+1b. Noise modeling: calculate noise propagation to nearest dwellings; Estonian noise standard limit: 45 dB(A) daytime, 40 dB(A) nighttime at nearest residential property
+1c. Shadow flicker modeling: maximum 30 hours/year at any dwelling in line with MKM guidance
+1d. Aviation and radar impact study: consultation with Lennuamet (Civil Aviation Authority) and Kaitseministeerium
+1e. Nature baseline survey: birds (breeding + migration), bats, flora and fauna; minimum 1 year baseline
+1f. Visual impact study: viewshed analysis from 15 km radius; photomontages required
+1g. Pre-connection study: request to Elering or Elektrilevi for grid connection assessment
+
+Phase 2 — Spatial Planning (18–30 months or 12–18 months in priority development areas):
+2a. Check consistency with county plan: is the site in a designated wind development area?
+   - If yes (priority area): streamlined detailplaneering process applies
+   - If no: county plan amendment may be needed (adds 12–24 months)
+2b. Detailplaneering (detailed plan):
+   - Application to municipality (vallavanem / linnapea)
+   - KSH (Strategic Environmental Assessment) may be required concurrently
+   - Public display periods: minimum 2 weeks per round
+   - Municipal council vote required to adopt the detailed plan
+   - Neighbouring municipalities' consultation if cross-boundary impacts
+2c. County governor (Maavalitsuse / Maavanem) approval: formal approval of detailed plan by county authority
+
+Phase 3 — Environmental Impact Assessment (12–18 months, can run concurrently with Phase 2):
+3a. KMH programm (EIA scoping):
+   - Submitted to Keskkonnaamet
+   - Defines methodology, study area, assessment criteria
+   - Public consultation minimum 2 weeks
+   - Keskkonnaamet approves scoping (typically 30-day statutory response time)
+3b. KMH aruanne (EIA report) preparation:
+   - Based on approved scoping
+   - Expert team: environmental consultant, ornithologist, bat specialist, acoustics specialist, visual impact expert
+   - Minimum content: description of alternatives, impacts on each receptor, mitigation measures, monitoring plan
+3c. EIA expert review (ekspertiis): independent expert (licensed by Keskkonnaamet) reviews EIA report
+3d. Public hearing (avalik arutelu): public presentation, comment period
+3e. Keskkonnaamet EIA decision: approval (with conditions), refusal, or request for additional studies
+
+Phase 4 — Building Permit (3–6 months):
+4a. Application to municipality for building permit (ehitusluba)
+4b. Required documents:
+   - Architectural and engineering plans signed by licensed architects and engineers
+   - Geotechnical investigation report (for foundations)
+   - Structural calculations (turbine towers, foundations)
+   - Electrical installation project (connection cables, substation)
+   - Fire safety plan
+   - Construction method statement
+   - Adopted detailed plan reference
+   - EIA approval reference
+4c. Municipal building inspector review: typically 30 days; may extend to 60 days for complex projects
+4d. Building permit (ehitusluba) issued by municipality
+
+Phase 5 — Electricity Production License (1–2 months):
+5a. Application to Konkurentsiamet for electricity production license (elektrienergia tootmise luba)
+5b. Required documents:
+   - Building permit
+   - Grid connection agreement with Elering (or at least pre-agreement)
+   - Technical description of facility
+   - Environmental permits obtained
+5c. Konkurentsiamet decision: typically within 30 days
+
+Phase 6 — Grid Connection Agreement (3–9 months, parallel with Phases 4–5):
+6a. Formal application to Elering for grid connection agreement
+6b. Based on pre-connection study findings
+6c. Technical connection conditions (liitumistingimused) issued by Elering
+6d. Negotiation and signing of connection agreement (liitumisleping)
+6e. Design and construction of connection infrastructure
+
+Phase 7 — Construction:
+7a. Construction notification (omanikujärelevalve appointed and registered)
+7b. Works begin: foundations, tower erection, turbine installation
+7c. Elering inspections at key milestones
+7d. Cable and substation works
+
+Phase 8 — Use Permit (1–2 months):
+8a. Application to municipality for use permit (kasutusluba)
+8b. Municipality inspects compliance with building permit conditions
+8c. Elering commissioning tests
+8d. Use permit issued
+
+Phase 9 — Commercial Operation:
+9a. Connection to Elering system confirmed
+9b. Balance agreement with balance responsible party
+9c. SCADA connection to Elering
+9d. Renewable energy support application submitted (if applicable)
+
+=== PART 3: KEY TECHNICAL STANDARDS ===
+
+Noise:
+- Estonian national noise standard: Sotsiaalministri määrus nr 42 (Ministry of Social Affairs Regulation no. 42)
+- Limits: 45 dB(A) daytime (7:00–23:00), 40 dB(A) nighttime (23:00–7:00) at nearest dwelling (facade level)
+- Noise model: typically ISO 9613-2 terrain propagation model
+- Low-frequency noise: no specific Estonian standard; ETSU-R-97 guidance sometimes applied
+
+Shadow Flicker:
+- MKM guidance: maximum 30 hours/year (annualized with shadow flicker model) at nearest dwelling
+- Automated blade pitch/yaw stopping system required if limit exceeded
+
+Wildlife:
+- Birds: significant migratory route along Estonian coast requires careful siting
+- Baltic Flyway: millions of birds migrate through Estonia annually
+- Bat surveys: 1-year pre-construction survey recommended
+- Protected species: Natura 2000 assessment if within or near Natura site
+
+Military radar:
+- Kaitseministeerium exclusion zones must be checked at site selection stage
+- MUST obtain Kaitseministeerium clearance letter before final planning decisions
+- New Kaitseministeerium radar system (being upgraded 2023–2026) reduces exclusion zones
+- Wind turbines may be conditionally approved if radar mitigation measures (low-visibility paint, stealth blades) are implemented
+
+=== PART 4: FINANCIAL FRAMEWORK AND RENEWABLE SUPPORT ===
+
+Feed-in premium support:
+- Administered by Elering under Elektrituruseadus §§56-72
+- Technology-neutral competitive auctions (RES auction)
+- Strike price based on competitive bids; government pays premium above market price
+- Support duration: 12 years (onshore wind in recent auction rounds)
+- Eligibility: wind farms > 50 kW
+
+Competitive auction process:
+- Organized by MKM (Majandus- ja Kommunikatsiooniministeerium)
+- Auction frequency: announced in annual energy regulation plan
+- Pre-qualification: building permit obtained or ehitusloa taotlus submitted; grid connection agreement
+- Capacity ceiling per auction: specified in auction rules
+
+Project finance requirements for wind:
+- Lenders typically require: completed EIA, adopted detailed plan, building permit (or imminent), Elering connection agreement, long-term PPA or RES support contract
+- Wind resource P90 exceedance estimate required
+- Insurance: construction all-risk, operational liability, business interruption
+
+=== PART 5: WIND PRIORITY DEVELOPMENT AREAS ===
+
+Designated areas (Tuuleenergia arendusalad) identified in county plans (2023–2024 amendments):
+- Pärnumaa (southwestern Estonia): coastal areas with high wind resource
+- Läänemaa: west coast and islands
+- Saaremaa: entire island designated as priority area for wind (existing large wind park)
+- Hiiumaa: island, excellent wind resource
+- Raplamaa, Järvamaa: inland areas with moderate wind resource and good grid access
+
+Technical potential in designated areas: approximately 1,000 MW total
+Grid connection: predominantly 110 kV connections to Elering; some areas require new 110 kV line construction
+
+Benefits of building in priority areas:
+- Streamlined detailed plan process (shorter municipal procedure)
+- Concurrent EIA and planning allowed
+- Pre-assessed military radar impacts (Kaitseministeerium coordination already done at county level)
+- Elering pre-planning for grid connection capacity (grid development coordinated in advance)
+
+=== PART 6: SUMMARY — APPLICABLE LAWS ===
+
+Primary laws:
+- Elektrituruseadus (ETS): electricity production license
+- Planeerimisseadus (PlanS): spatial planning, detailed plan
+- Keskkonnaseadustiku üldosa seadus (KeÜS): environmental framework
+- KMH-KSH seadus: EIA obligation and process
+- Ehitusseadustik (EhS): building permit, use permit
+- Maapõueseadus (Earth's Crust Act): if subsoil resource extraction involved (foundations)
+
+Relevant EU law (directly applicable):
+- EU Renewable Energy Directive (RED II / 2018/2001/EU, amended by RED III / 2023/2413)
+  — requires Member States to set up dedicated onshore RES permit areas with accelerated 2-year permitting
+  — Estonia's priority development areas are designated as "accelerated permit areas" under RED III
+- Commission Regulation (EU) 2016/631 (RfG): grid connection technical requirements
+
+Key authorities:
+- Kohaliku omavalitsuse volikogu (Municipal council): adopts detailed plan
+- Keskkonnaamet (Environmental Board): EIA decision
+- Kaitseministeerium (Ministry of Defence): military radar clearance
+- Konkurentsiamet (Competition Authority): electricity production license
+- Elering AS: grid connection agreement
+- Lennuamet (Civil Aviation Administration): aviation safety (obstacle lights)

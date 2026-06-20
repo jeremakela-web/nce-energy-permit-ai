@@ -1,0 +1,214 @@
+KESKKONNASEADUSTIKU ÜLDOSA SEADUS (KeÜS) — GENERAL PART OF THE ENVIRONMENTAL CODE ACT
+AND RELATED ENVIRONMENTAL ASSESSMENT LEGISLATION
+Source: Riigiteataja RT I, 28.02.2011, 1 (KeÜS); RT I, 05.12.2011, 9 (KSH Act);
+        RT I, 04.01.2013, 10 (KMH — EIA Act); consolidated versions with 2024 amendments
+Authority: Riigikogu (Parliament of Estonia) / Keskkonnaministeerium (Ministry of the Environment)
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: KESKKONNASEADUSTIKU ÜLDOSA SEADUS (KeÜS) — GENERAL FRAMEWORK ===
+
+The General Part of the Environmental Code Act (KeÜS) establishes the foundational principles for all environmental legislation in Estonia. It sets out:
+
+1. The precautionary principle (ettevaatusprintsiip): when there is a risk of significant environmental harm, protective measures must be taken even in the absence of complete scientific certainty.
+2. The polluter pays principle (saastaja maksab): the entity causing environmental damage bears the cost of remediation.
+3. The integration principle: environmental requirements must be integrated into all other policy areas, including energy and infrastructure development.
+4. Access to environmental information and public participation in environmental decision-making.
+5. Environmental liability and the right of individuals to challenge environmental decisions.
+
+KeÜS §10 — Environmental Impact: Any activity that may have a significant effect on the environment requires prior assessment and, where necessary, an environmental permit (keskkonnaluba).
+
+KeÜS §§ 35-60 — Environmental Permit System:
+The integrated environmental permit (kompleksluba) covers:
+- Air quality (õhusaasteluba)
+- Water use (veekasutusluba)
+- Waste management (jäätmeluba)
+- Greenhouse gas emissions (kasvuhoonegaaside heiteluba)
+
+For energy projects that do not require a complex permit, individual environmental permits for specific impacts (noise, water abstraction, etc.) may still be required.
+
+=== PART 2: KESKKONNAMÕJU HINDAMINE JA KESKKONNAJUHTIMISSÜSTEEM (KMH-KSH ACT) ===
+Environmental Impact Assessment and Environmental Management System Act
+Source: Riigiteataja RT I, 04.01.2013, 10 (KMH-KSH seadus)
+
+This Act implements EU EIA Directive 2011/92/EU (as amended by 2014/52/EU) and SEA Directive 2001/42/EC into Estonian law.
+
+§ 1 — Scope: The Act applies to all planned activities (tegevused) that may have a significant effect on the environment. Energy generation facilities are explicitly listed as requiring EIA screening.
+
+§ 6 — EIA Obligation (kohustuslik KMH):
+The following energy projects ALWAYS require a mandatory EIA:
+- Wind farms with total installed capacity ≥ 30 MW (or ≥ 10 turbines)
+- Ground-mounted solar PV farms ≥ 50 MW
+- Hydroelectric power plants modifying water flow of significant watercourses
+- Nuclear facilities of any size
+- Large industrial facilities (> 75 MW thermal input)
+
+§ 7 — EIA Screening (KMH eelhindamine / screening):
+For projects below the mandatory thresholds, the competent authority (Keskkonnaamet — Environmental Board) conducts a screening to determine whether EIA is required based on:
+- Project scale, location, and environmental sensitivity
+- Cumulative effects with other projects
+- Transboundary effects (Baltic Sea, neighboring states)
+
+Wind farms 5–30 MW: screening required; EIA frequently triggered.
+Solar PV 1–50 MW: screening required; EIA triggered if located in sensitive areas.
+BESS: screening may be required depending on size and location.
+
+§§ 8-25 — EIA Process:
+When EIA is mandatory or triggered by screening:
+1. KMH programm (scoping): defines the scope and methodology of the assessment
+2. Notification to public: minimum 2-week public consultation
+3. KMH aruanne (EIA report): comprehensive assessment document
+4. Expert review (ekspertiis): independent technical review of EIA report
+5. Public hearing (avalik arutelu): public presentation of results
+6. Competent authority decision (otsus): approval, conditional approval, or rejection of the project based on EIA findings
+7. EIA decision is binding on all subsequent permit applications
+
+The Keskkonnaamet (Environmental Board) is the competent EIA authority for most energy projects. For some cross-boundary or nationally significant projects, the Keskkonnaministeerium (Ministry of Environment) acts as competent authority.
+
+§ 26-35 — Strategic Environmental Assessment (KSH — Keskkonnamõju strateegiline hindamine):
+SEA applies to plans and programs (e.g., spatial plans, energy sector plans). Required for:
+- Comprehensive plans (üldplaneering) that include energy development areas
+- Detailed plans (detailplaneering) for large energy projects
+- National spatial plans (riigi eriplaneering) for nationally significant infrastructure
+
+=== PART 3: PLANEERIMISSEADUS (PlanS) — PLANNING ACT ===
+Source: Riigiteataja RT I, 26.02.2015, 3 (Planning Act, consolidated with 2024 amendments)
+
+The Planning Act (Planeerimisseadus) establishes the spatial planning hierarchy in Estonia:
+
+§ 3 — National Plan (Üleriigiline planeering): "Eesti 2030+" — establishes the national spatial framework including energy infrastructure.
+
+§ 4 — County Plan (Maakonnaplaneering): County-level spatial plan designating land use categories including areas designated for energy production.
+
+§ 5 — Comprehensive Plan (Üldplaneering): Municipal-level spatial plan. Energy facilities may require designation or deviation from the comprehensive plan.
+
+§ 6 — Detailed Plan (Detailplaneering): Required for:
+- All wind turbines regardless of size
+- Solar PV farms on land zoned for other purposes
+- Any construction that significantly changes land use
+
+§ 9 — National Significant Infrastructure (Riigi eriplaneering):
+For nationally significant infrastructure projects (including large offshore wind, nuclear facilities, major transmission lines), the planning and permitting process is conducted at the national level by the Rahandusministeerium (Ministry of Finance) instead of the municipality.
+
+§§ 124-130 — Wind Energy-Specific Planning (recent reform 2023):
+Under Estonia's Recovery and Resilience Plan (RRP), the Planeerimisseadus was amended to:
+- Designate "wind priority development areas" (tuuleenergia arendusalad) in county plans
+- Streamline the detailed plan requirement for wind farms in designated areas
+- Reduce EIA procedural timelines for wind farms in priority areas
+- Allow county governments to conduct EIA and planning processes concurrently
+
+=== PART 4: EHITUSSEADUSTIK (EhS) — BUILDING CODE ===
+Source: Riigiteataja RT I, 23.03.2015, 1 (Building Code Act, consolidated with 2024 amendments)
+
+The Estonian Building Code (Ehitusseadustik, EhS) governs construction permits and building supervision.
+
+§ 19 — Building permit (ehitusluba):
+Required for:
+- All new buildings and structures
+- Significant modifications to existing structures
+- Wind turbines (independent of size — always require ehitusluba)
+- Ground-mounted solar PV installations (if permanent foundation required)
+- Substations and grid connection infrastructure
+- Data centers and industrial buildings
+
+§ 26 — Simplified notification (ehitusteatis):
+For smaller constructions that do not require a full building permit:
+- Small rooftop solar PV installations on existing buildings typically require only ehitusteatis (notification), not a full building permit
+- Minor modifications to existing structures
+
+§§ 27-45 — Building Permit Procedure:
+Building permits are issued by the local municipality's building oversight authority (kohaliku omavalitsuse ehitusnjärelevalve). For nationally significant projects (riigi eriplaneering), the building permit may be issued by a national authority.
+
+Process:
+1. Pre-application consultation with municipality (optional but recommended)
+2. Submission of building permit application (ehitusloa taotlus)
+3. Technical review by municipal building inspector
+4. Consultation with adjacent landowners and affected parties
+5. Building permit (ehitusluba) issued typically within 30 days for standard projects; up to 60 days for complex projects
+
+For wind farms, building permits are required for each turbine structure and associated infrastructure (access roads, cable routes, substations).
+
+§§ 46-60 — Construction Supervision:
+During construction, the building owner must appoint a qualified technical supervisor (omanikujärelevalve) who oversees compliance with the approved building permit conditions.
+
+§§ 61-75 — Use Permit (kasutusluba):
+Before a new building or structure may be used, a use permit (kasutusluba) must be obtained from the same authority that issued the building permit. Required for all energy production facilities.
+
+=== PART 5: INTEGRATED PROCESS FOR ENERGY PROJECTS ===
+
+Standard permitting sequence for onshore wind, solar PV, and BESS projects:
+1. Site selection and feasibility study
+2. Pre-connection feasibility study with Elering/Elektrilevi
+3. County plan designation (for new areas) or consistency check with existing county plan
+4. Detailed plan (detailplaneering) — municipal level
+5. EIA screening or full EIA (Keskkonnaamet)
+6. Building permit (ehitusluba) — municipality
+7. Electricity production license (elektrienergia tootmise luba) — Konkurentsiamet
+8. Grid connection agreement (liitumisleping) — Elering or Elektrilevi
+9. Construction phase
+10. Use permit (kasutusluba) — municipality
+11. Commercial operation
+
+For offshore wind: Combined permit (ühisluba) replaces steps 4, 5, and part of step 6 in a single integrated procedure (see offshore wind-specific guidance).
+
+=== PART 6: KEY AUTHORITIES ===
+
+Keskkonnaamet (Environmental Board): Primary EIA authority; issues complex environmental permits; nature protection oversight.
+
+Kohaliku omavalitsuse (Local Municipality / KOV): Issues building permits, use permits; adopts detailed plans; public participation in planning processes.
+
+Konkurentsiamet (Competition Authority): Issues electricity production licenses; regulates market access; supervises grid operators.
+
+Rahandusministeerium (Ministry of Finance): Oversees planning system; issues approvals for nationally significant infrastructure.
+
+Maaeluministeerium (Ministry of Rural Affairs): Agricultural land protection; land use conversion from agricultural land requires approval.
+
+Kaitseministeerium (Ministry of Defence): Military radar interference assessment mandatory for wind turbine projects — wind turbines must not interfere with military radar systems. Pre-consultation with Kaitseministeerium required.
+
+=== PART 7: TIMEFRAMES ===
+
+Typical permitting timelines (from site selection to construction permit):
+- Rooftop solar PV (residential, < 15 kW): 1–3 months
+- Ground-mounted solar PV (utility-scale): 18–36 months (including EIA if triggered)
+- Onshore wind farm: 24–48 months (including detailed planning and EIA)
+- BESS (utility-scale): 12–24 months
+- Offshore wind: 36–60 months (combined permit process now in force)
+- SMR: No established timeline — draft nuclear law; estimates 10+ years
+
+=== PART 8: RELEVANCE TO PROJECT TYPES ===
+
+Onshore wind (tuulivoima_maa):
+- Planeerimisseadus: detailplaneering required; county plan designation for priority areas
+- KMH-KSH seadus: mandatory EIA if ≥ 30 MW or ≥ 10 turbines; screening otherwise
+- Ehitusseadustik: building permit (ehitusluba) required for each turbine
+- Elektrituruseadus: electricity production license (Konkurentsiamet) + Elering grid connection
+- Military radar consultation: Kaitseministeerium pre-approval
+
+Ground-mounted solar PV (aurinkovoima):
+- Planeerimisseadus: detailplaneering typically required for zoning change
+- KMH-KSH seadus: EIA if ≥ 50 MW; screening for 1–50 MW
+- Ehitusseadustik: building permit (ehitusluba) for permanent structures
+- Elektrituruseadus: electricity production license if > 1 MW
+
+Small rooftop solar PV (< 15 kW, residential):
+- Simplified path: ehitusteatis (notification) only, no detailed plan needed
+- Elektrituruseadus: registration notification (teatis) to Konkurentsiamet
+- No EIA required
+
+BESS:
+- Planeerimisseadus: detailplaneering if new land use designation needed
+- KMH-KSH seadus: EIA screening if significant environmental impact possible
+- Ehitusseadustik: building permit
+- Elektrituruseadus: license if > 1 MW; general framework applies
+- No dedicated BESS regulation — general environmental code applies
+
+Offshore wind:
+- Planeerimisseadus: riigi eriplaneering (national plan) for offshore areas
+- Combined permit (ühisluba) under reformed offshore wind legislation
+- KMH-KSH seadus: mandatory EIA for all offshore wind
+- Maritime spatial plan compliance required
+
+Datakeskus, teollisuus, asuinrakennus, liikerakennus, maatalous:
+- Planeerimisseadus: detailplaneering if changing land use
+- Ehitusseadustik: building permit (ehitusluba) + use permit (kasutusluba)
+- KMH-KSH seadus: EIA screening; EIA triggered if large industrial or significant impact
+- KeÜS: environmental permit if discharges, emissions, or significant environmental impact

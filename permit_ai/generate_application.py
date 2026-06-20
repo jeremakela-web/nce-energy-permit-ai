@@ -1530,6 +1530,56 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Mark uncertain items: [Requires verification against Polish regulations].\n\n"
         ),
     },
+    "EE": {
+        "name": "Estonia / Eesti",
+        "authorities": [
+            "Keskkonnaamet (Environmental Board — EIA, environmental permits)",
+            "Kohaliku omavalitsuse (Municipality — building permit, detailed plan)",
+            "Konkurentsiamet (Competition Authority — electricity production license)",
+            "Elering AS (TSO — transmission grid connection)",
+            "Elektrilevi OÜ (DSO — distribution grid connection)",
+            "Kaitseministeerium (Ministry of Defence — wind radar clearance)",
+            "Terviseamet (Health Board — radiation, nuclear)",
+            "Transpordiamet (Transport Administration — aviation, maritime)",
+        ],
+        "key_laws": [
+            "Elektrituruseadus (ETS, RT I 2012) — electricity market, production license",
+            "Keskkonnaseadustiku üldosa seadus (KeÜS) — general environmental framework",
+            "KMH-KSH seadus (RT I 2013) — EIA (Keskkonnamõju hindamine)",
+            "Ehitusseadustik (EhS, RT I 2015) — building code, construction permit",
+            "Planeerimisseadus (PlanS, RT I 2015) — spatial planning, detailed plan",
+            "Energiamajanduse korralduse seadus (ESOS) — energy sector organisation",
+        ],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in ESTONIA (Eesti). "
+            "Apply Estonian regulatory framework:\n"
+            "Key authorities: Keskkonnaamet (Environmental Board — EIA / KMH decisions, environmental permits), "
+            "Kohaliku omavalitsuse volikogu (Municipality — building permit = ehitusluba, "
+            "use permit = kasutusluba, detailed plan = detailplaneering), "
+            "Konkurentsiamet (Competition Authority — electricity production license = "
+            "elektrienergia tootmise luba), "
+            "Elering AS (TSO, equivalent to Fingrid — transmission grid connection = liitumisleping), "
+            "Elektrilevi OÜ (DSO — distribution grid connection for smaller projects), "
+            "Kaitseministeerium (Ministry of Defence — mandatory military radar clearance for wind).\n"
+            "Key laws: Elektrituruseadus ETS (electricity market + production license), "
+            "KMH-KSH seadus (EIA = Keskkonnamõju hindamine / KMH), "
+            "Ehitusseadustik EhS (building permit = ehitusluba), "
+            "Planeerimisseadus PlanS (spatial plan = detailplaneering), "
+            "Keskkonnaseadustiku üldosa seadus KeÜS (environmental code general part), "
+            "Energiamajanduse korralduse seadus ESOS (energy sector organisation + NECP targets).\n"
+            "Key market facts: National wind target ~1,200 MW by 2030 (baseline ~310 MW 2020); "
+            "solar target ~415 MW by 2030 (baseline ~100 MW 2020); "
+            "offshore wind combined permit (ühisluba) replaces former 3-step process; "
+            "EU-approved offshore wind state aid €2.6 billion (2024); "
+            "small rooftop solar < 15 kW household / < 50 kW commercial: simplified path "
+            "(ehitusteatis + teatis to Konkurentsiamet, no full license). "
+            "BESS: no dedicated BESS regulation — general ETS framework applies. "
+            "SMR: no nuclear power law yet (draft Tuumaenergia seadus under development) — "
+            "regWarning status, fundamental legislative gap.\n"
+            "Replace Finnish law references (MRL, YSL, YVA-laki) with Estonian equivalents. "
+            "Mark uncertain items: [Requires verification against Estonian regulations].\n\n"
+        ),
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -2070,6 +2120,120 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB, § 1)"),
         ],
     },
+    # ── Eesti (Estonia) ──────────────────────────────────────────────────────────
+    "EE": {
+        # ── Tuulivoima (onshore wind) ─────────────────────────────────────────
+        "tuulivoima_maa": [
+            ("Detailplaneering",                   "Kohaliku omavalitsuse volikogu",              "Planeerimisseadus (PlanS, RT I 2015)"),
+            ("YVA-menettely (KMH)",                "Keskkonnaamet (Environmental Board)",         "KMH-KSH seadus (RT I, 04.01.2013, 10)"),
+            ("Kaitseministeerium radar clearance", "Kaitseministeerium (Ministry of Defence)",    "Kiirgusseadus / national security assessment"),
+            ("Rakentamislupa (ehitusluba)",         "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS, RT I 2015)"),
+            ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS (TSO)",                        "Elektrituruseadus (ETS) §§73-83; RfG 2016/631"),
+            ("Kasutusluba (use permit)",            "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS) §§61-75"),
+        ],
+        # ── Aurinkovoima — ground-mounted utility scale ───────────────────────
+        "aurinkovoima": [
+            ("Detailplaneering (tarvitt.)",         "Kohaliku omavalitsuse volikogu",             "Planeerimisseadus (PlanS, RT I 2015)"),
+            ("YVA-menettely (KMH) (tarvitt.)",      "Keskkonnaamet (Environmental Board)",        "KMH-KSH seadus (RT I, 04.01.2013, 10) §7"),
+            ("Rakentamislupa (ehitusluba)",          "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS, RT I 2015) §19"),
+            ("Elektrienergia tootmise luba",         "Konkurentsiamet (Competition Authority)",   "Elektrituruseadus (ETS, RT I 2012) §14"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elektrilevi OÜ / Elering AS",             "Elektrituruseadus (ETS) §§73-83; RfG 2016/631"),
+            ("Kasutusluba (use permit)",             "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS) §§61-75"),
+        ],
+        # ── Offshore wind ─────────────────────────────────────────────────────
+        "tuulivoima_meri": [
+            ("Ühisluba (combined offshore permit)", "Majandus- ja Kommunikatsiooniministeerium",  "Elektrituruseadus + Majandusvööndi seadus (offshore reform 2023)"),
+            ("YVA-menettely (KMH, integrated)",    "Keskkonnaamet (within ühisluba process)",     "KMH-KSH seadus (RT I, 04.01.2013, 10) §6"),
+            ("Kaitseministeerium radar clearance", "Kaitseministeerium (Ministry of Defence)",    "National security assessment (mandatory)"),
+            ("Navigation/aviation safety",         "Transpordiamet (Transport Administration)",   "Lennundusseadus / Meresõiduohutuse seadus"),
+            ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS (TSO)",                        "Elektrituruseadus (ETS) §§73-83; RfG 2016/631 / HVDC 2016/1447"),
+        ],
+        # ── Offshore wind alias ───────────────────────────────────────────────
+        "offshore_wind": [
+            ("Ühisluba (combined offshore permit)", "Majandus- ja Kommunikatsiooniministeerium",  "Elektrituruseadus + Majandusvööndi seadus (offshore reform 2023)"),
+            ("YVA-menettely (KMH, integrated)",    "Keskkonnaamet (within ühisluba process)",     "KMH-KSH seadus (RT I, 04.01.2013, 10) §6"),
+            ("Kaitseministeerium radar clearance", "Kaitseministeerium (Ministry of Defence)",    "National security assessment (mandatory)"),
+            ("Navigation/aviation safety",         "Transpordiamet (Transport Administration)",   "Lennundusseadus / Meresõiduohutuse seadus"),
+            ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS (TSO)",                        "Elektrituruseadus (ETS) §§73-83; RfG 2016/631 / HVDC 2016/1447"),
+        ],
+        # ── BESS ──────────────────────────────────────────────────────────────
+        "BESS": [
+            ("Rakentamislupa (ehitusluba)",         "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS, RT I 2015) §19"),
+            ("Paloturvallisuuslupa (Päästeamet)",  "Päästeamet (Estonian Rescue Board)",          "Tuleohutusseadus (Fire Safety Act)"),
+            ("Elektrienergia tootmise luba (tarvitt.)", "Konkurentsiamet (Competition Authority)", "Elektrituruseadus (ETS, RT I 2012) §14 (jos >1 MW)"),
+            ("YVA-menettely (KMH) (tarvitt.)",     "Keskkonnaamet",                               "KMH-KSH seadus §7 — ei erillistä BESS-lakia"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elektrilevi OÜ / Elering AS",             "Elektrituruseadus (ETS) §§73-83; RfG 2016/631 + DCC 2016/1388"),
+            ("Kasutusluba (use permit)",            "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS) §§61-75"),
+        ],
+        # ── SMR — regWarning: no nuclear law in Estonia ───────────────────────
+        "SMR": [
+            ("⚠️ Tuumaenergia seadus puuttuu — draft laki",  "Riigikogu (Parliament) — lakia ei hyväksytty",  "Kiirgusseadus (RT I 2019) — kattaa vain säteilykäytön; ei reaktorilupaa"),
+            ("Periaatepäätös (Riigikogu otsus, tarvittaessa)", "Riigikogu (Parliament of Estonia)", "Vaatii parlamentin päätöksen — ei vakiintunutta menettelyä"),
+            ("YVA-menettely (KMH)",                "Keskkonnaamet / Riigikogu",                   "KMH-KSH seadus (RT I, 04.01.2013, 10) §6 — pakollinen ydinlaitoksille"),
+            ("Riigi eriplaneering",                "Rahandusministeerium / Riigikogu",             "Planeerimisseadus (PlanS, RT I 2015) §9"),
+            ("Rakentamislupa (ehitusluba, tarvitt.)", "Kohaliku omavalitsuse / kansallinen viranomainen", "Ehitusseadustik (EhS) — ei ydinlaitoskohtaisia säännöksiä"),
+            ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS (TSO)",                        "Elektrituruseadus (ETS) §§73-83"),
+        ],
+        # ── SMR variant alias ─────────────────────────────────────────────────
+        "smr_ee": [
+            ("⚠️ Tuumaenergia seadus puuttuu — draft laki",  "Riigikogu (Parliament) — lakia ei hyväksytty",  "Kiirgusseadus (RT I 2019) — kattaa vain säteilykäytön; ei reaktorilupaa"),
+            ("Periaatepäätös (Riigikogu otsus, tarvittaessa)", "Riigikogu (Parliament of Estonia)", "Vaatii parlamentin päätöksen — ei vakiintunutta menettelyä"),
+            ("YVA-menettely (KMH)",                "Keskkonnaamet / Riigikogu",                   "KMH-KSH seadus (RT I, 04.01.2013, 10) §6 — pakollinen ydinlaitoksille"),
+            ("Riigi eriplaneering",                "Rahandusministeerium / Riigikogu",             "Planeerimisseadus (PlanS, RT I 2015) §9"),
+            ("Rakentamislupa (ehitusluba, tarvitt.)", "Kohaliku omavalitsuse / kansallinen viranomainen", "Ehitusseadustik (EhS) — ei ydinlaitoskohtaisia säännöksiä"),
+            ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS (TSO)",                        "Elektrituruseadus (ETS) §§73-83"),
+        ],
+        # ── Datakeskus ────────────────────────────────────────────────────────
+        "datakeskus": [
+            ("Detailplaneering (tarvitt.)",         "Kohaliku omavalitsuse volikogu",             "Planeerimisseadus (PlanS, RT I 2015)"),
+            ("Rakentamislupa (ehitusluba)",          "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS, RT I 2015) §19"),
+            ("YVA-menettely (KMH) (tarvitt.)",      "Keskkonnaamet",                              "KMH-KSH seadus §7"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elektrilevi OÜ / Elering AS",             "Elektrituruseadus (ETS) §§73-83; DCC 2016/1388"),
+            ("Kasutusluba (use permit)",             "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS) §§61-75"),
+        ],
+        # ── Teollisuus ────────────────────────────────────────────────────────
+        "teollisuus": [
+            ("Detailplaneering (tarvitt.)",         "Kohaliku omavalitsuse volikogu",             "Planeerimisseadus (PlanS, RT I 2015)"),
+            ("Keskkonnaluba (environmental permit)", "Keskkonnaamet (Environmental Board)",        "Keskkonnaseadustiku üldosa seadus (KeÜS, RT I 2011)"),
+            ("YVA-menettely (KMH) (tarvitt.)",      "Keskkonnaamet",                              "KMH-KSH seadus (RT I, 04.01.2013, 10)"),
+            ("Rakentamislupa (ehitusluba)",          "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS, RT I 2015) §19"),
+            ("Kasutusluba (use permit)",             "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS) §§61-75"),
+        ],
+        # ── Asuinrakennus ─────────────────────────────────────────────────────
+        "asuinrakennus": [
+            ("Detailplaneering (tarvitt.)",         "Kohaliku omavalitsuse volikogu",             "Planeerimisseadus (PlanS, RT I 2015)"),
+            ("Rakentamislupa (ehitusluba)",          "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS, RT I 2015) §19"),
+            ("Naapurikuuleminen",                   "Kohaliku omavalitsuse / hakija",             "Ehitusseadustik (EhS) §§27-45"),
+            ("Kasutusluba (use permit)",             "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS) §§61-75"),
+        ],
+        # ── Liikerakennus ─────────────────────────────────────────────────────
+        "liikerakennus": [
+            ("Detailplaneering (tarvitt.)",         "Kohaliku omavalitsuse volikogu",             "Planeerimisseadus (PlanS, RT I 2015)"),
+            ("Rakentamislupa (ehitusluba)",          "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS, RT I 2015) §19"),
+            ("Kasutusluba (use permit)",             "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS) §§61-75"),
+        ],
+        # ── Maatalous ─────────────────────────────────────────────────────────
+        "maatalous": [
+            ("Rakentamislupa tai ehitusteatis",     "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS, RT I 2015) §§19-26"),
+            ("Keskkonnaluba (tarvitt., suuret tilat)", "Keskkonnaamet",                           "Keskkonnaseadustiku üldosa seadus (KeÜS) — IPPC-kynnys"),
+            ("Põllumajandusamet maakasutusluba",   "Põllumajandusamet (Agricultural Board)",     "Maaparandusseadus — jos maankäyttö muuttuu"),
+        ],
+        # ── Hybridi (BESS + wind/solar) ───────────────────────────────────────
+        "hybridi": [
+            ("Detailplaneering",                   "Kohaliku omavalitsuse volikogu",              "Planeerimisseadus (PlanS, RT I 2015)"),
+            ("YVA-menettely (KMH)",                "Keskkonnaamet (Environmental Board)",         "KMH-KSH seadus (RT I, 04.01.2013, 10)"),
+            ("Rakentamislupa (ehitusluba)",         "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS, RT I 2015) §19"),
+            ("Paloturvallisuuslupa (BESS-osuus)",  "Päästeamet (Estonian Rescue Board)",          "Tuleohutusseadus (Fire Safety Act)"),
+            ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
+            ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS / Elektrilevi OÜ",             "Elektrituruseadus (ETS) §§73-83; RfG 2016/631"),
+            ("Kasutusluba (use permit)",            "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS) §§61-75"),
+        ],
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -2168,6 +2332,54 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Plan przyłączenia do sieci (PSE S.A.)",
             "Miejscowy plan zagospodarowania przestrzennego (MPZP)",
             "Odpis z KRS / CEIDG",
+        ],
+    },
+    "EE": {
+        "SMR": [
+            "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "⚠️ Kiirgusseaduse alusel kiirguspraktika litsents (Terviseamet) — ydinlaitokselle ei ole voimassa olevaa lupakategoriaa",
+            "KMH aruanne (Keskkonnamõju hindamise aruanne) — KMH-KSH seadus §6",
+            "Riigi eriplaneering (national spatial plan) — Planeerimisseadus §9",
+            "Hüdrogeoloogiline uuring (jahutusvee ressurss / cooling water resource)",
+            "Liitumisleping Elering AS-iga (grid connection agreement)",
+            "Äriregistri väljavõte (Company Registry extract)",
+            "Volikiri (if representative acts on behalf of applicant)",
+            "⚠️ Tuumaenergia seadus (nuclear law) ei ole vastu võetud — tarvitaan erillinen oikeudellinen selvitys",
+        ],
+        "smr_ee": [
+            "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "⚠️ Kiirgusseaduse alusel kiirguspraktika litsents (Terviseamet) — ydinlaitokselle ei ole voimassa olevaa lupakategoriaa",
+            "KMH aruanne (Keskkonnamõju hindamise aruanne) — KMH-KSH seadus §6",
+            "Riigi eriplaneering (national spatial plan) — Planeerimisseadus §9",
+            "Hüdrogeoloogiline uuring (jahutusvee ressurss / cooling water resource)",
+            "Liitumisleping Elering AS-iga (grid connection agreement)",
+            "Äriregistri väljavõte (Company Registry extract)",
+            "⚠️ Tuumaenergia seadus (nuclear law) ei ole vastu võetud — tarvitaan erillinen oikeudellinen selvitys",
+        ],
+        "tuulivoima_maa": [
+            "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Detailplaneering (kohaliku omavalitsuse poolt kinnitatud)",
+            "KMH aruanne (Keskkonnamõju hindamise aruanne) — KMH-KSH seadus",
+            "Kaitseministeeriumi radarikooskõlastus (Ministry of Defence radar clearance)",
+            "Mürauuringu aruanne (noise assessment — 45/40 dB(A) limit compliance)",
+            "Ornitoloogiline uuring (bird impact assessment — Baltic flyway)",
+            "Liitumisleping Elering AS-iga (grid connection agreement)",
+            "Ehitusprojekt (construction project, licensed architect/engineer)",
+            "Äriregistri väljavõte (Company Registry extract)",
+        ],
+        "tuulivoima_meri": [
+            "Ühisluba taotlus (combined offshore permit application — MKM)",
+            "KMH programm (scoping document, Keskkonnaamet approved)",
+            "KMH aruanne (EIA report — marine ecology, birds, visual, noise)",
+            "Kaitseministeeriumi radarikooskõlastus (radar clearance — mandatory)",
+            "Merealade planeering kooskõla (Maritime Spatial Plan zone confirmation)",
+            "Liitumisleping Elering AS-iga (grid connection agreement)",
+            "Kalandusuuringute mõjuhinnang (fisheries impact assessment)",
+            "Meresõiduohutuse hinnang (maritime navigation safety — Transpordiamet)",
+            "Äriregistri väljavõte (Company Registry extract)",
         ],
     },
 }
@@ -2269,6 +2481,15 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
         "takie jak nazwy miast, firm i skróty nazw organów (ELY, STUK, Luova, Fingrid, Traficom) "
         "są dopuszczalne wyłącznie jako nazwy własne.\n\n"
     ),
+    "ET": (
+        "KRIITILINE KEELUNÕUE: PEAD kirjutama IGA sõna selles loataotluses eesti keeles. "
+        "KÕIK pealkirjad, lõigud, loendipunktid, allmärkused ja märkused peavad olema eesti keeles. "
+        "ÄRA lisa soome keelseid sõnu ega lauseid väljundisse. "
+        "Soome seadusenumbrid (nt YSL 527/2014, MRL 132/1999) võivad esineda juriidiliste "
+        "identifikaatoritena — lisa alati kõrval eestikeelne seaduse nimetus. Soome pärisnimed "
+        "nagu linnanimed, firmade nimed ja ametite lühendid (ELY, STUK, Luova, Fingrid, Traficom) "
+        "on aktsepteeritavad ainult pärisnimede kujul.\n\n"
+    ),
 }
 
 _PHASE_INSTRUCTIONS: dict[str, str] = {
@@ -2314,6 +2535,7 @@ _HANKE_CFG["smr_se"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_no"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_da"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_de"]       = _HANKE_CFG["SMR"]
+_HANKE_CFG["smr_ee"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["offshore_wind"] = _HANKE_CFG["tuulivoima_meri"]
 _HANKE_CFG["egs"]           = _HANKE_CFG["aurinkovoima"]
 
@@ -3695,6 +3917,22 @@ _NATIONAL_SUPERVISORS: dict[str, dict[str, str]] = {
         "vesivoima":      "PGW Wody Polskie, URE",
         "_generic":       "UDT, URE, GUNB",
     },
+    "EE": {
+        "BESS":           "Päästeamet (fire safety), Konkurentsiamet (license), Elering/Elektrilevi (grid)",
+        "tuulivoima_maa": "Keskkonnaamet (KMH/EIA), Kaitseministeerium (radar), Konkurentsiamet",
+        "tuulivoima_meri":"Majandus- ja Kommunikatsiooniministeerium (ühisluba), Keskkonnaamet, Transpordiamet",
+        "offshore_wind":  "Majandus- ja Kommunikatsiooniministeerium (ühisluba), Keskkonnaamet, Elering AS",
+        "aurinkovoima":   "Konkurentsiamet (license), Elektrilevi (grid), Keskkonnaamet",
+        "SMR":            "Terviseamet (radiation, no nuclear law yet), Riigikogu (parliamentary decision)",
+        "smr_ee":         "Terviseamet (radiation, no nuclear law yet), Riigikogu (parliamentary decision)",
+        "datakeskus":     "Päästeamet (fire), Konkurentsiamet, Elering/Elektrilevi",
+        "teollisuus":     "Keskkonnaamet (environmental permit), Päästeamet, Kohaliku omavalitsuse",
+        "asuinrakennus":  "Kohaliku omavalitsuse (municipality), Terviseamet (if radiation sources)",
+        "liikerakennus":  "Kohaliku omavalitsuse (municipality), Päästeamet",
+        "maatalous":      "Põllumajandusamet (Agricultural Board), Keskkonnaamet",
+        "hybridi":        "Keskkonnaamet (KMH), Päästeamet (BESS), Konkurentsiamet, Elering AS",
+        "_generic":       "Keskkonnaamet, Kohaliku omavalitsuse, Konkurentsiamet",
+    },
 }
 
 
@@ -3704,6 +3942,7 @@ _BESS_MARKET_DATA: dict[str, dict] = {
     "DA": {"index": 160, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
     "NO": {"index": 130, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
     "PL": {"index": 775, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
+    "EE": {"index": 120, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index (estimate)", "date": "Q1/2026"},
 }
 
 

@@ -1,0 +1,199 @@
+ELERING AS — GRID CONNECTION REQUIREMENTS AND NETWORK DEVELOPMENT
+Source: Elering AS (Estonia's Transmission System Operator / TSO)
+        Elering Liitumistingimused (Connection Conditions), published 2023
+        Elering 10-Year Network Development Plan 2024–2033
+        EU Network Codes: Commission Regulation (EU) 2016/631 (RfG), 2016/1447 (HVDC), 2016/1388 (DCC)
+Authority: Elering AS (TSO), Konkurentsiamet (regulatory oversight)
+Language: Estonian/English (summary for RAG indexing)
+
+=== PART 1: ELERING AS — ROLE AND RESPONSIBILITIES ===
+
+Elering AS is Estonia's Transmission System Operator (TSO), responsible for:
+- Operating and developing the 110 kV and 330 kV high-voltage transmission grid
+- Balancing electricity supply and demand in real time
+- Coordinating cross-border electricity flows with Latvia (through LitPol Link and Baltic synchronization)
+- Managing capacity allocation for grid connections of generators and large consumers
+- Publishing grid connection standards and processing connection applications
+- Acting as the central registry for metering and balance settlement
+
+Elering is the Estonian equivalent of Fingrid (Finland) and Statnett (Norway). Like these TSOs, Elering operates as a regulated monopoly under oversight of Konkurentsiamet (Competition Authority).
+
+Elering's legal basis: Elektrituruseadus (ETS) §§10–13, EU Third Energy Package, and Baltic Energy Market Interconnection Plan (BEMIP).
+
+=== PART 2: GRID CONNECTION PROCEDURE ===
+
+Step 1 — Pre-connection Feasibility Study (Liitumiseelne uuring):
+Before formal application, Elering recommends (and for large projects requires) a pre-connection feasibility study request. This study:
+- Identifies the nearest suitable grid connection point (ühenduspunkt)
+- Assesses grid capacity at that point
+- Estimates connection costs and reinforcement requirements
+- Provides a preliminary timeline
+
+Fee: charged based on study complexity; typically €1,000–€10,000 for large generators.
+Timeframe: 4–8 weeks for the feasibility study.
+
+Step 2 — Connection Application (Liitumistaotlus):
+Formal application to Elering includes:
+- Technical description of the generation or storage facility
+- Installed capacity (MW) and expected annual generation (MWh)
+- Grid connection voltage level requested (110 kV or 330 kV)
+- Proposed connection point location
+- Environmental permits obtained (or status)
+- Building permit status
+- Timeline for commissioning
+
+Step 3 — Technical Connection Conditions (Liitumistingimused):
+Elering issues technical connection conditions (TCCs) specifying:
+- Required equipment specifications for the connection
+- Protection relay settings
+- Metering requirements
+- Power quality compliance (voltage, frequency, harmonics — per IEC 61000 series)
+- Reactive power capability requirements
+- Active power control and ramp rate requirements
+- Fault ride-through (FRT) requirements per EU Network Code RfG 2016/631
+
+Step 4 — Connection Agreement (Liitumisleping):
+After technical conditions are agreed, Elering and the applicant sign a connection agreement. This agreement specifies:
+- Connection point and voltage level
+- Technical specifications to be met
+- Connection fee (regulated tariff)
+- Timeline for Elering's network reinforcement works (if needed)
+- Commercial operation date target
+
+Step 5 — Construction and Testing:
+- Generator builds the connection infrastructure from the facility to the grid connection point
+- Elering inspects and approves the connection infrastructure
+- Pre-commissioning tests conducted per Elering's test protocol
+- Synchronization approval from Elering before first energization
+
+Step 6 — Commercial Connection (Kommertsiaalühendus):
+After successful pre-commissioning tests, Elering approves commercial operation.
+
+=== PART 3: TECHNICAL REQUIREMENTS FOR GENERATORS ===
+
+Technical requirements are based on EU Network Codes (Commission Regulations):
+- 2016/631/EU — Network Code on Requirements for Grid Connection of Generators (RfG)
+- 2016/1447/EU — HVDC connections (applies to offshore wind via HVDC cables)
+- 2016/1388/EU — Demand Connection Code (for large consumers, including data centers)
+
+Power categories (Type A, B, C, D) per RfG:
+- Type A: < 0.8 kW (household PV, trivial connections)
+- Type B: 0.8 kW – < 1 MW (small generators)
+- Type C: 1 MW – < 75 MW (most utility-scale solar, onshore wind, BESS)
+- Type D: ≥ 75 MW (large power plants, major wind farms)
+
+Type C and D generators must comply with:
+1. Frequency response: automatic response to frequency deviations within 0.5 Hz
+2. Reactive power: capability to provide reactive power within specified Q-P diagram
+3. Fault ride-through (FRT): remain connected during voltage dips for specified durations
+4. Ramp rate control: limit active power ramp rates as instructed by Elering
+5. Active power control: respond to Elering dispatch instructions (for system balancing)
+6. Monitoring and communication: SCADA connection to Elering's control system (RTU/IEC 60870-5-104)
+
+For offshore wind (HVDC connected):
+Additional requirements under Commission Regulation 2016/1447:
+- DC protection and pole blocking
+- AC side performance requirements (equivalent to Type D onshore)
+- Black start capability may be required
+
+=== PART 4: ELERING NETWORK DEVELOPMENT PLAN 2024–2033 ===
+
+Elering's 10-year network development plan (Arengukava 2024–2033) identifies:
+
+Priority investments:
+1. Baltic synchronization: completion of synchronization of Estonian, Latvian, and Lithuanian grids with Continental European Network (planned desynchronization from Russian IPS/UPS by 2025). This requires significant reinforcement investments.
+2. Offshore wind connection: Elering is planning new 110–330 kV submarine cable connections to support offshore wind development in the Gulf of Finland and Baltic Sea.
+3. Onshore wind and solar integration: identification of "connection capacity areas" (ühendusmahtuvuse piirkonnad) where new generation can connect without major reinforcement.
+
+Relevant for new projects:
+- New onshore wind and solar PV in areas with existing 110 kV grid may connect with moderate reinforcement (costs borne partly by generator, partly by Elering).
+- Areas remote from the 110 kV grid require significant cable/overhead line extensions; Elering assessment required.
+- Offshore wind projects in priority development areas will benefit from planned offshore grid development (2025–2030).
+
+=== PART 5: DISTRIBUTION NETWORK CONNECTION (ELEKTRILEVI) ===
+
+For smaller generators (typically < 10 MW or connecting to 20 kV or lower):
+Connection is made to the distribution network operated by Elektrilevi OÜ (Estonia's dominant DSO).
+
+Elektrilevi connection procedure:
+1. Application for connection conditions (liitumistingimuste taotlus)
+2. Elektrilevi issues connection conditions (30-day statutory deadline)
+3. Connection agreement (liitumisleping) signed
+4. Construction and commissioning
+5. Commercial connection
+
+Technical requirements: EU Network Code RfG applies (Type A, B, or C category).
+Metering: Standard smart meter installation by Elektrilevi.
+
+Rooftop solar PV (< 15 kW): Simplified connection — Elektrilevi provides connection conditions; process typically < 30 days.
+
+=== PART 6: CONNECTION FEES (REGULATED TARIFFS) ===
+
+Elering's connection fees are regulated by Konkurentsiamet and published in Elering's price list.
+Key principles:
+- Deep connection costs (network reinforcement) are shared: first N km of reinforcement is borne by Elering; longer extensions paid by the connecting party.
+- Point connection costs (bay equipment, cables from facility to grid) are borne by the connecting party.
+- 2024 tariff schedule: available at elering.ee/liitumised
+
+Typical fee ranges (indicative, 2024):
+- 110 kV bay at Elering substation: €150,000–€500,000 depending on substation capacity
+- New 110 kV cable/OHL construction: €100,000–€400,000 per km
+- Total connection cost for 50 MW wind farm: €500,000–€5,000,000 depending on distance to grid
+
+=== PART 7: SPECIAL CASES ===
+
+Offshore Wind Connection:
+- For offshore wind connected at 33 kV or 66 kV (AC collection): connection to Elering requires offshore or coastal substation with 110/330 kV transformer.
+- For offshore wind via HVDC: direct DC connection to onshore converter station at Elering substation.
+- Elering participates in Baltic Sea offshore grid coordination via ENTSO-E and Baltic Sea Energy Group.
+
+Battery Energy Storage Systems (BESS):
+- BESS may connect to Elering transmission or Elektrilevi distribution depending on capacity.
+- BESS must demonstrate both charging and discharging capacity meet technical requirements.
+- No special BESS-specific connection tariff — standard generator tariff applies for discharging, standard consumer tariff for charging.
+- Virtual power plant (VPP) aggregation is supported under Elering's balancing framework.
+
+SMR (if future license granted):
+- Would require 110 kV or 330 kV connection to Elering transmission grid.
+- Elering technical requirements would apply as Type D generator.
+- Special protection requirements for nuclear generation (loss-of-mains protection, islanding capability).
+
+Data Centers:
+- Typically connect to Elektrilevi distribution or Elering transmission depending on load size.
+- Large data centers (> 10 MW load) may request direct 110 kV Elering transmission connection.
+- Elering's DCC requirements (Commission Regulation 2016/1388) apply for demand connection.
+
+=== PART 8: REGULATORY FRAMEWORK AND OVERSIGHT ===
+
+Konkurentsiamet (Competition Authority, Estonia):
+- Regulates Elering and Elektrilevi as natural monopolies
+- Approves connection tariffs and methodology
+- Resolves disputes between connecting parties and network operators
+- Issues electricity production licenses (elektrienergia tootmise luba)
+
+Energiamajanduse korralduse seadus (Energy Sector Organisation Act):
+- Establishes the organizational framework for the energy sector
+- Defines the roles of Elering, Konkurentsiamet, and other actors
+- Sets energy sector targets and planning obligations
+
+ENTSO-E membership:
+Elering is a member of ENTSO-E (European Network of Transmission System Operators for Electricity) and applies ENTSO-E grid codes and planning standards.
+
+Elering contact for grid connection:
+- Address: Kadaka tee 42, 12915 Tallinn, Estonia
+- Web: elering.ee
+- Email: liitumised@elering.ee
+- Connection queue management: published quarterly on elering.ee
+
+=== PART 9: PROCESS SUMMARY TABLE ===
+
+Project Type         | Connection Operator | Key Technical Req.        | Typical Timeline
+---------------------|--------------------|--------------------------|-----------------
+Rooftop solar < 15kW | Elektrilevi        | RfG Type A               | 1–2 months
+Solar 1–10 MW        | Elektrilevi        | RfG Type C               | 3–6 months
+Solar > 10 MW        | Elering (110 kV)   | RfG Type C/D             | 6–18 months
+Onshore wind         | Elering (110 kV)   | RfG Type C/D             | 6–18 months
+Offshore wind        | Elering (110/330kV)| RfG Type D / HVDC        | 18–36 months
+BESS > 1 MW          | Elering or Elektrilevi | RfG Type C           | 6–12 months
+Data center          | Elering or Elektrilevi | DCC (2016/1388)      | 6–18 months
+SMR (future)         | Elering (330 kV)   | Type D + nuclear prot.   | TBD (draft law)

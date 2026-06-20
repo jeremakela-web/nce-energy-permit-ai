@@ -1,0 +1,152 @@
+ENERGIAMAJANDUSE KORRALDUSE SEADUS — ENERGY SECTOR ORGANISATION ACT (ESOS)
+Source: Riigiteataja RT I, 28.06.2007, 23 (original); consolidated version with 2024 amendments
+Authority: Riigikogu (Parliament of Estonia) / Majandus- ja Kommunikatsiooniministeerium
+         (Ministry of Economic Affairs and Communications)
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: PURPOSE AND SCOPE ===
+
+The Energy Sector Organisation Act (Energiamajanduse korralduse seadus, ESOS) establishes:
+1. The organizational framework and responsibilities of state bodies in the energy sector
+2. Strategic energy planning obligations and energy targets
+3. National energy security requirements
+4. Obligations for energy efficiency and demand management
+5. Framework for renewable energy support schemes
+
+ESOS applies to all energy carriers: electricity, natural gas, oil, heat, and renewables. It works in conjunction with the Electricity Market Act (ETS) and the Natural Gas Act.
+
+=== PART 2: NATIONAL ENERGY AND CLIMATE PLAN (NECP) ===
+
+§§ 4-12 — National Energy Development Plan (Energiamajanduse riiklik arengukava):
+Estonia is required to prepare and submit a National Energy and Climate Plan (NECP) to the European Commission under EU Regulation 2018/1999 (Governance Regulation). The NECP 2030 sets binding and indicative targets for Estonia:
+
+Renewable Energy Targets (from NECP 2030 and RRP):
+- Share of renewables in final energy consumption: 42% by 2030 (EU target)
+- Electricity sector: aim for 100% renewable electricity by 2030
+- Wind power: approximately 1,200 MW installed capacity by 2030 (onshore + offshore)
+  - Baseline (2020): approximately 310 MW installed onshore wind
+  - Recovery and Resilience Plan (RRP) target: unlock priority development areas
+- Solar PV: approximately 415 MW installed capacity by 2030
+  - Baseline (2020): approximately 100 MW
+- Offshore wind: long-term target (post-2030) of several GW in the Gulf of Finland
+
+These targets are incorporated into the ESOS framework and give legal backing to the renewable energy permitting acceleration measures.
+
+§§ 13-20 — Energy Security:
+- Obligations to maintain fuel reserves
+- Interconnection capacity requirements with neighboring countries
+- Emergency planning for energy supply disruptions
+
+=== PART 3: ENERGY SECTOR ACTORS AND ROLES ===
+
+§§ 21-35 — Government and Regulatory Roles:
+
+Majandus- ja Kommunikatsiooniministeerium (Ministry of Economic Affairs and Communications, MKM):
+- Primary ministry responsible for energy policy
+- Prepares energy legislation and NECP
+- Coordinates renewable energy auctions and support scheme design
+- Issues general authorizations for energy market participants
+
+Konkurentsiamet (Competition Authority / Energy Regulatory Authority):
+- Regulates electricity and gas markets
+- Issues electricity production licenses (elektrienergia tootmise luba)
+- Approves tariffs for regulated monopolies (Elering, Elektrilevi, etc.)
+- Supervises market conduct and prevents anti-competitive behavior
+- Resolves disputes between market participants and network operators
+- Reports to MKM and Riigikogu (Parliament)
+
+Elering AS:
+- TSO (Transmission System Operator)
+- Maintains system balance
+- 10-year network development planning
+- Operates the metering system and registers market participants
+- Coordinates with Baltic and Nordic TSOs
+
+Elektrilevi OÜ:
+- Largest distribution system operator (DSO) in Estonia
+- Operates distribution network below 110 kV
+- Other DSOs include Imatra Elekter and regional operators
+
+§§ 36-45 — Energy Service Providers:
+- Balance responsible parties (bilansivastutajad): must register with Elering
+- Electricity traders (elektrimüüjad): must hold trading license
+- Energy auditors (energiaaudiitorid): certified professionals for energy audits
+
+=== PART 4: RENEWABLE ENERGY AUCTIONS ===
+
+§§ 56-70 — Support Scheme for Renewables (Taastuvenergia toetuse skeem):
+The Ministry of Economic Affairs and Communications administers renewable energy competitive auctions:
+
+Auction mechanism:
+- Competitive bidding for contracts for difference (CfD) or premium tariffs
+- Available for wind, solar, and other eligible renewable technologies
+- BESS co-located with renewables may qualify for support in future rounds
+
+2024 auction parameters (reference):
+- Technology-neutral competitive auction
+- Strike price based on competitive bids
+- 15-year support period
+- Grid connection required before support commencement
+
+Offshore wind state aid scheme:
+- EU-approved state aid package of approximately €2.6 billion for Estonian offshore wind (European Commission approval 2024)
+- Enables long-term CfD support for offshore wind projects
+- Critical for project financing of offshore wind in Estonian territorial waters and EEZ
+
+§§ 71-80 — Net metering (netomõõtmine):
+For small-scale solar PV:
+- Households (< 15 kW): net metering available — excess production sold to grid at spot price
+- Commercial buildings (< 50 kW): simplified net metering
+- No production license required; registration notification (teatis) to Konkurentsiamet sufficient
+
+=== PART 5: ENERGY EFFICIENCY OBLIGATIONS ===
+
+§§ 81-100 — Energy Efficiency (Energiatõhususe seadus framework):
+Large energy consumers (including data centers, industrial facilities) are subject to:
+- Energy efficiency audits every 4 years (for enterprises > 250 employees or > €50M turnover)
+- Implementation of EU Energy Efficiency Directive 2012/27/EU as amended by 2018/2002/EU
+- Building energy performance certificates for all sold or rented buildings
+- District heating efficiency requirements
+
+For data centers specifically:
+- Energy Performance of Buildings Directive (EPBD) compliance for new construction
+- Green data center certification schemes encouraged (though not legally mandatory in Estonia)
+- Connection to waste heat recovery systems may be required by municipalities
+
+=== PART 6: CROSS-BORDER AND BALTIC COORDINATION ===
+
+§§ 101-115 — Regional Energy Cooperation:
+- Baltic Energy Market Interconnection Plan (BEMIP): Estonia participates in joint Baltic energy market development with Latvia and Lithuania
+- NordBalt and EstLink interconnectors: Estonia-Finland and Estonia-Latvia electricity cables already operational
+- Baltic-Continental synchronization (BalticGrid): Estonia participates in the planned synchronization of Baltic electricity grids with Continental European Network (scheduled 2025)
+- Joint Baltic renewable energy development: coordination of offshore wind in Baltic Sea through Baltic Energy Ministerial Forum
+
+=== PART 7: SECTOR REVIEW AND REPORTING ===
+
+§§ 116-130 — Monitoring and Reporting:
+- Annual report on renewable energy progress to European Commission
+- NECP progress reports (biennial)
+- Elering publishes annual adequacy report
+- Konkurentsiamet publishes annual regulatory report
+
+=== PART 8: RELEVANCE TO PROJECT TYPES ===
+
+All energy generation project types (onshore wind, offshore wind, solar PV, BESS, SMR):
+- ESOS provides the policy and strategic framework
+- National targets (1,200 MW wind, 415 MW solar by 2030) support project approvals
+- Renewable energy support scheme (auctions, net metering) governed by ESOS
+- EU-approved offshore wind state aid scheme (€2.6B, 2024) governed under ESOS framework
+
+Data centers (datakeskus):
+- Energy efficiency obligations under ESOS framework
+- Connection to grid governed by ETS (Elering/Elektrilevi)
+- No special sector-specific permits under ESOS
+
+Industrial projects (teollisuus):
+- Energy efficiency audit obligations for large consumers
+- Potential for industrial self-generation under ETS framework
+- District heating connection requirements in urban areas
+
+Residential and commercial buildings (asuinrakennus, liikerakennus):
+- Building energy performance certificates (ESOS / Building Energy Performance Act)
+- Net metering for on-site solar PV generation
