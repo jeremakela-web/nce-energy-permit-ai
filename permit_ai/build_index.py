@@ -79,10 +79,22 @@ def build(force: bool = False) -> None:
 
     print(f"[build_index] Löytyi {len(pdfs)} PDF:ää, {len(txts)} TXT-tiedostoa")
 
-    # Tyhjennetään vanha FI-indeksi ja rakennetaan uudelleen
+    # Tyhjennetään vanha FI-indeksi ja rakennetaan uudelleen.
+    # Jos DB_DIR on mount point (persistent disk), ei voi rmtree koko hakemistoa
+    # (EBUSY) — tyhjennetään sisältö sen sijaan.
     if DB_DIR.exists():
-        shutil.rmtree(DB_DIR)
-    DB_DIR.mkdir(parents=True)
+        import os as _os
+        db_stat     = _os.stat(str(DB_DIR))
+        parent_stat = _os.stat(str(DB_DIR.parent))
+        if db_stat.st_dev != parent_stat.st_dev:
+            # Mount point — poistetaan sisältö, ei itse hakemistoa
+            for _item in DB_DIR.iterdir():
+                shutil.rmtree(_item) if _item.is_dir() else _item.unlink()
+        else:
+            shutil.rmtree(DB_DIR)
+            DB_DIR.mkdir(parents=True)
+    else:
+        DB_DIR.mkdir(parents=True)
 
     model  = SentenceTransformer(EMBED_MODEL)
     client = chromadb.PersistentClient(path=str(DB_DIR))
