@@ -1300,25 +1300,33 @@ def _rag_context(
                             "url":     meta.get("url"),
                         }
 
-        # Use the first query for precedent retrieval embedding
+        # Country-specific queries for step 1 — avoids Finnish cross-lingual distance penalty.
+        # Falls back to Finnish cfg queries if no override defined for this country+type.
+        _country_queries = (
+            _COUNTRY_RAG_QUERIES.get(country, {}).get(hanketyyppi)
+            or cfg["rag_queries"]
+        )
+
+        # Step 1: country-specific retrieval using native-language queries (once, before FI loop)
+        if country != "FI":
+            try:
+                for cq in _country_queries:
+                    cemb = embed_model.encode([cq]).tolist()
+                    _collect(col.query(
+                        query_embeddings=cemb,
+                        n_results=n_per_query,
+                        where={"country": {"$in": [country, "EU"]}},
+                    ))
+            except Exception:
+                pass  # maakohtaisia dokumentteja ei vielä indeksoitu
+
+        # Step 2: FI retrieval using Finnish cfg queries (always; provides base context)
         first_emb = None
         for q in cfg["rag_queries"]:
             emb = embed_model.encode([q]).tolist()
             if first_emb is None:
                 first_emb = emb
 
-            # 1. Maakohtainen haku (vain kun country != FI ja metadata on olemassa)
-            if country != "FI":
-                try:
-                    _collect(col.query(
-                        query_embeddings=emb,
-                        n_results=n_per_query,
-                        where={"country": {"$in": [country, "EU"]}},
-                    ))
-                except Exception:
-                    pass  # maakohtaisia dokumentteja ei vielä indeksoitu
-
-            # 2. FI-haku (tai koko indeksi jos metadata puuttuu)
             try:
                 _collect(col.query(
                     query_embeddings=emb,
@@ -2529,6 +2537,49 @@ _PHASE_INSTRUCTIONS["rakentamisvaihe"] = _PHASE_INSTRUCTIONS["rakentaminen"]
 _HANKE_CFG["BESS"]["context_extra_phases"]["rakentamisvaihe"] = (
     _HANKE_CFG["BESS"]["context_extra_phases"]["rakentaminen"]
 )
+# Country-specific RAG queries — override Finnish default queries for country chunk retrieval.
+# Used in _rag_context step 1 so cross-lingual embedding similarity stays above threshold.
+_COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
+    "DE": {
+        "tuulivoima_maa": [
+            "Windenergie Onshore BImSchG Genehmigung Deutschland",
+            "Windpark Artenschutz BNatSchG Rotmilan TAK Abstand",
+            "WindBG Flächenziel Raumordnung Bebauungsplan",
+        ],
+        "tuulivoima_meri": [
+            "Offshore Windenergie WindSeeG BSH Genehmigung",
+            "Offshore Windpark HVDC TenneT Netzanschluss",
+        ],
+        "BESS": [
+            "Batteriespeicher BESS BImSchG Genehmigung Deutschland",
+            "Stromspeicher Lithium EnWG Netzentgelt FCR Regelenergie",
+        ],
+        "SMR": [
+            "Kernkraft SMR Atomgesetz AtG Deutschland Verbot",
+            "nuclear reactor permit Germany prohibition AtG",
+        ],
+        "aurinkovoima": [
+            "Photovoltaik Solar Genehmigung Deutschland EEG Freiflächenanlage",
+            "Agri-PV Floating-PV Solaranlage Genehmigung",
+        ],
+    },
+    "EE": {
+        "tuulivoima_maa": [
+            "tuuleenergia tuulpark luba Eesti ehitusluba KMH",
+            "wind energy permit Estonia environmental impact assessment",
+            "tuulienergia võrguga ühendamine Elering liitumisleping",
+        ],
+        "BESS": [
+            "akuenergia salvestus Eesti luba elektriturg",
+            "battery storage permit Estonia electricity market act",
+        ],
+        "SMR": [
+            "tuumaenergia SMR seadus Eesti Riigikogu kiirgus",
+            "nuclear energy law Estonia parliament permit missing",
+        ],
+    },
+}
+
 # Country-variant and new-type aliases — map to nearest base type so _HANKE_CFG
 # lookups never raise KeyError. _COUNTRY_LUVAT overrides the permit list per country.
 _HANKE_CFG["smr_se"]       = _HANKE_CFG["SMR"]
