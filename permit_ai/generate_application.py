@@ -1348,7 +1348,10 @@ def _rag_context(
         else:
             avg_score = 0.0
 
-        if chunks_returned < 5 or avg_score < 0.65:
+        # Non-FI countries mix cross-lingual chunks (lower cosine sim by nature) with FI base chunks,
+        # so the blended avg is inherently ~0.04-0.06 lower than a pure-FI retrieval.
+        _min_score = 0.60 if country != "FI" else 0.65
+        if chunks_returned < 5 or avg_score < _min_score:
             logger.warning(
                 "RAG_FAIL: %s %s chunks=%d avg_score=%.2f",
                 hanketyyppi, country, chunks_returned, avg_score,
