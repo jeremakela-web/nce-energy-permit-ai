@@ -1,0 +1,98 @@
+SOLARENERGIE UND PHOTOVOLTAIK — GENEHMIGUNG IN DEUTSCHLAND
+
+Überblick über Genehmigungsanforderungen für Photovoltaik-Anlagen in Deutschland: Dachanlagen, Freiflächenanlagen, Agri-PV, Floating-PV und Balkonkraftwerke. Rechtsstand: Solarpaket I 2024.
+
+ANLAGENTYPEN UND GENEHMIGUNGSPFLICHTEN
+
+1. DACHANLAGEN (ROOFTOP PV)
+
+Gebäudeintegrierte Anlagen oder Aufdachanlagen an Gebäuden:
+  — Keine gesonderte Baugenehmigung in den meisten Bundesländern (privilegiert als bauliche Nebenanlage)
+  — Ausnahmen: Denkmalschutz (DSchG Länder), Gestaltungssatzungen, historische Stadtzentren
+  — Statik: Nachweis der Tragfähigkeit (DIN EN 1991, DIN EN 1996 für Ziegeldächer); Fachbetrieb erforderlich
+  — Brandschutz: FVEE-Brandschutzkonzept für Dachanlagen; DC-Trennschalter und Leitungsschutz nach DIN VDE 0100-712
+  — Meldepflichten:
+    MaStR: Registrierung vor/bei Inbetriebnahme
+    Netzbetreiber: Meldung nach VDE-AR-N 4105 (Niederspannung) spätestens bei Anschluss
+    EVU/Direktvermarktung: ab 100 kW Direktvermarktungspflicht
+
+2. FREIFLÄCHENANLAGEN (GROUND-MOUNTED PV)
+
+Bodengebundene Großanlagen außerhalb von Gebäuden:
+  — Baugenehmigung erforderlich (Bauordnungsrecht der Länder: BauO NRW, BauO BY etc.)
+  — Bebauungsplan (B-Plan): Sondergebiet PV (SO PV) erforderlich für Anlagen >1 MW auf Acker/Grünland
+  — Alternativ: § 35 Abs. 1 Nr. 8 BauGB (privilegiert) für EEG-geförderte Anlagen an bestimmten Standorten:
+    Konversionsflächen (ehemalige Bergbau-, Industrie-, Militärflächen)
+    Seitenrandstreifen entlang von Autobahnen und Schienen (110 m beidseitig)
+    Bereits versiegelte Flächen
+  — EEG-Förderung (§ 37 EEG 2023): B-Plan-Erfordernis für Freiflächenanlagen auf Acker/Grünland >750 kW (außer privilegierte Standorte)
+  — UVP-Vorprüfung: empfohlen ab 1 MW; UVP-Pflicht bei besonders sensiblen Standorten
+
+Genehmigungsunterlagen Freifläche:
+  — Bauantrag mit Lageplan, Schnittzeichnungen, Modullayout
+  — Landschaftspflegerischer Begleitplan (LBP) oder Eingriffs-Ausgleichs-Bilanzierung
+  — Artenschutzrechtlicher Fachbeitrag (bei FFH- oder VSG-Nähe)
+  — Schallberechnung (bei Großanlage mit Wechselrichter-Lärm)
+  — Blendgutachten (bei landwirtschaftlichen Anlagen nahe Straßen oder Wohngebieten)
+  — Bodengutachten / Gründungskonzept
+
+3. AGRI-PV (AGRI-VOLTAIK)
+
+Doppelnutzung landwirtschaftlicher Flächen unter und zwischen PV-Modulen:
+  — Rechtsgrundlage: § 37 EEG 2023 i.V.m. DIN SPEC 91434:2021 (Agri-PV)
+  — Zulässige Typen: aufgeständert (bodennah mit Durchfahrtshöhe ≥4 m), bifazial, vertikal-bifazial ("Agrisolar"), Reihensystem mit Abstand
+  — EEG-Förderung: eigenes Ausschreibungssegment "Besondere Solaranlagen" (§ 37c EEG 2023)
+  — Anforderung: landwirtschaftliche Fläche bleibt überwiegend landwirtschaftlich genutzt; Mindestflächenanteil je nach DIN SPEC
+  — Landesbehörden (Landwirtschaft): Prüfung der landwirtschaftlichen Kompatibilität
+  — Genehmigungsverfahren: wie Freifläche; zusätzlich Stellungnahme Landwirtschaftsbehörde
+  — Keine gesonderte Agri-PV-Genehmigung: BauGB + EEG + ggf. B-Plan
+
+4. FLOATING-PV (SCHWIMM-PV)
+
+Anlagen auf Gewässern (Baggerseen, Stauseen, Speicherbecken):
+  — Solarpaket I 2024: Floating-PV auf Binnengewässern bis 15 % der Gewässerfläche EEG-förderungsfähig
+  — Ausnahme: keine Genehmigung für Naturschutzgebiete, FFH-Gebiete, Nationalparks
+  — Wasserrechtliche Erlaubnis: nach WHG (Wasserhaushaltsgesetz) und Landeswasserrecht (z.B. BayWG, NWG)
+  — Baugenehmigung: Bundesland-abhängig; Anlage auf Wasser als Sonderfall
+  — Verankerung und Statik: Gutachten nach DVGW/DVS-Richtlinien für schwimmende Systeme
+  — Ökologische Verträglichkeit: Beschattungswirkung auf Gewässer-Ökosystem (Algenwachstum, Thermodynamik)
+
+5. BALKONKRAFTWERKE / STECKERSOLAR (MINI-PV)
+
+Solarpaket I 2024 und neue Normen:
+  — Leistung: bis 2 kWp Modulleistung, max. 800 W Wechselrichterausgangsleistung (ab 1.1.2024)
+  — Keine Baugenehmigung, keine Meldung beim Netzbetreiber (nur MaStR-Registrierung)
+  — VDE-AR-E 2100-712 (Entwurf 2023): technische Anforderungen für Steckersolargeräte
+  — Anschluss: handelsübliche Schuko-Steckdose; kein Zweirichtungszähler erforderlich (laut EnWG-Änderung 2023)
+  — Wohnungseigentum: WEG-Beschluss (§ 20 WEG) ausreichend; Zustimmung Vermieter nach § 554 BGB bei Mietwohnungen
+
+TYPISCHE GENEHMIGUNGSDAUER
+
+  — Balkonkraftwerk: sofort (keine Genehmigung)
+  — Dachanlage bis 30 kWp: 1–4 Wochen (MaStR + Netzbetreiber-Meldung)
+  — Dachanlage >30 kWp, <100 kW: 1–2 Monate (Netzanfrage, Anschlussangebot)
+  — Freifläche mit B-Plan: 18–36 Monate für B-Plan; Baugenehmigung 3–6 Monate zusätzlich
+  — Agri-PV: wie Freifläche + landwirtschaftliche Prüfung (4–8 Wochen zusätzlich)
+
+TECHNISCHE NORMEN UND STANDARDS
+
+  — DIN VDE 0100-712: Anlagen für die Elektrische Energieversorgung
+  — IEC 62262 / DIN EN 62446: Dokumentation und Inbetriebnahme von PV-Systemen
+  — IEC 61215 / IEC 61730: Anforderungen an PV-Module (Hersteller-Typenprüfung)
+  — DIN EN 50549: Anforderungen für Einspeiseanlagen bis 69 kV
+  — VDE-AR-N 4105 (Niederspannung): Netzanschluss PV bis 135 kVA
+  — VDE-AR-N 4110 (Mittelspannung): Netzanschluss PV >135 kVA
+
+FÖRDERPROGRAMME (ERGÄNZEND ZU EEG)
+
+  — KfW 270 (Erneuerbare Energien - Standard): Günstige Darlehen für PV-Anlagen
+  — KfW 276 (Produktives Laden E-Fahrzeuge): Kombination PV + Ladesäule
+  — BAFA (Bundesamt für Wirtschaft und Ausfuhrkontrolle): keine direkten PV-Förderungen (nur Wärmepumpen)
+  — Länder: Bayern, NRW, BaWü haben eigene Förderprogramme; Details bei Kreditanstalt für Wiederaufbau (KfW) und Landesbanken
+
+NETZPARITÄT UND EIGENVERBRAUCH
+
+  — Netzparität für PV in Deutschland: Haushaltsstrompreis ca. 30 ct/kWh (2024) vs. PV-Gestehungskosten 5–10 ct/kWh (Dachanlage) → wirtschaftlicher Eigenverbrauch klar vorteilhaft
+  — Eigenverbrauchsoptimierung mit Speicher: PV + BESS + Wärmepumpe als Kombisystem
+  — EEG-Einspeisevergütung klein (<10 kW): ca. 8,2 ct/kWh (ab 2024, sinkend)
+  — Eigenverbrauch: kein Netzentgelt, keine EEG-Umlage (ab 2023 EEG-Umlage = 0 für alle)

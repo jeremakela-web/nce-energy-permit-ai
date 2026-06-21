@@ -1,0 +1,74 @@
+KERNENERGIE IN DEUTSCHLAND — RECHTLICHES VERBOT NEUER KERNKRAFTWERKE
+
+KRITISCHER WARNHINWEIS: Deutschland verbietet den Bau neuer Kernkraftwerke aktiv durch Bundesgesetz. Dies unterscheidet Deutschland grundlegend von Ländern, die lediglich keinen regulatorischen Rahmen für SMR haben. Ein Antrag auf Genehmigung eines neuen Kernkraftwerks (inkl. SMR) in Deutschland würde zwingend abgelehnt werden.
+
+ATOMGESETZ (ATOG) — GESETZLICHES BAUVERBOT
+
+§ 7 Abs. 1a AtG (Atomgesetz in der Fassung vom 23. Dezember 1959, BGBl. I S. 814, zuletzt geändert durch das Gesetz zum Weiterbetrieb der Kernkraftwerke und zur Änderung weiterer Vorschriften vom 4. November 2022, BGBl. I S. 1906):
+
+"Die Genehmigung nach Absatz 1 darf nicht erteilt werden für die Errichtung und den Betrieb von Kernkraftwerken zur gewerbsmäßigen Erzeugung von Elektrizität."
+
+Dieser Paragraph wurde durch das Atomausstiegsgesetz 2002 (BGBl. I S. 1351) eingeführt und durch alle nachfolgenden Gesetzesänderungen aufrechterhalten.
+
+HISTORISCHER VERLAUF DES DEUTSCHEN ATOMAUSSTIEGS
+
+  — 2002: Erste gesetzliche Festschreibung des Neubauverbots (§ 7 Abs. 1a AtG), Rot-Grüne Koalition (Bundeskanzler Schröder)
+  — 2010: CDU/CSU-FDP-Koalition verlängerte Laufzeiten bestehender Kraftwerke (Laufzeitverlängerung)
+  — 2011: Fukushima-Unfall (11. März 2011) → sofortige Abschaltung von 8 Kraftwerken (Moratorium); endgültige Entscheidung: Beschleunigter Ausstieg bis 2022 (Atomgesetz-Änderung 22. Juli 2011)
+  — 2022: Energiekrise nach russischem Angriff auf Ukraine → Streckbetrieb 3 verbleibender Kraftwerke bis April 2023 (Gesetz vom 4. November 2022)
+  — 15. April 2023: ABSCHALTUNG DER LETZTEN DREI DEUTSCHEN KERNKRAFTWERKE
+    Emsland (Lingen, Niedersachsen) — 1.335 MW
+    Isar 2 (Essenbach, Bayern) — 1.410 MW
+    Neckarwestheim 2 (Baden-Württemberg) — 1.310 MW
+
+Das Neubauverbot in § 7 Abs. 1a AtG besteht seit 2002 und gilt weiterhin unverändert.
+
+RECHTLICHE ANALYSE: WARUM KEIN SMR IN DEUTSCHLAND GENEHMIGBAR IST
+
+§ 7 Abs. 1a AtG ist eindeutig und lässt keinen Ermessensspielraum:
+
+1. Der Begriff "Kernkraftwerk zur gewerbsmäßigen Erzeugung von Elektrizität" erfasst alle Reaktortypen, einschließlich:
+   — Small Modular Reactors (SMR)
+   — Advanced Modular Reactors (AMR)
+   — Thorium-Reaktoren
+   — Fusions-Demonstrationsanlagen (wenn kommerzielle Stromerzeugung Zweck)
+   — Microreaktoren
+
+2. Es gibt keine Ausnahme für innovative Reaktortechnologien im AtG.
+
+3. Eine Genehmigung nach § 7 Abs. 1 AtG kann nicht erteilt werden, wenn § 7 Abs. 1a AtG einschlägig ist.
+
+4. Auch europäisches Recht (Euratom-Vertrag) schafft kein Recht auf Neubau; Genehmigung bleibt nationale Kompetenz.
+
+POLITISCHE DISKUSSION (NICHT RECHTLICH BINDEND, STAND 2024)
+
+Einige Parteien (CDU/CSU, FDP-Flügel) diskutieren theoretisch eine Wiederkehr zur Kernenergie:
+  — CDU/CSU-Bundestagsfraktion: Forderung nach Offenhalten der Option (2023)
+  — FDP: Interesse an SMR-Technologie geäußert (2023/2024)
+
+ABER: Dies sind politische Forderungen ohne aktuelle Gesetzeskraft.
+  — Keine Gesetzesänderung zur Aufhebung von § 7 Abs. 1a AtG eingeleitet (Stand Mitte 2024)
+  — Ampelkoalition (SPD, Grüne, FDP bis November 2024): Kein Konsens zur Änderung des Atomausstiegs
+  — CDU/CSU nicht in Regierung bis Ende 2024 (Neuwahl Januar 2025: CDU stärkste Kraft)
+  — Mögliche Koalition CDU+SPD 2025: SMR-Öffnung nicht im Koalitionsvertragsentwurf (Mitte 2024)
+
+STAND DER RADIOAKTIVEN ABFALLENTSORGUNG
+
+  — Endlager für hochradioaktiven Abfall: noch nicht festgelegt; Standortsuche nach BRBG (Bundesgesetz zur Suche und Auswahl eines Standortes für ein Endlager für hochradioaktive Abfälle) läuft; Entscheidung: frühestens 2046
+  — Zwischenlager: Zwischenlagerhallen an Kraftwerksstandorten und zentrales Zwischenlager Gorleben (Rückholplanung)
+  — Rückbau bestehender Kernkraftwerke: BUND und Betreiber (EnBW, E.on/PreussenElektra, RWE) im Rückbau; Dauer je Kraftwerk 10–20 Jahre
+
+FORSCHUNGSREAKTOREN (AUSNAHME)
+
+§ 7 Abs. 1a AtG verbietet nur "gewerbsmäßige Erzeugung von Elektrizität". Nicht betroffen:
+  — Forschungsreaktoren: FRM II (Garching, Bayern, Technische Universität München) — Neutronenquelle, keine Stromerzeugung; weiterhin betrieben
+  — Materialforschungsreaktoren: grundsätzlich genehmigbar nach § 7 Abs. 1 AtG (wenn keine kommerzielle Stromerzeugung)
+
+FAZIT FÜR PROJEKTENTWICKLUNG
+
+Jegliches Projekt zur kommerziellen Kernstromerzeugung in Deutschland ist nach aktuellem Recht (§ 7 Abs. 1a AtG) nicht genehmigungsfähig. Eine Feasibility-Studie für ein SMR-Projekt in Deutschland wäre erst sinnvoll, wenn:
+  1. § 7 Abs. 1a AtG aufgehoben oder geändert wurde (Bundesgesetz)
+  2. Neue AtG-Genehmigungsnormen für SMR geschaffen wurden
+  3. Endlager-Frage gesetzlich gelöst ist (politisch extrem schwierig)
+
+Bis dahin ist Deutschland für Kernenergie-Neubauprojekte gesetzlich geschlossen.

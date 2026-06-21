@@ -1,0 +1,114 @@
+BUNDESNETZAGENTUR (BNETZA) — NETZANSCHLUSSANFORDERUNGEN FÜR ENERGIEANLAGEN
+
+Bundesnetzagentur für Elektrizität, Gas, Telekommunikation, Post und Eisenbahnen (BNetzA), Bonn. Rechtsgrundlagen: Energiewirtschaftsgesetz (EnWG), Stromnetzentgelteordnung (StromNEV), Netzanschlussverordnung Niederspannung (NAV) und Mittelspannung (NDAV).
+
+ROLLE DER BUNDESNETZAGENTUR
+
+Die BNetzA ist die zentrale Regulierungsbehörde für den deutschen Energiemarkt:
+  — Regulierung der Strom- und Gasnetze (Anreizregulierung nach ARegV)
+  — Genehmigung von Netzentgelten
+  — Marktüberwachung (Strom- und Gasbörsen, REMIT-Compliance)
+  — Monitoring des Netzausbaus (Bundesbedarfsplan)
+  — Betrieb und Aufsicht über das Marktstämmdatenregister (MaStR)
+  — Festlegung technischer Anforderungen in Kooperation mit VDE/FNN
+
+TECHNISCHE ANSCHLUSSREGELN (VDE-AR-N)
+
+Die technischen Mindestanforderungen für den Netzanschluss werden durch das Forum Netztechnik/Netzbetrieb (FNN) im VDE als technische Anschlussregeln (TAR) / Anwendungsregeln (VDE-AR-N) verabschiedet:
+
+VDE-AR-N 4105 (Niederspannung, ≤1 kV):
+  — Gilt für Photovoltaik-Dachanlagen, Kleinspeicher, Balkonkraftwerke, Kleinsterzeuger
+  — Voraussetzung: Anlagenleistung ≤135 kVA je Übergabestelle
+  — Anforderungen: Schutzeinrichtungen (NA-Schutz), Blindleistungsregelung (cos φ = 0,90 ind./kap.)
+  — Anmeldung beim Netzbetreiber obligatorisch; keine eigenständige BNetzA-Meldung (nur MaStR)
+  — Ausgabe: 2020, aktuelle Normausgabe VDE-AR-N 4105:2020-11
+
+VDE-AR-N 4110 (Mittelspannung, 1–60 kV):
+  — Gilt für Wind-, PV-Parks, BESS, KWK-Anlagen im MS-Netz
+  — Schutzkonzept: eigener Netzschutz, Synchronisierungsschutz, Überfrequenzabschaltung
+  — Blindleistungsbeitrag im Nennbetrieb: cos φ = 0,90–1,00 (cos φ-P-Kennlinie)
+  — Statischer Spannungsbereich: +10 % / −10 % Un (gemäß EN 50160)
+  — Dynamische Netzunterstützung: LVRT (Low Voltage Ride-Through) bei kurzem Spannungseinbruch
+  — Ausgabe: 2017, aktuelle Normausgabe VDE-AR-N 4110:2018-11
+
+VDE-AR-N 4120 (Hochspannung, 60–110 kV):
+  — Gilt für Großwindparks, Solarparks >10 MW, Batteriespeicher im HS-Netz
+  — Blindleistungsbereitstellung: Q(U)-Regelung, Qmax ≥ 33 % der Wirkleistung
+  — LVRT: Durchfahrt bei 0 % Un für 150 ms, danach geregelte Rückkehr
+  — Frequenzregelung: statische Frequenz-Wirk­leistungs-Kennlinie (f-P) ab 50,2 Hz Reduzierung
+  — Ausgabe: 2016, aktuelle Normausgabe VDE-AR-N 4120:2018-11
+
+VDE-AR-N 4130 (Höchstspannung, >110 kV, ÜNB-Netz):
+  — Gilt für Offshore-HVDC-Anschlüsse, große Pumpspeicher, DC-Großspeicher
+  — Netzbetreiber: TenneT, 50Hertz, Amprion, TransnetBW
+  — Separate Netzanschlussvereinbarungen nach individuellen ÜNB-Vorgaben
+  — HVDC-Systemregeln: ENTSO-E HVDC Connection Code (NC HVDC)
+
+NETZANSCHLUSSVERFAHREN (NAV / NDAV)
+
+Für Kleinstverbraucher und -erzeuger (Niederspannung):
+  Netzanschlussverordnung Niederspannung (NAV) vom 1. November 2006:
+  — § 3 NAV: Anspruch auf Anschluss an das Niederspannungsnetz
+  — Antragstellung beim örtlichen Netzbetreiber (Verteilnetzbetreiber, VNB)
+  — Frist zur Stellungnahme: 1 Monat (§ 5 NAV)
+
+Für Mittel- und Hochspannung:
+  Niederspannungsanschlussverordnung (NDAV) und individuelle Netzanschlussverträge:
+  — Netzanfrage (technische Voranfrage)
+  — Netzverträglichkeitsprüfung (NVP): Simulation des Einflusses auf das Netz
+  — Netzanschlussangebot (Kostenvoranschlag): innerhalb von 2 Monaten nach vollständigem Antrag
+  — Netzanschlussvertrag (NAV): verbindliche Regelung von Übergabepunkt, Leistung, Messung
+  — Inbetriebsetzung: Abnahmeprüfung durch VNB (VDE-AR-N 4110/4120 Überprüfungsprotokoll)
+
+NETZANSCHLUSSKOSTEN
+
+Kostenaufteilung zwischen Anlagenbetreiber und Netzbetreiber:
+  — Hausanschluss bis Verknüpfungspunkt: trägt Anlagenbetreiber (§ 8 Abs. 2 EEG 2023)
+  — Verknüpfungspunkt: technisch und wirtschaftlich günstigster Punkt; Netzbetreiber kann alternativen Punkt vorschlagen
+  — Netzausbau ab Verknüpfungspunkt: trägt Netzbetreiber (umlagefähige Netzkosten nach StromNEV)
+  — Baukostenzuschuss (BKZ): nur noch in Ausnahmefällen zulässig (BGH-Rechtsprechung 2021)
+  — Messstellenbetrieb: iMSys-Einbau ab 7 kW durch grundzuständigen Messstellenbetreiber (gMSB) nach MsbG
+
+ENGPASSMANAGEMENT UND REDISPATCH
+
+§ 13 EnWG und § 11 EEG 2023 (Einspeisemanagement):
+  — Netzbetreiber kann Einspeisung reduzieren (Redispatch 1.0: nur konventionelle Kraftwerke)
+  — Redispatch 2.0 (seit 1.10.2021, NABEG-Änderung 2021): alle steuerbaren Einspeiser >100 kW
+  — BESS als Netzspeicher: Netzbetreiber kann BESS-Entladung anfordern (netzdienlicher Betrieb)
+  — Fahrplanpflicht: Anlagen >100 kW müssen Fahrpläne im Bilanzkreis einhalten (§ 4 StromNZV)
+
+FREQUENZREGELUNG UND SYSTEMDIENSTLEISTUNGEN
+
+Regelenergiemärkte (ENTSO-E-Produkte, organisiert durch Übertragungsnetzbetreiber):
+  FCR (Frequency Containment Reserve / Primärregelleistung):
+    — Symmetrische ±200 mHz Frequenzregelung
+    — Ausschreibung: täglich auf regelleistung.net
+    — Angebotsgröße: mindestens 1 MW
+    — Aktivierung: vollständig innerhalb 30 Sekunden
+    — BESS besonders geeignet: schnelle Aktivierung, kein Verschleiß bei Frequenzregelung
+
+  aFRR (Automatic Frequency Restoration Reserve / Sekundärregelleistung):
+    — ±5 % Frequenzabweichung über mehrere Minuten
+    — Ausschreibung: wöchentlich auf regelleistung.net
+    — Mindestgröße: 5 MW
+
+  mFRR (Manual Frequency Restoration Reserve / Minutenreserve):
+    — Aktivierung innerhalb 15 Minuten
+    — Ausschreibung: täglich auf regelleistung.net
+    — Mindestgröße: 5 MW
+
+NETZZUGANG FÜR SPEICHER
+
+Rechtsrahmen für Batteriespeicher im Netzzugang:
+  — § 118 Abs. 6 EnWG: Befreiung von Netzentgelten für Speicher bis 2026 (verlängerungsbedürftig)
+  — Doppelbelastung bei Netzentgelten (Ein- und Ausspeicherung) ist ein bekanntes politisches Problem ohne endgültige Lösung (Stand 2024): Teilbefreiung nach § 118 EnWG
+  — Eigenverbrauchsprivileg: kein Netzentgelt für Eigenverbrauch aus PV + Speicher (ohne Netzeinspeisung)
+
+MARKTSTÄMMDATENREGISTER (MASTR) — PFLICHTEN
+
+Pflicht zur Meldung im MaStR vor Inbetriebnahme (MaStRV):
+  — Anlagenbetreiber: Name, Standort, Anlagentyp, Leistung, Inbetriebnahmedatum
+  — Speicher: Speicherkapazität (kWh), Nennleistung (kW), Technologie
+  — Netzbetreiber: Netzanschlusspunkt (EIC-Code), Spannungsebene, Zählpunktbezeichnung
+  — Frist: Meldung spätestens 1 Monat nach Inbetriebnahme; Anlagenbetreiber und Netzbetreiber unabhängig voneinander
+  — Konsequenz Nichtmeldung: § 25 EEG 2023 (Zahlungsaussetzung bei fehlendem MaStR-Eintrag)

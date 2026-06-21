@@ -1,0 +1,100 @@
+RECHENZENTREN UND DATENZENTREN — GENEHMIGUNG UND ENERGIEEFFIZIENZ IN DEUTSCHLAND
+
+Genehmigungsanforderungen für Rechenzentren (RZ) in Deutschland nach BImSchG, BauGB und dem Energieeffizienzgesetz 2023 (EnEfG). Stand: 2024.
+
+ENERGIEEFFIZIENZGESETZ 2023 (ENEFG)
+
+Gesetz zur Steigerung der Energieeffizienz in Deutschland (Energieeffizienzgesetz — EnEfG) vom 13. November 2023 (BGBl. I Nr. 305). Für Rechenzentren gelten ab 2024 die weltweit schärfsten gesetzlichen Energieeffizienz-Anforderungen.
+
+Geltungsbereich RZ-Regelungen (§ 12 ff. EnEfG):
+  — Neue Rechenzentren (Inbetriebnahme ab 1. Juli 2026): PUE ≤ 1,2 (ab 1.1.2027 PUE ≤ 1,1 angestrebt für Neubauten)
+  — Bestehende Rechenzentren (Betrieb vor 1. Juli 2026): PUE ≤ 1,5 bis 31.12.2026; PUE ≤ 1,3 bis 31.12.2030
+  — Ausnahme: RZ unter 1 MW IT-Last; Serverräume unter 100 kW
+  — Grüner Strom: Ab 1. Januar 2024 müssen neue RZ mindestens 50 % ihres Strombedarfs mit nachweislichem erneuerbarem Strom decken (§ 12 EnEfG); ab 2027: 100 % (Herkunftsnachweise oder PPA)
+  — Abwärmenutzung: Ab 2026 müssen neue RZ mindestens 10 % der Abwärme nutzen oder einer Nutzung zugänglich machen (§ 14 EnEfG); ab 2027: 20 %
+
+PUE (Power Usage Effectiveness):
+  — PUE = Gesamtenergieverbrauch RZ / IT-Energieverbrauch
+  — PUE 1,0 = ideal (100 % IT-Nutzung, 0 % Overhead)
+  — Typische Bestandsanlagen: PUE 1,5–2,5
+  — Moderne Hyperscaler: PUE 1,1–1,15
+
+Meldepflichten EnEfG (§ 15 EnEfG):
+  — Jährliche Berichterstattung an Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA)
+  — Angaben: IT-Last, Gesamtstromverbrauch, PUE, Anteil erneuerbarer Strom, Abwärmenutzung
+  — Veröffentlichungspflicht: BAFA führt öffentliches Register der RZ ab 2 MW IT-Last
+
+GENEHMIGUNGSVERFAHREN FÜR RECHENZENTREN
+
+Baugenehmigung:
+  — Rechenzentren sind Sonderbauten nach Landesbauordnungen (§ 2 Abs. 4 MBO — Musterbauordnung)
+  — Brandschutzkonzept nach § 51 MBO: Notwendig für Sonderbauten; Feuerlöschanlagen, Brandabschnitte, Rauchableitung
+  — Statik: Lastangaben für Server-Racks (≥10 kN/m²), Kühlaggregat-Lasten auf Dächern
+  — Denkmalschutz: In Frankfurt, München, Hamburg: RZ-Neubau oft in Bürogebäuden; Denkmalanforderungen beachten
+
+BImSchG-Pflicht für Rechenzentren:
+  — Kühlaggregate (Kältemittel-Kreislauf): Kältemaschinen können § 4 BImSchG i.V.m. 4. BImSchV unterliegen, wenn Kältemittelmenge oder Motorleistung Schwellenwerte überschreitet
+  — Notstromaggregate (Diesel-Generatoren): 4. BImSchV Nr. 1.1 — Dieselmotoren-BHKW ≥ 1 MW thermisch → Spalte 2 BImSchG
+  — Schallimmissionsschutz: Kühltürme, Kühlaggregate, USV-Anlagen können TA Lärm-Grenzwerte gefährden (Stadtlagen: Nähe zu Wohnbebauung)
+  — Typisch kein Spalte-1-Verfahren für RZ, außer bei sehr großen Notstromaggregaten (≥50 MW thermisch)
+
+Wasserrechtliche Genehmigungen:
+  — Freikühlung mit Brunnenwasser (Grundwasser): Wasserrechtliche Erlaubnis nach WHG § 8 und Landeswasserrecht
+  — Rückkühler mit offenen Wasserkreisläufen: AwSV (Verordnung über Anlagen zum Umgang mit wassergefährdenden Stoffen)
+  — Frankfurt RZ-Dichte und Grundwasserproblem: Hoher Grundwasserverbrauch durch viele RZ im Rhein-Main-Gebiet führte zu Auflagen (sparsamer Umgang)
+
+STANDORTE UND GENEHMIGUNGSHERAUSFORDERUNGEN
+
+Frankfurt am Main (DE-CIX Standort, größter Internetknoten Europas):
+  — Höchste RZ-Dichte Deutschlands; ca. 150+ RZ im Rhein-Main-Gebiet
+  — Netzkapazität: DE-CIX Frankfurt überträgt Peak-Traffic bis 21 Tbit/s (2024)
+  — Stromanschluss: E.ON/Westenergie und Mainova (Frankfurt) als VNB; HS-Anschluss für Hyperscaler
+  — Engpass Netzanschluss: Lange Vorlaufzeiten (3–7 Jahre) für HS/HöS-Anschlüsse in Frankfurt wegen Netzausbaubedarf
+  — Planungsrecht: FNP Frankfurt weist Sondergebiete für RZ in Gewerbegebieten und Industriegebieten aus
+
+Berlin / Brandenburg:
+  — Wachstumsmarkt für RZ (günstigere Grundstücke als Frankfurt)
+  — Erneuerbare Energieversorgung: Brandenburg (Windenergie) bietet grünen Strom
+  — Netzanschluss Berlin: 50Hertz als ÜNB; Vattenfall Wärme Berlin (Fernwärme) für Abwärmenutzung
+
+München / Bayern:
+  — Teurer Standort (Grundstücke); Bayerische Staatsbetriebe (LRZ, MUC RZ)
+  — Abwärmenutzung: Stadtwerke München integrieren RZ-Abwärme in Fernwärmenetz (Pilotprojekte)
+
+Hamburg:
+  — Hafen- und Logistikstandort; gute Fernwärmeinfrastruktur (Vattenfall Wärme Hamburg)
+  — RZ + Fernwärme: Abwärmenutzung über HEW/Vattenfall in Pilotprojekten
+
+ABWÄRMENUTZUNG (§ 14 ENEFG)
+
+Pflicht ab 2026: Abwärme aus RZ muss zumindest technisch nutzbar sein. Optionen:
+  — Fernwärmenetz-Einspeisung: Anbindung an kommunale Wärmenetze (4. Gesetz Wärmeplanung 2024)
+  — Eigene Wärmenutzung: Gebäudeheizung, Warmwasser im RZ-Gebäude
+  — Industrielle Abnehmer: Wärme für Gewächshäuser, Produktionsprozesse in Nachbarschaft
+
+Technische Anforderungen für Wärmenetzkopplung:
+  — Temperaturniveau: Niedertemperaturnetze 40–60°C (4. Generation Fernwärme): kompatibel mit Abwärme-Wärmepumpen
+  — Hochtemperaturnetze (alt, 80–100°C): Wärmepumpe oder thermische Aufwertung erforderlich
+  — Wirtschaftlichkeit: Abwärmenutzung oft profitabel, da Kühllast reduziert wird
+
+GRÜNER STROM FÜR RECHENZENTREN (§ 12 ENEFG)
+
+Nachweisoptionen:
+  — Herkunftsnachweise (HkN): nach EEG 2023 und UrnV (Herkunftsnachweisverordnung)
+  — Power Purchase Agreements (PPA): Direktvertrag mit Windpark/PV-Anlage (Virtual PPA oder physisches PPA)
+  — Eigene Erzeugungsanlage (PV auf RZ-Dach, Windpark in Gesellschaft)
+  — Grünstromkennzeichnung: Energielieferant mit zertifiziertem Grünstrom-Mix
+
+TECHNISCHE STANDARDS
+
+  — DIN EN 50600 (Informationstechnik — Einrichtungen und Infrastruktur von Rechenzentren): Normenreihe für RZ-Planung, -Bau und -Betrieb
+  — EN 50600-1 (Allgemeine Konzepte), EN 50600-2-x (Physische Infrastruktur), EN 50600-4-x (Energieeffizienz)
+  — Uptime Institute Tier-Klassifizierung: Tier I–IV (Tier IV: 99,9999 % Verfügbarkeit); keine Rechtsnorm, aber Marktstandard
+  — TIA-942 (Telecommunications Infrastructure Standard for Data Centers): US-Norm, in DE als Referenz verwendet
+  — ISO/IEC 27001 (Informationssicherheit): oft als Vertragsanforderung von Kunden
+
+BAURECHT SONDERTHEMA: MOBILFUNKANTENNEN AUF RZ-DÄCHERN
+
+  — RZ-Betreiber erlauben oft Mobilfunksantennen auf Dächern (Mieteinnahmen)
+  — Genehmigung: Einzelverfahren nach BauO (in der Regel verfahrensfrei bis definierter Größe, je nach Bundesland)
+  — Keine BImSchG-Pflicht für Mobilfunkantennen

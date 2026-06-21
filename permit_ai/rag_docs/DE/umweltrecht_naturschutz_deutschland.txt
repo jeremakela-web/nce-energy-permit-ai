@@ -1,0 +1,107 @@
+UMWELTRECHT UND NATURSCHUTZ FÜR ENERGIEPROJEKTE IN DEUTSCHLAND
+
+Überblick über naturschutzrechtliche Anforderungen bei Genehmigungsverfahren für Energieanlagen: BNatSchG, FFH-Recht, Eingriffsregelung, Landschaftsplanung.
+
+BUNDESNATURSCHUTZGESETZ (BNATSCHG)
+
+Gesetz über Naturschutz und Landschaftspflege (Bundesnaturschutzgesetz — BNatSchG) in der Fassung vom 29. Juli 2009 (BGBl. I S. 2542), zuletzt geändert durch Artikel 3 des Gesetzes vom 20. Juli 2022 (BGBl. I S. 1354 — WindBG). Grundlage für alle Eingriffe in Natur und Landschaft.
+
+EINGRIFFSREGELUNG (§§ 13–19 BNATSCHG)
+
+Pflicht zur Vermeidung, Minimierung und Ausgleich von Eingriffen:
+  — § 13 BNatSchG: Verursacherprinzip — wer eingreift, muss ausgleichen
+  — § 14 BNatSchG: Definition Eingriff: Veränderungen der Gestalt oder Nutzung von Grundflächen oder Veränderungen des Grundwasserspiegels, die die Leistungsfähigkeit des Naturhaushalts oder das Landschaftsbild erheblich beeinträchtigen können
+  — § 15 BNatSchG: Verfahren Eingriffsregelung
+    1. Vermeidungsgebot: Eingriff muss so gering wie möglich gehalten werden
+    2. Ausgleich: Beeinträchtigungen, die nicht vermeidbar sind, müssen ausgeglichen werden (funktionale Äquivalenz)
+    3. Ersatz: Wenn Ausgleich nicht möglich, Ersatzmaßnahmen an anderer Stelle
+    4. Ersatzzahlung: Wenn Ausgleich und Ersatz nicht vollständig möglich (§ 15 Abs. 6 BNatSchG)
+
+Landschaftspflegerischer Begleitplan (LBP):
+  — Pflichtbestandteil bei Windkraft-, PV-Freiflächenanlagen und anderen größeren Eingriffen
+  — Inhalt: Bestandserfassung, Beurteilung der Eingriffserheblichkeit, Maßnahmenplanung (Vermeidung, Ausgleich, Ersatz)
+  — Grundlage: Biotopwertverfahren (je nach Bundesland: Münchner Modell, KV NRW, Baden-Württemberg-Biotopwertliste)
+
+ARTENSCHUTZ (§§ 44, 45 BNATSCHG)
+
+§ 44 BNatSchG — Zugriffsverbote für besonders und streng geschützte Arten:
+  — Tötungsverbot (§ 44 Abs. 1 Nr. 1): erheblich erhöhtes Tötungsrisiko für Individuen besonders geschützter Arten
+  — Störungsverbot (§ 44 Abs. 1 Nr. 2): erhebliche Störung in Fortpflanzungs-, Aufzucht-, Mauserungs-, Überwinterungs- und Wanderungszeiten
+  — Beschädigungsverbot (§ 44 Abs. 1 Nr. 3): Zerstörung oder Beschädigung von Nestern, Bruthöhlen, Winterquartieren
+
+Besonders geschützte Arten (§ 7 Abs. 2 Nr. 13 BNatSchG):
+  — Alle einheimischen Vogelarten (Vogelschutzrichtlinie Art. 1 VRL)
+  — Alle Fledermäuse (Chiroptera, Anhang IV FFH-RL)
+  — Viele Reptilien, Amphibien, Insekten (Anhang IV FFH-RL)
+
+Streng geschützte Arten (§ 7 Abs. 2 Nr. 14 BNatSchG):
+  — Greifvögel, Eulen (alle europäischen Arten)
+  — Alle Fledermäuse
+  — Wölfe, Biber, Luchs
+
+Artenschutzrechtlicher Fachbeitrag (ASB):
+  — Strukturkartierung des Untersuchungsgebiets (UK)
+  — Potenzialanalyse für relevante Artengruppen
+  — Vertiefende Erfassung für planungsrelevante Arten
+  — Konfliktanalyse: Verbotstatbestände nach § 44 BNatSchG
+  — Vermeidungs- und CEF-Maßnahmen
+
+CEF-Maßnahmen (Continuous Ecological Functionality):
+  — Habitat-Aufwertungsmaßnahmen vor Baubeginn
+  — Ziel: Sicherung der ökologischen Funktion von Fortpflanzungs- und Ruhestätten (FuR) im räumlichen Zusammenhang
+  — Beispiele: Nistkästen, Heckenrückschnitt außerhalb der Brutzeit, Offenlandentwässerung
+
+Ausnahme nach § 45 BNatSchG:
+  — Voraussetzungen kumulativ: (1) Zwingende Gründe des überwiegenden öffentlichen Interesses, (2) keine zumutbare Alternative, (3) FEZ (günstiger Erhaltungszustand) bleibt gewahrt
+  — WindBG 2022: Windenergie liegt im "überragenden öffentlichen Interesse" → stärkt Ausnahmetatbestand erheblich
+  — Ausnahmeerteilung durch Genehmigungsbehörde nach Anhörung der Naturschutzbehörde (UNB)
+
+FFH-RECHT (FAUNA-FLORA-HABITAT-RICHTLINIE)
+
+Richtlinie 92/43/EWG (Habitat-Richtlinie) umgesetzt in §§ 31–38 BNatSchG:
+  — FFH-Gebiete: Gebiete gemeinschaftlicher Bedeutung (GGB) nach Art. 4 FFH-RL
+  — Vogelschutzgebiete (VSG): Besondere Schutzgebiete (BSG) nach Art. 4 VRL (Vogelschutzrichtlinie 79/409/EWG)
+  — Zusammen: Natura-2000-Netz
+
+Verträglichkeitsprüfung (VP / FFH-VP, §§ 34, 35 BNatSchG):
+  — Pflicht: wenn Projekt erhebliche Beeinträchtigungen eines Natura-2000-Gebiets nicht ausgeschlossen werden kann
+  — Maßstab: Erhaltungsziele und Schutzzwecke des betroffenen Gebiets
+  — Verträglichkeitsstudie (VS): Detaillierte ökologische Analyse
+  — Ergebnis: VP positiv (kein erheblicher Eingriff) → Projekt zulässig; VP negativ → Abweichung nach § 34 Abs. 3 BNatSchG
+
+Abweichung von FFH-Schutzzielen (§ 34 Abs. 3 BNatSchG):
+  — Voraussetzungen: zwingende Gründe des überwiegenden öffentlichen Interesses, keine Alternative, Kohärenzsicherungsmaßnahmen
+  — Abstimmung mit EU-Kommission erforderlich, wenn prioritäre Arten oder Lebensraumtypen betroffen
+
+SCHUTZGEBIETE
+
+§§ 22–29 BNatSchG — Schutzgebietskategorien:
+  — Nationalparks (§ 24 BNatSchG): strenge Schonung; Energieanlagen grundsätzlich unzulässig
+  — Biosphärenreservate (§ 25 BNatSchG): Kernzone wie Nationalpark; Puffer- und Entwicklungszone eingeschränkt
+  — Naturschutzgebiete (§ 23 BNatSchG): erhebliche Einschränkungen; WEA/PV in der Regel unzulässig
+  — Landschaftsschutzgebiete (§ 26 BNatSchG): Beeinträchtigungsverbot; WEA/PV eingeschränkt, aber Ausnahmen möglich (§ 67 BNatSchG)
+  — Naturparks (§ 27 BNatSchG): nachhaltiger Tourismus, moderater Schutz; Einzelfallprüfung
+  — Gesetzlich geschützte Biotope (§ 30 BNatSchG): z.B. Moore, Sümpfe, Röhrichte — Eingriff verboten ohne Ausnahme
+
+LANDSCHAFTSPLAN UND LANDSCHAFTSRAHMENPLAN
+
+  — Landschaftsrahmenplan (regional): Übergeordnete Landschaftsplanung; Vorgaben für Vorranggebiete
+  — Landschaftsplan (kommunal): Detailplanung der Gemeinde; muss mit B-Plan abgestimmt sein
+  — Grüner Infrastrukturplan: nationale Strategie für grüne Infrastruktur (BMWK 2020)
+
+WINDENERGIE UND NATURSCHUTZ — NEUREGELUNGEN WINDBG 2022
+
+WindBG 2022 und BNatSchG-Änderungen für Windenergie:
+  — § 45b BNatSchG (neu): Artenschutzrechtliche Prüfung für Windenergie — standardisiertes Verfahren
+    — Abstands-Signifikanzberechnung nach § 45b Abs. 1–5 BNatSchG (TAK-Tabellen gesetzlich fixiert)
+    — Kollisionsrisiko-Bewertung: "signifikant erhöhtes Tötungsrisiko" bei Unterschreitung TAK ohne Ausgleichsmaßnahmen
+    — Betriebsbeschränkungen als Ausgleich: Abschaltzeiten nach Brutphase, nach Ernte (Rotmilan)
+  — § 45c BNatSchG: Schutzabstandsberechnung und Ausnahmen (WindBG-Beschleunigung)
+  — Verkürzung Artenschutzkartierung: statt 2 Jahre oft 1 Jahr ausreichend (Übergangsregelung)
+  — Gondelmonitoring: Abschaltung bei Fledermaus-Aktivität weiter Pflicht (§ 45b Abs. 6 BNatSchG)
+
+KOMPENSATIONSFLÄCHENPOOLS UND ÖKOKONTO
+
+  — Ökokonto (§ 16 BNatSchG): Vorsortige Durchführung von Ausgleichs- und Ersatzmaßnahmen; Einbuchen als Kompensationsguthaben
+  — Kompensationsflächenpools: Anbieter von Ökokonto-Punkten (Kommunen, private Dienstleister)
+  — Ersatzzahlungsverordnungen der Länder: Wenn Flächen nicht verfügbar; Zahlung in Fonds für Naturschutzmaßnahmen

@@ -1,0 +1,119 @@
+WINDENERGIE AN LAND (ONSHORE) — GENEHMIGUNGSVERFAHREN IN DEUTSCHLAND
+
+Genehmigungsverfahren für Windenergieanlagen (WEA) an Land nach BImSchG, BauGB und LNatSchG der Länder. Stand: 2024.
+
+RECHTSRAHMEN WINDKRAFT ONSHORE
+
+Primäre Rechtsgrundlagen:
+  — Bundes-Immissionsschutzgesetz (BImSchG) § 4 i.V.m. 4. BImSchV Nr. 1.6
+  — Baugesetzbuch (BauGB) § 35 Abs. 1 Nr. 5 (Privilegierung im Außenbereich)
+  — Wind-an-Land-Gesetz (WindBG) 2022
+  — Bundesnaturschutzgesetz (BNatSchG) §§ 44, 45 (Artenschutz)
+  — Raumordnungsgesetz (ROG) und Landesraumordnungsgesetze
+
+GENEHMIGUNGSPFLICHT NACH 4. BIMSCHV NR. 1.6
+
+  — ≥3 WEA: immer Spalte 1 (förmliches Verfahren mit Öffentlichkeitsbeteiligung)
+  — 2 WEA mit Nabenhöhe ≥50 m: Spalte 1
+  — 2 WEA mit Nabenhöhe <50 m: keine BImSchG-Pflicht (BauGB-Bauantrag)
+  — 1 WEA mit Nabenhöhe ≥50 m: Spalte 2 (vereinfachtes Verfahren)
+  — 1 WEA mit Nabenhöhe <50 m: keine BImSchG-Pflicht
+
+Heutige Onshore-WEA: typisch 100–180 m Nabenhöhe → nahezu immer BImSchG-pflichtig.
+
+ARTENSCHUTZRECHTLICHER FACHBEITRAG (ASB)
+
+Pflicht nach § 44 BNatSchG (Zugriffsverbote):
+  — § 44 Abs. 1 Nr. 1 BNatSchG: Tötungsverbot für besonders geschützte Tierarten
+  — § 44 Abs. 1 Nr. 2 BNatSchG: Störungsverbot (Fortpflanzungs- und Ruhestätten)
+  — § 44 Abs. 1 Nr. 3 BNatSchG: Zerstörungsverbot für Fortpflanzungs- und Ruhestätten
+
+Kollisionsrisiko-Bewertung (TAK-Methode):
+  — Technisch-ökologische Abstandsempfehlungen (TAK) nach Länderarbeitsgemeinschaft der Vogelschutzwarten (LAG VSW), Empfehlungen 2015 (aktualisiert 2021):
+    Rotmilan: 1.500 m Abstand zu Brutplatz (TAK)
+    Schwarzstorch: 3.000 m Abstand (TAK)
+    Uhu: 1.000 m Abstand (TAK)
+    Seeadler: 3.000 m Abstand (TAK)
+    Wiesenweihe: 1.000 m Abstand (TAK)
+    Kranich (Balzplätze): 500 m Abstand (TAK)
+  — TAK sind Empfehlungen, keine harte Rechtsschranke; Einzelfallprüfung möglich
+  — BVerwG-Urteil 2020 (9 A 7.19): statistischer Ansatz zur Beurteilung des signifikant erhöhten Tötungsrisikos
+
+Fledermäuse:
+  — Gondelmonitoring (Aktivitätsmessung in Gondelhöhe) typisch 1 Jahr vor Genehmigung
+  — Abschaltalgorithmen für Fledermäuse: Abschaltzeiten nach RENEBAT-Methode (bei Wind <6 m/s, Temperatur >10°C, nachts)
+  — Windenergiesensible Fledermausarten: Abendsegler, Zwergfledermaus, Rauhautfledermaus
+
+Kartierungsumfang (typisch für förmliches Verfahren):
+  — Brutvögel: 2 Erfassungsjahre (Ausnahmen nach WindBG 2022: 1 Jahr möglich)
+  — Zugvögel: 1 Jahr an Radar + visuelle Erfassung an 2 Stationen
+  — Fledermäuse: 1 Jahr Gondelmonitoring (bei Nabenhöhe >100 m Pflicht)
+  — Biotopkartierung und FFH-Habitatübersicht (bei Nähe zu FFH-Gebieten)
+
+Ausnahme nach § 45 BNatSchG:
+  — Wenn Verbotstatbestand unvermeidbar: Ausnahme durch Genehmigungsbehörde
+  — Voraussetzung: zwingende Gründe des überwiegenden öffentlichen Interesses (WindBG 2022 stärkt dies)
+  — Ausgleichsmaßnahmen (CEF-Maßnahmen): Habitatverbesserung, Horstschutz
+
+SCHALLIMMISSIONSBERECHNUNG
+
+Pflicht nach TA Lärm (1998) und FGW TR 1 (Technische Richtlinien Windenergie):
+  — Schallleistungspegel LWA aus Typenprüfung oder Messung nach DIN EN ISO 61400-11
+  — Schallausbreitungsberechnung nach DIN ISO 9613-2 oder alternativem Modell (z.B. WiTuS)
+  — Maßgebliche Immissionsorte (IO): Wohngebäude im Einflussbereich
+  — Immissionsrichtwerte nach TA Lärm: WA 55/40 dB(A) (tags/nachts), WR 50/35, MI 60/45, GE 65/50, GI 70/keine
+  — Tonzuschlag: +3 dB(A) bei deutlich wahrnehmbaren Tönen (Turm-Eigenfrequenz, Getriebeton)
+  — Tieffrequenter Schall: DIN 45680 als ergänzende Richtlinie; kaum praktische Rolle bei modernen WEA
+
+SCHATTENFLICKER
+
+Pflicht zur Berechnung nach Ländererlassen (BImSchG-Nebenbestimmung):
+  — Grenzwert: 30 Stunden/Jahr und maximal 30 Minuten/Tag astronomisch maximal
+  — In der Praxis: Abschaltmodul (SCA — Shadow Casting Algorithm) in WEA-Steuerung
+  — Richtlinie: BMWK-Hinweise zu Schattenflicker (2002, aktualisiert)
+  — Berechnung mit WinShadow oder ähnlichen Tools
+
+UMWELTVERTRÄGLICHKEITSPRÜFUNG (UVP)
+
+Nach UVPG (Anlage 1, Nr. 1.6):
+  — ≥20 WEA: UVP-Pflicht
+  — 6–19 WEA: allgemeine Vorprüfung des Einzelfalls
+  — 3–5 WEA: standortbezogene Vorprüfung
+
+UVP-Untersuchungsrahmen (Scoping, § 15 UVPG):
+  — Schutzgüter: Mensch, Tiere, Pflanzen, biologische Vielfalt, Boden, Wasser, Luft/Klima, Landschaft, Kulturgüter
+  — Ergebnis: Umweltverträglichkeitsstudie (UVS)
+
+VERFAHRENSABLAUF FÖRMLICHES VERFAHREN (TYPISCH)
+
+Vorantragsphase (0–12 Monate vor Antrag):
+  1. Standortsuche, Windgutachten, Windmessungen
+  2. Klärung Raumordnung: Vorranggebiet vorhanden? FNP-Konzentrationszone?
+  3. Artenschutz-Voruntersuchung (VSG, FFH-Check)
+  4. Scoping-Termin bei der Genehmigungsbehörde (freiwillig, aber empfohlen)
+
+Antragsphase:
+  1. Vollständiger Antrag bei Genehmigungsbehörde (§ 10 BImSchG)
+  2. Vollständigkeitsprüfung (8 Wochen) (§ 7 9. BImSchV)
+  3. Bekanntmachung + Auslegung (1 Monat) (§ 10 Abs. 3 BImSchG)
+  4. Einwendungsfrist (2 Monate ab Bekanntmachung)
+  5. TÖB-Beteiligung (Träger öffentlicher Belange): Naturschutzbehörde, Luftfahrt (DFS), Bundeswehr, Radar, Denkmalschutz, Straßenbaubehörde
+  6. Erörterungstermin (optional seit 2022-Änderung)
+  7. Abschließende Prüfung, Genehmigungsbescheid
+
+Gesetzliche Entscheidungsfrist: 3 Monate ab vollständigem Antrag (§ 10 Abs. 6a BImSchG).
+Praxis-Laufzeit: häufig 12–36 Monate (Hauptbremse: Artenschutz und TÖB).
+
+BESONDERE ASPEKTE: MILITÄR, RADAR, LUFTFAHRT
+
+  — Bundeswehr-Radar: BMVg/Bundesamt für Infrastruktur, Umweltschutz und Dienstleistungen (BAIUDBw) als TÖB
+  — Flugsicherung: Deutsche Flugsicherung (DFS) — Abstandsanforderungen zu Radaranlagen (15 km Regelschutzbereich)
+  — Hinderniskennzeichnung: LuftVG § 14 — WEA ≥100 m: Nachtkennzeichnung (rotes Blinklicht) oder bedarfsgerechte Kennzeichnung (BNK)
+  — BNK-System (Bedarfsgerechte Nachtkennzeichnung): Transponderabfrage, Aktivierung nur bei Annäherung von Luftfahrzeugen; BMWK-Erlass 2020
+
+WIRTSCHAFTLICHE KENNZAHLEN (ORIENTIERUNG, KEIN GARANTIERTER WERT)
+
+  — Typische Projektgröße: 3–20 WEA, 10–100 MW
+  — Volllaststunden Onshore: 2.000–3.000 h/a (je nach Standort)
+  — Kapitalkosten: ca. 1.200–1.600 €/kW (Turbine + Fundament + Erschließung)
+  — EEG-Marktprämie: 6–8 ct/kWh (Ausschreibungsergebnis 2023/2024)

@@ -7,6 +7,7 @@ Odottaa PDF-tiedostoja kansioissa (projektin juuressa):
     rag_docs/NO/   — Norja    (no)
     rag_docs/PL/   — Puola    (pl)
     rag_docs/EE/   — Viro     (et)
+    rag_docs/DE/   — Saksa    (de)
 
 Käyttö:
     # Kaikki maat
@@ -56,6 +57,7 @@ COUNTRY_LANG: dict[str, str] = {
     "NO": "no",
     "PL": "pl",
     "EE": "et",
+    "DE": "de",
 }
 
 ALL_COUNTRIES = list(COUNTRY_LANG.keys())

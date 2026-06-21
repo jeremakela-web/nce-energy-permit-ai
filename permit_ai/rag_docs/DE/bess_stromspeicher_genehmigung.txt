@@ -1,0 +1,95 @@
+BATTERIESPEICHER (BESS) — GENEHMIGUNG UND REGULATORISCHER RAHMEN IN DEUTSCHLAND
+
+HINWEIS REGULATORISCHE LÜCKE: Deutschland hat kein dediziertes Batteriespeichergesetz (Stand 2024). Batteriespeicher fallen unter allgemeines Bau-, Immissionsschutz- und Gefahrstoffrecht, je nach Größe und Standort.
+
+GENEHMIGUNGSPFLICHT NACH ANLAGENGRÖSSE
+
+4. BImSchV Anhang 1, Nummer 1.16 (Anlagen zum Speichern von elektrischer Energie mittels elektrochemischer Prozesse):
+  — ≥ 100 MWh Speicherkapazität (nutzbar): Spalte 2 der 4. BImSchV → vereinfachtes BImSchG-Verfahren (§ 19 BImSchG)
+  — 10 MWh – 99 MWh: grundsätzlich keine BImSchG-Pflicht; Genehmigung nach BauGB (Bauantrag)
+  — < 10 MWh: BauGB-Verfahren (Bauantrag oder verfahrensfrei je nach Bundesland und Aufstellungsart)
+  — Kombinationsanlage: Wenn BESS als Nebenanlage zu einer BImSchG-genehmigten WEA oder PV-Anlage errichtet wird, wird es Teil des BImSchG-Verfahrens für die Hauptanlage (unabhängig von Größe)
+
+VERFAHRENSWEG NACH BAURECHT (10–99 MWH BESS)
+
+Genehmigung nach Landesbauordnungen (z.B. § 63 BauO NRW, Art. 55 BayBO, § 59 NBauO):
+  — Bauantrag bei der unteren Bauaufsichtsbehörde (Landratsamt, kreisfreie Stadt)
+  — Unterlagen: Lageplan, Grundrisspläne, Schnittzeichnungen, Brandschutzkonzept, Statik
+  — Bearbeitungszeit: 1–3 Monate (je nach Bundesland und Behörde)
+  — Nebenanlage im Industrie- oder Gewerbegebiet (GI/GE): oft genehmigungsfrei bis zur Grenze des Bauordnungsrechts (Bundesland-abhängig)
+
+BRANDSCHUTZ — KRITISCHES THEMA FÜR BESS
+
+Keine bundeseinheitliche BESS-Brandschutznorm (Stand 2024). Anwendbare Regelwerke:
+
+DIN VDE 0510-11:2024 (Ausgabe März 2024):
+  — Erste deutsche Normausgabe für ortsfeste Batterieanlagen (Li-Ion, NMC, LFP)
+  — Anforderungen: Schutzabstände, Brandabschnitte, Lüftung, Löschsysteme, Überwachung
+  — Stationäre Systeme ab 30 kWh: Brandfrühesterkennungssystem empfohlen
+  — Stationäre Systeme ab 200 kWh: automatische Brandbekämpfungsanlage (Inertgas oder Aerosol) gefordert (Klasse nach Brandlast)
+  — Thermisches Durchgehen (Thermal Runaway): Detektionspflicht, definierte Reaktionskette
+
+VdS 3523 (Richtlinien für Batterie-Energiespeichersysteme, VdS-Klasse):
+  — Versicherungsrelevant: viele Industrie-Versicherungen verlangen VdS-3523-Konformität
+  — Anforderungen ähnlich DIN VDE 0510-11, aber mit Versicherungsfokus
+
+Feuerwehr-Richtlinien:
+  — FVEE-Leitfaden "Feuerwehreinsatz an Photovoltaik- und Batteriespeicheranlagen" (2022)
+  — Abstand zu Gebäuden: Landesfeuerordnungen; empfohlen ≥5 m (IDMT 2023-Empfehlung)
+  — Löschkonzept: Wasser (für LFP), CO₂ (für NMC) — Zell-Chemie bestimmt Löschmittel
+
+GefStoffV / TRGS (Gefahrstoffverordnung):
+
+Bei größeren BESS können Gefahrstofflagervorschriften anwendbar sein:
+  — Lagerung gefährlicher Stoffe (Elektrolyt): TRGS 510 (Lagerung von Gefahrstoffen)
+  — Wassergefährdende Stoffe: WHG (Wasserhaushaltsgesetz) § 62 bei relevanten Mengen
+  — Meldepflicht Störfallverordnung (12. BImSchV): ab definierten Mengenschwellen für gefährliche Stoffe (Anhang I der 12. BImSchV prüfen)
+
+TECHNISCHE ANFORDERUNGEN (AUSWAHL)
+
+  — IEC 62619:2022 (Safety of secondary lithium cells and batteries for use in stationary applications): internationale Norm, in DE anerkannt
+  — IEC 62477-1 (Safety requirements for power electronic converter systems) für BESS-Wechselrichter
+  — DIN EN IEC 61851-23 bei BESS mit Ladeinfrastruktur (Bidirectional Charging)
+  — UL 9540A (Testmethode für Thermal Runaway): US-Norm, in DE häufig als Nachweisbasis gefordert
+  — Netzkopplung: VDE-AR-N 4105, 4110 oder 4120 je nach Spannungsebene (wie PV)
+
+NETZANSCHLUSS UND SYSTEMDIENSTLEISTUNGEN
+
+Batteriespeicher im Netz:
+  — Eigenverbrauch ohne Einspeisung: keine EEG-Pflichten, nur Netzkopplung nach VDE-AR-N
+  — Einspeisung ins Netz: MaStR-Registrierung als Speicher
+  — Regelenergievermarktung:
+    FCR (Primärregelleistung): BESS ideal (Reaktion <30 s); Mindestgröße 1 MW, symmetrisch
+    aFRR (Sekundärregelleistung): BESS geeignet; Mindestgröße 5 MW
+    mFRR (Minutenreserve): BESS geeignet; Mindestgröße 5 MW
+    Intraday-Handel: BESS flexibel handelbar auf EPEX SPOT
+  — Netzentgeltbefreiung: § 118 Abs. 6 EnWG (Befreiung für Speicher, befristet bis 2026)
+  — Doppelbelastung (Einspeicherung + Ausspeicherung): Problem nicht vollständig gelöst (Stand 2024); Teilbefreiung nach § 118 EnWG gilt nur für bestimmte Konstellationen
+
+PLANUNGSRECHTLICHE EINORDNUNG BESS
+
+  — Industriegebiet (GI): BESS als Nebenanlage oder eigenständige Anlage zulässig
+  — Gewerbegebiet (GE): BESS bis zu gewisser Größe zulässig; großes BESS kann erhebliche Belästigung darstellen (TA Lärm: Kühlaggregate)
+  — Außenbereich (§ 35 BauGB): BESS NICHT privilegiert (keine Aufnahme in § 35 Abs. 1); Zulässigkeit nur über B-Plan oder als Nebenanlage zu privilegierter Wind/PV
+  — Kombination BESS + Wind/PV im Außenbereich: Nebenanlage anerkannt wenn funktionaler Zusammenhang (§ 35 Abs. 1 Nr. 5/8 BauGB); kein eigenständiges Recht für BESS
+
+GENEHMIGUNGSFREIE KLEINSPEICHER (ORIENTIEREND)
+
+  — Heimspeicher <10 kWh: in der Regel verfahrensfrei; nur VDE-Anschlussanforderungen
+  — Gewerbliche Anlage 10–200 kWh: Meldepflicht beim Netzbetreiber (VDE-AR-N 4105/4110)
+  — MaStR-Registrierungspflicht gilt unabhängig von Größe (auch für Kleinspeicher ab 1 kWh Speicherkapazität)
+
+WIRTSCHAFTLICHKEITSORIENTIERUNG (KEINE GARANTIERTEN WERTE)
+
+  — Großspeicher (>10 MWh): Kapitalkosten ca. 250–350 €/kWh (2024, stark sinkend)
+  — FCR-Erlöse: ca. 50.000–100.000 €/MW/Jahr (marktabhängig, 2023/2024)
+  — Lebensdauer: 15–20 Jahre (LFP-Chemie), 10–15 Jahre (NMC-Chemie)
+
+OFFENE REGULATORISCHE LÜCKEN (EHRLICHE EINSCHÄTZUNG STAND 2024)
+
+  — Kein dediziertes BESS-Genehmigungsgesetz: Regulierung fragmentiert über BImSchG, BauGB, GefStoffV, EnWG
+  — Netzentgeltdoppelbelastung: politisch diskutiert, noch keine dauerhafte Lösung
+  — Befreiung §118 Abs. 6 EnWG: läuft 2026 aus; Verlängerung offen
+  — UVP-Pflicht für BESS: keine explizite Regelung; Einzelfallprüfung ab ca. 200 MWh empfohlen
+  — Brandschutz-Normlücke: DIN VDE 0510-11:2024 ist neu; Behörden noch in Einarbeitungsphase; Anforderungen variieren zwischen Bundesländern
+  — Thermal-Runaway-Risikobewertung: keine bundeseinheitliche Methodik; UL 9540A als De-facto-Standard, aber nicht deutsches Recht

@@ -1,0 +1,112 @@
+BAUGESETZBUCH (BAUGB) UND RAUMORDNUNG — PLANUNGSRECHT FÜR ENERGIEANLAGEN
+
+Baugesetzbuch (BauGB) in der Fassung der Bekanntmachung vom 3. November 2017 (BGBl. I S. 3634), zuletzt geändert durch das Wind-an-Land-Gesetz (WindBG) vom 20. Juli 2022 (BGBl. I S. 1353) und das Baugesetzbuchänderungsgesetz 2023.
+
+BAUPLANUNGSRECHTLICHE ZULÄSSIGKEIT
+
+Die baurechtliche Zulässigkeit von Energieanlagen richtet sich nach dem BauGB:
+
+§ 30 BauGB — Anlagen im Geltungsbereich eines Bebauungsplans (B-Plan):
+  — Anlage muss den Festsetzungen des B-Plans entsprechen
+  — B-Plan kann Energieanlagen ausdrücklich zulassen oder ausschließen
+  — Sondergebiet Windkraft (SO Wind): Zulässig in ausgewiesenen Sondergebieten nach § 11 BauNVO
+  — Sondergebiet Photovoltaik (SO PV): Großflächige PV-Freiflächenanlagen nur in ausgewiesenem SO PV zulässig
+
+§ 34 BauGB — Anlagen im unbeplanten Innenbereich:
+  — Anlage muss sich in die Eigenart der näheren Umgebung einfügen
+  — Kleine Dachanlagen und Kleinstspeicher im Innenbereich in der Regel zulässig
+  — Industriegebiet: Batteriespeicher als Nebenanlage zum Betrieb zulässig
+
+§ 35 BauGB — Privilegierte Vorhaben im Außenbereich:
+  Windkraftanlagen: § 35 Abs. 1 Nr. 5 BauGB — PRIVILEGIERT im Außenbereich
+    — Kein B-Plan erforderlich; Zulässigkeit im Außenbereich, sofern keine entgegenstehenden öffentlichen Belange
+    — Öffentliche Belange nach § 35 Abs. 3 BauGB: Landschaftsbild, Naturschutz, Abstandsgebote
+    — HINWEIS: Mit dem WindBG 2022 gilt Windkraft zusätzlich als überragendes öffentliches Interesse (§ 2 EEG 2023), was Belange-Abwägung zugunsten von Wind verschiebt
+
+  PV-Freiflächenanlagen: § 35 Abs. 1 Nr. 8 BauGB (privilegiert für Anlagen bis 10 MW an bestimmten Standorten)
+    — EEG-Förderung setzt B-Plan voraus (§ 37 EEG 2023) für Freiflächenanlagen >1 MW auf Acker/Grünland
+    — Außenbereichsprivileg gilt nur für Sonderstandorte (Konversionsflächen, Seitenrandstreifen)
+
+  Batteriespeicher: NICHT nach § 35 Abs. 1 privilegiert
+    — Standalone-BESS im Außenbereich: Zulässigkeit nur über B-Plan (§ 30) oder als Nebenanlage zur privilegierten WEA/PV
+    — Kombination BESS + Wind/PV: Nebenanlage zulässig, wenn funktionaler Zusammenhang besteht (§ 35 Abs. 1 Nr. 5 i.V.m. Nr. 8)
+
+FLÄCHENNUTZUNGSPLAN (FNP) UND DARSTELLUNG
+
+  — Gemeinden steuern Windkraft über Darstellungen im FNP als Konzentrationszonen
+  — FNP-Konzentrationszonen haben Ausschlusscharakter für den Rest des Gemeindegebiets (§ 35 Abs. 3 S. 3 BauGB)
+  — Rechtsprechung: Konzentrationszone muss der Windenergie "substanziell Raum geben" (BVerwG-Leitentscheidungen)
+  — WindBG 2022: Flächenziel 2 % der Landesfläche für Windenergie bis 2032 (§ 3 WindBG); Länder können FNP-Anforderungen vereinfachen
+
+WIND-AN-LAND-GESETZ (WindBG) 2022
+
+Gesetz zur Erhöhung und Beschleunigung des Ausbaus von Windenergieanlagen an Land:
+  — Flächenziele nach § 3 WindBG:
+    Bayern: 1,8 % (bis 2032)
+    Baden-Württemberg: 1,8 %
+    Nordrhein-Westfalen: 1,8 %
+    Brandenburg: 2,2 %
+    Niedersachsen: 2,1 %
+    Sachsen-Anhalt: 2,2 %
+    Gesamtdeutschland: 2,0 % bis 2032
+  — Konsequenz bei Nichterreichen: Lockerung der Landesplanungsvorschriften (§ 4 WindBG)
+  — Windenergiegebiete nach § 2 WindBG: Länder müssen bis 2027 geeignete Gebiete ausweisen
+
+RAUMORDNUNG (ROG)
+
+Raumordnungsgesetz (ROG) vom 22. Dezember 2008 (BGBl. I S. 2986), zuletzt geändert 2023:
+  — Raumordnungsplan (Regionalplan): enthält Vorrang-, Eignungs- und Ausschlussgebiete für Windenergie
+  — Vorranggebiet Wind: Andere Nutzungen ausgeschlossen, wenn unvereinbar
+  — Eignungsgebiet Wind: geeignet für Wind, aber keine Ausschlusswirkung außerhalb
+  — Ausschlussgebiet Wind: Windkraft unzulässig (z.B. Biosphärenreservate, Wasserschutzzonen I/II)
+
+Raumordnungsverfahren (ROV) nach § 15 ROG:
+  — Bei raumbedeutsamen Vorhaben (ab ca. 20 WEA oder >100 MW installierter Leistung)
+  — Prüfung der Raumverträglichkeit vor BImSchG-Antrag
+  — Bundesraumordnungsplan Offshore (BRPO): für Offshore-Windparks in der AWZ
+
+ABSTANDSREGELUNGEN
+
+Abstandsgebote zu Wohngebieten (je nach Bundesland):
+
+  Bayern: 10-H-Regelung (§ 82 BayBO i.V.m. Bayerische Windenergieerlass 2023)
+    — 10-fache Anlagenhöhe Abstand zu Wohnbebauung
+    — Ausnahmen in WindBG-Gebieten und bei kommunaler Zustimmung
+    — Faktisch stark einschränkend: 200 m Anlage → 2.000 m Abstand
+
+  Bundeseinheitlicher Mindestabstand (§ 249 Abs. 3 BauGB):
+    — 1.000 m zu reinen und allgemeinen Wohngebieten (WR, WA)
+    — Länder können abweichen (unterschreiten oder überschreiten)
+
+  Andere Länder (Auswahl):
+    Schleswig-Holstein: 400 m (Wohngebiet), 800 m (Einzelhaus außen)
+    Niedersachsen: 600 m (allgemeines Wohngebiet)
+    Brandenburg: keine feste Regelung (Einzelfallprüfung)
+    NRW: 1.000 m (§ 249 BauGB, angewendet)
+
+BEBAUUNGSPLANVERFAHREN (§§ 3, 4, 10 BauGB)
+
+Erforderlich für:
+  — PV-Freiflächenanlagen >1 MW (außer privilegierte Standorte)
+  — Standalone-Batteriespeicher im Außenbereich
+  — Energieprojekte außerhalb § 35-Privilegierung
+
+Verfahrensschritte B-Plan:
+  1. Aufstellungsbeschluss (Gemeinderat)
+  2. Frühzeitige Öffentlichkeitsbeteiligung (§ 3 Abs. 1 BauGB)
+  3. Frühzeitige Behördenbeteiligung (§ 4 Abs. 1 BauGB)
+  4. Offenlage (§ 3 Abs. 2 BauGB): mindestens 1 Monat, Einwendungsfrist
+  5. Behördenbeteiligung (§ 4 Abs. 2 BauGB)
+  6. Abwägung und Satzungsbeschluss (§ 10 BauGB)
+  7. Bekanntmachung
+  Dauer: typisch 18–36 Monate
+
+Beschleunigtes Verfahren (§ 13b BauGB): Frist ausgelaufen (2022); nicht mehr anwendbar für Außenbereichsflächen.
+
+STÄDTEBAULICHER VERTRAG (§ 11 BauGB)
+
+Gemeinden schließen häufig städtebauliche Verträge mit Projektentwicklern:
+  — Kostenübernahme für Planungsverfahren durch Vorhabenträger
+  — Gemeindliche Beteiligung an Projekterlösen (neben § 6 EEG 2023 Entschädigungszahlung)
+  — Erschließungspflichten
+  — Bindungen an lokale Vergabe (Bauleistungen)

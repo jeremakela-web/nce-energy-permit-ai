@@ -1,0 +1,97 @@
+WINDENERGIE AUF SEE (OFFSHORE) — WINDSEEGESETZ (WindSeeG) UND GENEHMIGUNG
+
+Gesetz zur Entwicklung und Förderung der Windenergie auf See (Windenergie-auf-See-Gesetz — WindSeeG) vom 17. Oktober 2016 (BGBl. I S. 2258), zuletzt geändert durch das EEG 2023 und das WindSeeG-Änderungsgesetz 2023 (BGBl. I S. 2385). Ziel: 30 GW installierte Leistung Offshore bis 2030, 70 GW bis 2045.
+
+AUSSCHLIESSLICHE WIRTSCHAFTSZONE (AWZ) UND KÜSTENMEER
+
+Deutschland verfügt über zwei Offshore-Zonen:
+  — Küstenmeer (Länderzuständigkeit): bis 12 Seemeilen von der Basislinie
+    Zuständig: Bergamt/Landesbehörde (Schleswig-Holstein: LLUR, Niedersachsen: NLStBV, Mecklenburg-Vorpommern: StALU)
+  — Ausschließliche Wirtschaftszone (AWZ, Bundeszuständigkeit): 12–200 Seemeilen
+    Zuständig: Bundesamt für Seeschifffahrt und Hydrographie (BSH), Hamburg
+
+FLÄCHENENTWICKLUNGSPLAN (FEP) DES BSH
+
+Grundlage für alle Offshore-Windprojekte in der deutschen AWZ:
+  — BSH erstellt Flächenentwicklungsplan nach § 4 WindSeeG
+  — FEP legt Flächen fest, die für Windenergienutzung geeignet sind
+  — Flächen werden in Ausschreibungen vergeben; kein direktes Antragsrecht für Entwickler
+  — FEP 2023 (Entwurf): Plan für Nordsee- und Ostseeflächen bis 2030 und Perspektive bis 2040
+  — Standortfeststellung: BSH prüft Geologie, Meeresumwelt, Schifffahrt, Militär, Kabel
+
+AUSSCHREIBUNGSVERFAHREN OFFSHORE
+
+§§ 12 ff. WindSeeG — Ausschreibungsverfahren für Flächen in der AWZ:
+  — Ausschreibung durch BNetzA (Zentrale Ausschreibungsstelle)
+  — Zuschlag: wirtschaftlichster Bieter (Gebotspreis in ct/kWh), kombiniert mit Qualitätskriterien
+  — Gebotsgröße: typisch 500 MW–1 GW pro Los (Ausschreibungsrunde 2023/2024)
+  — Gebotsgrenze: Höchstwert 9,42 ct/kWh (Stand 2024)
+  — Sonderausschreibungen: zentral voruntersuchte und planfestgestellte Flächen ("schlüsselfertige Flächen")
+
+Realisierungsfahrplan:
+  — Nach Zuschlag: 6 Monate für Antrag auf Planfeststellungsbeschluss (PFB)
+  — PFB-Verfahren: BSH (§§ 24 ff. WindSeeG): 24–36 Monate
+  — Bau: typisch 3–5 Jahre nach PFB
+  — Inbetriebnahme: 7 Jahre nach Zuschlag (Ausschlussfrist)
+
+PLANFESTSTELLUNGSVERFAHREN (§ 24 WindSeeG)
+
+Für Windparks in der AWZ:
+  — Zuständige Behörde: BSH (Bundesamt für Seeschifffahrt und Hydrographie)
+  — Antragstellung mit vollständigen Unterlagen inkl. Umweltverträglichkeitsstudie
+  — UVP (§ 22 UVPG): immer UVP-pflichtig für Offshore-Windparks
+  — Beteiligung: TÖB (Wasser- und Schifffahrtsdirektion, Bundeswehr, Zoll, Fischereiverbände, Naturschutzverbände), Öffentlichkeit
+  — Erörterungstermin
+  — Planfeststellungsbeschluss (PFB): Rechtsgrundlage für Bau und Betrieb
+
+UVP-INHALTE FÜR OFFSHORE-WINDPARKS
+
+Untersuchungsschutzgüter:
+  — Meeressäuger (Schweinswale, Robben): Schallbelastung bei Rammarbeiten (SEL-Kriterien nach BSH-Standard Konstruktiver Schallschutz 2020)
+  — Seevögel: Kollisionsrisiko, Meideverhalten, Barrierewirkung
+  — Fische und Benthos: Rüttel- und Sedimentverwirbelung
+  — Schifffahrt: Sicherheit der Seefahrt (WSV-Stellungnahme)
+  — Kulturerbe: Unterwasserarchäologie (BSH-Kartierung)
+
+Schallschutz Rammarbeiten:
+  — BSH-Standard Konstruktiver Schallschutz (2020): Peak-Schalldruckpegel ≤190 dB re 1 µPa (SELc ≤160 dB) in 750 m Abstand
+  — Schutzmaßnahmen: Hydro Sound Damper (HSD), Bubble Curtain, IHC Noise Mitigation System
+
+NETZANSCHLUSS OFFSHORE
+
+§§ 17a ff. EnWG (Offshore-Netzanschluss):
+  — Cluster-Netzanbindungssystem: Offshore-Plattformen verbinden mehrere Windparks
+  — Zuständig: TenneT (Nordsee), 50Hertz (Ostsee)
+  — HVDC-Anbindungen: HGÜ-Seekabel (VSC-Technologie)
+    Bestehende Anbindungen: BorWin1-4, DolWin1-4, HelWin1-2 (TenneT Nordsee)
+    OSWin1, Baltic 1&2 (50Hertz Ostsee)
+  — Planfeststellung der Netzanbindungen: BNetzA nach § 18 NABEG (Bundesfachplanung)
+  — Haftungsregime: § 17e EnWG — TenneT haftet für Verzögerungen beim Kabelanschluss (Entschädigung Windparkbetreiber)
+  — Systemdienstleistungen Offshore: HVDC kann aktiv zur Netzregelung beitragen (NC HVDC)
+
+TECHNISCHE STANDARDS OFFSHORE
+
+BSH-Standards (verbindlich für AWZ):
+  — Mindestabstände: 500 m zwischen Turbinen (innerhalb Cluster), 3 NM zwischen Clustern (Empfehlung)
+  — Fundamenttypen: Monopile (bis ca. 35 m Wassertiefe), Jacket/Tripod (35–50 m), Floating (>50 m, noch in Entwicklung)
+  — Korrosionsschutz: ISO 12944, BSH-Standard Korrosionsschutz
+  — Kabelsysteme: BSH-Kabelführungsempfehlungen, Schutzrohre und -hülsen
+
+KÜSTENMEER-PROJEKTE (LÄNDER)
+
+Für Projekte bis 12 Seemeilen (Küstenmeer, Länderzuständigkeit):
+  — Schleswig-Holstein: LLUR, Raumordnungsplan Küstengewässer
+  — Niedersachsen: NLStBV nach NWG (Niedersächsisches Wassergesetz)
+  — Mecklenburg-Vorpommern: StALU nach LWaG M-V
+  — Behördenkoordination wichtig: Bergamt (Bergrecht), Wasserbehörde, Naturschutzbehörde
+
+WIRTSCHAFTLICHE RAHMENDATEN OFFSHORE (ORIENTIERUNG)
+
+  — Volllaststunden: 3.500–4.500 h/a (Nordsee: höher; Ostsee: etwas niedriger)
+  — Kapitalkosten: ca. 2.500–3.500 €/kW (stark abhängig von Wassertiefe und Entfernung)
+  — EEG-Marktprämie: 7–9 ct/kWh (Ausschreibungsergebnis 2023)
+  — Typische Projektgröße AWZ: 300 MW–1 GW
+
+HINWEIS WISSENSSTAND
+
+Verfahren und Zuschlagswerte ändern sich mit jeder Ausschreibungsrunde. Aktuelle Ausschreibungsergebnisse sind direkt bei BNetzA (www.bundesnetzagentur.de) abrufbar. Der hier dargestellte Stand bezieht sich auf die Rechtslage und Praxis per Anfang 2024.

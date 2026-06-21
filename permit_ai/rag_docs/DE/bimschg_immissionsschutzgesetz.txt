@@ -1,0 +1,104 @@
+BUNDES-IMMISSIONSSCHUTZGESETZ (BImSchG) — GENEHMIGUNGSVERFAHREN FÜR ENERGIEANLAGEN
+
+Gesetz zum Schutz vor schädlichen Umwelteinwirkungen durch Luftverunreinigungen, Geräusche, Erschütterungen und ähnliche Vorgänge (Bundes-Immissionsschutzgesetz — BImSchG) in der Fassung der Bekanntmachung vom 17. Mai 2013 (BGBl. I S. 1274), zuletzt geändert durch das Gesetz zur Änderung des Bundes-Immissionsschutzgesetzes 2021 (BGBl. I S. 3436).
+
+GENEHMIGUNGSPFLICHT NACH § 4 BImSchG
+
+Genehmigungsbedürftige Anlagen sind solche, die in besonderem Maße geeignet sind, schädliche Umwelteinwirkungen hervorzurufen oder in anderer Weise die Allgemeinheit oder die Nachbarschaft zu gefährden, erheblich zu benachteiligen oder erheblich zu belästigen. Die Genehmigungspflichtigkeit richtet sich nach der Vierten Verordnung zur Durchführung des Bundes-Immissionsschutzgesetzes (4. BImSchV) in der Fassung vom 2. Mai 2013.
+
+VIERTE VERORDNUNG ZUR DURCHFÜHRUNG DES BIMSCHG (4. BImSchV)
+
+Die 4. BImSchV unterteilt genehmigungsbedürftige Anlagen in zwei Kategorien:
+— Spalte 1: Förmliches Verfahren mit Öffentlichkeitsbeteiligung (§ 10 BImSchG)
+— Spalte 2: Vereinfachtes Verfahren ohne Öffentlichkeitsbeteiligung (§ 19 BImSchG)
+
+Relevante Anlagentypen für Energieprojekte (Anhang 1, 4. BImSchV):
+
+Nummer 1.1 — Wärmekraftwerke und andere Feuerungsanlagen:
+  — ab 50 MW thermisch: Spalte 1 (förmlich)
+  — 1–50 MW thermisch: Spalte 2 (vereinfacht)
+
+Nummer 1.6 — Windkraftanlagen:
+  — Drei oder mehr Anlagen: Spalte 1 (förmlich), unabhängig von Nabenhöhe
+  — Zwei Anlagen: ab 50 m Nabenhöhe → Spalte 1; unter 50 m → keine BImSchG-Pflicht
+  — Eine Anlage: ab 50 m Nabenhöhe → Spalte 2
+
+Nummer 1.16 — Batteriespeicher und elektrische Energiespeicher (neu eingefügt):
+  — ab 100 MWh Speicherkapazität: Spalte 2 (vereinfachtes Verfahren)
+  — unter 100 MWh: grundsätzlich keine BImSchG-Genehmigung erforderlich (BauGB-Verfahren)
+  — Hinweis: Lageranforderungen für Lithium-Batterien können separate GefStoffV-Anforderungen auslösen
+
+FÖRMLICHES GENEHMIGUNGSVERFAHREN (§ 10 BImSchG)
+
+Das förmliche Verfahren umfasst:
+1. Antragstellung bei der zuständigen Behörde (Landesimmissionsschutzbehörde, je nach Bundesland: Regierungspräsidium, Bezirksregierung, Landesamt für Umwelt)
+2. Vollständigkeitsprüfung des Antrags (§ 7 der 9. BImSchV)
+3. Bekanntmachung im Amtsblatt und Auslegung der Unterlagen (mindestens 1 Monat)
+4. Einwendungsfrist: mindestens 2 Monate ab Bekanntmachung
+5. Erörterungstermin (kann bei Bedarf entfallen nach § 16 der 9. BImSchV)
+6. Behördeninterne Prüfung und Beteiligung der Träger öffentlicher Belange (TÖB)
+7. Genehmigungsbescheid oder Ablehnung
+
+Entscheidungsfrist: 3 Monate ab vollständigem Antrag (§ 10 Abs. 6a BImSchG). Bei Windenergiegroßprojekten in der Praxis oft 12–24 Monate wegen Umweltprüfungen.
+
+VEREINFACHTES VERFAHREN (§ 19 BImSchG)
+
+Keine Öffentlichkeitsbeteiligung, keine Auslegung. Frist: grundsätzlich 3 Monate. Geeignet für Anlagen mit geringerem Störpotenzial (z.B. Batteriespeicher unter 100 MWh als Einzelanlage).
+
+UMWELTVERTRÄGLICHKEITSPRÜFUNG (UVP)
+
+Pflicht zur UVP nach UVPG (Gesetz über die Umweltverträglichkeitsprüfung):
+  — Windkraft ≥20 Anlagen: UVP-Pflicht (Anlage 1, Nr. 1.6.1 UVPG)
+  — Windkraft 3–19 Anlagen: allgemeine Vorprüfung
+  — Windkraft 6–19 Anlagen: standortbezogene Vorprüfung kann entfallen, wenn allgemeine Vorprüfung negativ
+  — Batteriespeicher >200 MWh: UVP-Vorprüfung empfohlen (Einzelfallprüfung)
+
+TECHNISCHE ANLEITUNG LUFT (TA LUFT 2021)
+
+Die TA Luft 2021 (Neufassung in Kraft seit 1. Dezember 2021, BAnz AT 18.08.2021 B3) legt Anforderungen an Emissionen und Immissionen fest. Für Batteriespeicher relevant:
+  — Thermalmanagement-Anlagen können als Anlagen i.S.d. TA Luft eingestuft werden
+  — Brandschutzanforderungen bei Li-Ion-Speichern: gesonderte Bewertung nach Anhang 1 TA Luft
+
+TECHNISCHE ANLEITUNG ZUM SCHUTZ GEGEN LÄRM (TA LÄRM)
+
+TA Lärm (1998, zuletzt ergänzt) regelt Immissionsrichtwerte:
+  — Allgemeine Wohngebiete (WA): 55 dB(A) tags, 40 dB(A) nachts
+  — Mischgebiete (MI): 60 dB(A) tags, 45 dB(A) nachts
+  — Industrie- und Gewerbegebiete (GI/GE): 70/65 dB(A) tags, keine Nachtbeschränkung (GI)
+
+Windkraft und TA Lärm: Der Schallleistungspegel der Anlage wird gemäß FGW TR 1 (Technische Richtlinien für Windenergieanlagen) ermittelt. Schallimmissionsprognose erforderlich.
+
+ZUSTÄNDIGE BEHÖRDEN (BEISPIELE NACH BUNDESLAND)
+
+  Bayern: Regierung von Oberbayern / Niederbayern / Schwaben (je nach Lage)
+  Baden-Württemberg: Regierungspräsidien Freiburg, Karlsruhe, Stuttgart, Tübingen
+  Nordrhein-Westfalen: Bezirksregierungen Arnsberg, Detmold, Düsseldorf, Köln, Münster
+  Brandenburg: Landesamt für Umwelt (LfU)
+  Niedersachsen: Gewerbeaufsichtsämter / Staatliche Gewerbeaufsichtsämter
+  Schleswig-Holstein: Landesamt für Landwirtschaft, Umwelt und ländliche Räume (LLUR)
+  Mecklenburg-Vorpommern: Staatliche Ämter für Landwirtschaft und Umwelt
+
+GENEHMIGUNGSUNTERLAGEN (9. BImSchV)
+
+Nach der Neunten Verordnung zur Durchführung des Bundes-Immissionsschutzgesetzes (9. BImSchV, Genehmigungsverfahrensverordnung) sind einzureichen:
+  — Antragsformular mit Beschreibung von Anlage und Betrieb
+  — Lagepläne und technische Zeichnungen
+  — Emissionsberechnungen (Lärm, ggf. Staub, Erschütterungen)
+  — Gefahrenabwehrkonzept (Sicherheitstechnische Beschreibung)
+  — Angaben zu Abfällen und Abwässern
+  — Umweltverträglichkeitsstudie (bei UVP-pflichtigen Anlagen)
+  — Artenschutzrechtlicher Fachbeitrag (Windkraft: obligatorisch)
+  — Schallimmissionsprognose (Windkraft, große Batteriespeicher)
+
+GENEHMIGUNGSFIKTION UND RECHTSSCHUTZ
+
+  — Genehmigungsfiktion (§ 42a VwVfG) gilt nicht für BImSchG-Verfahren.
+  — Widerspruch und Anfechtungsklage durch Dritte (Nachbarn, Umweltschutzverbände nach § 3 UmwRG): aufschiebende Wirkung kann auf Antrag des Genehmigungsinhabers ausgesetzt werden.
+  — Klagerecht für anerkannte Umweltverbände nach Umwelt-Rechtsbehelfsgesetz (UmwRG).
+
+PRAXIS-HINWEIS: BESCHLEUNIGUNGSMASSNAHMEN 2023
+
+Das WindBG 2022 und das Genehmigungsbeschleunigungsgesetz 2023 haben Verfahren gestrafft:
+  — Erörterungstermin kann durch schriftliches Verfahren ersetzt werden (§ 16 9. BImSchV n.F.)
+  — Einwendungsausschluss bei verspäteten Einwendungen (Präklusionsprinzip gilt wieder für BImSchG-Verfahren nach BGH-Rechtsprechung)
+  — Beschleunigung durch frühzeitige Beteiligung (Scoping) empfohlen

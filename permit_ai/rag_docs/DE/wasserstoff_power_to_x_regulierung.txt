@@ -1,0 +1,84 @@
+WASSERSTOFF UND POWER-TO-X — REGULIERUNG IN DEUTSCHLAND
+
+Regulatorischer Rahmen für grünen Wasserstoff, Elektrolyseure, Power-to-Gas (PtG), Power-to-Liquid (PtL) und sonstige Power-to-X (PtX)-Anlagen in Deutschland. Stand: 2024.
+
+NATIONALE WASSERSTOFFSTRATEGIE (NWS)
+
+Bundesregierung, Nationale Wasserstoffstrategie (NWS), verabschiedet Juni 2020, aktualisiert Juli 2023:
+  — Zielsetzung: Deutschland als weltweit führende Wasserstoffwirtschaft
+  — Inländische Elektrolyseurkapazität: 10 GW bis 2030 (aktualisiertes Ziel 2023; ursprünglich 5 GW bis 2030)
+  — Import: bis 2030 ca. 50–70 % des Wasserstoffbedarfs aus Import (Norwegen, Nordafrika, Naher Osten, Australien)
+  — Kernanwendungen: Industrie (Stahl, Chemie), Schwerlastverkehr, Schifffahrt, Speicherung
+  — Förderung: H2Global-Programm (Importunterstützung), Hydrogen Important Projects of Common European Interest (IPCEI Wasserstoff)
+
+GRÜNER WASSERSTOFF — DEFINITION UND ZERTIFIZIERUNG
+
+Delegierte Verordnung (EU) 2023/1185 (ergänzend zur Erneuerbare-Energien-Richtlinie RED II/III):
+  — Grüner Wasserstoff (Erneuerbarer Wasserstoff): produziert aus erneuerbarem Strom (Elektrolyse)
+  — Anforderungen: zeitliche Addizionalität (stündliche Korrelation ab 2030), geografische Addizionalität, Nettodekarbonisierung
+  — Herkunftsnachweise für Wasserstoff: Europäisches Herkunftsnachweissystem (EECS-Zertifikate)
+  — In Deutschland: Thüga / Gas-Union / HEnQsafe als Zertifizierungsstellen im Aufbau
+
+ELEKTROLYSE — GENEHMIGUNGSANFORDERUNGEN
+
+Elektrolyseanlagen zur Wasserstofferzeugung durch Wasserelektrolyse:
+
+Alkalische Elektrolyse (AEL) und Protonen-Austausch-Membran (PEM):
+  — Genehmigung nach BImSchG: ab bestimmten Leistungsgrenzen (Wasserstoffproduktion)
+  — 4. BImSchV Anhang 1, Nr. 4.1 (Anlagen zur Erzeugung von Wasserstoff): ab 300 t/Jahr Wasserstoff → Spalte 1 BImSchG
+  — Kleinere Anlagen: BauGB-Genehmigung (Bauantrag); keine BImSchG-Pflicht
+  — Druckbehälter: BetrSichV (Betriebssicherheitsverordnung) — Druckgeräte nach DGVR (Druckgeräterichtlinie 2014/68/EU)
+  — Wasserstoffspeicherung: WHG, AwSV, TRGS 510 (bei relevanten Mengen); Ex-Schutz nach ATEX-Richtlinien (94/9/EG, 1999/92/EG)
+  — Ex-Schutz: TRGS 720/722 für Wasserstoff-Zonen (Zone 0/1/2); Wasserstoff ist Explosionsgruppe IIC (sehr zündempfindlich)
+
+Großelektrolyseure (>100 MW):
+  — Häufig UVP-Pflicht (Anhang 1 UVPG: Prüfung bei Anlagen zur Herstellung chemischer Erzeugnisse in erheblichen Mengen)
+  — 12. BImSchV (Störfall-Verordnung): Prüfung der Mengenschwellen für Wasserstoff (Anhang I, Spalte 1: 5 t; Spalte 2: 50 t — "Unterem Schwellenwert" und "Oberem Schwellenwert")
+
+WASSERSTOFFNETZ (WASSERSTOFF-KERNNETZ)
+
+Bundesgesetzgebung Wasserstoffnetz 2023/2024:
+  — EnWG-Änderung 2023: Rechtlicher Rahmen für Wasserstoffnetze (§§ 3, 118a–118g EnWG n.F.)
+  — Wasserstoff-Kernnetz: Geplante bundesweite H2-Pipeline-Infrastruktur (ca. 9.700 km bis 2032)
+  — Federführung: Fernleitungsnetzbetreiber (FNB Gas: bayernets, GASCADE, Gasunie, OGE, Thyssengas etc.)
+  — Finanzierung: Erstattungsregelung; anfängliche Umlage auf Gasverbraucher
+  — Regulierung: BNetzA reguliert Wasserstoffnetzentgelte (analog zu Gasnetz)
+  — Eigentumsübertragung aus Gasnetz: Konversion bestehender Gasleitungen zu H2 (technisch oft möglich)
+
+POWER-TO-GAS (PTG) UND EINSPEISUNG INS ERDGASNETZ
+
+  — Beimischung Wasserstoff ins Erdgasnetz: technisch bis 20 Vol.-% möglich (DVGW G 260); aktuelle Pilotprojekte
+  — Rechtliche Lage: EnWG § 49a (Zumischung Wasserstoff): bis 5 Vol.-% ohne Sondergenehmigung
+  — Methanisierung (Power-to-Methane): synthetisches Methan aus H2 + CO2; vollständig erdgasnetzkompatibel
+  — CO2-Abscheidung für Methanisierung: Quelle atmosphärisches CO2 (DAC) oder Biogasanlage; CCS-Regulierung im Aufbau (KSpG in Diskussion)
+
+POWER-TO-LIQUID (PTL) / E-FUELS
+
+  — E-Kerosine (Sustainable Aviation Fuel, SAF): LuftVG und EU-Verordnung (EU) 2023/2405 (ReFuelEU Aviation)
+    — Ab 2025: 2 % SAF-Beimischungspflicht in Deutschland
+    — Ab 2030: 6 % SAF
+    — Produzenten: Anlagen nach BImSchG (Chemieanlage); erhebliche Genehmigungspflichten
+  — E-Ammoniak: Syntheseanlage nach BImSchG; relevante Genehmigungen (Druckbehälter, toxische Stoffe)
+  — E-Methanol: Biokraftstoff-Regulierung und Kraftstoffnorm (EN 228)
+
+FÖRDERPROGRAMME WASSERSTOFF
+
+  — H2Global: Auktionsbasiertes Import-Förderprogramm (Intermediär: HINT.CO GmbH); erste Auktionen 2023
+  — Bundesförderung Industrie und Klimaschutz (BIK): Förderung großindustrieller Dekarbonisierung inkl. Elektrolyse
+  — IPCEI Wasserstoff: Europäische Förderung (Notifizierung durch EU-Kommission): 62 deutsche Projekte in IPCEI Hy2Tech und Hy2Use (2022–2023)
+  — KfW-Programm 293 (Bundesförderung für Energie- und Ressourceneffizienz in der Wirtschaft — Modul 2): Förderung von H2-Erzeugungsanlagen
+  — Förderrichtlinie "Klimaschutzverträge" (KSV): Differenzvertrag für energieintensive Industrie (Stahl, Zement, Chemie); ersetzt fossile Brennstoffe durch H2
+
+OFFSHORE-WASSERSTOFF UND HYBRIDPLATTFORMEN
+
+  — WindSeeG 2023 (§ 16a): Möglichkeit der H2-Produktion auf Offshore-Plattformen (Hybridplattformen Wind + Elektrolyse)
+  — Pilotprojekte: AquaVentus (Helgoland, 10 GW Elektrolyseur-Kapazität bis 2035), PosHYdon (Niederlande, Vorbild)
+  — Rechtsstatus: BSH als Genehmigungsbehörde für Hybridplattformen in der AWZ; Planfeststellungsverfahren
+
+LÜCKEN UND OFFENE REGULIERUNGSFRAGEN (STAND 2024)
+
+  — Keine eigenständige "Wasserstoff-Genehmigungsverordnung": Fragmentierung über BImSchG, BetrSichV, EnWG, WHG
+  — Herkunftsnachweissystem noch im Aufbau (EU-Vorgaben bis 2025 umzusetzen)
+  — Wasserstoff-Kernnetz-Regulierung: BNetzA-Entgeltregulierung H2 erst 2025 finalisiert
+  — CO2-Speicherung (CCS/CCU): Kohlendioxid-Speicherungsgesetz (KSpG) für CCS-Pilotprojekte; Ausbau für industrielle Anwendung in Diskussion; Gesetzgebung 2024 erwartet
+  — H2-Tankstellennetz: Keine bundeseinheitliche Förderung (Ende H2Mobility-Förderung 2023)

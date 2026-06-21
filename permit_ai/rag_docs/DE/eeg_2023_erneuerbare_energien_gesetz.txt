@@ -1,0 +1,92 @@
+ERNEUERBARE-ENERGIEN-GESETZ 2023 (EEG 2023) — FÖRDERUNG UND NETZANSCHLUSS
+
+Gesetz für den Ausbau erneuerbarer Energien (Erneuerbare-Energien-Gesetz — EEG 2023) vom 21. Juli 2022 (BGBl. I S. 1237), in Kraft getreten am 1. Januar 2023, zuletzt geändert durch das Solarpaket I vom 26. April 2024 (BGBl. 2024 I Nr. 151).
+
+AUSBAUZIELE UND KLIMAPOLITISCHER RAHMEN
+
+§ 1 EEG 2023 formuliert die Gesamtziele:
+  — 80 % des Bruttostromverbrauchs aus erneuerbaren Energien bis 2030
+  — Treibhausgasneutralität des Stromsektors vor 2035
+  — Installierte Leistung Wind onshore: 115 GW bis 2030 (2023: ca. 61 GW)
+  — Installierte Leistung Photovoltaik: 215 GW bis 2030 (2023: ca. 81 GW)
+  — Installierte Leistung Wind offshore: 30 GW bis 2030 (2023: ca. 8,5 GW)
+  — Erneuerbare Energien gelten als im überragenden öffentlichen Interesse liegend (§ 2 EEG 2023)
+
+MARKTSTÄMMDATENREGISTER (MASTR)
+
+Pflicht zur Registrierung aller Stromerzeugungsanlagen im Marktstämmdatenregister (MaStR) der Bundesnetzagentur gemäß MaStRV (Marktstämmdatenregisterverordnung vom 10. April 2017):
+  — Registrierungspflicht vor Inbetriebnahme
+  — Betreiber, Anlagentyp, Standort, installierte Leistung, Netzanschluss sind zu melden
+  — Verspätete Registrierung kann Zahlungsansprüche gefährden (§ 25 EEG 2023)
+  — Batteriespeicher: eigene Registrierungskategorie als Stromspeicher
+
+EINSPEISEVERGÜTUNG UND AUSSCHREIBUNGSVERFAHREN
+
+Feste Einspeisevergütung (FIT, § 21 ff. EEG 2023): Nur für Kleinanlagen bis 100 kW (PV) bzw. nach technologiespezifischen Grenzen. Größere Anlagen müssen an Ausschreibungsverfahren teilnehmen.
+
+Ausschreibungsverfahren (§§ 28 ff. EEG 2023):
+  Windenergie an Land:
+    — Mengen 2024: 12.000 MW pro Jahr
+    — Gebotstermine: 1. Februar, 1. Mai, 1. August, 1. November
+    — Höchstwert: 7,35 ct/kWh (Stand 2024, jährlich angepasst)
+    — Gebotsgröße: 750 kW bis 18 MW pro Gebot
+    — Zuschlagsfähige Anlagen: BImSchG-genehmigt oder immissionsschutzrechtlich privilegiert
+    — Realisierungsfrist: 30 Monate nach Zuschlag
+
+  Photovoltaik (Freiflächenanlagen):
+    — Mengen 2024: 12.000 MW pro Jahr (Freiflächensegment)
+    — Höchstwert: 5,50 ct/kWh (Stand 2024)
+    — Zulässige Flächen: §§ 37 ff. EEG 2023 (Acker, Seitenrandstreifen, benachteiligte Gebiete, Agri-PV, Moorschutz)
+
+  Ausschreibung Speichersysteme: Derzeit kein eigenständiges Ausschreibungsverfahren für Batteriespeicher im EEG — Speicher partizipieren über Regelenergiemärkte (FCR, aFRR, mFRR) und Direktvermarktung.
+
+DIREKTVERMARKTUNG (§ 19 ff. EEG 2023)
+
+Pflicht zur Direktvermarktung für Anlagen >100 kW (PV) bzw. größere Wind- und sonstige Anlagen. Direktvermarktungsformen:
+  — Marktprämienmodell (§ 20 EEG 2023): Aufzahlung auf Marktpreis bis Höchstwert
+  — Einspeisevergütung nur als Ausfallvergütung (<100 kW bzw. bei Direktvermarktungsausfall)
+
+NETZANSCHLUSS (§ 8 EEG 2023)
+
+§ 8 EEG 2023 (Anschluss an das Netz):
+  — Netzbetreiber ist verpflichtet, Anlagen für erneuerbare Energien vorrangig anzuschließen
+  — Anschluss unverzüglich und vorrangig (§ 8 Abs. 1 EEG 2023)
+  — Technische Mindestanforderungen nach VDE-AR-N 4105 (Niederspannung), VDE-AR-N 4110 (Mittelspannung), VDE-AR-N 4120 (Hochspannung), VDE-AR-N 4130 (Höchstspannung)
+  — Kostenteilung: Hausanschlusskosten trägt Anlagenbetreiber bis zum Verknüpfungspunkt; Netzausbau ab Verknüpfungspunkt trägt Netzbetreiber (§ 8 Abs. 2 EEG 2023)
+  — Netzanschlusszusage: Netzbetreiber muss innerhalb von 2 Monaten Stellungnahme abgeben
+  — Verzögerter Anschluss: Schadensersatzpflicht des Netzbetreibers (§ 8 Abs. 5 EEG 2023)
+
+AGRI-PV UND INNOVATIVE ANLAGENKONZEPTE (SOLARPAKET I 2024)
+
+Das Solarpaket I 2024 erweiterte die förderfähigen Kategorien:
+  — Agri-PV: Doppelnutzung landwirtschaftlicher Flächen; bifaziale oder aufgeständerte Module
+  — Floating-PV: Photovoltaik auf Gewässern (Baggerseen, Stauseen) bis 15 % der Gewässerfläche
+  — Mieterstrom: Erweiterung auf Gewerbedächer, Zusammenschlüsse in Arealen
+  — Vereinfachung Balkonkraftwerke: bis 2 kW peak, 800 W Wechselrichterleistung ohne Anmeldepflicht beim Netzbetreiber (nur MaStR-Registrierung)
+  — Steckersolar: vereinfachte Anmeldung beim Netzbetreiber (Meldung statt Genehmigung)
+
+EINSPEISEMANAGEMENT UND ABREGELUNG (§ 13 EnWG, § 11 EEG 2023)
+
+  — Netzbetreiber darf Einspeisung begrenzen (Abregelung) bei Netzengpässen
+  — Entschädigungspflicht nach § 15 EEG 2023 (80 % des entgangenen Erlöses)
+  — Smart Meter Gateway (iMSys): Pflicht für Anlagen ab 7 kW (Rollout ab 2024 nach MsbG)
+  — Redispatch 2.0: seit 1. Oktober 2021 verpflichtend für alle steuerbaren Einspeiser >100 kW
+
+REPOWERING
+
+  — Erleichtertes Verfahren bei Repowering von Windenergieanlagen (§ 16b BImSchG): keine erneute vollständige UVP, wenn Standort bereits genehmigt
+  — Beschleunigtes Änderungsgenehmigungsverfahren
+  — EEG 2023 §§ 46a ff.: Bevorzugung bei Ausschreibungsgeboten für Repowering-Anlagen
+
+BÜRGERENERGIEGESELLSCHAFTEN (§ 3 Nr. 15 EEG 2023)
+
+Definition: natürliche Personen aus der lokalen Gemeinde, die mindestens 51 % der Stimmrechte halten. Privilegierungen:
+  — Teilnahme an Ausschreibungen ohne Genehmigung (Vorgebotsprivileg bis 18 MW)
+  — Vereinfachte Meldepflichten
+  — Lokale Beteiligung: Gemeinden erhalten Entschädigungszahlung von bis zu 0,2 ct/kWh (§ 6 EEG 2023)
+
+STRAFVORSCHRIFTEN UND SANKTIONEN
+
+  — Fehlerhafte MaStR-Meldung: Zahlungsaussetzung nach § 25 EEG 2023
+  — Nichteinhaltung Direktvermarktungspflicht: Verlust des Förderanspruchs
+  — Falschangaben bei Ausschreibung: Pönale nach §§ 55, 60 EEG 2023 (Rückzahlung Förderung + Vertragsstrafe)
