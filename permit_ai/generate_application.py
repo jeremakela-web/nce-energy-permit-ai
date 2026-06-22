@@ -1605,6 +1605,60 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Mark uncertain items: [Requires verification against Estonian regulations].\n\n"
         ),
     },
+    "DE": {
+        "name": "Germany / Deutschland",
+        "authorities": [
+            "Immissionsschutzbehörde der Länder (BImSchG-Genehmigung)",
+            "Bundesnetzagentur – BNetzA (Netzanschluss, Marktprämie)",
+            "Umweltbundesamt – UBA (UVP, Umweltgutachten)",
+            "BSH – Bundesamt für Seeschifffahrt und Hydrographie (Offshore)",
+            "Luftfahrtbundesamt / Bundeswehr (Hindernisbeurteilung, LuftVG)",
+            "Untere Naturschutzbehörde (Artenschutzrechtliche Prüfung, BNatSchG § 44)",
+            "Gemeinde / Landkreis (Bauleitplanung, Baugenehmigung)",
+        ],
+        "key_laws": [
+            "Bundes-Immissionsschutzgesetz BImSchG § 4 (immission control permit)",
+            "Gesetz über die Umweltverträglichkeitsprüfung UVPG (UVP / EIA)",
+            "Bundesnaturschutzgesetz BNatSchG § 44 (species protection = Artenschutz)",
+            "Windenergieflächenbedarfsgesetz WindBG (wind area targets per Land)",
+            "Energiewirtschaftsgesetz EnWG (grid connection = Netzanschluss)",
+            "Baugesetzbuch BauGB (land-use planning = Bauleitplanung)",
+            "Atomgesetz AtG (nuclear facilities, SMR)",
+            "Bundeswaldgesetz BWaldG (forest clearance)",
+        ],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in GERMANY (Deutschland). "
+            "Apply German regulatory framework throughout — do NOT use Finnish law references.\n"
+            "Key authorities: Immissionsschutzbehörde der Länder (main BImSchG permit authority), "
+            "Bundesnetzagentur BNetzA (grid connection = Netzanschlussvertrag, market premium = Marktprämie), "
+            "Umweltbundesamt UBA (environmental impact assessment support), "
+            "BSH Bundesamt für Seeschifffahrt und Hydrographie (offshore wind only), "
+            "Luftfahrtbundesamt / Bundeswehr (aviation obstacle assessment per LuftVG § 14–18.1), "
+            "Untere Naturschutzbehörde (species protection = Artenschutzrechtliche Prüfung per BNatSchG § 44), "
+            "Gemeinde / Landkreis (Bauleitplanung F-Plan / B-Plan, Baugenehmigung).\n"
+            "Key laws: BImSchG § 4 (immission control permit = BImSchG-Genehmigung, replaces Finnish ympäristölupa), "
+            "UVPG (environmental impact assessment = UVP-Bericht, replaces Finnish YVA-ohjelma/selostus), "
+            "BNatSchG § 44 (species protection = artenschutzrechtliche Prüfung / saP), "
+            "WindBG (wind area designation per Land, replaces Finnish kaavoitus context), "
+            "EnWG (grid connection), BauGB + Bauordnungsrecht der Länder (building permit = Baugenehmigung), "
+            "Atomgesetz AtG (nuclear only), BWaldG (forest clearance = Waldumwandlung).\n"
+            "Required annexes for tuulivoima_maa (wind onshore): "
+            "1. Übersichtslageplan und Detaillageplan (site location maps), "
+            "2. Schallimmissionsprognose / Schallgutachten (noise impact study per TA Lärm), "
+            "3. Schattenwurfgutachten (shadow flicker study), "
+            "4. UVP-Bericht (environmental impact report per UVPG, if threshold triggered), "
+            "5. Artenschutzrechtlicher Fachbeitrag / saP (species protection assessment per BNatSchG § 44), "
+            "6. Avifaunistische Bestandserhebung (bird & bat survey), "
+            "7. Flugsicherungsstellungnahme (aviation clearance letter, LuftVG § 18.1 / Luftfahrtbundesamt), "
+            "8. Radar- und Richtfunkprüfung (radar / microwave link clearance, Bundeswehr / Bundesnetzagentur), "
+            "9. Standsicherheitsnachweis (structural safety certificate, Bauordnungsrecht), "
+            "10. Brandschutzkonzept (fire safety concept).\n"
+            "Replace ALL Finnish law references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Finavia) "
+            "with the German equivalents listed above. "
+            "Mark items requiring local Land-level verification: "
+            "[Requires verification against applicable Landesrecht].\n\n"
+        ),
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -4000,6 +4054,16 @@ _NATIONAL_SUPERVISORS: dict[str, dict[str, str]] = {
         "maatalous":      "Põllumajandusamet (Agricultural Board), Keskkonnaamet",
         "hybridi":        "Keskkonnaamet (KMH), Päästeamet (BESS), Konkurentsiamet, Elering AS",
         "_generic":       "Keskkonnaamet, Kohaliku omavalitsuse, Konkurentsiamet",
+    },
+    "DE": {
+        "BESS":           "Immissionsschutzbehörde (Länder), BNetzA (Netz), Gewerbeaufsichtsamt",
+        "tuulivoima_maa": "Immissionsschutzbehörde (Länder), Luftfahrtbundesamt/Bundeswehr (Hindernisbeurteilung), BNetzA",
+        "tuulivoima_meri":"BSH (Bundesamt für Seeschifffahrt und Hydrographie), BNetzA, Wasser- und Schifffahrtsamt",
+        "aurinkovoima":   "Untere Baubehörde (Landkreis/Stadt), BNetzA (Netz), Gewerbeaufsichtsamt",
+        "SMR":            "BMUV / Länderaufsichtsbehörde (Atomgesetz AtG), BMWi, Bundestag (Genehmigung)",
+        "smr_bess":       "BMUV / Länderaufsichtsbehörde (AtG), BNetzA, Immissionsschutzbehörde",
+        "vesivoima":      "Wasserbehörde (Land), Umweltbundesamt (UBA), BNetzA",
+        "_generic":       "Untere Baubehörde (Landkreis/Stadt), Immissionsschutzbehörde (Länder)",
     },
 }
 
