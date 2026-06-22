@@ -967,9 +967,12 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
     def _bg_generate():
         try:
             _proofread_store[job_id]["status"] = "running"
+            print(f"[bg] {job_id} START hanke={req.hanketyyppi} country={req.country or 'FI'}", flush=True)
             draft_bytes, sections, sources = generate_application_draft(inp)
+            print(f"[bg] {job_id} draft done, sections={list(sections.keys())}", flush=True)
             _proofread_store[job_id]["debug_sections"] = {k: len(v) for k, v in sections.items() if isinstance(v, str)}
             pdf = apply_proofread_to_pdf(inp, sections, sources)
+            print(f"[bg] {job_id} pdf done len={len(pdf) if pdf else 0}", flush=True)
             _proofread_store[job_id]["pdf_bytes"] = pdf
             _proofread_store[job_id]["status"] = "done"
             _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
@@ -1009,10 +1012,24 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
                        req.hankkeen_vaihe or "", job_id, f"RAG_FAIL:chunks={exc.chunks_found}")
         except Exception as exc:
+            import traceback as _tb
+            _err = f"{type(exc).__name__}: {exc}"
+            print(f"[bg] {job_id} ERROR {_err}", flush=True)
+            print(_tb.format_exc(), flush=True)
             _proofread_store[job_id]["status"] = "error"
-            _proofread_store[job_id]["error"] = str(exc)
+            _proofread_store[job_id]["error"] = _err
             _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
-                       req.hankkeen_vaihe or "", job_id, f"error:{str(exc)[:60]}")
+                       req.hankkeen_vaihe or "", job_id, f"error:{_err[:60]}")
+        except BaseException as exc:
+            import traceback as _tb
+            _err = f"{type(exc).__name__}: {exc}"
+            print(f"[bg] {job_id} FATAL {_err}", flush=True)
+            print(_tb.format_exc(), flush=True)
+            try:
+                _proofread_store[job_id]["status"] = "error"
+                _proofread_store[job_id]["error"] = _err
+            except Exception:
+                pass
 
     Thread(target=_bg_generate, daemon=True).start()
 
@@ -1033,7 +1050,8 @@ async def proofread_status(job_id: str):
     job = _proofread_store.get(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Task not found")
-    if job["status"] == "insufficient_sources":
+    _status = job.get("status", "running")
+    if _status == "insufficient_sources":
         raise HTTPException(
             status_code=422,
             detail={
@@ -1048,7 +1066,7 @@ async def proofread_status(job_id: str):
             },
         )
     return {
-        "status": job["status"],
+        "status": _status,
         "error": job.get("error"),
         "debug_sections": job.get("debug_sections"),
         "phase_status": job.get("phase_status"),
