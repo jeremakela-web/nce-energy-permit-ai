@@ -1278,7 +1278,7 @@ def _rag_context(
         all_distances:   list[float]     = []
         all_source_meta: dict[str, dict] = {}  # src_id → {display, url}
 
-        def _collect(results: dict) -> None:
+        def _collect(results: dict, allowed_countries=None) -> None:
             docs      = results["documents"][0]
             ids       = results["ids"][0]
             metas     = (results.get("metadatas") or [[]])[0]
@@ -1288,6 +1288,9 @@ def _rag_context(
             if not distances:
                 distances = [0.5] * len(ids)
             for doc, id_, meta, dist in zip(docs, ids, metas, distances):
+                if allowed_countries is not None:
+                    if (meta or {}).get("country", "") not in allowed_countries:
+                        continue
                 if id_ not in seen_ids:
                     seen_ids.add(id_)
                     all_docs.append(doc)
@@ -1307,24 +1310,28 @@ def _rag_context(
             or cfg["rag_queries"]
         )
 
+        # Oversample before post-filtering: ChromaDB where= operator is unreliable in v1.5.x
+        # (raises ValueError for all operators). Post-filter via allowed_countries in _collect()
+        # is the real guard — fetch a large pool first, then keep only permitted countries.
+        _n_oversample = max(20, n_per_query * 10)
+        # FI reports get FI+EU chunks; all other countries get only their own + EU chunks
+        # so Finnish-jurisdiction chunks (ELY-keskus, Tukes, YVA-laki, Fingrid) cannot
+        # contaminate authority tables or citations in DE/EE/SE/etc. reports.
+        _allowed_countries = {"FI", "EU"} if country == "FI" else {country, "EU"}
+
         # Step 1: country-specific retrieval using native-language queries (once, before FI loop)
         if country != "FI":
             try:
                 for cq in _country_queries:
                     cemb = embed_model.encode([cq]).tolist()
-                    _collect(col.query(
-                        query_embeddings=cemb,
-                        n_results=n_per_query,
-                        where={"country": {"$in": [country, "EU"]}},
-                    ))
+                    _collect(
+                        col.query(query_embeddings=cemb, n_results=_n_oversample),
+                        allowed_countries=_allowed_countries,
+                    )
             except Exception:
                 pass  # maakohtaisia dokumentteja ei vielä indeksoitu
 
-        # Step 2: Finnish cfg queries for base context.
-        # Filter scoped to target country so FI-jurisdiction chunks (ELY-keskus, Tukes,
-        # YVA-laki 252/2017, Fingrid) cannot reach non-FI LLM context and contaminate
-        # authority tables or citations in EE/DE/SE/etc. reports.
-        _step2_countries = ["FI", "EU"] if country == "FI" else [country, "EU"]
+        # Step 2: Finnish cfg queries for base context; post-filter enforces country scope.
         first_emb = None
         for q in cfg["rag_queries"]:
             emb = embed_model.encode([q]).tolist()
@@ -1332,17 +1339,12 @@ def _rag_context(
                 first_emb = emb
 
             try:
-                _collect(col.query(
-                    query_embeddings=emb,
-                    n_results=n_per_query,
-                    where={"country": {"$in": _step2_countries}},
-                ))
+                _collect(
+                    col.query(query_embeddings=emb, n_results=_n_oversample),
+                    allowed_countries=_allowed_countries,
+                )
             except Exception:
-                # Vanha indeksi ilman metadataa — hae ilman suodatinta
-                try:
-                    _collect(col.query(query_embeddings=emb, n_results=n_per_query))
-                except Exception:
-                    pass
+                pass
 
         # ── Task 2: RAG confidence check ─────────────────────────────────────
         chunks_returned = len(all_docs)
