@@ -460,6 +460,14 @@ def _get_chroma_col():
     return client.get_or_create_collection(_CHROMA_COLLECTION, metadata={"hnsw:space": "cosine"})
 
 
+# SentenceTransformer.encode() is not thread-safe: concurrent calls can segfault the ONNX
+# runtime when two background threads share the same model instance. Serialise all RAG
+# retrieval so only one _rag_context runs at a time (Claude API calls run concurrently —
+# they are a remote service and don't share any in-process state).
+import threading as _threading
+_RAG_LOCK = _threading.Lock()
+
+
 def activate_v2() -> None:
     """Switch permit application RAG to permit_docs_v2 + mpnet."""
     global _EMBED_MODEL, _CHROMA_COLLECTION
@@ -5060,8 +5068,9 @@ def generate_pdf(
 
 def generate_application_draft(inp: ApplicationInput) -> tuple:
     """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
-    rag_ctx, sources, warning_flag, prec_chunks, prec_sources = \
-        _rag_context(inp.hanketyyppi, inp.country or "FI")
+    with _RAG_LOCK:
+        rag_ctx, sources, warning_flag, prec_chunks, prec_sources = \
+            _rag_context(inp.hanketyyppi, inp.country or "FI")
     sections = _generate_sections(inp, rag_ctx, prec_chunks, prec_sources)
     _lang = inp.lang or "FI"
     sections = _final_polish(sections, _lang)
