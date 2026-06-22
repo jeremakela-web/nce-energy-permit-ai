@@ -1320,7 +1320,11 @@ def _rag_context(
             except Exception:
                 pass  # maakohtaisia dokumentteja ei vielä indeksoitu
 
-        # Step 2: FI retrieval using Finnish cfg queries (always; provides base context)
+        # Step 2: Finnish cfg queries for base context.
+        # Filter scoped to target country so FI-jurisdiction chunks (ELY-keskus, Tukes,
+        # YVA-laki 252/2017, Fingrid) cannot reach non-FI LLM context and contaminate
+        # authority tables or citations in EE/DE/SE/etc. reports.
+        _step2_countries = ["FI", "EU"] if country == "FI" else [country, "EU"]
         first_emb = None
         for q in cfg["rag_queries"]:
             emb = embed_model.encode([q]).tolist()
@@ -1331,7 +1335,7 @@ def _rag_context(
                 _collect(col.query(
                     query_embeddings=emb,
                     n_results=n_per_query,
-                    where={"country": {"$in": ["FI", "EU"]}},
+                    where={"country": {"$in": _step2_countries}},
                 ))
             except Exception:
                 # Vanha indeksi ilman metadataa — hae ilman suodatinta
