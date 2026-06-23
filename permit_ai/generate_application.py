@@ -1414,6 +1414,56 @@ _HANKE_CFG = {
             "Maisema- ja näkyvyysanalyysi",
             "Lentoestekartoitus (Traficom/Finavia)",
         ],
+        "context_extra": (
+            "HYBRIDIVOIMALA (BESS + TUULI/AURINKO) — NELJÄKERROSRAKENNE:\n\n"
+
+            "KERROS 1 — TEKNISET TIEDOT [IEC 61400-sarja, IEC 62933-sarja, Rakentamislaki 751/2023]:\n"
+            "Käytä osiossa '1. Hankkeen kuvaus'.\n"
+            "- Komponentit: tuulivoima (MW-lkm × yksikkökoko) + aurinkopaneelit (MWp) + "
+            "BESS (MW/MWh) — integroitu verkkoliityntä yhdestä liittymispisteestä.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'energiavarastomitoitus': BESS-kapasiteetti (MWh) ja -teho (MW) mitoitetaan "
+            "tuuli-/aurinkoprofiilin tasoittamiseen; mitoitusperusteet esitettävä [IEC 62933-2-1].\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'thermal runaway' ja 'BMS': BESS-osahankkeen paloturvallisuus — "
+            "Battery Management System (BMS), terminen eristys, H₂/CO-seuranta, "
+            "automaattinen sammutus [Tukes S10-ohje; NFPA 855].\n"
+            "- Tuulivoimalakomponentti: napakorkeusarvio, melumalli IEC 61400-11, "
+            "varjostusvaikutusanalyysi.\n\n"
+
+            "KERROS 2 — YMPÄRISTÖ + YVA [YVA-laki 252/2017, YSL 527/2014]:\n"
+            "Käytä osiossa '2. Perustelut'.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'YVA-kynnys': hybridihankkeen yhteisvaikutus arvioidaan YVA-laki 252/2017 "
+            "liite 1 mukaan — tuulivoiman YVA-kynnys ≥ 10 voimalaa tai napakorkeus ≥ 45 m; "
+            "BESS- ja PV-komponenttien yhteisvaikutus voi laukaista YVA-velvollisuuden.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'BAT-päätelmät': BESS-komponentin ympäristöluvassa sovellettava BAT "
+            "(Best Available Techniques) solujen termiselle hallinnalle, "
+            "elektrolyytin vuoto-onnettomuussuojaukselle ja sammutusvesilinjastolle [YSL 527/2014].\n"
+            "- Linnusto: sama suojeluetäisyysvaatimus kuin erilliselle tuulivoimahankkeelle.\n\n"
+
+            "KERROS 3 — LUPAPROSESSI [MRL 132/1999 § 77a, Pelastuslaki 379/2011]:\n"
+            "Käytä osiossa '3. Luvat'.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Osayleiskaava': tuulivoimakomponentti edellyttää MRL 132/1999 § 77a mukaisen "
+            "osayleiskaavan; kulkee rinnakkain YVA-menettelyn kanssa.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Tukes S10-ohje': BESS-komponentin palonsammutus perustuu Tukes S10-ohjeeseen; "
+            "automaattinen sammutusjärjestelmä pakollinen; pelastussuunnitelma hyväksytettävä "
+            "pelastuslaitoksessa [Pelastuslaki 379/2011, 15 §].\n"
+            "- Traficom lentoestevalolupa [Ilmailulaki 864/2014]: haettava ennen rakentamista.\n"
+            "- Fingrid SJV-liittymäpyyntö (≥ 5 MW yhdistetty teho): 2–4 kk käsittelyaika.\n\n"
+
+            "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
+            "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
+            "- ELY-keskus YVA: 4–7 vuotta; aloita ensin ennen muita lupaprosesseja.\n"
+            "- Kunta osayleiskaava: 2–4 vuotta rinnakkain YVA:n kanssa.\n"
+            "- Tukes kemikaali-ilmoitus (BESS): 30 pv ennen toiminnan aloittamista.\n"
+            "- Traficom lentoestevalolupa: hae ≥ 60 pv ennen käyttöönottoa.\n"
+            "- Fingrid liittymispisteselvitys: 2–4 kk; hae ennen rakentamislupahakemusta.\n"
+            "- Kokonaisaikataulu 4–8 vuotta."
+        ),
     },
     "smr_bess": {
         "nimi_fi":    "SMR + BESS -hybridienergiajärjestelmä",
@@ -1587,6 +1637,242 @@ _HANKE_CFG = {
             "PUE- ja energiatehokkuusselvitys",
             "Hakijan rekisteriote",
         ],
+    },
+    "asuinrakennus": {
+        "nimi_fi":    "Asuinrakennushanke",
+        "lyhenne":    "AR",
+        "kasittelyaika": {"FI": "1–3 kk", "EN": "1–3 months"},
+        "rag_queries": [
+            "asuinrakennus rakentamislupa rakennusvalvonta kaavoitus",
+            "asunto rakentaminen suunnittelutarveratkaisu naapurikuuleminen",
+            "asuinrakennus paloturvallisuus vastaava työnjohtaja katselmus",
+        ],
+        "luvat": [
+            ("Rakentamislupa",                        "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
+            ("Naapurikuuleminen",                     "Kunta / hakija",             "Rakentamislaki 751/2023, 44 §"),
+            ("Suunnittelutarveratkaisu (tarvitt.)",   "Kunta",                       "MRL 132/1999 § 137"),
+            ("Toimenpidelupa (tarvitt.)",             "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
+        ],
+        "laki_extra": [
+            "Maankäyttö- ja rakennuslaki 132/1999 (kaavoitus)",
+            "Asunto-osakeyhtiölaki 1599/2009 (tarvitt.)",
+        ],
+        "liitteet": [
+            "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Asemapiirustus ja pohjakartta (M 1:500)",
+            "Rakennuspiirustukset (pohja-, julkisivu- ja leikkauspiirustukset)",
+            "Energiaselvitys (RakMk D3 / Rakentamislaki 751/2023)",
+            "Paloturvallisuusselvitys (paloluokka P1/P2/P3)",
+            "Rakennesuunnitelma (pääpiirustukset)",
+            "Vastaavan työnjohtajan nimitysasiakirja",
+            "Hakijan rekisteriote tai henkilötiedot",
+        ],
+        "context_extra": (
+            "ASUINRAKENNUS — NELJÄKERROSRAKENNE:\n\n"
+
+            "KERROS 1 — TEKNISET TIEDOT [Rakentamislaki 751/2023, Suomen rakentamismääräyskokoelma]:\n"
+            "Käytä osiossa '1. Hankkeen kuvaus'.\n"
+            "- Rakennuksen tiedot: kerrosala (m²), kerrosluku, rakennusmateriaalit, "
+            "lämmitysjärjestelmä, liittyminen kunnan verkostoihin.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'energiaselvitys': asuinrakennukselle on laadittava energiaselvitys "
+            "[Rakentamislaki 751/2023; YM asetus 1010/2017] — E-luku (kWh/m²/a) "
+            "osoittaa rakennuksen energiatehokkuusluokan.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'vastaava työnjohtaja': vastaava työnjohtaja nimettävä ja rakennusvalvonnan "
+            "hyväksyttävä ennen aloitusilmoitusta [Rakentamislaki 751/2023, 68 §].\n"
+            "- Paloturvallisuus: paloluokka P1, P2 tai P3 "
+            "[Suomen rakentamismääräyskokoelma E1].\n\n"
+
+            "KERROS 2 — YMPÄRISTÖ + KAAVA [MRL 132/1999, Rakentamislaki 751/2023]:\n"
+            "Käytä osiossa '2. Perustelut'.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'kaavamääräykset': tarkista asema- tai yleiskaavan rakennusoikeus, "
+            "kerrosluku ja käyttötarkoitusmerkintä [MRL 132/1999] — rakentamislupa "
+            "ei voi ylittää kaavan sallimia rajoja.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'suunnittelutarveratkaisu': jos hanke sijoittuu suunnittelutarvealueelle, "
+            "vaaditaan STR [MRL 132/1999 § 137] ennen rakentamislupaa — "
+            "julkinen kuuleminen ja naapurikuuleminen pakollisia.\n"
+            "- Pohjavesi- ja tulvavaara-alueet: tarkista SYKE:n paikkatietopalvelusta.\n\n"
+
+            "KERROS 3 — LUPAPROSESSI [Rakentamislaki 751/2023]:\n"
+            "Käytä osiossa '3. Luvat'.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Rakentamislaki 751/2023': rakentamislupa haetaan Lupapiste.fi-palvelussa; "
+            "liitteiksi asemapiirros, pohjapiirros, julkisivupiirros, leikkauspiirros, "
+            "energiaselvitys ja vastaavan työnjohtajan nimitys.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'loppukatselmus': rakennusvalvonta suorittaa loppukatselmuksen ennen "
+            "asunnon käyttöönottoa [Rakentamislaki 751/2023, 87 §]; "
+            "pohjakatselmus, runkokatselmus ja loppukatselmus.\n"
+            "- Naapurikuuleminen: hakija tai kunta kuulee naapurit "
+            "[Rakentamislaki 751/2023, 44 §].\n\n"
+
+            "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
+            "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
+            "- Kunta rakennusvalvonta: ennakkoneuvottelu + rakentamislupa 1–3 kk.\n"
+            "- Aloitusilmoitus ennen töiden aloittamista; katselmusaikataulu sovittava.\n"
+            "- Energiatodistus: laadittava ennen käyttöönottoa [Laki 50/2013].\n"
+            "- Kokonaisaikataulu rakentamisluvasta käyttöönottoon 6–18 kk."
+        ),
+    },
+    "liikerakennus": {
+        "nimi_fi":    "Liikerakennushanke",
+        "lyhenne":    "LR",
+        "kasittelyaika": {"FI": "1–6 kk", "EN": "1–6 months"},
+        "rag_queries": [
+            "liikerakennus kauppa toimisto rakentamislupa kaavoitus Suomi",
+            "liikerakennus paloturvallisuus pelastuslaitos tarkastus",
+            "kaupallinen rakennus energiaselvitys esteettömyys vastaava työnjohtaja",
+        ],
+        "luvat": [
+            ("Rakentamislupa",                       "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
+            ("Naapurikuuleminen",                    "Kunta / hakija",             "Rakentamislaki 751/2023, 44 §"),
+            ("Suunnittelutarveratkaisu (tarvitt.)",  "Kunta",                       "MRL 132/1999 § 137"),
+            ("Asemakaavanmuutos (tarvitt.)",          "Kunta + ELY-keskus",          "MRL 132/1999"),
+            ("Pelastussuunnitelma / lausunto",       "Paikallinen pelastuslaitos",  "Pelastuslaki 379/2011, 15 §"),
+        ],
+        "laki_extra": [
+            "Maankäyttö- ja rakennuslaki 132/1999 (kaavoitus)",
+            "Esteettömyysvaatimukset (YM asetus 241/2017)",
+        ],
+        "liitteet": [
+            "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Asemapiirustus ja pohjakartta (M 1:500)",
+            "Rakennuspiirustukset (pohja-, julkisivu- ja leikkauspiirustukset)",
+            "Paloturvallisuusselvitys ja pelastussuunnitelma",
+            "Energiaselvitys (E-luku)",
+            "Esteettömyysselvitys (YM asetus 241/2017)",
+            "Vastaavan työnjohtajan nimitysasiakirja",
+            "Hakijan rekisteriote",
+        ],
+        "context_extra": (
+            "LIIKERAKENNUS — NELJÄKERROSRAKENNE:\n\n"
+
+            "KERROS 1 — TEKNISET TIEDOT [Rakentamislaki 751/2023, Suomen rakentamismääräyskokoelma]:\n"
+            "Käytä osiossa '1. Hankkeen kuvaus'.\n"
+            "- Rakennuksen tiedot: käyttötarkoitus (kauppa, toimisto, palvelu), "
+            "kerrosala (m²), kerrosluku, asiakaskapasiteetti, pysäköinti.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'paloturvallisuusselvitys': liikerakennus vaatii paloturvallisuusselvityksen "
+            "[Suomen rakentamismääräyskokoelma E1]; paloluokka P1/P2/P3, "
+            "sprinklerijärjestelmä (yleensä pakollinen yli 1000 m² liiketilalle), "
+            "pelastussuunnitelma ja poistumistiet.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'esteettömyys': liikerakennus on oltava esteettömästi saavutettavissa "
+            "[YM asetus 241/2017; Rakentamislaki 751/2023] — invapaikkamäärä, "
+            "luiskat, hissit, wc-tilat.\n"
+            "- Energiaselvitys: E-luku ja energialuokka.\n\n"
+
+            "KERROS 2 — YMPÄRISTÖ + KAAVA [MRL 132/1999]:\n"
+            "Käytä osiossa '2. Perustelut'.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'kaavamääräykset': asemakaava määrittää käyttötarkoituksen (K = kauppa, "
+            "A = asunto, T = teollisuus) — liikerakennus edellyttää "
+            "oikeaa kaavamerkintää [MRL 132/1999]; asemakaavanmuutos tarvittaessa.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'liikenneselvitys': suuret liikerakennukset (yleensä yli 2000 m² tai "
+            "merkittävä liikennemäärä) edellyttävät liikenneselvitystä "
+            "pysäköinnistä, asiakkaiden kulkureiteistä ja liikenneturvallisuudesta.\n\n"
+
+            "KERROS 3 — LUPAPROSESSI [Rakentamislaki 751/2023, Pelastuslaki 379/2011]:\n"
+            "Käytä osiossa '3. Luvat'.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Rakentamislaki 751/2023': rakentamislupa haetaan Lupapiste.fi-palvelussa; "
+            "liitteiksi piirustukset, paloturvallisuusselvitys, esteettömyysselvitys, "
+            "energiaselvitys ja vastaavan työnjohtajan nimitys.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Pelastuslaitos': pelastuslaitoksen tarkastus ja pelastussuunnitelman "
+            "hyväksyntä ovat pakollisia ennen käyttöönottoa [Pelastuslaki 379/2011, 15 §]; "
+            "sammutuskalusto, paloilmoitinjärjestelmä ja poistumistiesuunnitelma.\n\n"
+
+            "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
+            "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
+            "- Kunta rakennusvalvonta: ennakkoneuvottelu + rakentamislupa 1–6 kk.\n"
+            "- Pelastuslaitos: ennakkolausunto paloturvallisuudesta.\n"
+            "- Asemakaavanmuutos (tarvittaessa): 1–3 vuotta.\n"
+            "- Kokonaisaikataulu rakentamisluvasta käyttöönottoon 6–24 kk."
+        ),
+    },
+    "maatalous": {
+        "nimi_fi":    "Maatalousrakennushanke",
+        "lyhenne":    "MAT",
+        "kasittelyaika": {"FI": "1–6 kk", "EN": "1–6 months"},
+        "rag_queries": [
+            "maatalousrakennus navetta kasvihuone rakentamislupa ympäristölupa",
+            "kotieläintalous ympäristölupa lantala etäisyysvaatimukset Suomi",
+            "maatilarakennus pohjavesi nitraattiasetus Luova ELY-keskus",
+        ],
+        "luvat": [
+            ("Rakentamislupa",                            "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
+            ("Naapurikuuleminen",                         "Kunta / hakija",             "Rakentamislaki 751/2023, 44 §"),
+            ("Ympäristölupa (suuri kotieläintalous)",     "Lupa- ja valvontavirasto",   "YSL 527/2014"),
+            ("Ympäristölupailmoitus (tarvitt.)",          "Kunta",                       "YSL 527/2014, 10 §"),
+            ("Maaseutuviraston tukikelpoisuustarkistus",  "Ruokavirasto / ELY-keskus",  "EU:n maataloustukiasetus"),
+        ],
+        "laki_extra": [
+            "Nitraattiasetus 1250/2014 (lantavarastointi)",
+            "Luonnonsuojelulaki 9/2023",
+        ],
+        "liitteet": [
+            "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Asemapiirustus ja pohjakartta (M 1:500)",
+            "Rakennuspiirustukset (pohja-, julkisivu- ja leikkauspiirustukset)",
+            "Lantavaraston mitoituslaskelma ja sijoitussuunnitelma",
+            "Ympäristölupahakemus (suuri kotieläintalous)",
+            "Pohjavesialueen selvitys (SYKE)",
+            "Vastaavan työnjohtajan nimitysasiakirja",
+            "Hakijan rekisteriote tai henkilötiedot",
+        ],
+        "context_extra": (
+            "MAATALOUSRAKENNUS — NELJÄKERROSRAKENNE:\n\n"
+
+            "KERROS 1 — TEKNISET TIEDOT [Rakentamislaki 751/2023, Nitraattiasetus 1250/2014]:\n"
+            "Käytä osiossa '1. Hankkeen kuvaus'.\n"
+            "- Rakennustyyppi: navetta, kasvihuone, lato, kuivuri, kasvisten varastointitila.\n"
+            "- Kotieläintalous: eläinmäärä (eläinyksiköt) ja lantalan mitoitus.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'lantavaraston mitoitus': lantavarasto on mitoitettava vähintään 12 kuukauden "
+            "lantamäärälle [Nitraattiasetus 1250/2014, 5 §]; etäisyys vesistöistä "
+            "vähintään 10–100 m riippuen varaston tyypistä.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'vastaava työnjohtaja': vastaavan työnjohtajan nimeäminen ja rakennusvalvonnan "
+            "hyväksyntä pakollinen [Rakentamislaki 751/2023, 68 §].\n\n"
+
+            "KERROS 2 — YMPÄRISTÖ + YVA [YSL 527/2014, Nitraattiasetus 1250/2014]:\n"
+            "Käytä osiossa '2. Perustelut'.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'ympäristölupa': suuri kotieläintalous vaatii ympäristöluvan Luovalta "
+            "[YSL 527/2014, liite 1] — kynnysarvot: nautoja ≥ 75, sikoja ≥ 210, "
+            "kanoja ≥ 10 000; alle kynnyksen: ympäristöilmoitus kunnalle.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'nitraattiasetus': nitraattiasetuksen [1250/2014] vaatimukset koskevat "
+            "lannan levitysalueita, lantavaraston etäisyyksiä vesistöistä ja "
+            "levityskieltoja keväällä ja syksyllä.\n"
+            "- Natura 2000 ja luonnonsuojelukohteet: tarkista sijainti ennen lupahakemusta.\n\n"
+
+            "KERROS 3 — LUPAPROSESSI [Rakentamislaki 751/2023, YSL 527/2014]:\n"
+            "Käytä osiossa '3. Luvat'.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Rakentamislaki 751/2023': rakentamislupa haetaan Lupapiste.fi-palvelussa; "
+            "liitteiksi piirustukset, lantavaraston mitoituslaskelma, pohjavesiselvitys "
+            "ja naapurikuuleminen.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Ruokavirasto': EU:n maataloustuet (CAP-tuet) — tarkista tukikelpoisuus "
+            "ELY-keskuksesta tai Ruokavirastosta ennen rakentamisen aloittamista; "
+            "tuettavan rakennuksen on täytettävä tukiehdot.\n"
+            "- ELY-keskus ympäristöilmoitus tai Luova ympäristölupa: "
+            "hae rinnakkain rakentamislupaprosessin kanssa.\n\n"
+
+            "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
+            "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
+            "- Kunta rakennusvalvonta: ennakkoneuvottelu + rakentamislupa 1–3 kk.\n"
+            "- Luova ympäristölupa (suuri kotieläintalous): 6–18 kk.\n"
+            "- Ruokavirasto / ELY tukikelpoisuustarkistus: ennen hankintasopimuksia.\n"
+            "- Nitraattiasetus: toimita lantavaraston sijoitussuunnitelma ELY-keskukselle.\n"
+            "- Kokonaisaikataulu 1–6 kk rakentamisluvalle, 12–18 kk ympäristöluvalle."
+        ),
     },
     "teollisuus": {
         "nimi_fi":    "Teollisuusrakennushanke",
