@@ -1588,6 +1588,96 @@ _HANKE_CFG = {
             "Hakijan rekisteriote",
         ],
     },
+    "teollisuus": {
+        "nimi_fi":    "Teollisuusrakennushanke",
+        "lyhenne":    "TEOL",
+        "kasittelyaika": {"FI": "3–12 kk", "EN": "3–12 months"},
+        "rag_queries": [
+            "teollisuusrakennus rakentamislupa ympäristölupa kaavoitus Suomi",
+            "teollisuuslaitos kemikaalilupa Tukes ympäristövaikutukset",
+            "teollisuus paloturvallisuus rakentamismääräykset vastaava työnjohtaja",
+        ],
+        "luvat": [
+            ("Rakentamislupa",                        "Kunta / rakennusvalvonta",    "Rakentamislaki 751/2023"),
+            ("Naapurikuuleminen",                     "Kunta / hakija",             "Rakentamislaki 751/2023, 44 §"),
+            ("Asemakaavanmuutos (tarvitt.)",           "Kunta + ELY-keskus",          "MRL 132/1999"),
+            ("Ympäristölupa (tarvitt.)",              "Lupa- ja valvontavirasto",    "YSL 527/2014"),
+            ("Kemikaalilupa tai -ilmoitus (tarvitt.)", "Tukes",                       "Kemikaaliturvallisuuslaki 390/2005"),
+            ("Pelastussuunnitelma / lausunto",        "Paikallinen pelastuslaitos",  "Pelastuslaki 379/2011, 15 §"),
+            ("Verkkoliityntäsopimus (tarvitt.)",      "Turku Energia / DSO",         "Sähkömarkkinalaki 588/2013"),
+        ],
+        "laki_extra": [
+            "YVA-laki 252/2017 (kynnyksen ylittyessä)",
+            "Luonnonsuojelulaki 9/2023",
+            "Jätelaki 646/2011",
+        ],
+        "liitteet": [
+            "Sijaintikartta (M 1:20 000 tai laajempi)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Asemapiirustus ja pohjakartta (M 1:500)",
+            "Rakennussuunnitelmat (rakennepiirrokset, julkisivut, leikkaukset)",
+            "Paloturvallisuusselvitys (rakennusluokka P1/P2/P3)",
+            "Ympäristövaikutusten selvitys (tarvittaessa)",
+            "Kemikaalilupahakemus / ilmoitus (Tukes, tarvittaessa)",
+            "Meluselvitys (jos sijoittuu lähelle asutusta)",
+            "Vastaavan työnjohtajan nimitysasiakirja",
+            "Hakijan rekisteriote",
+        ],
+        "context_extra": (
+            "TEOLLISUUSRAKENNUS — NELJÄKERROSRAKENNE:\n\n"
+
+            "KERROS 1 — TEKNISET TIEDOT [Rakentamislaki 751/2023, Suomen rakentamismääräyskokoelma]:\n"
+            "Käytä osiossa '1. Hankkeen kuvaus'.\n"
+            "- Hankkeen kuvaus: käyttötarkoitus (kevyt/raskas teollisuus), kerrosala (m²), "
+            "korkeus, rakentamismateriaalit ja rakenneratkaisu.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'rakennuksen paloluokka': teollisuusrakennus kuuluu paloluokkaan P1, P2 tai P3 "
+            "[Suomen rakentamismääräyskokoelma E1] käyttötarkoituksen, kerrosalan ja "
+            "henkilömäärän perusteella — paloluokka määrittää rakenteelliset palovaatimukset.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'vastaava työnjohtaja': vastaavan työnjohtajan nimeäminen ja rakennusvalvonnan "
+            "hyväksyntä on pakollista ennen aloitusilmoituksen jättämistä "
+            "[Rakentamislaki 751/2023, 68 §].\n"
+            "- Kemikaalivarastointi: arvioi kemikaalien määrät ja luokitus — "
+            "Tukesin kemikaali-ilmoituksen tai -luvan tarve.\n\n"
+
+            "KERROS 2 — YMPÄRISTÖ + YVA [YVA-laki 252/2017, YSL 527/2014]:\n"
+            "Käytä osiossa '2. Perustelut'.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'YVA-kynnys': YVA-laki 252/2017 liite 1 — teollisuuslaitos on YVA-velvollinen "
+            "jos se ylittää liitteen 1 kynnysarvot (esim. metalli-, kemian- tai "
+            "elintarviketeollisuuden laitoksille määritellyt kapasiteettirajat); "
+            "tapauskohtainen harkinta ELY-keskuksessa.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'ympäristölupa': ympäristölupa [YSL 527/2014] tarvitaan jos laitos aiheuttaa "
+            "merkittäviä päästöjä ilmaan, vesistöön tai maaperään tai sijoittuu "
+            "pohjavesialueelle; IED-direktiivi 2010/75/EU soveltuu suurille laitoksille.\n"
+            "- Melu- ja tärinäselvitys: teollisuuslaitos lähellä asutusta vaatii "
+            "melumittaukset ja arvioinnin [VNa 993/1992].\n\n"
+
+            "KERROS 3 — LUPAPROSESSI [Rakentamislaki 751/2023, Kemikaaliturvallisuuslaki 390/2005]:\n"
+            "Käytä osiossa '3. Luvat'.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Rakentamislaki 751/2023': rakentamislupa haetaan Lupapiste.fi-palvelussa "
+            "[Rakentamislaki 751/2023, 50 §]; liitteiksi asemapiirros, pohjapiirros, "
+            "rakennesuunnitelma, paloturvallisuusselvitys ja vastaavan työnjohtajan nimitys.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Tukes': kemikaaliturvallisuuslain [390/2005] mukainen Tukesin lupa tai "
+            "ilmoitus tarvitaan vaarallisten kemikaalien valmistukseen tai varastointiin "
+            "kynnysarvojen ylittyessä; lisäksi turvallisuusselvitys suurille laitoksille.\n"
+            "- Asemakaavanmuutos: tarvitaan jos alue ei ole asemakaavoitettu "
+            "teollisuuskäyttöön [MRL 132/1999] — käsittelyaika kunnassa 1–3 vuotta.\n\n"
+
+            "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
+            "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
+            "- Kunta rakennusvalvonta: ennakkoneuvottelu + rakentamislupa 3–12 kk.\n"
+            "- Tukes kemikaali-ilmoitus tai -lupa: toimita 30–60 pv ennen toiminnan aloittamista.\n"
+            "- ELY-keskus YVA-harkinta: 2–4 kk; aloita ennen rakentamislupahakemusta.\n"
+            "- Luova ympäristölupa: 6–18 kk; hae rinnakkain rakentamislupaprosessin kanssa.\n"
+            "- Pelastussuunnitelma: hyväksytettävä pelastuslaitoksessa ennen käyttöönottoa.\n"
+            "- Kokonaisaikataulu 3–12 kk rakentamisluvalle, 12–24 kk ympäristöluvalle."
+        ),
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
