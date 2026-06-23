@@ -1507,6 +1507,59 @@ _HANKE_CFG = {
             "Verkkoliityntälaskelma (SMR + BESS yhdistetty)",
             "Hätäjärjestelmien ja -menettelyjen kuvaus",
         ],
+        "context_extra": (
+            "SMR + BESS (HYBRIDIENERGIAJÄRJESTELMÄ) — NELJÄKERROSRAKENNE:\n\n"
+
+            "KERROS 1 — TEKNISET TIEDOT [STUK YVL-ohjeet, IEC 62933-sarja, Säteilylaki 859/2018]:\n"
+            "Käytä osiossa '1. Hankkeen kuvaus'.\n"
+            "- SMR-komponentti: reaktorityyppi, lämpöteho (MWth), sähköteho (MWe); "
+            "turvallisuusperiaatteet (defence-in-depth, passive safety).\n"
+            "- BESS-komponentti: kapasiteetti (MWh), teho (MW); "
+            "integraatio SMR:n tehonsäätelyyn.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'STUK YVL-ohje': STUK:n YVL-ohjeisto on sitova sääntely; "
+            "YVL A.1 (turvallisuusvaatimukset), YVL B.1 (rakenteelliset perusteet), "
+            "YVL C.1 (säteilyturvallisuusanalyysi) — kaikki soveltuvat SMR-komponenttiin.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'thermal runaway' ja 'BMS': BESS-osahankkeen paloturvallisuus — "
+            "Battery Management System (BMS), terminen eristys, H₂/CO-seuranta, "
+            "automaattinen sammutus [Tukes S10-ohje; NFPA 855].\n\n"
+
+            "KERROS 2 — YMPÄRISTÖ + YVA [YVA-laki 252/2017, Ydinenergialaki 990/1987]:\n"
+            "Käytä osiossa '2. Perustelut'.\n"
+            "- YVA on AINA pakollinen ydinlaitokselle [YVA-laki 252/2017, liite 1 kohta 6].\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'Ydinenergialaki 990/1987': laki kattaa kaikki ydinlaitokset Suomessa; "
+            "§ 11 periaatepäätösprosessi (VN), § 18 rakentamislupa (STUK), "
+            "§ 20 käyttölupa (STUK).\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'BAT-päätelmät': BESS-komponentin ympäristöluvassa sovellettava BAT "
+            "(Best Available Techniques) solujen termiselle hallinnalle, "
+            "elektrolyytin vuoto-onnettomuussuojaukselle ja sammutusvesilinjastolle "
+            "[YSL 527/2014].\n"
+            "- DBA-analyysi (Design Basis Accident): radioaktiivisten päästöjen mallintaminen.\n\n"
+
+            "KERROS 3 — LUPAPROSESSI [Ydinenergialaki 990/1987 § 11/18/20, Pelastuslaki 379/2011]:\n"
+            "Käytä osiossa '3. Luvat'.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Periaatepäätös': Valtioneuvosto myöntää periaatepäätöksen [YEL § 11], "
+            "eduskunta vahvistaa — tehtävä ennen kaikkia muita rakentamislupia; "
+            "2–4 vuotta prosessointiaikaa.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Tukes S10-ohje': BESS-komponentin palonsammutus perustuu Tukes S10-ohjeeseen; "
+            "automaattinen sammutusjärjestelmä pakollinen; pelastussuunnitelma "
+            "hyväksytettävä pelastuslaitoksessa [Pelastuslaki 379/2011, 15 §].\n"
+            "- STUK rakentamislupa [YEL § 18] ja käyttölupa [YEL § 20] SMR-komponentille.\n"
+            "- Fingrid SJV-liittymäpyyntö koko yhdistetyn tehon osalta.\n\n"
+
+            "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
+            "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
+            "- TEM: ydinpolitiikan koordinaatio, periaatepäätösmenettely 2–4 vuotta.\n"
+            "- STUK pre-licensing: aloita 3–5 vuotta ennen rakentamislupahakemusta.\n"
+            "- ELY-keskus YVA: 3–5 vuotta rinnakkain periaatepäätösmenettelyn kanssa.\n"
+            "- Tukes kemikaali-ilmoitus (BESS): 30 pv ennen toiminnan aloittamista.\n"
+            "- Kokonaisaikataulu 10–15 vuotta."
+        ),
     },
     "ymparistolupa": {
         "nimi_fi":    "Ympäristölupahakemus",
@@ -1546,6 +1599,60 @@ _HANKE_CFG = {
             "Hakijan oikeushenkilön rekisteriote (kaupparekisteri)",
             "Valtakirja (jos asiamies edustaa)",
         ],
+        "context_extra": (
+            "YMPÄRISTÖLUPAHAKEMUS — NELJÄKERROSRAKENNE:\n\n"
+
+            "KERROS 1 — TOIMINNAN KUVAUS [YSL 527/2014, YVA-laki 252/2017]:\n"
+            "Käytä osiossa '1. Hankkeen kuvaus'.\n"
+            "- Toiminnan kuvaus: mitä tehdään, missä, milloin; "
+            "prosessikaavio ainevirroista (raaka-aineet, tuotteet, päästöt, jätteet).\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'toimintakuvaus ja prosessikaavio': ympäristölupahakemus edellyttää "
+            "yksityiskohtaisen toimintakuvauksen ja prosessikaavioa "
+            "[YSL 527/2014, 39 §]; kuvaa tuotantokapasiteetti, "
+            "käytettävät kemikaalit ja raaka-aineet.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'päästöluettelo': hakemukseen sisällytettävä päästöluettelo "
+            "ilmaan (g/s, t/a), vesistöön (mg/l) ja maaperään; "
+            "mittaustulokset tai laskennalliset arviot [YSL 527/2014, 39 §].\n"
+            "- Naapurikuuleminen: Luova tai kunta kuulee naapurit ja sidosryhmät.\n\n"
+
+            "KERROS 2 — YMPÄRISTÖVAIKUTUKSET + BAT [YSL 527/2014, IED 2010/75/EU]:\n"
+            "Käytä osiossa '2. Perustelut'.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'BAT-päätelmät': Best Available Techniques (BAT) on ympäristöluvan "
+            "keskeinen vaatimus [IED-direktiivi 2010/75/EU; YSL 527/2014] — "
+            "toiminnanharjoittajan on noudatettava sovellettavia BAT-päätelmiä "
+            "päästöille, energiatehokkuudelle ja jätehuollolle.\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'YVA-menettely': tarkista onko toiminnalle tehty YVA [YVA-laki 252/2017]; "
+            "YVA-selostus tai perustelut soveltumattomuudesta on liitettävä hakemukseen.\n"
+            "- Pohjavesi- ja maaperävaikutukset: erityinen selvitys pohjavesialueilla.\n"
+            "- Melu, tärinä ja haju: selvitys lähikiinteistöihin kohdistuvista haitoista.\n\n"
+
+            "KERROS 3 — LUPAPROSESSI [YSL 527/2014, Vesilaki 587/2011]:\n"
+            "Käytä osiossa '3. Luvat'.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'Lupa- ja valvontavirasto': Luova (Lupa- ja valvontavirasto) käsittelee "
+            "suurten laitosten ympäristöluvat [YSL 527/2014] — "
+            "käsittelyaika 6–18 kk; kuulemisaika 30 pv naapureille.\n"
+            "- PAKOLLINEN osiossa '3. Luvat' — kirjoita tekstiin pakollisesti sanat "
+            "'rekisteröinti-ilmoitus': pienet, vähäriskiset toiminnot voidaan "
+            "rekisteröidä [YSL 527/2014, 10 §] kunnalle ilman varsinaista "
+            "lupamenettelyä — selvitä soveltuvuus ennen hakemusta.\n"
+            "- Vesilupa [Vesilaki 587/2011]: tarvitaan jos toiminta vaikuttaa vesistöön.\n"
+            "- Jätehuoltosuunnitelma: liitettävä hakemukseen [Jätelaki 646/2011].\n\n"
+
+            "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
+            "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
+            "- Luova (isot hankkeet): 6–18 kk käsittelyaika.\n"
+            "- Kunta (pienet hankkeet): 3–6 kk käsittelyaika.\n"
+            "- Ennakkoneuvottelu Luovan tai kunnan ympäristönsuojeluviranomaisella "
+            "suositellaan ennen hakemuksen jättämistä.\n"
+            "- ELY-keskus lausunnot: 30–60 pv kuulemisaika.\n"
+            "- Tarkkailuohjelma: hyväksytettävä Luovalla tai kunnalla luvan myöntämisen "
+            "jälkeen ennen toiminnan aloittamista."
+        ),
     },
     "datakeskus": {
         "nimi_fi":    "Datakeskushanke",
