@@ -30,7 +30,7 @@ from reportlab.lib.units import cm, mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    CondPageBreak, HRFlowable, KeepTogether, PageBreak, Paragraph,
+    CondPageBreak, HRFlowable, Image, KeepTogether, PageBreak, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 from reportlab.pdfgen.canvas import Canvas as _CanvasBase
@@ -754,6 +754,9 @@ class ApplicationInput:
     ifc_materials:                str = ""      # pilkulla erotettu lista
     ifc_storeys:                  int = 0
     ifc_compliance_flags:         str = ""      # rivinvaihdolla erotettu lista
+    # White-label branding (B2B — None means use NCE defaults)
+    logo_path:                    Optional[str] = None
+    footer_name:                  Optional[str] = None
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -5550,6 +5553,8 @@ def generate_pdf(
     warning_flag: bool = False,
     prec_chunks: Optional[list] = None,
     prec_sources: Optional[list] = None,
+    logo_path: Optional[str] = None,
+    footer_name: Optional[str] = None,
 ) -> bytes:
     """Rakenna PDF ja palauta bytes."""
     prec_chunks  = prec_chunks  or []
@@ -5583,7 +5588,22 @@ def generate_pdf(
     country = getattr(inp, "country", "FI") or "FI"
     story   = []
 
+    # ── Branding: logo_path / footer_name — direct param overrides inp field ─
+    _logo_path   = logo_path   or getattr(inp, "logo_path",   None) or _LOGO_PATH
+    _footer_name = footer_name or getattr(inp, "footer_name", None)
+
     # ── Kansilehti ────────────────────────────────────────────────────────────
+    # Logo top-right of cover page
+    import os as _os
+    if _logo_path and _os.path.exists(_logo_path):
+        _logo_img = Image(_logo_path, width=3.5 * cm, height=1.5 * cm, kind="proportional")
+        _logo_tbl = Table([[None, _logo_img]], colWidths=[12.0 * cm, 4.5 * cm])
+        _logo_tbl.setStyle(TableStyle([
+            ("ALIGN",  (1, 0), (1, 0), "RIGHT"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ]))
+        story.append(_logo_tbl)
+
     story.append(Spacer(1, 6*mm))
     story.append(Paragraph(_s(lang, "sub_title"), st["sub"]))
     story.append(Paragraph(_nimi(lang, inp.hanketyyppi, cfg['nimi_fi']), st["title"]))
@@ -6007,7 +6027,7 @@ def generate_pdf(
     # ── Loppumerkintä ─────────────────────────────────────────────────────────
     story.append(_hr(C_NAVY, 1.0))
     story.append(Paragraph(
-        _s(lang, "footer"),
+        _footer_name if _footer_name else _s(lang, "footer"),
         ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
     ))
 

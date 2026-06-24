@@ -16,3 +16,4 @@ staticmap>=0.5.5
 requests>=2.31.0
 python-dotenv>=1.0.0
 dwave-neal
+stripe>=7.0.0

@@ -28,7 +28,7 @@ from typing import Optional
 
 import requests as _requests
 
-from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Header, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -301,6 +301,15 @@ try:
         print(f"[startup] ChromaDB ladattu ({count} chunkkia) — malli ladataan laiskasti ensimmäisellä kyselyllä")
 except Exception as _e:
     print(f"[startup] Varoitus: RAG-lataus epäonnistui: {_e}")
+
+# Payment + B2B key DB init (NOOP when respective env vars are false)
+try:
+    from stripe_payments import init_db as _init_payments_db
+    from api_keys import init_api_keys_db as _init_api_keys_db
+    _init_payments_db()
+    _init_api_keys_db()
+except Exception as _e:
+    print(f"[startup] Payments/API-keys init: {_e}")
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/hour"])
 
@@ -912,6 +921,13 @@ async def generate_report(req: ReportRequest):
 @limiter.limit("5/hour")
 async def generate_application_endpoint(request: Request, req: ApplicationRequest):
     """Käynnistä lupahakemus-PDF:n generointi taustasäikeessä. Palauttaa job_id heti (202)."""
+    # Payment gate — NOOP when PAYMENT_ENABLED=false (default)
+    from stripe_payments import PAYMENT_ENABLED as _PAY_ON, get_payment_status as _pay_status
+    if _PAY_ON:
+        _session_id = req.session_id or ""
+        if not _session_id or _pay_status(_session_id) != "paid":
+            raise HTTPException(status_code=402, detail="Payment required")
+
     allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR",
                "smr_bess", "vesivoima", "hybridi",
                "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
@@ -949,6 +965,11 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         ifc_storeys                   = req.ifc_storeys or 0,
         ifc_compliance_flags          = req.ifc_compliance_flags or "",
     )
+
+    # White-label: NCE logo by default; B2B customers override via api_key branding
+    # (This route uses the NCE default — white-label is fully active on /api/b2b/generate-report)
+    from white_label import NCE_LOGO_PATH as _NCE_LOGO
+    inp.logo_path = _NCE_LOGO
 
     job_id = uuid.uuid4().hex[:10]
     _proofread_store[job_id] = {
@@ -2269,6 +2290,181 @@ async def get_stats():
         "project_types": 20,
         "languages":     7,
     }
+
+
+# ── Stripe payment routes ─────────────────────────────────────────────────────
+
+class _CheckoutRequest(BaseModel):
+    customer_email: str
+    mode: str = "payment"   # "payment" | "subscription"
+
+
+@app.post("/api/payments/checkout")
+async def payments_checkout(req: _CheckoutRequest):
+    """Create a Stripe Checkout Session. Returns {url, session_id}."""
+    from stripe_payments import PAYMENT_ENABLED, create_checkout_session
+    if not PAYMENT_ENABLED:
+        raise HTTPException(status_code=503, detail="Payment system not enabled")
+    try:
+        return create_checkout_session(req.customer_email, req.mode)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/payments/webhook")
+async def payments_webhook(request: Request, stripe_signature: str = Header(..., alias="stripe-signature")):
+    """Stripe webhook endpoint. Set webhook URL to /api/payments/webhook in Stripe dashboard."""
+    from stripe_payments import handle_webhook
+    payload = await request.body()
+    try:
+        result = handle_webhook(payload, stripe_signature)
+        return result
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.get("/api/payments/status/{session_id}")
+async def payments_status(session_id: str):
+    """Return payment status for a Checkout Session ID."""
+    from stripe_payments import get_payment_status
+    return {"session_id": session_id, "status": get_payment_status(session_id)}
+
+
+# ── B2B API key authenticated report generation ───────────────────────────────
+
+_ADMIN_SECRET = os.getenv("ADMIN_SECRET", "")
+
+
+def _require_admin(x_admin_secret: str = Header(..., alias="x-admin-secret")):
+    if not _ADMIN_SECRET or x_admin_secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+
+class _B2BReportRequest(BaseModel):
+    hanketyyppi:                  str
+    kiinteistotunnus:             str
+    teho_mw:                      float = 0.0
+    kapasiteetti_mwh:             float = 0.0
+    kunta:                        str
+    hakija:                       str
+    sijainti_ymparistovaikutukset: str = ""
+    hankkeen_vaihe:               str = ""
+    kohdeviranomainen:            str = ""
+    lang:                         str = "FI"
+    country:                      str = "FI"
+    y_tunnus:                     str = ""
+    osoite:                       str = ""
+
+
+@app.post("/api/b2b/generate-report")
+@limiter.limit("20/hour")
+async def b2b_generate_report(
+    request: Request,
+    req: _B2BReportRequest,
+    authorization: str = Header(...),
+):
+    """
+    B2B synchronous report generation with API key auth.
+    Returns PDF bytes immediately (no polling — designed for server-to-server calls).
+    Pass API key as: Authorization: Bearer nce_<key>
+    """
+    from api_keys import verify_api_key
+    from white_label import get_customer_logo_path, NCE_LOGO_PATH
+
+    # Authenticate
+    raw_key = authorization.removeprefix("Bearer ").strip()
+    customer = verify_api_key(raw_key)
+    if customer is None:
+        raise HTTPException(status_code=401, detail="Invalid or inactive API key")
+
+    # Resolve white-label assets
+    logo_url    = customer.get("logo_url") or ""
+    footer_name = customer.get("footer_name") or ""
+    logo_path   = get_customer_logo_path(logo_url) if logo_url else NCE_LOGO_PATH
+
+    allowed = {"BESS", "tuulivoima_maa", "tuulivoima_meri", "aurinkovoima", "SMR",
+               "smr_bess", "vesivoima", "hybridi",
+               "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
+               "ymparistolupa", "datakeskus",
+               "smr_se", "smr_no", "smr_da", "smr_de",
+               "egs", "offshore_wind"}
+    if req.hanketyyppi not in allowed:
+        raise HTTPException(status_code=400, detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
+
+    inp = ApplicationInput(
+        hanketyyppi                   = req.hanketyyppi,
+        kiinteistotunnus              = req.kiinteistotunnus,
+        teho_mw                       = req.teho_mw,
+        kapasiteetti_mwh              = req.kapasiteetti_mwh,
+        kunta                         = req.kunta,
+        hakija                        = req.hakija,
+        sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset,
+        hankkeen_vaihe                = req.hankkeen_vaihe,
+        kohdeviranomainen             = req.kohdeviranomainen,
+        lang                          = req.lang,
+        country                       = req.country,
+        y_tunnus                      = req.y_tunnus,
+        osoite                        = req.osoite,
+        logo_path                     = logo_path,
+        footer_name                   = footer_name or None,
+    )
+
+    try:
+        import asyncio
+        loop = asyncio.get_event_loop()
+        draft_bytes, sections, sources = await loop.run_in_executor(
+            None, generate_application_draft, inp
+        )
+        pdf = await loop.run_in_executor(
+            None, lambda: apply_proofread_to_pdf(inp, sections, sources)
+        )
+    except InsufficientSourcesError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    kt = req.kiinteistotunnus.replace("-", "_")
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="NCE_{kt}.pdf"'},
+    )
+
+
+# ── Admin: API key management ─────────────────────────────────────────────────
+
+class _CreateKeyRequest(BaseModel):
+    company_name: str
+    email:        str
+    logo_url:     str = ""
+    footer_name:  str = ""
+
+
+@app.get("/api/admin/api-keys", dependencies=[Depends(_require_admin)])
+async def admin_list_keys():
+    """List all B2B API keys (no raw key values)."""
+    from api_keys import list_api_keys
+    return list_api_keys()
+
+
+@app.post("/api/admin/api-keys", dependencies=[Depends(_require_admin)])
+async def admin_create_key(req: _CreateKeyRequest):
+    """Create a new B2B API key. Raw key shown once — store it securely."""
+    from api_keys import create_api_key
+    try:
+        return create_api_key(req.company_name, req.email, req.logo_url, req.footer_name)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@app.delete("/api/admin/api-keys/{key_id}", dependencies=[Depends(_require_admin)])
+async def admin_revoke_key(key_id: str):
+    """Revoke a B2B API key by key_id."""
+    from api_keys import revoke_api_key
+    found = revoke_api_key(key_id)
+    if not found:
+        raise HTTPException(status_code=404, detail="Key not found")
+    return {"revoked": key_id}
 
 
 if __name__ == "__main__":
