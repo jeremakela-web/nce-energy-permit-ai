@@ -311,6 +311,13 @@ try:
 except Exception as _e:
     print(f"[startup] Payments/API-keys init: {_e}")
 
+# LinkedIn agent DB init
+try:
+    from linkedin_agent import init_post_db as _init_post_db
+    _init_post_db()
+except Exception as _e:
+    print(f"[startup] LinkedIn post DB init: {_e}")
+
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/hour"])
 
 app = FastAPI(
@@ -2465,6 +2472,70 @@ async def admin_revoke_key(key_id: str):
     if not found:
         raise HTTPException(status_code=404, detail="Key not found")
     return {"revoked": key_id}
+
+
+# ── LinkedIn posting agent ────────────────────────────────────────────────────
+
+from linkedin_agent import (
+    generate_post_draft as _li_generate,
+    get_pending_posts   as _li_queue,
+    approve_post        as _li_approve,
+    reject_post         as _li_reject,
+    mark_published      as _li_publish,
+)
+
+
+def _require_admin_header(x_admin_secret: str = Header(None, alias="x-admin-secret")):
+    if not _ADMIN_SECRET or x_admin_secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+
+class _LinkedInGenerateRequest(BaseModel):
+    post_type:     str = "thought_leadership"
+    topic:         str
+    extra_context: str = ""
+    language:      str = "en"
+
+
+@app.post("/api/linkedin/generate", dependencies=[Depends(_require_admin_header)])
+async def linkedin_generate(req: _LinkedInGenerateRequest):
+    """Generate a LinkedIn post draft via Claude. Admin only."""
+    try:
+        return _li_generate(req.post_type, req.topic, req.extra_context, req.language)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/linkedin/queue", dependencies=[Depends(_require_admin_header)])
+async def linkedin_queue():
+    """List all pending posts awaiting approval."""
+    return {"posts": _li_queue()}
+
+
+class _LinkedInApproveRequest(BaseModel):
+    edited_text: str | None = None
+
+
+@app.post("/api/linkedin/approve/{post_id}", dependencies=[Depends(_require_admin_header)])
+async def linkedin_approve(post_id: str, req: _LinkedInApproveRequest = _LinkedInApproveRequest()):
+    """Approve a post, optionally with edited text."""
+    return _li_approve(post_id, req.edited_text)
+
+
+@app.post("/api/linkedin/reject/{post_id}", dependencies=[Depends(_require_admin_header)])
+async def linkedin_reject(post_id: str):
+    """Reject a pending post."""
+    return _li_reject(post_id)
+
+
+class _LinkedInPublishedRequest(BaseModel):
+    linkedin_url: str | None = None
+
+
+@app.post("/api/linkedin/published/{post_id}", dependencies=[Depends(_require_admin_header)])
+async def linkedin_published(post_id: str, req: _LinkedInPublishedRequest):
+    """Mark a post as published after manual LinkedIn posting."""
+    return _li_publish(post_id, req.linkedin_url)
 
 
 if __name__ == "__main__":
