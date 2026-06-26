@@ -2487,6 +2487,22 @@ async def admin_ingest_poland():
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.post("/api/admin/ingest-poland-full", dependencies=[Depends(_require_admin)])
+async def admin_ingest_poland_full():
+    """
+    Full Poland regulatory RAG ingestion — 10 sources, 280+ chunks expected.
+    Uses requests.Session with browser UA to bypass ISAP Incapsula protection.
+    ISAP PDFs only accessible from Render's Frankfurt IP (not local Mac).
+    Admin only.
+    """
+    try:
+        from poland_rag_full import ingest_poland_sources as _ingest
+        count = _ingest()
+        return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 @app.post("/api/admin/ingest-caruna", dependencies=[Depends(_require_admin)])
 async def admin_ingest_caruna():
     """Download Caruna PDFs and upsert chunks into ChromaDB. Admin only."""
