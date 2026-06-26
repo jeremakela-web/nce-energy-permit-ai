@@ -38,7 +38,7 @@ _MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
 CHUNK_WORDS    = 800
 OVERLAP_WORDS  = 100
 MIN_WORDS      = 50
-MEM_LIMIT_MB   = 400   # skip source if RSS exceeds this before loading it
+MEM_LIMIT_MB   = 1400  # psutil RSS on Render includes shared libs (~920MB baseline); real limit ~512MB anon
 
 _ISAP_HEADERS = {
     "User-Agent": (
@@ -301,15 +301,11 @@ def ingest_poland_sources(sources: list[dict] | None = None) -> int:
         print(f"  {url[:90]}", flush=True)
 
         mem = _get_memory_mb()
-        if mem and mem > MEM_LIMIT_MB:
-            msg = f"memory {mem:.0f}MB > {MEM_LIMIT_MB}MB limit"
-            print(f"  SKIP: {msg}", flush=True)
-            summary.append({"source": name, "status": "SKIP", "chunks": 0, "reason": msg})
-            continue
+        print(f"  RAM (RSS): {mem:.0f}MB", flush=True)
 
         try:
             raw = _download(session, url)
-            print(f"  Downloaded {len(raw):,} bytes  (RAM: {mem:.0f}MB)", flush=True)
+            print(f"  Downloaded {len(raw):,} bytes", flush=True)
         except Exception as exc:
             msg = f"download failed: {exc}"
             print(f"  WARN: {msg} — skipping", flush=True)
