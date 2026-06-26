@@ -2339,7 +2339,7 @@ async def payments_status(session_id: str):
 
 # ── B2B API key authenticated report generation ───────────────────────────────
 
-_ADMIN_SECRET = os.getenv("ADMIN_SECRET", "")
+_ADMIN_SECRET = os.getenv("ADMIN_SECRET") or os.getenv("INGEST_SECRET", "")
 
 
 def _require_admin(x_admin_secret: str = Header(..., alias="x-admin-secret")):
