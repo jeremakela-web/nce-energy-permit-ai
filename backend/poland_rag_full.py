@@ -1,32 +1,33 @@
 """
-Poland full regulatory RAG ingestion for NCE Permit AI.
+Poland full regulatory RAG ingestion — memory-safe version.
 
-Key finding: ISAP sejm.gov.pl PDFs require requests.Session with browser UA
-from a non-residential IP (Render Frankfurt works; local Mac is Incapsula-blocked).
+Memory constraints on Render (512MB RAM):
+  - pdfplumber is called page-by-page via a temp file to avoid parse-tree explosion
+  - Models are loaded ONE AT A TIME: v1 first (all sources), then v2 (all sources)
+  - gc.collect() after every source and after each model pass
+  - psutil memory check before each source; skip if > 400MB used
+  - prawo_energetyczne (2.6MB PDF) is excluded from default sources (OOM risk)
+    → re-add as LARGE_SOURCES if RAM budget improves or RAM is upgraded
+
+ISAP PDF URLs require requests.Session with browser UA from Render's Frankfurt IP.
 HTML sources work from any IP.
 
-Downloads/scrapes all sources, chunks 800 words / 100-word overlap,
-upserts into BOTH ChromaDB collections:
-  - permit_docs    (MiniLM-L12-v2, 384-dim) — survives reindex
-  - permit_docs_v2 (mpnet 768-dim)           — immediately live
-
-Run via API (from Render where ISAP is accessible):
-    POST /api/admin/ingest-poland-full  (x-admin-secret header)
-
-Do NOT run locally if ISAP PDFs are needed — Incapsula blocks non-server IPs.
+Route: POST /api/admin/ingest-poland-full  (x-admin-secret header)
 """
 from __future__ import annotations
 
+import gc
 import hashlib
 import io
 import logging
 import os
+import tempfile
 import time
 from typing import Any
 
 log = logging.getLogger(__name__)
 
-_DB_PATH   = os.path.abspath(
+_DB_PATH  = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "permit_ai", "embeddings")
 )
 _COL_V1   = "permit_docs"
@@ -34,11 +35,11 @@ _COL_V2   = "permit_docs_v2"
 _MODEL_V1 = "paraphrase-multilingual-MiniLM-L12-v2"
 _MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
 
-CHUNK_WORDS   = 800
-OVERLAP_WORDS = 100
-MIN_WORDS     = 50
+CHUNK_WORDS    = 800
+OVERLAP_WORDS  = 100
+MIN_WORDS      = 50
+MEM_LIMIT_MB   = 400   # skip source if RSS exceeds this before loading it
 
-# Browser session headers — required for ISAP sejm.gov.pl (Incapsula CDN)
 _ISAP_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -49,20 +50,12 @@ _ISAP_HEADERS = {
     "Referer": "https://isap.sejm.gov.pl/",
 }
 
+# ── Sources ────────────────────────────────────────────────────────────────────
+# prawo_energetyczne (2.6MB PDF → ~204 chunks) is excluded from defaults —
+# it causes OOM on 512MB Render containers. Kept in LARGE_SOURCES below.
+
 POLAND_SOURCES = [
-    # ── CONFIRMED ISAP PDFs (work from Render IP via requests.Session) ─────────
-    # Expected chunks: prawo_energetyczne ~204, ustawa_oos ~61, 10h ~13, rozp ~4
-    {
-        "name": "poland_prawo_energetyczne_1997",
-        "url": "https://isap.sejm.gov.pl/isap.nsf/download.xsp/WDU19970540348/U/D19970348Lj.pdf",
-        "type": "pdf",
-        "category": "energy_law",
-        "description": (
-            "Ustawa Prawo energetyczne 1997 tekst jednolity. Koncesje URE: wytwarzanie (WEE), "
-            "przesyl, dystrybucja, obrot. Warunki przylaczenia do sieci. Rejestr magazynow energii. "
-            "Podstawa prawna dla wszystkich projektow energetycznych w Polsce — BESS, OZE, SMR."
-        ),
-    },
+    # ISAP PDFs — confirmed accessible from Render IP (Incapsula blocks local Mac)
     {
         "name": "poland_ustawa_oos_2008",
         "url": "https://isap.sejm.gov.pl/isap.nsf/download.xsp/WDU20081991227/U/D20081227Lj.pdf",
@@ -96,7 +89,7 @@ POLAND_SOURCES = [
             "Progi mocy dla farm wiatrowych, BESS, elektrowni jadrowych i innych instalacji."
         ),
     },
-    # ── HTML sources (work from any IP) ────────────────────────────────────────
+    # HTML sources — work from any IP
     {
         "name": "poland_gramwzielone_bess_2026",
         "url": "https://www.gramwzielone.pl/magazynowanie-energii/20360841/nowe-przepisy-dla-magazynow-energii-co-sie-zmieni-2026",
@@ -105,7 +98,7 @@ POLAND_SOURCES = [
         "description": (
             "Nowe przepisy dla magazynow energii 2026 — Gramwzielone.pl. Prawo budowlane 7.01.2026: "
             "BESS >6.5 kWh wymaga konsultacji z rzeczoznawca ds. pozarnictwa. "
-            "Pelna sciezka pozwolenia na budowe dla 5–200 MWh. "
+            "Pelna sciezka pozwolenia na budowe dla 5-200 MWh. "
             "Skrocenie waznosci warunkow przylaczenia do 1 roku od 30.04.2026."
         ),
     },
@@ -166,8 +159,32 @@ POLAND_SOURCES = [
     },
 ]
 
+# 2.6MB PDF — excluded from defaults due to OOM risk on 512MB Render containers.
+# Re-enable by passing LARGE_SOURCES + POLAND_SOURCES if container RAM is upgraded.
+LARGE_SOURCES = [
+    {
+        "name": "poland_prawo_energetyczne_1997",
+        "url": "https://isap.sejm.gov.pl/isap.nsf/download.xsp/WDU19970540348/U/D19970348Lj.pdf",
+        "type": "pdf",
+        "category": "energy_law",
+        "description": (
+            "Ustawa Prawo energetyczne 1997 tekst jednolity. Koncesje URE: wytwarzanie (WEE), "
+            "przesyl, dystrybucja, obrot. Warunki przylaczenia do sieci. Rejestr magazynow energii. "
+            "Podstawa prawna dla wszystkich projektow energetycznych w Polsce — BESS, OZE, SMR."
+        ),
+    },
+]
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+
+# ── Helpers ────────────────────────────────────────────────────────────────────
+
+def _get_memory_mb() -> float:
+    try:
+        import psutil
+        return psutil.Process().memory_info().rss / 1024 / 1024
+    except ImportError:
+        return 0.0
+
 
 def _make_session() -> Any:
     import requests
@@ -183,13 +200,23 @@ def _download(session: Any, url: str, timeout: int = 60) -> bytes:
 
 
 def _extract_pdf(data: bytes) -> str:
+    """Extract text page-by-page via a temp file to limit pdfplumber's parse-tree memory."""
     import pdfplumber
     parts = []
-    with pdfplumber.open(io.BytesIO(data)) as pdf:
-        for page in pdf.pages:
-            t = page.extract_text()
-            if t:
-                parts.append(t)
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        tmp.write(data)
+        tmp_path = tmp.name
+    try:
+        with pdfplumber.open(tmp_path) as pdf:
+            for page in pdf.pages:
+                t = page.extract_text()
+                if t:
+                    parts.append(t)
+    finally:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
     return "\n".join(parts)
 
 
@@ -217,7 +244,8 @@ def _chunk_id(name: str, idx: int) -> str:
     return f"pl_full__{name}__{idx}__{h}"
 
 
-def _upsert(col: Any, model: Any, ids: list, docs: list, metas: list, batch: int = 32) -> int:
+def _upsert_batched(col: Any, model: Any, ids: list, docs: list, metas: list,
+                    batch: int = 16) -> int:
     total = 0
     for i in range(0, len(ids), batch):
         b_ids, b_docs, b_metas = ids[i:i+batch], docs[i:i+batch], metas[i:i+batch]
@@ -230,36 +258,40 @@ def _upsert(col: Any, model: Any, ids: list, docs: list, metas: list, batch: int
     return total
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# ── Main ───────────────────────────────────────────────────────────────────────
 
 def ingest_poland_sources(sources: list[dict] | None = None) -> int:
     """
     Download, chunk, embed and upsert all Poland sources.
-    Returns total v2 chunks upserted. Logs per source, never raises on partial failure.
+    Returns total v2 chunks upserted.
 
-    NOTE: ISAP PDF sources require Render's server IP (Incapsula blocks residential/Mac IPs).
+    Memory strategy:
+      1. Download + chunk ALL sources first (no models loaded yet).
+      2. Load MiniLM → upsert all into permit_docs → del model → gc.collect().
+      3. Load mpnet  → upsert all into permit_docs_v2 → del model → gc.collect().
+    Peak RAM = baseline + ONE model + chunk text (~1–2MB) — never two models at once.
+
+    ISAP PDFs require Render's Frankfurt IP (Incapsula blocks local Mac).
     """
     import chromadb
     from sentence_transformers import SentenceTransformer
 
-    sources = sources or POLAND_SOURCES
+    if sources is None:
+        sources = POLAND_SOURCES
 
     if not os.path.exists(_DB_PATH):
         raise RuntimeError(f"ChromaDB path not found: {_DB_PATH}")
 
-    log.info("[poland_full] Connecting to ChromaDB at %s", _DB_PATH)
-    client  = chromadb.PersistentClient(path=_DB_PATH)
-    col_v1  = client.get_or_create_collection(_COL_V1, metadata={"hnsw:space": "cosine"})
-    col_v2  = client.get_or_create_collection(_COL_V2, metadata={"hnsw:space": "cosine"})
+    client = chromadb.PersistentClient(path=_DB_PATH)
+    col_v1 = client.get_or_create_collection(_COL_V1, metadata={"hnsw:space": "cosine"})
+    col_v2 = client.get_or_create_collection(_COL_V2, metadata={"hnsw:space": "cosine"})
 
-    log.info("[poland_full] Loading embedding models …")
-    model_v1 = SentenceTransformer(_MODEL_V1)
-    model_v2 = SentenceTransformer(_MODEL_V2)
-
-    session      = _make_session()
-    ingested_at  = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    total_v2     = 0
+    session     = _make_session()
+    ingested_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     summary: list[dict] = []
+
+    # ── Phase 1: download + chunk all sources (no embedding models in memory) ──
+    all_batches: list[tuple[str, list, list, list]] = []
 
     for src in sources:
         name = src["name"]
@@ -268,36 +300,47 @@ def ingest_poland_sources(sources: list[dict] | None = None) -> int:
         print(f"\n[poland_full] {name}", flush=True)
         print(f"  {url[:90]}", flush=True)
 
-        # Download
-        try:
-            raw = _download(session, url)
-            print(f"  Downloaded {len(raw):,} bytes", flush=True)
-        except Exception as exc:
-            msg = f"download failed: {exc}"
-            log.warning("[poland_full] %s: %s", name, msg)
-            print(f"  WARN: {msg} — skipping", flush=True)
-            summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg[:60]})
+        mem = _get_memory_mb()
+        if mem and mem > MEM_LIMIT_MB:
+            msg = f"memory {mem:.0f}MB > {MEM_LIMIT_MB}MB limit"
+            print(f"  SKIP: {msg}", flush=True)
+            summary.append({"source": name, "status": "SKIP", "chunks": 0, "reason": msg})
             continue
 
-        # Extract text
+        try:
+            raw = _download(session, url)
+            print(f"  Downloaded {len(raw):,} bytes  (RAM: {mem:.0f}MB)", flush=True)
+        except Exception as exc:
+            msg = f"download failed: {exc}"
+            print(f"  WARN: {msg} — skipping", flush=True)
+            summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg[:60]})
+            gc.collect()
+            continue
+
         try:
             text = _extract_pdf(raw) if kind == "pdf" else _extract_html(raw)
         except Exception as exc:
-            msg = f"text extraction failed: {exc}"
-            log.warning("[poland_full] %s: %s", name, msg)
+            msg = f"extraction failed: {exc}"
             print(f"  WARN: {msg} — skipping", flush=True)
             summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg[:60]})
+            gc.collect()
             continue
+        finally:
+            del raw
+            gc.collect()
 
         word_count = len(text.split())
         if word_count < 200:
             msg = f"too short ({word_count} words)"
-            log.warning("[poland_full] %s: %s", name, msg)
             print(f"  WARN: {msg} — skipping", flush=True)
             summary.append({"source": name, "status": "SKIP", "chunks": 0, "reason": msg})
+            del text
+            gc.collect()
             continue
 
         chunks = _chunk_text(text)
+        del text
+        gc.collect()
         print(f"  {word_count:,} words → {len(chunks)} chunks", flush=True)
 
         ids   = [_chunk_id(name, i) for i in range(len(chunks))]
@@ -314,21 +357,53 @@ def ingest_poland_sources(sources: list[dict] | None = None) -> int:
             }
             for _ in chunks
         ]
+        all_batches.append((name, ids, chunks, metas))
+        summary.append({"source": name, "status": "OK", "chunks": len(chunks), "reason": ""})
 
+    print(f"\n[poland_full] Phase 1 done — {len(all_batches)} sources, "
+          f"{sum(len(b[2]) for b in all_batches)} total chunks", flush=True)
+
+    if not all_batches:
+        print("[poland_full] Nothing to embed.", flush=True)
+        return 0
+
+    # ── Phase 2: embed → permit_docs (MiniLM, small model first) ──────────────
+    print("\n[poland_full] Phase 2: loading MiniLM for permit_docs …", flush=True)
+    gc.collect()
+    model_v1 = SentenceTransformer(_MODEL_V1)
+    for name, ids, chunks, metas in all_batches:
         try:
-            n1 = _upsert(col_v1, model_v1, ids, chunks, metas)
-            n2 = _upsert(col_v2, model_v2, ids, chunks, metas)
-            total_v2 += n2
-            print(f"  Upserted {n1} → permit_docs  |  {n2} → permit_docs_v2", flush=True)
-            log.info("[poland_full] %s: v1=%d v2=%d", name, n1, n2)
-            summary.append({"source": name, "status": "OK", "chunks": n2, "reason": ""})
+            n = _upsert_batched(col_v1, model_v1, ids, chunks, metas)
+            print(f"  v1  {n:>4} chunks  {name}", flush=True)
         except Exception as exc:
-            msg = f"upsert failed: {exc}"
-            log.warning("[poland_full] %s: %s", name, msg)
-            print(f"  ERROR: {msg}", flush=True)
-            summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg[:60]})
+            print(f"  v1 ERR {name}: {exc}", flush=True)
+    del model_v1
+    gc.collect()
+    print(f"  MiniLM unloaded  (RAM: {_get_memory_mb():.0f}MB)", flush=True)
 
-    # Summary table
+    # ── Phase 3: embed → permit_docs_v2 (mpnet, larger model) ─────────────────
+    print("\n[poland_full] Phase 3: loading mpnet for permit_docs_v2 …", flush=True)
+    gc.collect()
+    model_v2 = SentenceTransformer(_MODEL_V2)
+    total_v2 = 0
+    for name, ids, chunks, metas in all_batches:
+        try:
+            n = _upsert_batched(col_v2, model_v2, ids, chunks, metas)
+            total_v2 += n
+            print(f"  v2  {n:>4} chunks  {name}", flush=True)
+        except Exception as exc:
+            print(f"  v2 ERR {name}: {exc}", flush=True)
+    del model_v2
+    gc.collect()
+    print(f"  mpnet unloaded  (RAM: {_get_memory_mb():.0f}MB)", flush=True)
+
+    # Update summary with actual v2 counts
+    name_to_v2 = {b[0]: len(b[2]) for b in all_batches}
+    for r in summary:
+        if r["status"] == "OK":
+            r["chunks"] = name_to_v2.get(r["source"], r["chunks"])
+
+    # ── Summary ────────────────────────────────────────────────────────────────
     print(f"\n{'='*72}")
     print(f"{'Source':<46} {'Status':^6} {'Chunks':>6}  Reason")
     print(f"{'-'*72}")
@@ -344,6 +419,7 @@ def ingest_poland_sources(sources: list[dict] | None = None) -> int:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(message)s")
-    print("NOTE: ISAP PDF sources require Render server IP — local run will skip them.")
+    print("NOTE: ISAP PDF sources require Render server IP — local Mac run will fail PDFs.")
+    print("NOTE: prawo_energetyczne (2.6MB) excluded by default — add LARGE_SOURCES if RAM allows.")
     count = ingest_poland_sources()
-    print(f"\n[poland_full] Done — {count} chunks added to permit_docs_v2")
+    print(f"\n[poland_full] Done — {count} chunks in permit_docs_v2")
