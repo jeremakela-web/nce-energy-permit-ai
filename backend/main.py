@@ -2476,6 +2476,17 @@ async def admin_revoke_key(key_id: str):
 
 # ── Caruna grid-capacity ingestion ───────────────────────────────────────────
 
+@app.post("/api/admin/ingest-poland", dependencies=[Depends(_require_admin)])
+async def admin_ingest_poland():
+    """Download Polish regulatory PDFs/HTML and upsert chunks into ChromaDB. Admin only."""
+    try:
+        from poland_ingestion import ingest_poland_sources
+        count = ingest_poland_sources()
+        return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 @app.post("/api/admin/ingest-caruna", dependencies=[Depends(_require_admin)])
 async def admin_ingest_caruna():
     """Download Caruna PDFs and upsert chunks into ChromaDB. Admin only."""
