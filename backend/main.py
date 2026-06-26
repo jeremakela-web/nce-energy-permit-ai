@@ -2474,6 +2474,19 @@ async def admin_revoke_key(key_id: str):
     return {"revoked": key_id}
 
 
+# ── Caruna grid-capacity ingestion ───────────────────────────────────────────
+
+@app.post("/api/admin/ingest-caruna", dependencies=[Depends(_require_admin)])
+async def admin_ingest_caruna():
+    """Download Caruna PDFs and upsert chunks into ChromaDB. Admin only."""
+    try:
+        from caruna_ingestion import ingest_caruna_sources
+        count = ingest_caruna_sources()
+        return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 # ── LinkedIn posting agent ────────────────────────────────────────────────────
 
 from linkedin_agent import (
