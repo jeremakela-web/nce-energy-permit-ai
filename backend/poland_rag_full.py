@@ -199,25 +199,65 @@ def _download(session: Any, url: str, timeout: int = 60) -> bytes:
     return resp.content
 
 
-def _extract_pdf(data: bytes) -> str:
-    """Extract text page-by-page via a temp file to limit pdfplumber's parse-tree memory."""
-    import pdfplumber
-    parts = []
-    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-        tmp.write(data)
-        tmp_path = tmp.name
+def _download_pdf_curl(url: str, timeout: int = 60) -> bytes:
+    """
+    Download a PDF using system curl instead of Python requests.
+
+    ISAP sejm.gov.pl uses Incapsula CDN with TLS fingerprint (JA3/JA4) detection.
+    Python requests presents a fingerprint that gets challenged; libcurl does not.
+    This function spawns a subprocess curl to bypass that check.
+    """
+    import subprocess
+    tmp_path = tempfile.mktemp(suffix=".pdf")
     try:
-        with pdfplumber.open(tmp_path) as pdf:
-            for page in pdf.pages:
-                t = page.extract_text()
-                if t:
-                    parts.append(t)
+        result = subprocess.run(
+            [
+                "curl", "-s", "-L",
+                "--max-time", str(timeout),
+                "-A", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+                "-H", "Referer: https://isap.sejm.gov.pl/",
+                url, "-o", tmp_path,
+            ],
+            capture_output=True,
+            timeout=timeout + 10,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"curl exit {result.returncode}: {result.stderr.decode(errors='replace')[:100]}"
+            )
+        with open(tmp_path, "rb") as fh:
+            return fh.read()
     finally:
         try:
             os.unlink(tmp_path)
         except OSError:
             pass
+
+
+def _extract_pdf_from_path(tmp_path: str) -> str:
+    """Extract text page-by-page from a file path (lazy I/O, lower peak RAM)."""
+    import pdfplumber
+    parts = []
+    with pdfplumber.open(tmp_path) as pdf:
+        for page in pdf.pages:
+            t = page.extract_text()
+            if t:
+                parts.append(t)
     return "\n".join(parts)
+
+
+def _extract_pdf(data: bytes) -> str:
+    """Extract text via a temp file to limit pdfplumber's parse-tree memory."""
+    tmp_path = tempfile.mktemp(suffix=".pdf")
+    try:
+        with open(tmp_path, "wb") as fh:
+            fh.write(data)
+        return _extract_pdf_from_path(tmp_path)
+    finally:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
 
 
 def _extract_html(data: bytes) -> str:
@@ -304,7 +344,12 @@ def ingest_poland_sources(sources: list[dict] | None = None) -> int:
         print(f"  RAM (RSS): {mem:.0f}MB", flush=True)
 
         try:
-            raw = _download(session, url)
+            # PDFs use system curl (libcurl TLS fingerprint) to bypass Incapsula JA3 detection.
+            # HTML sources use requests (no TLS fingerprint filtering on HTML servers).
+            if kind == "pdf":
+                raw = _download_pdf_curl(url)
+            else:
+                raw = _download(session, url)
             print(f"  Downloaded {len(raw):,} bytes", flush=True)
         except Exception as exc:
             msg = f"download failed: {exc}"
