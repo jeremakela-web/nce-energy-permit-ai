@@ -10,6 +10,7 @@ Käynnistys:
 
 import asyncio
 import base64
+import dataclasses
 import email.mime.multipart
 import email.mime.text
 import io
@@ -328,6 +329,37 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# ── ARQ job queue (Redis-backed, single-service) ──────────────────────────────
+_ARQ_POOL = None   # arq.ArqRedis | None — None = Redis unavailable, fall back to Thread
+
+@app.on_event("startup")
+async def _arq_startup() -> None:
+    global _ARQ_POOL
+    _redis_url = os.getenv("REDIS_URL", "")
+    if not _redis_url:
+        print("[arq] REDIS_URL not set — job queue disabled, fallback to daemon threads")
+        return
+    try:
+        from arq import create_pool
+        from arq.connections import RedisSettings
+        from arq.worker import Worker
+
+        _rs = RedisSettings.from_dsn(_redis_url)
+        _ARQ_POOL = await create_pool(_rs)
+
+        _worker = Worker(
+            functions=[arq_task_generate_permit],
+            redis_settings=_rs,
+            max_jobs=2,           # max 2 concurrent permit generations
+            handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
+            poll_delay=0.5,
+        )
+        asyncio.create_task(_worker.main(), name="arq-worker")
+        print(f"[arq] Worker started — max_jobs=2  redis={_redis_url[:40]}")
+    except Exception as _exc:
+        print(f"[arq] Startup failed ({_exc}) — fallback to daemon threads")
+        _ARQ_POOL = None
 
 
 @app.middleware("http")
@@ -1059,7 +1091,20 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             except Exception:
                 pass
 
-    Thread(target=_bg_generate, daemon=True).start()
+    if _ARQ_POOL is not None:
+        await _ARQ_POOL.enqueue_job(
+            "arq_task_generate_permit",
+            job_id        = job_id,
+            inp_dict      = dataclasses.asdict(inp),
+            client_ip     = _client_ip,
+            hanke_id      = req.hanke_id or "",
+            session_id    = req.session_id or "",
+            hankkeen_vaihe = req.hankkeen_vaihe or "",
+            hanketyyppi   = req.hanketyyppi or "",
+            country       = req.country or "FI",
+        )
+    else:
+        Thread(target=_bg_generate, daemon=True).start()
 
     return Response(
         content    = json.dumps({"job_id": job_id}),
@@ -1070,6 +1115,97 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             "Access-Control-Expose-Headers": "X-Job-Id",
         },
     )
+
+
+async def arq_task_generate_permit(
+    ctx: dict,
+    *,
+    job_id: str,
+    inp_dict: dict,
+    client_ip: str,
+    hanke_id: str,
+    session_id: str,
+    hankkeen_vaihe: str,
+    hanketyyppi: str,
+    country: str,
+) -> None:
+    """
+    ARQ task — runs permit generation concurrently without blocking the event loop.
+
+    Replaces Thread(target=_bg_generate) when REDIS_URL is set.
+    Sync blocking work (Claude API + PDF render) is off-loaded to
+    asyncio.to_thread() so other ARQ jobs and FastAPI requests run freely.
+    max_jobs=2 caps concurrent generations at 2 (prevents OOM on 512MB Render).
+    """
+    print(f"[arq] {job_id} START hanke={hanketyyppi} country={country}", flush=True)
+    _proofread_store[job_id]["status"] = "running"
+
+    inp = ApplicationInput(**inp_dict)
+
+    try:
+        draft_bytes, sections, sources = await asyncio.to_thread(
+            generate_application_draft, inp
+        )
+        print(f"[arq] {job_id} draft done, sections={list(sections.keys())}", flush=True)
+        _proofread_store[job_id]["debug_sections"] = {
+            k: len(v) for k, v in sections.items() if isinstance(v, str)
+        }
+
+        pdf = await asyncio.to_thread(apply_proofread_to_pdf, inp, sections, sources)
+        print(f"[arq] {job_id} pdf done len={len(pdf) if pdf else 0}", flush=True)
+
+        _proofread_store[job_id]["pdf_bytes"] = pdf
+        _proofread_store[job_id]["status"] = "done"
+        _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id, "done")
+
+        # Auto-complete phase
+        if _PHASE_LOCK_OK and session_id and hankkeen_vaihe:
+            _phase_num = {
+                "esiselvitys": 1, "lupavaihe": 2,
+                "rakentaminen": 3, "rakentamisvaihe": 3,
+            }.get(hankkeen_vaihe.lower().strip(), 0)
+            if _phase_num:
+                _phase_status = _unlock_next_phase(
+                    session_id, hanketyyppi, _phase_num, "generated"
+                )
+                _proofread_store[job_id]["phase_status"] = _phase_status
+
+        # RTB tracking
+        _rtb_id = hanke_id.strip() or _rtb.make_hanke_id(
+            inp.y_tunnus or "", inp.kiinteistotunnus or ""
+        )
+        if _rtb_id:
+            try:
+                _rtb.update_permit_doc(
+                    _rtb_id,
+                    job_id          = job_id,
+                    phase           = hankkeen_vaihe,
+                    y_tunnus        = inp.y_tunnus or "",
+                    kiinteistotunnus = inp.kiinteistotunnus or "",
+                    hanketyyppi     = hanketyyppi,
+                    maa             = country,
+                )
+                _proofread_store[job_id]["hanke_id"] = _rtb_id
+            except Exception:
+                pass
+
+    except InsufficientSourcesError as exc:
+        _proofread_store[job_id]["status"] = "insufficient_sources"
+        _proofread_store[job_id]["error"] = str(exc)
+        _proofread_store[job_id]["chunks_found"] = exc.chunks_found
+        _proofread_store[job_id]["avg_relevance"] = round(exc.avg_relevance, 2)
+        _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id,
+                   f"RAG_FAIL:chunks={exc.chunks_found}")
+
+    except Exception as exc:
+        import traceback as _tb
+        _err = f"{type(exc).__name__}: {exc}"
+        print(f"[arq] {job_id} ERROR {_err}", flush=True)
+        print(_tb.format_exc(), flush=True)
+        _proofread_store[job_id]["status"] = "error"
+        _proofread_store[job_id]["error"] = _err
+        _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id,
+                   f"error:{_err[:60]}")
 
 
 @app.get("/api/proofread/{job_id}")
