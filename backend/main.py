@@ -971,7 +971,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
                "smr_bess", "vesivoima", "hybridi",
                "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
                "ymparistolupa", "datakeskus",
-               "smr_se", "smr_no", "smr_da", "smr_de",
+               "smr_se", "smr_no", "smr_da", "smr_de", "smr_ee",
                "egs", "offshore_wind"}
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400,
@@ -2529,7 +2529,7 @@ async def b2b_generate_report(
                "smr_bess", "vesivoima", "hybridi",
                "asuinrakennus", "teollisuus", "maatalous", "liikerakennus", "muu",
                "ymparistolupa", "datakeskus",
-               "smr_se", "smr_no", "smr_da", "smr_de",
+               "smr_se", "smr_no", "smr_da", "smr_de", "smr_ee",
                "egs", "offshore_wind"}
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400, detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")

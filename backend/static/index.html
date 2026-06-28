@@ -1313,6 +1313,7 @@
           <button class="lang-dropdown-item" id="lang-item-SE" onclick="setLang('SE');closeLangMenu();">🇸🇪 Svenska</button>
           <button class="lang-dropdown-item" id="lang-item-DA" onclick="setLang('DA');closeLangMenu();">🇩🇰 Dansk</button>
           <button class="lang-dropdown-item" id="lang-item-NO" onclick="setLang('NO');closeLangMenu();">🇳🇴 Norsk</button>
+          <button class="lang-dropdown-item" id="lang-item-ET" onclick="setLang('ET');closeLangMenu();">🇪🇪 Eesti</button>
           <button class="lang-dropdown-item" id="lang-item-PL" onclick="setLang('PL');closeLangMenu();">🇵🇱 Polski</button>
           <button class="lang-dropdown-item" id="lang-item-DE" onclick="setLang('DE');closeLangMenu();">🇩🇪 Deutsch</button>
         </div>
@@ -1346,6 +1347,7 @@
           <option value="SE">🇸🇪 Sverige (SE)</option>
           <option value="DA">🇩🇰 Danmark (DA)</option>
           <option value="NO">🇳🇴 Norge (NO)</option>
+          <option value="EE">🇪🇪 Estonia (EE)</option>
           <option value="PL">🇵🇱 Polska (PL)</option>
           <option value="DE">🇩🇪 Deutschland (DE)</option>
         </select>
@@ -1381,6 +1383,7 @@
               <button class="lang-btn" id="map-country-btn-SE" onclick="setMapCountry('SE')">🇸🇪 SE</button>
               <button class="lang-btn" id="map-country-btn-DA" onclick="setMapCountry('DA')">🇩🇰 DA</button>
               <button class="lang-btn" id="map-country-btn-NO" onclick="setMapCountry('NO')">🇳🇴 NO</button>
+              <button class="lang-btn" id="map-country-btn-EE" onclick="setMapCountry('EE')">🇪🇪 EE</button>
               <button class="lang-btn" id="map-country-btn-PL" onclick="setMapCountry('PL')">🇵🇱 PL</button>
             </div>
           </div>
@@ -1907,6 +1910,7 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI tunnistaa automaattisesti sääntelyaukot ja varoittaa kohdista joissa viranomainen todennäköisesti pyytää lisäselvityksiä — Tanskalla ei ole aktiivista SMR-ohjelmaa eikä ydinenergialakia.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI tunnistaa automaattisesti sääntelyaukot ja varoittaa kohdista joissa viranomainen todennäköisesti pyytää lisäselvityksiä — Saksan ydinvoimapäätös on avoinna; AtG-laki on käytössä mutta uudet rakentamisluvat ovat poliittisesti epävarmat.',
     smr_no_reg_warning:      '⚠️ NCE Permit AI tunnistaa automaattisesti sääntelyaukot ja varoittaa kohdista joissa viranomainen todennäköisesti pyytää lisäselvityksiä — Norjalla ei ole toimivia ydinvoimalaitoksia; DSA-viranomaisrakenne on olemassa, mutta käytännön lupakäytäntö on vasta kehittymässä.',
+    smr_ee_reg_warning:      '⚠️ NCE Permit AI tunnistaa automaattisesti sääntelyaukot ja varoittaa kohdista joissa viranomainen todennäköisesti pyytää lisäselvityksiä — Viron ydinenergialainsäädäntö (AtomE) hyväksyttiin 2024 ja on vielä kehitysvaiheessa; TTJA-viranomaisrakenne rakentuu Fermi Energia -hankkeen aikataulussa.',
     badge_reg_warning:       'Sääntelyaukot',
     // ── Hardcoded string keys (map/optimizer/arch modules) ──
     map_yes_warn:         'Kyllä ⚠',
@@ -2232,6 +2236,7 @@ const TRANSLATIONS = {
     country_se:       'Ruotsi',
     country_da:       'Tanska',
     country_no:       'Norja',
+    country_ee:       'Viro',
     country_pl:       'Puola',
     country_de:       'Saksa',
     country_detected: 'Maa tunnistettu automaattisesti:',
@@ -2309,6 +2314,7 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI automatically identifies regulatory gaps and warns about sections where the authority is likely to request additional clarification — Denmark has no active SMR programme or nuclear energy act.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI automatically identifies regulatory gaps and warns about sections where the authority is likely to request additional clarification — Germany\'s nuclear decision is open; AtG framework exists but new construction permits remain politically uncertain.',
     smr_no_reg_warning:      '⚠️ NCE Permit AI automatically identifies regulatory gaps and warns about sections where the authority is likely to request additional clarification — Norway has no operating nuclear plants; DSA regulatory structure exists but practical licensing practice is still developing.',
+    smr_ee_reg_warning:      '⚠️ NCE Permit AI automatically identifies regulatory gaps and warns about sections where the authority is likely to request additional clarification — Estonia\'s nuclear energy act (AtomE) was adopted in 2024 and is still evolving; TTJA regulatory framework is being built around the Fermi Energia project timeline.',
     badge_reg_warning:       'Regulatory gaps',
     // ── Hardcoded string keys (map/optimizer/arch modules) ──
     map_yes_warn:         'Yes ⚠',
@@ -2626,6 +2632,7 @@ const TRANSLATIONS = {
     country_se:       'Sweden',
     country_da:       'Denmark',
     country_no:       'Norway',
+    country_ee:       'Estonia',
     country_pl:       'Poland',
     country_de:       'Germany',
     country_detected: 'Country detected automatically:',
@@ -2701,6 +2708,7 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI identifierar automatiskt regulatoriska luckor och varnar om avsnitt där myndigheten sannolikt begär ytterligare förtydliganden — Danmark saknar ett aktivt SMR-program och kärnenergilag.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI identifierar automatiskt regulatoriska luckor och varnar om avsnitt där myndigheten sannolikt begär ytterligare förtydliganden — Tysklands kärnkraftsbeslut är öppet; AtG-ramverket finns men nya bygglov är politiskt osäkra.',
     smr_no_reg_warning:      '⚠️ NCE Permit AI identifierar automatiskt regulatoriska luckor och varnar om avsnitt där myndigheten sannolikt begär ytterligare förtydliganden — Norge har inga aktiva kärnkraftverk; DSA-regelverket finns men praktisk licensieringspraxis är under utveckling.',
+    smr_ee_reg_warning:      '⚠️ NCE Permit AI identifierar automatiskt regulatoriska luckor och varnar om avsnitt där myndigheten sannolikt begär ytterligare förtydliganden — Estlands kärnenergilag (AtomE) antogs 2024 och är fortfarande under utveckling; TTJA-regelverket byggs upp kring Fermi Energia-projektets tidsplan.',
     badge_reg_warning:       'Regulatoriska luckor',
     // ── Hardcoded string keys (map/optimizer/arch modules) ──
     map_yes_warn:         'Ja ⚠',
@@ -3018,6 +3026,7 @@ const TRANSLATIONS = {
     country_se:       'Sverige',
     country_da:       'Danmark',
     country_no:       'Norge',
+    country_ee:       'Estland',
     country_pl:       'Polen',
     country_de:       'Tyskland',
     country_detected: 'Land identifierat automatiskt:',
@@ -3081,6 +3090,7 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI identificerer automatisk regulatoriske huller og advarer om afsnit, hvor myndigheden sandsynligvis anmoder om yderligere afklaring — Danmark har intet aktivt SMR-program eller kerneenergilov.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI identificerer automatisk regulatoriske huller og advarer om afsnit, hvor myndigheden sandsynligvis anmoder om yderligere afklaring — Tysklands atomkraftbeslutning er åben; AtG-rammen eksisterer, men nye byggetilladelser er politisk usikre.',
     smr_no_reg_warning:      '⚠️ NCE Permit AI identificerer automatisk regulatoriske huller og advarer om afsnit, hvor myndigheden sandsynligvis anmoder om yderligere afklaring — Norge har ingen aktive kernekraftværker; DSA-reguleringsstrukturen eksisterer, men praktisk licensieringspraksis er under udvikling.',
+    smr_ee_reg_warning:      '⚠️ NCE Permit AI identificerer automatisk regulatoriske huller og advarer om afsnit, hvor myndigheden sandsynligvis anmoder om yderligere afklaring — Estlands kerneenergilov (AtomE) blev vedtaget i 2024 og er stadig under udvikling; TTJA-myndighedsstrukturen opbygges i takt med Fermi Energia-projektets tidsplan.',
     badge_reg_warning:       'Regulatoriske huller',
     // ── Hardcoded string keys (map/optimizer/arch modules) ──
     map_yes_warn:         'Ja ⚠',
@@ -3188,6 +3198,7 @@ const TRANSLATIONS = {
     country_se:     'Sverige',
     country_da:     'Danmark',
     country_no:     'Norge',
+    country_ee:     'Estland',
     country_pl:     'Polen',
     country_de:     'Tyskland',
     country_detected: 'Land registreret automatisk:',
@@ -3479,6 +3490,7 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI identifiserer automatisk regulatoriske gap og advarer om avsnitt der myndigheten sannsynligvis ber om ytterligere avklaring — Danmark har ikke noe aktivt SMR-program eller kjernekraftlov.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI identifiserer automatisk regulatoriske gap og advarer om avsnitt der myndigheten sannsynligvis ber om ytterligere avklaring — Tysklands kjernekraftbeslutning er åpen; AtG-rammeverket finnes, men nye byggetillatelser er politisk usikre.',
     smr_no_reg_warning:      '⚠️ NCE Permit AI identifiserer automatisk regulatoriske gap og advarer om avsnitt der myndigheten sannsynligvis ber om ytterligere avklaring — Norge har ingen aktive kjernekraftverk; DSA-regelverket eksisterer, men praktisk lisensiering er under utvikling.',
+    smr_ee_reg_warning:      '⚠️ NCE Permit AI identifiserer automatisk regulatoriske gap og advarer om avsnitt der myndigheten sannsynligvis ber om ytterligere avklaring — Estlands kjernekraftlov (AtomE) ble vedtatt i 2024 og er fortsatt under utvikling; TTJA-myndigheitsstrukturen bygges opp rundt Fermi Energia-prosjektets tidsplan.',
     badge_reg_warning:       'Regulatoriske gap',
     // ── Hardcoded string keys (map/optimizer/arch modules) ──
     map_yes_warn:         'Ja ⚠',
@@ -3586,6 +3598,7 @@ const TRANSLATIONS = {
     country_se:     'Sverige',
     country_da:     'Danmark',
     country_no:     'Norge',
+    country_ee:     'Estland',
     country_pl:     'Polen',
     country_de:     'Tyskland',
     country_detected: 'Land registrert automatisk:',
@@ -3877,6 +3890,7 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI automatycznie identyfikuje luki regulacyjne i ostrzega o sekcjach, w których organ prawdopodobnie poprosi o dodatkowe wyjaśnienia — Dania nie ma aktywnego programu SMR ani ustawy o energii jądrowej.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI automatycznie identyfikuje luki regulacyjne i ostrzega o sekcjach, w których organ prawdopodobnie poprosi o dodatkowe wyjaśnienia — decyzja Niemiec ws. energii jądrowej jest otwarta; ramy AtG istnieją, ale nowe pozwolenia budowlane są politycznie niepewne.',
     smr_no_reg_warning:      '⚠️ NCE Permit AI automatycznie identyfikuje luki regulacyjne i ostrzega o sekcjach, w których organ prawdopodobnie poprosi o dodatkowe wyjaśnienia — Norwegia nie posiada elektrowni jądrowych; struktura regulacyjna DSA istnieje, ale praktyka licencyjna jest w fazie rozwoju.',
+    smr_ee_reg_warning:      '⚠️ NCE Permit AI automatycznie identyfikuje luki regulacyjne i ostrzega o sekcjach, w których organ prawdopodobnie poprosi o dodatkowe wyjaśnienia — estońska ustawa o energii jądrowej (AtomE) została przyjęta w 2024 r. i jest nadal rozwijana; struktura regulacyjna TTJA jest budowana zgodnie z harmonogramem projektu Fermi Energia.',
     badge_reg_warning:       'Luki regulacyjne',
     // ── Hardcoded string keys (map/optimizer/arch modules) ──
     map_yes_warn:         'Tak ⚠',
@@ -3984,6 +3998,7 @@ const TRANSLATIONS = {
     country_se:     'Szwecja',
     country_da:     'Dania',
     country_no:     'Norwegia',
+    country_ee:     'Estonia',
     country_pl:     'Polska',
     country_de:     'Niemcy',
     country_detected: 'Kraj wykryty automatycznie:',
@@ -4283,6 +4298,7 @@ const TRANSLATIONS = {
     smr_da_reg_warning:      '⚠️ NCE Permit AI erkennt automatisch regulatorische Lücken und warnt vor Abschnitten, in denen die Behörde voraussichtlich zusätzliche Erläuterungen anfordert — Dänemark hat kein aktives SMR-Programm oder Kernenergigesetz.',
     smr_de_reg_warning:      '⚠️ NCE Permit AI erkennt automatisch regulatorische Lücken und warnt vor Abschnitten, in denen die Behörde voraussichtlich zusätzliche Erläuterungen anfordert — Deutschlands Kernkraftentscheidung ist offen; AtG-Rahmen besteht, aber neue Baugenehmigungen sind politisch unsicher.',
     smr_no_reg_warning:      '⚠️ NCE Permit AI erkennt automatisch regulatorische Lücken und warnt vor Abschnitten, in denen die Behörde voraussichtlich zusätzliche Erläuterungen anfordert — Norwegen hat keine aktiven Kernkraftwerke; DSA-Regulierungsstruktur besteht, aber praktische Genehmigungspraxis ist noch in Entwicklung.',
+    smr_ee_reg_warning:      '⚠️ NCE Permit AI erkennt automatisch regulatorische Lücken und warnt vor Abschnitten, in denen die Behörde voraussichtlich zusätzliche Erläuterungen anfordert — Estlands Kernenergigesetz (AtomE) wurde 2024 verabschiedet und ist noch in der Entwicklung; die TTJA-Regulierungsstruktur wird im Rahmen des Fermi-Energia-Projektzeitplans aufgebaut.',
     badge_reg_warning:       'Regulatorische Lücken',
     // ── Hardcoded string keys (map/optimizer/arch modules) ──
     map_yes_warn:         'Ja ⚠',
@@ -4493,6 +4509,7 @@ const TRANSLATIONS = {
     country_se:            'Schweden',
     country_da:            'Dänemark',
     country_no:            'Norwegen',
+    country_ee:            'Estland',
     country_pl:            'Polen',
     country_de:            'Deutschland',
     country_detected:      'Land erkannt:',
@@ -4654,6 +4671,69 @@ const TRANSLATIONS = {
     alert_fill_required: 'Bitte Grundstücksidentifikator, Gemeinde und Antragsteller ausfüllen.',
     err_prefix:          'Fehler',
   },
+  ET: {
+    tab_generator:        'Loateenistus',
+    tab_generator_short:  'Load',
+    tab_map:              'Maakasutuse analüüs',
+    tab_map_short:        'Asukoht',
+    subtitle:             'Energiaprojektide loamenetluse analüüs',
+    gen_desc:       'Valige projekti tüüp ja täitke põhiandmed — AI koostab RAG-põhise loataotluse mustand-PDF-i. Mustand vajab enne esitamist eksperdi kontrolli.',
+    gen_form_title: 'Loataotluse mustand — PDF',
+    lbl_hanketyyppi:'Projekti tüüp',
+    h3_hanketyyppi: 'Projekti tüüp',
+    lbl_teho_mw:    'Võimsus (MW)',
+    lbl_kt:         'Kinnistutunnus',
+    lbl_kunta:      'Vald/linn',
+    lbl_hakija:     'Taotleja (ettevõte)',
+    ph_kt:          'nt 091-001-0001-0001',
+    ph_kunta:       'Vald/linn',
+    ph_hakija:      'OÜ / AS',
+    lbl_y_tunnus:   'Registrikood',
+    ph_y_tunnus:    'nt 12345678',
+    lbl_osoite:     'Aadress',
+    ph_osoite:      'Projekti aadress',
+    lbl_teho:       'Võimsus (MW)',
+    lbl_kapasiteetti: 'Maht (MWh)',
+    lbl_sijainti:   'Asukoht ja keskkonnamõju',
+    ph_sijainti:    'Kirjeldage asukohta ja kavandatavaid keskkonnasäästumeetmeid…',
+    lbl_vaihe:      'Projekti etapp',
+    lbl_lang:       'Dokumendi keel',
+    lbl_viranomainen: 'Sihtasutus / pädev asutus',
+    btn_generate_pdf: 'Genereeri PDF',
+    btn_generate_hakemus: 'Genereeri taotlus',
+    btn_submit:     'Esita',
+    gen_submit_title: 'Genereeri loataotluse mustand',
+    country_label:  'Riik',
+    country_hint:   'Valige esmalt sihtriik',
+    country_fi:     'Soome',
+    country_se:     'Rootsi',
+    country_da:     'Taani',
+    country_no:     'Norra',
+    country_ee:     'Eesti',
+    country_pl:     'Poola',
+    country_de:     'Saksamaa',
+    country_detected: 'Riik tuvastati automaatselt:',
+    gen_country_partial_rag: 'Osaline RAG-katvus',
+    gen_country_coming_soon: '🌍 Regulatiivne katvus varieerub riigiti. Kontrollige kohalikke asutuse nõudeid.',
+    badge_coming_soon:  'Tulemas',
+    badge_reg_warning:  'Regulatiivsed lüngad',
+    sco2_reg_warning:   '⚠️ NCE Permit AI tuvastab automaatselt regulatiivsed lüngad ja hoiatab lõikude eest, kus asutus tõenäoliselt täiendavaid selgitusi küsib — see projekti tüüp sisaldab avatud regulatiivseid küsimusi.',
+    egs_reg_warning:    '⚠️ NCE Permit AI tuvastab automaatselt regulatiivsed lüngad ja hoiatab lõikude eest, kus asutus tõenäoliselt täiendavaid selgitusi küsib — ühtlustatud EL-i standardid sügava geotermaalsüsteemi (EGS) tehnoloogia jaoks puuduvad.',
+    smr_da_reg_warning: '⚠️ NCE Permit AI tuvastab automaatselt regulatiivsed lüngad ja hoiatab lõikude eest, kus asutus tõenäoliselt täiendavaid selgitusi küsib — Taanil puudub aktiivne SMR-programm ja tuumaenergiaseadus.',
+    smr_de_reg_warning: '⚠️ NCE Permit AI tuvastab automaatselt regulatiivsed lüngad ja hoiatab lõikude eest, kus asutus tõenäoliselt täiendavaid selgitusi küsib — Saksamaa tuumaenergiaotsus on lahtine; AtG-raamistik on olemas, kuid uued ehitusload on poliitiliselt ebakindlad.',
+    smr_no_reg_warning: '⚠️ NCE Permit AI tuvastab automaatselt regulatiivsed lüngad ja hoiatab lõikude eest, kus asutus tõenäoliselt täiendavaid selgitusi küsib — Norral puuduvad toimivad tuumajaamad; DSA regulatiivne struktuur on olemas, kuid praktiline litsentsimispraktika on alles kujunemas.',
+    smr_ee_reg_warning: '⚠️ NCE Permit AI tuvastab automaatselt regulatiivsed lüngad ja hoiatab lõikude eest, kus asutus tõenäoliselt täiendavaid selgitusi küsib — Eesti tuumaenergiaergiaseadus (AtomE) võeti vastu 2024. aastal ja on veel arenemisjärgus; TTJA regulatiivne struktuur kujuneb Fermi Energia projekti ajakava kohaselt.',
+    gf_lbl_viranomainen: 'Sihtasutus',
+    alert_fill_required: 'Palun täitke kinnistutunnus, vald/linn ja taotleja.',
+    err_prefix:         'Viga',
+    privacy_link:       'Privaatsus',
+    btn_close:          'Sulge',
+    btn_send:           'Saada',
+    pai_placeholder:    'Küsimused loamenetluste, Elering-ühenduste, TTJA-nõuete kohta… (Ctrl+Enter saadab)',
+    ph_esim_ha:         'nt 4,50',
+    map_select_hint:    '— Valige projekti tüüp —',
+    lbl_country:        'Riik',
+  },
 };
 
 function t(key) {
@@ -4667,6 +4747,7 @@ const LANG_META = {
   SE: { flag: '🇸🇪', label: 'SE' },
   DA: { flag: '🇩🇰', label: 'DA' },
   NO: { flag: '🇳🇴', label: 'NO' },
+  ET: { flag: '🇪🇪', label: 'ET' },
   PL: { flag: '🇵🇱', label: 'PL' },
   DE: { flag: '🇩🇪', label: 'DE' },
 };
@@ -4884,6 +4965,11 @@ const PROJECT_TYPES = [
     regWarning: true,
     name: { FI: 'SMR Deutschland (Coming)', EN: 'SMR Germany (Coming)',       SE: 'SMR Tyskland (Coming)',         DA: 'SMR Tyskland (Coming)',         NO: 'SMR Tyskland (Coming)',         PL: 'SMR Niemcy (Coming)',            DE: 'SMR Deutschland (Coming)'       },
     sub:  { FI: 'Saksan ydinvoimalupamenettely', EN: 'German nuclear permit process', SE: 'Tyskt kärnkraftstillstånd', DA: 'Tysk kernereaktor-tilladelse', NO: 'Tysk kjernekraft-tillatelse', PL: 'Niemiecka procedura zezwolenia', DE: 'Deutsches Kernkraftgenehmigungsverfahren' } },
+  { id: 'smr_ee',
+    icon: '⚛️',
+    regWarning: true,
+    name: { FI: 'SMR Eesti (Coming)',        EN: 'SMR Estonia (Coming)',       SE: 'SMR Estland (Coming)',          DA: 'SMR Estland (Coming)',          NO: 'SMR Estland (Coming)',          PL: 'SMR Estonia (Coming)',           DE: 'SMR Estland (Coming)',          ET: 'SMR Eesti (tulemas)'            },
+    sub:  { FI: 'Viron ydinvoimalupamenettely', EN: 'Estonian nuclear permit process', SE: 'Estniskt kärnkraftstillstånd', DA: 'Estisk kernereaktor-tilladelse', NO: 'Estisk kjernekraft-tillatelse', PL: 'Estońska procedura zezwolenia', DE: 'Estnisches Kernkraftgenehmigungsverfahren', ET: 'Eesti tuumaenergia loamenetlus' } },
   { id: 'vesivoima',
     icon: '💧',
     name: { FI: 'Vesivoima',        EN: 'Hydropower',          SE: 'Vattenkraft',          DA: 'Vandkraft',          NO: 'Vannkraft',         PL: 'Energia wodna',         DE: 'Wasserkraft'           },
@@ -5401,6 +5487,7 @@ function _rebuildCountrySelect() {
     { code: 'SE', flag: '🇸🇪', key: 'country_se' },
     { code: 'DA', flag: '🇩🇰', key: 'country_da' },
     { code: 'NO', flag: '🇳🇴', key: 'country_no' },
+    { code: 'EE', flag: '🇪🇪', key: 'country_ee' },
     { code: 'PL', flag: '🇵🇱', key: 'country_pl' },
     { code: 'DE', flag: '🇩🇪', key: 'country_de' },
   ];
@@ -5451,6 +5538,8 @@ const COUNTRY_HINTS = {
        'horsens','vejle','roskilde'],
   NO: ['oslo','bergen','trondheim','stavanger','tromsø','kristiansand',
        'fredrikstad','sandnes','drammen'],
+  EE: ['tallinn','tartu','narva','pärnu','viljandi','rakvere','maardu',
+       'sillamäe','kuressaare','võru'],
   PL: ['warsaw','warszawa','kraków','łódź','wrocław','poznań','gdańsk',
        'szczecin','bydgoszcz','lublin'],
 };
@@ -5482,6 +5571,7 @@ const _COUNTRY_COVERAGE = {
   SE: { level: 'partial', label: 'SE — osittainen kattavuus (~1 560 chunkkia)' },
   DA: { level: 'partial', label: 'DA — osittainen kattavuus (~470 chunkkia)' },
   NO: { level: 'partial', label: 'NO — osittainen kattavuus (~1 270 chunkkia)' },
+  EE: { level: 'partial', label: 'EE — osittainen kattavuus (~79 chunkkia, ElTS/AtomE/KeHJS)' },
   PL: { level: 'partial', label: 'PL — osittainen kattavuus (~2 190 chunkkia)' },
   DE: { level: 'partial', label: 'DE — osittainen kattavuus (~920 chunkkia, BImSchG/EEG/BetrSichV)' },
 };
@@ -5528,7 +5618,7 @@ function setCountry(code) {
   if (topSel && topSel.value !== code) topSel.value = code;
 
   // Sync modal button bar
-  ['FI','SE','DA','NO','PL','DE'].forEach(c => {
+  ['FI','SE','DA','NO','EE','PL','DE'].forEach(c => {
     const btn = document.getElementById('country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
@@ -5555,7 +5645,7 @@ let mapSelectedCountry = 'FI';
 
 function setMapCountry(code) {
   mapSelectedCountry = code;
-  ['FI','SE','DA','NO','PL'].forEach(c => {
+  ['FI','SE','DA','NO','EE','PL'].forEach(c => {
     const btn = document.getElementById('map-country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
@@ -5829,6 +5919,7 @@ function selectProjectType(typeId) {
         SE: { smr: 'SSM (kärnkraft)', smr_se: 'SSM (kärnkraft)', smr_bess: 'SSM (kärnkraft)', bess: 'Kommunen (bygglov)', tuulivoima_maa: 'Energimyndigheten (tillstånd)', tuulivoima_meri: 'Energimyndigheten (tillstånd)', aurinkovoima: 'Kommunen (bygglov)', vesivoima: 'Mark- och miljödomstolen' },
         DA: { smr: 'Energistyrelsen (energitilladelse)', smr_da: 'Energistyrelsen (energitilladelse)', smr_bess: 'Energistyrelsen (energitilladelse)', bess: 'Kommunen (byggetilladelse)', tuulivoima_maa: 'Energistyrelsen (energitilladelse)', aurinkovoima: 'Kommunen (byggetilladelse)', vesivoima: 'Energistyrelsen (energitilladelse)' },
         NO: { smr: 'DSA (kjernekraft)', smr_no: 'DSA (kjernekraft)', smr_bess: 'DSA (kjernekraft)', bess: 'NVE (energikonsesjon)', tuulivoima_maa: 'NVE (energikonsesjon)', tuulivoima_meri: 'NVE (energikonsesjon)', aurinkovoima: 'Kommunen (byggetillatelse)', vesivoima: 'NVE (energikonsesjon)' },
+        EE: { smr: 'TTJA (tuumaenergia)', smr_ee: 'TTJA (tuumaenergia)', smr_bess: 'TTJA (tuumaenergia)', bess: 'Elering (võrguühendus) / omavalitsus (ehitusluba)', tuulivoima_maa: 'Keskkonnaministeerium / omavalitsus', tuulivoima_meri: 'Keskkonnaministeerium (KMH)', aurinkovoima: 'Omavalitsus (ehitusluba)', vesivoima: 'Keskkonnaamet (veeluba)' },
         PL: { smr: 'PAA (energetyka jądrowa)', smr_bess: 'PAA (energetyka jądrowa)', bess: 'Gmina (pozwolenie na budowę)', tuulivoima_maa: 'Gmina (pozwolenie na budowę)', aurinkovoima: 'Gmina (pozwolenie na budowę)', vesivoima: 'Wody Polskie (pozwolenie wodnoprawne)' },
         DE: { smr: 'BASE (Atomrecht)', smr_de: 'BASE (Atomrecht)', smr_bess: 'BASE (Atomrecht)', bess: 'Immissionsschutzbehörde (BImSchG)', tuulivoima_maa: 'Immissionsschutzbehörde (BImSchG)', tuulivoima_meri: 'Bundesnetzagentur (Netz)', aurinkovoima: 'Gemeinde (Baugenehmigung)', vesivoima: 'Umweltbehörde (UVP/WHG)', hybridi: 'Immissionsschutzbehörde (BImSchG)' },
       };
@@ -7500,6 +7591,7 @@ function archExportJson() {
         <button class="lang-btn" id="country-btn-SE" onclick="setCountry('SE')">🇸🇪 SE</button>
         <button class="lang-btn" id="country-btn-DA" onclick="setCountry('DA')">🇩🇰 DA</button>
         <button class="lang-btn" id="country-btn-NO" onclick="setCountry('NO')">🇳🇴 NO</button>
+        <button class="lang-btn" id="country-btn-EE" onclick="setCountry('EE')">🇪🇪 EE</button>
         <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
         <button class="lang-btn" id="country-btn-DE" onclick="setCountry('DE')">🇩🇪 DE</button>
       </div>
