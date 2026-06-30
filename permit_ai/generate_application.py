@@ -2175,6 +2175,16 @@ def _rag_context(
             except Exception:
                 pass
 
+        # Sort by relevance and keep only the top-N chunks for scoring + context.
+        # n_oversample=500 is large for discovery (ensures small countries like DA/DE appear),
+        # but averaging over 400+ marginally-relevant chunks would dilute avg_score below threshold.
+        # Top-50 keeps the most relevant subset, matching what Claude can attend to effectively.
+        _top_n_ctx = max(50, n_per_query * 20)
+        if len(all_docs) > _top_n_ctx:
+            _dist_doc = sorted(zip(all_distances, all_docs), key=lambda x: x[0])
+            all_distances = [p[0] for p in _dist_doc[:_top_n_ctx]]
+            all_docs      = [p[1] for p in _dist_doc[:_top_n_ctx]]
+
         # ── Task 2: RAG confidence check ─────────────────────────────────────
         chunks_returned = len(all_docs)
         if all_distances:
