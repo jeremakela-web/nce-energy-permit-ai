@@ -2890,6 +2890,88 @@ async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS"):
         return {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
 
 
+@app.get("/api/admin/rag-check-all")
+async def admin_rag_check_all(secret: str = ""):
+    """
+    Run RAG confidence check for all 8 countries × BESS in parallel.
+    Auth via ?secret=ADMIN_SECRET query param (browser-friendly).
+    Returns structured JSON: status, chunks_found, avg_relevance, pass/fail per country.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden — pass ?secret=ADMIN_SECRET")
+
+    from generate_application import _rag_context, InsufficientSourcesError, activate_v2, _v2_is_ready
+    import datetime
+    if _v2_is_ready():
+        activate_v2()
+
+    TESTS = [
+        ("FI", "BESS"),
+        ("FI", "tuulivoima_maa"),
+        ("SE", "BESS"),
+        ("DA", "BESS"),
+        ("NO", "BESS"),
+        ("PL", "BESS"),
+        ("EU", "BESS"),
+        ("EE", "BESS"),
+        ("DE", "BESS"),
+    ]
+    MIN_SCORE_FI     = 0.65
+    MIN_SCORE_NON_FI = 0.60
+
+    async def _run_one(country: str, hanketyyppi: str) -> dict:
+        min_score = MIN_SCORE_FI if country == "FI" else MIN_SCORE_NON_FI
+        try:
+            ctx, sources, warn, prec, _ = await asyncio.to_thread(
+                _rag_context, hanketyyppi, country
+            )
+            ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
+            n = len(ctx_chunks)
+            # avg_relevance not directly available on success path — derive from chunk count + warning
+            return {
+                "country":    country,
+                "hanketyyppi": hanketyyppi,
+                "status":     "PASS" if not warn else "PASS/WARN",
+                "chunks_found": n,
+                "avg_relevance": None,   # only available on failure path
+                "min_score":  min_score,
+                "warning":    warn,
+                "sources":    len(sources),
+                "top3_sources": [s.get("display", "?")[:45] for s in sources[:3]],
+            }
+        except InsufficientSourcesError as exc:
+            return {
+                "country":    country,
+                "hanketyyppi": hanketyyppi,
+                "status":     "FAIL",
+                "chunks_found": exc.chunks_found,
+                "avg_relevance": round(exc.avg_relevance, 3),
+                "min_score":  min_score,
+                "warning":    None,
+                "sources":    0,
+                "top3_sources": [],
+            }
+        except Exception as exc:
+            return {
+                "country":    country,
+                "hanketyyppi": hanketyyppi,
+                "status":     "ERROR",
+                "error":      f"{type(exc).__name__}: {exc}",
+            }
+
+    results = await asyncio.gather(*[_run_one(cc, ht) for cc, ht in TESTS])
+    passed  = sum(1 for r in results if r["status"].startswith("PASS"))
+    failed  = sum(1 for r in results if r["status"] == "FAIL")
+    errors  = sum(1 for r in results if r["status"] == "ERROR")
+
+    return {
+        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+        "summary":   {"total": len(results), "passed": passed, "failed": failed, "errors": errors},
+        "threshold": {"FI": MIN_SCORE_FI, "non_FI": MIN_SCORE_NON_FI},
+        "results":   list(results),
+    }
+
+
 # ── LinkedIn posting agent ────────────────────────────────────────────────────
 
 from linkedin_agent import (
