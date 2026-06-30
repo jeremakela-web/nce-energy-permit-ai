@@ -2857,6 +2857,39 @@ async def admin_reindex_all_v2_status():
     return _BULK_REINDEX_JOB
 
 
+@app.get("/api/admin/rag-test", dependencies=[Depends(_require_admin)])
+async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS"):
+    """Quick RAG confidence check for a country+hanketyyppi pair — no PDF, no LLM, no rate limit."""
+    from generate_application import _rag_context, InsufficientSourcesError, activate_v2, _v2_is_ready
+    if _v2_is_ready():
+        activate_v2()
+    try:
+        ctx, sources, warn, prec, psrc = await asyncio.to_thread(
+            _rag_context, hanketyyppi, country
+        )
+        ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
+        return {
+            "status": "ok",
+            "country": country,
+            "hanketyyppi": hanketyyppi,
+            "chunks_found": len(ctx_chunks),
+            "sources": len(sources),
+            "warning": warn,
+            "precedent_chunks": len(prec),
+            "top3_sources": [s.get("display", "?")[:50] for s in sources[:3]],
+        }
+    except InsufficientSourcesError as exc:
+        return {
+            "status": "insufficient_sources",
+            "country": country,
+            "hanketyyppi": hanketyyppi,
+            "chunks_found": exc.chunks_found,
+            "avg_relevance": round(exc.avg_relevance, 3),
+        }
+    except Exception as exc:
+        return {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
+
+
 # ── LinkedIn posting agent ────────────────────────────────────────────────────
 
 from linkedin_agent import (
