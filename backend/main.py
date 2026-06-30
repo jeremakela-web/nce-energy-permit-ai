@@ -2650,6 +2650,77 @@ async def admin_ingest_caruna():
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.post("/api/admin/reindex-ee-v2", dependencies=[Depends(_require_admin)])
+async def admin_reindex_ee_v2():
+    """
+    Re-embed all EE chunks from permit_docs (v1/MiniLM) into permit_docs_v2 (mpnet).
+
+    The original EE ingestion only upserted into permit_docs (v1). Production uses
+    permit_docs_v2 (mpnet 768-dim), so EE queries return 0 chunks until this runs.
+    This endpoint reads the 79 EE chunks, re-embeds with mpnet, and upserts into v2.
+    Admin only. Runs in a thread so it doesn't block the event loop (~15–30 s).
+    """
+    def _run_reindex() -> dict:
+        import gc
+        import chromadb
+        from sentence_transformers import SentenceTransformer
+
+        log = logging.getLogger("reindex-ee")
+
+        log.info("[ee-reindex] Reading EE chunks from permit_docs (v1)…")
+        client  = chromadb.PersistentClient(path=_DB_PATH)
+        col_v1  = client.get_collection("permit_docs")
+        result  = col_v1.get(where={"country": "EE"}, include=["documents", "metadatas"])
+        ids, docs, metas = result["ids"], result["documents"], result["metadatas"]
+        log.info(f"[ee-reindex] Found {len(ids)} EE chunks in v1")
+
+        if not ids:
+            return {"status": "no_chunks", "chunks_reindexed": 0}
+
+        log.info(f"[ee-reindex] Loading {_V2_MODEL}…")
+        model = SentenceTransformer(_V2_MODEL)
+        log.info(f"[ee-reindex] Model loaded — dim={model.get_sentence_embedding_dimension()}")
+
+        log.info(f"[ee-reindex] Embedding {len(docs)} chunks (batch_size=32)…")
+        embeddings = model.encode(docs, batch_size=32, show_progress_bar=False).tolist()
+        log.info("[ee-reindex] Embeddings done — releasing model")
+        del model
+        gc.collect()
+
+        col_v2 = client.get_or_create_collection(_V2_COL, metadata={"hnsw:space": "cosine"})
+        batch_size = 50
+        upserted = 0
+        for i in range(0, len(ids), batch_size):
+            sl = slice(i, i + batch_size)
+            col_v2.upsert(
+                ids=ids[sl],
+                documents=docs[sl],
+                embeddings=embeddings[sl],
+                metadatas=metas[sl],
+            )
+            upserted += len(ids[sl])
+            log.info(f"[ee-reindex] Upserted {upserted}/{len(ids)}")
+
+        ee_in_v2 = len(col_v1.get(where={"country": "EE"}, include=[])["ids"])
+        # verify via v2 col (re-fetch count after upsert)
+        ee_v2_count = len(col_v2.get(where={"country": "EE"}, include=[])["ids"])
+        v2_total    = col_v2.count()
+        log.info(f"[ee-reindex] DONE — permit_docs_v2 EE={ee_v2_count}  total={v2_total}")
+        return {
+            "status":          "ok",
+            "chunks_reindexed": upserted,
+            "ee_in_v1":        len(ids),
+            "ee_in_v2":        ee_v2_count,
+            "v2_total":        v2_total,
+        }
+
+    try:
+        result = await asyncio.to_thread(_run_reindex)
+        return result
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 # ── LinkedIn posting agent ────────────────────────────────────────────────────
 
 from linkedin_agent import (
