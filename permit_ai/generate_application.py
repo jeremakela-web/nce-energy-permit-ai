@@ -2139,7 +2139,10 @@ def _rag_context(
         # Oversample before post-filtering: ChromaDB where= operator is unreliable in v1.5.x
         # (raises ValueError for all operators). Post-filter via allowed_countries in _collect()
         # is the real guard — fetch a large pool first, then keep only permitted countries.
-        _n_oversample = max(20, n_per_query * 10)
+        # v2 now has 7231 chunks across 8 countries. Small countries (DA=265, DE=60, EE=79)
+        # need a large pool to appear in the top-k after post-filtering. 500 covers even DE
+        # (60/7231 = 0.8%) reliably when combined with native-language queries in Step 1.
+        _n_oversample = max(500, n_per_query * 80)
         # FI reports get FI+EU chunks; all other countries get only their own + EU chunks
         # so Finnish-jurisdiction chunks (ELY-keskus, Tukes, YVA-laki, Fingrid) cannot
         # contaminate authority tables or citations in DE/EE/SE/etc. reports.
@@ -3503,6 +3506,97 @@ _HANKE_CFG["BESS"]["context_extra_phases"]["rakentamisvaihe"] = (
 # Country-specific RAG queries — override Finnish default queries for country chunk retrieval.
 # Used in _rag_context step 1 so cross-lingual embedding similarity stays above threshold.
 _COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
+    "SE": {
+        "BESS": [
+            "Batterilagring energilagring tillståndsansökan Sverige miljöbalken PBL",
+            "Litiumjon batteri säkerhet brandskydd bygglov Länsstyrelsen",
+            "Elnätsanslutning Svenska kraftnät nättillstånd energilagring",
+        ],
+        "tuulivoima_maa": [
+            "Vindkraft landbaserad tillstånd Länsstyrelsen artskydd miljöbalken",
+            "Vindpark bygglov PBL riksintresse Energimyndigheten",
+        ],
+        "tuulivoima_meri": [
+            "Havsbaserad vindkraft tillståndsansökan Energimyndigheten Svenska kraftnät",
+        ],
+        "aurinkovoima": [
+            "Solcellsanläggning solpark bygglov PBL nättillstånd Sverige",
+        ],
+        "SMR": [
+            "Kärnkraft SMR tillstånd Strålsäkerhetsmyndigheten Sverige",
+        ],
+    },
+    "DA": {
+        "BESS": [
+            "Batterilagringssystem BESS tilladelse byggetilladelse Danmark",
+            "Energilagring VVM-screening Energistyrelsen Energinet nettilslutning",
+        ],
+        "tuulivoima_maa": [
+            "Vindmølle landvindmølle tilladelse VVM Energistyrelsen arealtilladelse",
+        ],
+        "tuulivoima_meri": [
+            "Havvind havmølle tilladelse Energistyrelsen udbud havområde",
+        ],
+        "aurinkovoima": [
+            "Solcelleanlæg solpark byggetilladelse lokalplan Danmark",
+        ],
+    },
+    "NO": {
+        "BESS": [
+            "Batterilagring energilagring konsesjon NVE Norge plan bygningsloven",
+            "Nettilknytning Statnett energiloven lagringsanlegg",
+        ],
+        "tuulivoima_maa": [
+            "Vindkraft landbasert konsesjon NVE energiloven arealplan",
+            "Vindkraftanlegg miljøkonsekvensutredning plan bygningsloven",
+        ],
+        "tuulivoima_meri": [
+            "Havvind offshore konsesjon NVE havenergilova Statnett",
+        ],
+        "aurinkovoima": [
+            "Solkraft solcelle solpark konsesjon NVE plan bygningsloven Norge",
+        ],
+    },
+    "PL": {
+        "BESS": [
+            "Magazyn energii BESS pozwolenie na budowę Polska URE decyzja",
+            "Akumulator litowy bateria energia elektryczna PSE warunki przyłączenia",
+            "Ustawa prawo energetyczne magazyn elektrownia koncesja URE",
+        ],
+        "tuulivoima_maa": [
+            "Elektrownia wiatrowa decyzja środowiskowa OOŚ URE odległość 10H",
+            "Wiatraki farma wiatrowa pozwolenie budowlane Polska plan miejscowy",
+        ],
+        "tuulivoima_meri": [
+            "Morska farma wiatrowa Polska ustawa offshore PSE koncesja",
+        ],
+        "aurinkovoima": [
+            "Fotowoltaika farma PV pozwolenie na budowę Polska warunki zabudowy",
+        ],
+        "SMR": [
+            "Reaktor jądrowy SMR prawo atomowe Polska UDT dozór jądrowy",
+        ],
+    },
+    "EU": {
+        "BESS": [
+            "EU energy storage battery regulation directive grid connection",
+            "European Network Code RfG generator connection requirement",
+            "EU Battery Regulation 2023 stationary storage lifecycle",
+        ],
+        "tuulivoima_maa": [
+            "EU wind energy onshore directive EIA environmental impact assessment",
+            "EU taxonomy renewable energy permitting reform",
+        ],
+        "tuulivoima_meri": [
+            "EU offshore wind directive maritime spatial planning grid connection",
+        ],
+        "aurinkovoima": [
+            "EU solar energy photovoltaic rooftop directive permitting",
+        ],
+        "SMR": [
+            "EU nuclear safety directive Euratom SMR regulation licensing",
+        ],
+    },
     "DE": {
         "tuulivoima_maa": [
             "Windenergie Onshore BImSchG Genehmigung Deutschland",
