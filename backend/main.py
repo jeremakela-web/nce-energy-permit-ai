@@ -2729,6 +2729,134 @@ async def admin_reindex_ee_v2():
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+# ── Bulk re-embed ALL countries into permit_docs_v2 ───────────────────────────
+# EE is skipped (already complete). Processes one country at a time in
+# 100-chunk batches with 0.5 s pauses to avoid OOM on the Render instance.
+
+_REINDEX_ALL_COUNTRIES = ["FI", "SE", "DA", "NO", "PL", "EU", "DE"]
+_BULK_REINDEX_JOB: dict = {}
+
+
+def _run_bulk_reindex(job: dict) -> None:
+    """Background thread: re-embed all v1 chunks into permit_docs_v2 (mpnet)."""
+    import gc
+    import chromadb
+    from sentence_transformers import SentenceTransformer
+    log = logging.getLogger("reindex-bulk")
+
+    try:
+        job["status"] = "running"
+        log.info("[reindex-bulk] START — loading %s", _V2_MODEL)
+
+        client = chromadb.PersistentClient(path=_DB_PATH)
+        col_v1 = client.get_collection("permit_docs")
+        col_v2 = client.get_or_create_collection(_V2_COL, metadata={"hnsw:space": "cosine"})
+
+        model = SentenceTransformer(_V2_MODEL)
+        log.info("[reindex-bulk] Model loaded — dim=%d", model.get_sentence_embedding_dimension())
+        job["model_loaded"] = True
+
+        chunk_batch = 100   # chunks per visible progress step
+        countries_result: dict = {}
+
+        for cc in _REINDEX_ALL_COUNTRIES:
+            log.info("[reindex-bulk] %s — fetching v1 chunks…", cc)
+            res   = col_v1.get(where={"country": cc}, include=["documents", "metadatas"])
+            ids   = res["ids"]
+            docs  = res["documents"]
+            metas = res["metadatas"]
+            total = len(ids)
+            log.info("[reindex-bulk] %s — %d chunks to embed", cc, total)
+
+            job["current_country"] = cc
+            job["country_total"]   = total
+            job["country_done"]    = 0
+
+            if total == 0:
+                countries_result[cc] = {"upserted": 0, "v1_count": 0, "v2_count": 0}
+                job["countries_done"].append(cc)
+                continue
+
+            total_batches = (total + chunk_batch - 1) // chunk_batch
+            upserted = 0
+            for b, start in enumerate(range(0, total, chunk_batch)):
+                sl      = slice(start, start + chunk_batch)
+                b_ids   = ids[sl]
+                b_docs  = docs[sl]
+                b_metas = metas[sl]
+
+                embs = model.encode(b_docs, batch_size=32, show_progress_bar=False).tolist()
+                col_v2.upsert(ids=b_ids, documents=b_docs, embeddings=embs, metadatas=b_metas)
+                upserted                += len(b_ids)
+                job["country_done"]     = upserted
+                job["total_upserted"]   = job.get("total_upserted", 0) + len(b_ids)
+
+                log.info("[reindex-bulk] %s batch %d/%d — %d/%d done",
+                         cc, b + 1, total_batches, upserted, total)
+                time.sleep(0.5)
+
+            v2_count = len(col_v2.get(where={"country": cc}, include=[])["ids"])
+            countries_result[cc] = {"upserted": upserted, "v1_count": total, "v2_count": v2_count}
+            job["countries_done"].append(cc)
+            log.info("[reindex-bulk] %s DONE — v2_count=%d", cc, v2_count)
+
+        log.info("[reindex-bulk] All countries done — releasing model")
+        del model
+        gc.collect()
+
+        v2_total = col_v2.count()
+        job["status"]           = "done"
+        job["v2_total"]         = v2_total
+        job["countries_result"] = countries_result
+        log.info("[reindex-bulk] COMPLETE — v2_total=%d", v2_total)
+
+    except Exception as exc:
+        import traceback as _tb
+        job["status"] = "error"
+        job["error"]  = f"{type(exc).__name__}: {exc}"
+        log.error("[reindex-bulk] ERROR: %s\n%s", exc, _tb.format_exc())
+
+
+@app.post("/api/admin/reindex-all-v2", dependencies=[Depends(_require_admin)])
+async def admin_reindex_all_v2():
+    """
+    Re-embed FI, SE, DA, NO, PL, EU, DE chunks from permit_docs (v1/MiniLM) into
+    permit_docs_v2 (mpnet 768-dim). EE is skipped — already complete.
+
+    Processes 100 chunks at a time with 0.5 s pauses to avoid OOM.
+    Returns immediately with a job_id; poll via GET /api/admin/reindex-all-v2/status.
+    """
+    global _BULK_REINDEX_JOB
+    if _BULK_REINDEX_JOB.get("status") == "running":
+        return {"status": "already_running", **_BULK_REINDEX_JOB}
+
+    job_id = str(uuid.uuid4())[:8]
+    _BULK_REINDEX_JOB = {
+        "job_id":           job_id,
+        "status":           "starting",
+        "model_loaded":     False,
+        "current_country":  None,
+        "country_total":    0,
+        "country_done":     0,
+        "countries_done":   [],
+        "total_upserted":   0,
+        "v2_total":         None,
+        "countries_result": {},
+        "error":            None,
+    }
+    Thread(target=_run_bulk_reindex, args=(_BULK_REINDEX_JOB,),
+           daemon=True, name="bulk-reindex").start()
+    return {"status": "started", "job_id": job_id, "countries": _REINDEX_ALL_COUNTRIES}
+
+
+@app.get("/api/admin/reindex-all-v2/status", dependencies=[Depends(_require_admin)])
+async def admin_reindex_all_v2_status():
+    """Poll the in-progress bulk reindex. Returns current country, batch progress, totals."""
+    if not _BULK_REINDEX_JOB:
+        return {"status": "no_job"}
+    return _BULK_REINDEX_JOB
+
+
 # ── LinkedIn posting agent ────────────────────────────────────────────────────
 
 from linkedin_agent import (
