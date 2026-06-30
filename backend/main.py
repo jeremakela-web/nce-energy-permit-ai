@@ -354,6 +354,7 @@ async def _arq_startup() -> None:
             max_jobs=2,           # max 2 concurrent permit generations
             handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
             poll_delay=0.5,
+            job_timeout=900,       # 15 min — covers RAG+Claude+proofread+PDF
         )
         asyncio.create_task(_worker.main(), name="arq-worker")
         print(f"[arq] Worker started — max_jobs=2  redis={_redis_url[:40]}")
@@ -1206,6 +1207,13 @@ async def arq_task_generate_permit(
         _proofread_store[job_id]["error"] = _err
         _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id,
                    f"error:{_err[:60]}")
+
+    except BaseException as exc:
+        _err = f"{type(exc).__name__}: {exc}"
+        print(f"[arq] {job_id} CANCELLED/FATAL {_err}", flush=True)
+        _proofread_store[job_id]["status"] = "error"
+        _proofread_store[job_id]["error"] = _err
+        raise  # re-raise so ARQ marks the job as failed
 
 
 @app.get("/api/proofread/{job_id}")
