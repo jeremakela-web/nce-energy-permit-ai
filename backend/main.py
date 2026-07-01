@@ -2900,7 +2900,7 @@ async def admin_rag_check_all(secret: str = ""):
         min_score = MIN_SCORE_FI if country == "FI" else MIN_SCORE_NON_FI
         async with _sem:
             try:
-                ctx, sources, warn, prec, _ = await asyncio.to_thread(
+                ctx, sources, warn, prec, _, avg = await asyncio.to_thread(
                     _gen_app_module._rag_context, hanketyyppi, country
                 )
                 ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
@@ -2910,7 +2910,7 @@ async def admin_rag_check_all(secret: str = ""):
                     "hanketyyppi":     hanketyyppi,
                     "status":          "PASS" if not warn else "PASS/WARN",
                     "chunks_found":    n,
-                    "avg_relevance":   None,  # only on failure path; None = passed threshold
+                    "avg_relevance":   avg,
                     "min_score":       min_score,
                     "warning":         warn,
                     "sources":         len(sources),

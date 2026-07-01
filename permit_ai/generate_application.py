@@ -33,6 +33,7 @@ from reportlab.platypus import (
     CondPageBreak, HRFlowable, Image, KeepTogether, PageBreak, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
+from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.pdfgen.canvas import Canvas as _CanvasBase
 
 # ── TrueType font registration (UTF-8 safe, replaces Latin-1 Helvetica) ──────
@@ -2254,13 +2255,13 @@ def _rag_context(
 
         context = "\n\n---\n\n".join(all_docs)
         sources = [{"id": sid, **info} for sid, info in sorted(all_source_meta.items())]
-        return context, sources, warning_flag, precedent_chunks, precedent_sources
+        return context, sources, warning_flag, precedent_chunks, precedent_sources, round(avg_score, 3)
 
     except InsufficientSourcesError:
         raise
     except Exception as exc:
         print(f"[RAG] Haku epäonnistui ({exc}) — jatketaan ilman kontekstia")
-        return "", [], False, [], []
+        return "", [], False, [], [], 0.0
 
 
 def _statutory_sources(hanketyyppi: str, country: str = "FI") -> list[str]:
@@ -5620,6 +5621,29 @@ def _toimenpiteet_elements(text: str, st: dict, lang: str = "FI") -> list:
     return [tbl]
 
 
+class _PDFDocTemplate(SimpleDocTemplate):
+    """SimpleDocTemplate subclass that feeds h2 headings into a TableOfContents widget."""
+
+    def __init__(self, *args, toc: "TableOfContents | None" = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._toc = toc
+
+    def afterFlowable(self, flowable):
+        if self._toc is not None and isinstance(flowable, Paragraph):
+            if getattr(flowable, "_toc_key", None):
+                key  = flowable._toc_key
+                text = flowable.getPlainText()
+                self.canv.bookmarkPage(key)
+                self.notify("TOCEntry", (0, text, self.page, key))
+
+
+def _toc_h2(text: str, style, key: str) -> Paragraph:
+    """Return an h2 Paragraph marked for ToC registration."""
+    p = Paragraph(text, style)
+    p._toc_key = key
+    return p
+
+
 def _make_canvas_cls(inp: ApplicationInput, now: str):
     """Palauta NumberedCanvas-aliluokka ylä- ja alatunnisteella (Sivu X / Y)."""
 
@@ -5701,10 +5725,21 @@ def generate_pdf(
 
     canvas_cls = _make_canvas_cls(inp, now)
 
-    doc = SimpleDocTemplate(
+    _toc = TableOfContents()
+    _toc.levelStyles = [
+        ParagraphStyle(
+            "toc_lvl0",
+            fontName=PDF_FONT, fontSize=9.5, leading=16, spaceAfter=3,
+            leftIndent=0, rightIndent=1.2*cm, firstLineIndent=0,
+        ),
+    ]
+    _toc.dotsMinLevel = 0
+
+    doc = _PDFDocTemplate(
         buf, pagesize=A4,
         leftMargin=margin, rightMargin=margin,
         topMargin=2.2*cm, bottomMargin=2.2*cm,
+        toc=_toc,
     )
 
     lang    = inp.lang or "FI"
@@ -5806,6 +5841,23 @@ def generate_pdf(
         ))
     story.append(Spacer(1, 8*mm))
 
+    # ── Sisällysluettelo ──────────────────────────────────────────────────────
+    _toc_title = {
+        "FI": "Sisällysluettelo", "EN": "Table of Contents",
+        "SE": "Innehållsförteckning", "DA": "Indholdsfortegnelse",
+        "NO": "Innholdsfortegnelse", "PL": "Spis treści",
+        "DE": "Inhaltsverzeichnis", "EE": "Sisukord",
+    }.get(lang, "Table of Contents")
+    story.append(PageBreak())
+    story.append(Paragraph(_toc_title, ParagraphStyle(
+        "toc_title", fontName=PDF_FONT_BOLD, fontSize=13, textColor=C_NAVY,
+        spaceAfter=4, leading=17,
+    )))
+    story.append(_hr(C_NAVY, 1.0))
+    story.append(Spacer(1, 3*mm))
+    story.append(_toc)
+    story.append(Spacer(1, 6*mm))
+
     # ── 1. Hankkeen kuvaus ────────────────────────────────────────────────────
     # PageBreak takaa puhtaan aloituksen. KeepTogether sisältää vain otsikon + HR +
     # ensimmäisen kappaleen — [:2] ylitti sivun korkeuden pitkällä AI-sisällöllä ja
@@ -5813,7 +5865,7 @@ def generate_pdf(
     story.append(PageBreak())
     _kuvaus_elems = _para_text(sections.get("kuvaus", "–"), st)
     story.append(KeepTogether([
-        Paragraph(_s(lang, "sec1"), st["h2"]),
+        _toc_h2(_s(lang, "sec1"), st["h2"], "sec1"),
         _hr(),
         Spacer(1, 2*mm),
         *_kuvaus_elems[:1],
@@ -5835,7 +5887,7 @@ def generate_pdf(
     story.append(PageBreak())
     _perust_elems = _para_text(sections.get("perustelut", "–"), st)
     story.append(KeepTogether([
-        Paragraph(_s(lang, "sec2"), st["h2"]),
+        _toc_h2(_s(lang, "sec2"), st["h2"], "sec2"),
         _hr(),
         Spacer(1, 2*mm),
         *_perust_elems[:1],
@@ -5849,7 +5901,7 @@ def generate_pdf(
     _country_luvat_data = _COUNTRY_LUVAT.get(country, {}).get(inp.hanketyyppi)
     _luvat_row_count = len(_country_luvat_data or _HANKE_CFG.get(inp.hanketyyppi, {}).get("luvat", []))
     story.append(KeepTogether([
-        Paragraph(_s(lang, "sec3"), st["h2"]),
+        _toc_h2(_s(lang, "sec3"), st["h2"], "sec3"),
         _hr(),
         _luvat_tbl,
     ]))
@@ -5880,7 +5932,7 @@ def generate_pdf(
     laki_bullets = [Paragraph(f"• {_t_law(lang, ref)}", st["bullet"])
                     for ref in sorted(laki_set)]
     story.append(KeepTogether([
-        Paragraph(_s(lang, "sec4"), st["h2"]),
+        _toc_h2(_s(lang, "sec4"), st["h2"], "sec4"),
         _hr(),
         *laki_bullets[:2],
     ]))
@@ -5892,7 +5944,7 @@ def generate_pdf(
     story.append(PageBreak())
     _liite_tbl = _liitteet_table(inp.hanketyyppi, lang, country)
     story.append(KeepTogether([
-        Paragraph(_s(lang, "sec5"), st["h2"]),
+        _toc_h2(_s(lang, "sec5"), st["h2"], "sec5"),
         _hr(),
         Paragraph(_s(lang, "liitteet_note"), st["body"]),
         Spacer(1, 3*mm),
@@ -5904,7 +5956,7 @@ def generate_pdf(
     story.append(PageBreak())
     _toim_elems = _toimenpiteet_elements(sections.get("toimenpiteet", "–"), st, lang)
     story.append(KeepTogether([
-        Paragraph(_s(lang, "sec6"), st["h2"]),
+        _toc_h2(_s(lang, "sec6"), st["h2"], "sec6"),
         _hr(),
         *_toim_elems,
     ]))
@@ -6154,7 +6206,7 @@ def generate_pdf(
         ParagraphStyle("end", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER, leading=11),
     ))
 
-    doc.build(story, canvasmaker=canvas_cls)
+    doc.multiBuild(story, canvasmaker=canvas_cls)
     return buf.getvalue()
 
 
@@ -6165,7 +6217,7 @@ def generate_pdf(
 def generate_application_draft(inp: ApplicationInput) -> tuple:
     """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
     with _RAG_LOCK:
-        rag_ctx, sources, warning_flag, prec_chunks, prec_sources = \
+        rag_ctx, sources, warning_flag, prec_chunks, prec_sources, _ = \
             _rag_context(inp.hanketyyppi, inp.country or "FI")
     sections = _generate_sections(inp, rag_ctx, prec_chunks, prec_sources)
     _lang = inp.lang or "FI"
@@ -6198,7 +6250,7 @@ def generate_application(inp: ApplicationInput) -> str:
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
 
     print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi}, maa={inp.country or 'FI'})…")
-    rag_ctx, sources, warning_flag, prec_chunks, prec_sources = \
+    rag_ctx, sources, warning_flag, prec_chunks, prec_sources, _ = \
         _rag_context(inp.hanketyyppi, inp.country or "FI")
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {[s['display'] for s in sources]}")
     if warning_flag:
