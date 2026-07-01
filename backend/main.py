@@ -2857,9 +2857,11 @@ async def admin_reindex_all_v2_status():
     return _BULK_REINDEX_JOB
 
 
-@app.get("/api/admin/rag-test", dependencies=[Depends(_require_admin)])
-async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS"):
+@app.get("/api/admin/rag-test")
+async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS", secret: str = ""):
     """Quick RAG confidence check for a country+hanketyyppi pair — no PDF, no LLM, no rate limit."""
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
     return {"status": "ping", "country": country, "hanketyyppi": hanketyyppi}
 
 
