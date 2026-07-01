@@ -142,6 +142,22 @@ def _latin1_safe(text: str) -> str:
         return "".join(out)
 
 
+_UNICODE_SUBSCRIPTS = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
+
+def _fix_unicode_subscripts(text: str) -> str:
+    """Convert Unicode subscript digits to ReportLab <sub> markup.
+
+    DejaVu Sans on Render lacks glyphs for U+2080-U+2089, rendering them as
+    black squares. Chemical formulas like H₂ and CO₂ must be converted to
+    H<sub>2</sub> / CO<sub>2</sub> before the text reaches the PDF renderer.
+    """
+    return re.sub(
+        r"[₀₁₂₃₄₅₆₇₈₉]+",
+        lambda m: f"<sub>{m.group().translate(_UNICODE_SUBSCRIPTS)}</sub>",
+        text,
+    )
+
+
 # Deterministic repair for Finnish words commonly generated without diacritics.
 # Pattern tuples: (regex_without_diacritics, correct_form). Applied before proofread.
 _FI_DIAK = [
@@ -2102,6 +2118,25 @@ _HANKE_CFG = {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
+# RAG source-type filtering: prevent cross-hanketyyppi contamination
+# Sources NOT in this dict are unrestricted (pass through to all types).
+# Sources in this dict are only included if the current hanketyyppi is in
+# their allowed set.
+# ─────────────────────────────────────────────────────────────────────────────
+_SOURCE_RELEVANCE: dict[str, frozenset] = {
+    # STUK nuclear safety guides — only relevant for SMR / ydinvoima
+    "YVL_A.1":    frozenset({"SMR", "smr_bess"}),
+    "YVL_B.1":    frozenset({"SMR", "smr_bess"}),
+    "YVL_C.1":    frozenset({"SMR", "smr_bess"}),
+    # Data-centre-specific documents
+    "bios_datakeskus_sijoittamislupa":           frozenset({"datakeskus"}),
+    "microsoft_espoo_yva_selostus":              frozenset({"datakeskus"}),
+    "rakentamislaki_sijoittamislupa_datakeskus": frozenset({"datakeskus"}),
+    "ymparistolupa_datakeskus_ysl":              frozenset({"datakeskus"}),
+    "ym_datakeskukset":                          frozenset({"datakeskus"}),
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
 # RAG-haku
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -2139,18 +2174,25 @@ def _rag_context(
             if not distances:
                 distances = [0.5] * len(ids)
             for doc, id_, meta, dist in zip(docs, ids, metas, distances):
+                meta = meta or {}
                 if allowed_countries is not None:
-                    if (meta or {}).get("country", "") not in allowed_countries:
+                    if meta.get("country", "") not in allowed_countries:
                         continue
+                # Cross-type filter: skip sources restricted to other hanketyypit
+                _src_name = meta.get("source", "")
+                _allowed_types = _SOURCE_RELEVANCE.get(_src_name)
+                if _allowed_types is not None and hanketyyppi not in _allowed_types:
+                    continue
                 if id_ not in seen_ids:
                     seen_ids.add(id_)
                     all_docs.append(doc)
                     all_distances.append(dist)
-                    src_id = re.sub(r"[_-]\d+$", "", id_)
+                    # Use meta["source"] as dedup key so all chunks from the same
+                    # document collapse into one source entry (fixes caruna repeating)
+                    src_id = _src_name or re.sub(r"[_-]\d+$", "", id_)
                     if src_id not in all_source_meta:
-                        meta = meta or {}
                         all_source_meta[src_id] = {
-                            "display": meta.get("source", src_id),
+                            "display": _src_name or src_id,
                             "url":     meta.get("url"),
                         }
 
@@ -4415,7 +4457,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "ja suunnitelmien mukaisesti viranomaisvalvonnassa."),
         "bess_pintaala":   "Laitosalueen arvioitu pinta-ala on 0,4–0,6 ha.",
         "mks_viittaus":    ("Hankealueen maankäyttö on selvitetty NCE:n maankäyttöselvityksessä "
-                            "(ks. Liite 0b: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
+                            "(ks. Liite 2: Maankäyttöselvitys PDF). Selvitys sisältää kiinteistötiedot, "
                             "kaavatilanteen, suojelualueet sekä pohjavesialuetiedot ja vastaa "
                             "rakentamislain 61 §:n (751/2023) mukaista selvitystä rakennuspaikan "
                             "ominaisuuksista."),
@@ -4504,7 +4546,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "accordance with approved permits and plans under regulatory supervision."),
         "bess_pintaala":   "The estimated site area is 0.4–0.6 ha.",
         "mks_viittaus":    ("The land use of the project area has been investigated in NCE's "
-                            "land use report (see Appendix 0b: Land Use Report PDF). The report includes "
+                            "land use report (see Appendix 2: Land Use Report PDF). The report includes "
                             "property information, zoning status, protected areas and groundwater area data, "
                             "in accordance with the requirements for site surveys under applicable "
                             "national planning legislation."),
@@ -4586,7 +4628,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "godkända tillstånd och planer under myndighetstillsyn."),
         "bess_pintaala":   "Den uppskattade anläggningsytan är 0,4–0,6 ha.",
         "mks_viittaus":    ("Markanvändningen i projektområdet har utretts i NCE:s "
-                            "markanvändningsutredning (se Bilaga 0b: Markanvändningsutredning PDF). "
+                            "markanvändningsutredning (se Bilaga 2: Markanvändningsutredning PDF). "
                             "Utredningen innehåller fastighetsuppgifter, planläggningsstatus, "
                             "skyddsområden och grundvattenuppgifter, i enlighet med krav på "
                             "platsutredning enligt plan- och bygglagen (PBL 2010:900), 10 kap."),
@@ -4668,7 +4710,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "overensstemmelse med godkendte tilladelser og planer under myndighedstilsyn."),
         "bess_pintaala":   "Det anslåede anlægsareal er 0,4–0,6 ha.",
         "mks_viittaus":    ("Arealanvendelsen i projektområdet er undersøgt i NCE's "
-                            "arealanvendelsesrapport (se Bilag 0b: Arealanvendelsesrapport PDF). "
+                            "arealanvendelsesrapport (se Bilag 2: Arealanvendelsesrapport PDF). "
                             "Rapporten indeholder ejendomsoplysninger, planlægningsstatus, "
                             "beskyttede områder og grundvandsdata, i overensstemmelse med krav til "
                             "stedundersøgelse i henhold til planlovens bestemmelser."),
@@ -4752,7 +4794,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "godkjente tillatelser og planer under myndighetstilsyn."),
         "bess_pintaala":   "Det anslåtte anleggsarealet er 0,4–0,6 ha.",
         "mks_viittaus":    ("Arealbruken i prosjektområdet er undersøkt i NCE's "
-                            "arealbruksrapport (se Vedlegg 0b: Arealbruksrapport PDF). "
+                            "arealbruksrapport (se Vedlegg 2: Arealbruksrapport PDF). "
                             "Rapporten inneholder eiendomsopplysninger, reguleringstatus, "
                             "verneområder og grunnvannsdata, i samsvar med krav til stedsanalyse "
                             "i henhold til plan- og bygningsloven (PBL), § 28."),
@@ -4835,7 +4877,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "zezwoleniami i planami pod nadzorem organów."),
         "bess_pintaala":   "Szacunkowa powierzchnia instalacji wynosi 0,4–0,6 ha.",
         "mks_viittaus":    ("Zagospodarowanie terenu obszaru projektu zostało zbadane w raporcie NCE "
-                            "dotyczącym zagospodarowania terenu (zob. Załącznik 0b: Raport PDF). Raport "
+                            "dotyczącym zagospodarowania terenu (zob. Załącznik 2: Raport PDF). Raport "
                             "zawiera informacje o nieruchomości, status planistyczny, obszary chronione "
                             "i dane o wodach gruntowych, zgodnie z wymogami dotyczącymi analizy "
                             "lokalizacji na podstawie ustawy o planowaniu i zagospodarowaniu "
@@ -5566,6 +5608,7 @@ _HUOM_PREFIXES = tuple(lbl.strip() for lbl in _HUOM_LABEL.values())
 def _para_text(text: str, st: dict) -> list:
     """Muunna AI:n tuottama teksti Paragraph-listaksi (kappalejaot \\n\\n)."""
     text = _fix_fi_diacritics(text)
+    text = _fix_unicode_subscripts(text)
     text = _latin1_safe(text)
     _ai_h2 = ParagraphStyle("ai_h2", fontSize=10.5, fontName=PDF_FONT_BOLD,
                              textColor=C_NAVY, spaceBefore=10, spaceAfter=3,

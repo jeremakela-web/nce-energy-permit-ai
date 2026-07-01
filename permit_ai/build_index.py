@@ -27,6 +27,49 @@ OVERLAP      = 200    # päällekkäisyys chunks välillä
 BATCH        = 64     # embedding-batch koko
 
 
+_DOC_TYPE_MAP: dict[str, str] = {
+    # Lait ja asetukset
+    "rakentamislaki_751_2023":       "laki",
+    "kemikaaliturvallisuuslaki_390_2005": "laki",
+    "pelastuslaki_379_2011":         "laki",
+    # Viranomaisohjeet ja oppaat
+    "fingrid_liittyminen_kantaverkkoon": "viranomaisohje",
+    "tukes_liion_opas":              "viranomaisohje",
+    "tukes_painelaitteet":           "viranomaisohje",
+    "tukes_painelaitteet_sco2":      "viranomaisohje",
+    "energiavirasto_energiatehokkuus": "viranomaisohje",
+    "ym_datakeskukset":              "viranomaisohje",
+    "datakeskus_luvat_suomi":        "viranomaisohje",
+    "YVL_A.1":                       "viranomaisohje",
+    "YVL_B.1":                       "viranomaisohje",
+    "YVL_C.1":                       "viranomaisohje",
+    # Teollisuuden julkaisut ja raportit
+    "lion_2025_bess":                "viranomaisohje",
+    "lion_teollisuus_2025":          "viranomaisohje",
+    "sjv2024_fingrid":               "viranomaisohje",
+    "vjv2024_fingrid":               "viranomaisohje",
+    "caruna_network_development_plan_2026": "viranomaisohje",
+    # Datakohtaiset dokumentit
+    "bios_datakeskus_sijoittamislupa":           "viranomaisohje",
+    "microsoft_espoo_yva_selostus":              "viranomaisohje",
+    "rakentamislaki_sijoittamislupa_datakeskus": "viranomaisohje",
+    "ymparistolupa_datakeskus_ysl":              "viranomaisohje",
+}
+
+_HANKETYYPPI_TAGS: dict[str, str] = {
+    "YVL_A.1":    "SMR",     "YVL_B.1":    "SMR",     "YVL_C.1":    "SMR",
+    "bios_datakeskus_sijoittamislupa":           "datakeskus",
+    "microsoft_espoo_yva_selostus":              "datakeskus",
+    "rakentamislaki_sijoittamislupa_datakeskus": "datakeskus",
+    "ymparistolupa_datakeskus_ysl":              "datakeskus",
+    "ym_datakeskukset":                          "datakeskus",
+}
+
+
+def _infer_doc_type(stem: str) -> str:
+    return _DOC_TYPE_MAP.get(stem, "viranomaisohje")
+
+
 def _chunk(text: str) -> list[str]:
     chunks, start = [], 0
     while start < len(text):
@@ -112,10 +155,14 @@ def build(force: bool = False) -> None:
             for i, chunk in enumerate(chunks):
                 all_docs.append(chunk)
                 all_ids.append(f"{pdf.name}_{i}")
+                _dt  = _infer_doc_type(pdf.stem)
+                _ht  = _HANKETYYPPI_TAGS.get(pdf.stem, "")
                 all_metas.append({
-                    "country": "FI",
-                    "lang":    "fi",
-                    "source":  pdf.stem,
+                    "country":        "FI",
+                    "lang":           "fi",
+                    "source":         pdf.stem,
+                    "doc_type":       _dt,
+                    "hanketyyppi_tag": _ht,
                 })
             print(f"  {pdf.name}: {len(chunks)} chunkkia")
         except Exception as exc:
@@ -128,10 +175,14 @@ def build(force: bool = False) -> None:
             for i, chunk in enumerate(chunks):
                 all_docs.append(chunk)
                 all_ids.append(f"{txt.name}_{i}")
+                _dt  = _infer_doc_type(txt.stem)
+                _ht  = _HANKETYYPPI_TAGS.get(txt.stem, "")
                 all_metas.append({
-                    "country": "FI",
-                    "lang":    "fi",
-                    "source":  txt.stem,
+                    "country":        "FI",
+                    "lang":           "fi",
+                    "source":         txt.stem,
+                    "doc_type":       _dt,
+                    "hanketyyppi_tag": _ht,
                 })
             print(f"  {txt.name}: {len(chunks)} chunkkia")
         except Exception as exc:

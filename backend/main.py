@@ -2241,6 +2241,102 @@ async def admin_ingest_status(job_id: str, request: Request):
     })
 
 
+_meta_update_jobs: dict = {}
+
+
+@app.post("/api/admin/update-metadata")
+async def admin_update_metadata(request: Request):
+    """
+    Päivittää permit_docs_v2:n chunk-metadatan in-place (doc_type + hanketyyppi_tag)
+    ilman kokoelman poistoa — turvallinen käyttää tuotannossa.
+    Authorization: Bearer <ADMIN_SECRET>
+    """
+    _check_ingest_auth(request)
+    import uuid as _uuid
+    job_id = _uuid.uuid4().hex[:12]
+    _meta_update_jobs[job_id] = {"status": "running", "log": [],
+                                  "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+
+    _DOC_TYPE_MAP = {
+        "rakentamislaki_751_2023": "laki",
+        "kemikaaliturvallisuuslaki_390_2005": "laki",
+        "pelastuslaki_379_2011": "laki",
+        "fingrid_liittyminen_kantaverkkoon": "viranomaisohje",
+        "tukes_liion_opas": "viranomaisohje",
+        "tukes_painelaitteet": "viranomaisohje",
+        "tukes_painelaitteet_sco2": "viranomaisohje",
+        "energiavirasto_energiatehokkuus": "viranomaisohje",
+        "ym_datakeskukset": "viranomaisohje",
+        "datakeskus_luvat_suomi": "viranomaisohje",
+        "YVL_A.1": "viranomaisohje", "YVL_B.1": "viranomaisohje", "YVL_C.1": "viranomaisohje",
+        "lion_2025_bess": "viranomaisohje", "lion_teollisuus_2025": "viranomaisohje",
+        "sjv2024_fingrid": "viranomaisohje", "vjv2024_fingrid": "viranomaisohje",
+        "caruna_network_development_plan_2026": "viranomaisohje",
+        "bios_datakeskus_sijoittamislupa": "viranomaisohje",
+        "microsoft_espoo_yva_selostus": "viranomaisohje",
+        "rakentamislaki_sijoittamislupa_datakeskus": "viranomaisohje",
+        "ymparistolupa_datakeskus_ysl": "viranomaisohje",
+    }
+    _HT_MAP = {
+        "YVL_A.1": "SMR", "YVL_B.1": "SMR", "YVL_C.1": "SMR",
+        "bios_datakeskus_sijoittamislupa": "datakeskus",
+        "microsoft_espoo_yva_selostus": "datakeskus",
+        "rakentamislaki_sijoittamislupa_datakeskus": "datakeskus",
+        "ymparistolupa_datakeskus_ysl": "datakeskus",
+        "ym_datakeskukset": "datakeskus",
+    }
+
+    def _bg_update():
+        log = _meta_update_jobs[job_id]["log"]
+        try:
+            import chromadb as _chroma
+            client = _chroma.PersistentClient(path=_DB_PATH)
+            col = client.get_collection(_V2_COL)
+            total = col.count()
+            log.append(f"[update-meta] {total} chunks in {_V2_COL}")
+            PAGE = 500
+            updated = 0
+            for offset in range(0, total, PAGE):
+                page = col.get(limit=PAGE, offset=offset, include=["metadatas"])
+                ids = page["ids"]
+                metas = page["metadatas"] or [{}] * len(ids)
+                new_metas = []
+                for meta in metas:
+                    m = dict(meta or {})
+                    src = m.get("source", "")
+                    if "doc_type" not in m or m["doc_type"] == "?":
+                        m["doc_type"] = _DOC_TYPE_MAP.get(src, "viranomaisohje")
+                    if "hanketyyppi_tag" not in m:
+                        m["hanketyyppi_tag"] = _HT_MAP.get(src, "")
+                    new_metas.append(m)
+                col.update(ids=ids, metadatas=new_metas)
+                updated += len(ids)
+                log.append(f"[update-meta] {updated}/{total} updated")
+            _meta_update_jobs[job_id]["status"] = "done"
+            _meta_update_jobs[job_id]["result"] = f"{updated} chunks updated"
+            log.append(f"[update-meta] Done: {updated} chunks updated")
+        except Exception as exc:
+            _meta_update_jobs[job_id]["status"] = "error"
+            _meta_update_jobs[job_id]["error"] = str(exc)
+            log.append(f"[update-meta] ERROR: {exc}")
+        _meta_update_jobs[job_id]["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+    Thread(target=_bg_update, daemon=True).start()
+    return JSONResponse({"job_id": job_id, "status": "running",
+                         "message": f"Metadata update started for {_V2_COL}"})
+
+
+@app.get("/api/admin/update-metadata/{job_id}")
+async def admin_update_metadata_status(job_id: str, request: Request):
+    _check_ingest_auth(request)
+    job = _meta_update_jobs.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Tehtävää ei löydy")
+    return JSONResponse({"job_id": job_id, "status": job["status"],
+                         "result": job.get("result"), "error": job.get("error"),
+                         "log_tail": job["log"][-20:]})
+
+
 @app.post("/api/admin/rtb/seed")
 async def admin_rtb_seed(request: Request):
     """
