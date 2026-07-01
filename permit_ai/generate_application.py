@@ -3482,7 +3482,14 @@ _SYSTEM = (
     "TÄRKEÄÄ: Perusta JOKAINEN suositus, riskiarvio ja elinkaarisuositus yksinomaan haettuihin "
     "säädöslähteisiin ja ennakkotapauksiin tästä kontekstista. Jos jonkin ajatteluketjun vaiheen "
     "tieto puuttuu, ilmoita eksplisiittisesti mikä puuttuu oletuksien tekemisen sijaan. "
-    "Älä koskaan generoi sisältöä joka ei perustu haettuihin lähteisiin."
+    "Älä koskaan generoi sisältöä joka ei perustu haettuihin lähteisiin. "
+    "TÄYDENNETTÄVÄ-MERKINTÄ: Kun jokin projektispesifinen tieto puuttuu hakijalta "
+    "(esim. tarkat koordinaatit, kiinteistön pinta-ala, etäisyydet naapureihin, hankkeen tarkat "
+    "mitat, vastuuhenkilön nimi tai Y-tunnus) — kirjoita kyseiseen kohtaan tekstissä täsmälleen "
+    "muodossa [TÄYDENNETTÄVÄ – <lyhyt kuvaus puuttuvasta tiedosta>] ilman sisältöä sen ympärille. "
+    "Käytä tätä merkintää VAIN silloin kun jokin konkreettinen hakijalta saatava syötetieto "
+    "puuttuu — ÄLÄ käytä sitä epävarmoille faktoille (niille on ⚠️-merkintä) eikä yleisille "
+    "arvauksille. Merkinnän lyhyt kuvaus kertoo täsmälleen mitä tietoa tarvitaan."
 )
 
 _LANG_INSTRUCTIONS: dict[str, str] = {
@@ -5628,6 +5635,11 @@ def _para_text(text: str, st: dict) -> list:
                     items.append(Paragraph(line, st["bullet"]))
         else:
             clean = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', para)
+            clean = re.sub(
+                r'\[TÄYDENNETTÄVÄ\s*–\s*([^\]]+)\]',
+                r'<font color="#e65100"><b>[TÄYDENNETTÄVÄ – \1]</b></font>',
+                clean,
+            )
             is_huom = any(para.startswith(pfx) for pfx in _HUOM_PREFIXES)
             if is_huom and items:
                 # [Huom]-kappale pysyy edellisen elementin kanssa samalla sivulla
@@ -5769,6 +5781,84 @@ def _make_canvas_cls(inp: ApplicationInput, now: str):
             self.restoreState()
 
     return _NumberedCanvas
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Gap analysis — [TÄYDENNETTÄVÄ] extraction and Täydennyslista page
+# ─────────────────────────────────────────────────────────────────────────────
+
+_GAP_RE = re.compile(r'\[TÄYDENNETTÄVÄ\s*–\s*([^\]]+)\]')
+
+_GAP_SECTION_LABELS: dict[str, str] = {
+    "kuvaus":       "Hankkeen kuvaus",
+    "perustelut":   "Perustelut",
+    "luvat_teksti": "Tarvittavat luvat ja ilmoitukset",
+    "toimenpiteet": "Seuraavat toimenpiteet",
+}
+
+
+def _extract_gaps(sections: dict) -> list[tuple[str, str]]:
+    """Return list of (section_label, description) for every [TÄYDENNETTÄVÄ] tag found."""
+    gaps = []
+    for key, text in sections.items():
+        if not isinstance(text, str):
+            continue
+        label = _GAP_SECTION_LABELS.get(key, key)
+        for m in _GAP_RE.finditer(text):
+            gaps.append((label, m.group(1).strip()))
+    return gaps
+
+
+def _taydennyslista_page(gaps: list[tuple[str, str]], st: dict, lang: str = "FI") -> list:
+    """Build Täydennyslista PDF elements (PageBreak + orange box + checklist)."""
+    C_FILL = colors.HexColor("#fff3e0")
+    C_BD   = colors.HexColor("#e65100")
+    C_HDR  = colors.HexColor("#e65100")
+
+    heading_style = ParagraphStyle(
+        "tl_hdr", fontSize=13, fontName=PDF_FONT_BOLD,
+        textColor=C_HDR, spaceAfter=6,
+    )
+    sub_style = ParagraphStyle(
+        "tl_sub", fontSize=8.5, textColor=colors.HexColor("#555555"),
+        leading=12, spaceAfter=10,
+    )
+    item_style = ParagraphStyle(
+        "tl_item", fontSize=9, leading=13, leftIndent=6, spaceAfter=4,
+    )
+    sec_style = ParagraphStyle(
+        "tl_sec", fontSize=7.5, textColor=colors.HexColor("#888888"),
+        leading=10, leftIndent=6, spaceAfter=8,
+    )
+
+    body_elems = [
+        Paragraph("Täydennyslista", heading_style),
+        Paragraph(
+            "Alla olevat kohdat vaativat täydentämistä ennen hakemuksen jättämistä "
+            "viranomaiselle. Löydät nämä kohdat myös tekstissä oransseina "
+            "[TÄYDENNETTÄVÄ]-merkintöinä.",
+            sub_style,
+        ),
+    ]
+    for i, (sec_label, desc) in enumerate(gaps, 1):
+        body_elems.append(
+            Paragraph(f"<b>{i}.</b> ☐ {_latin1_safe(desc)}", item_style)
+        )
+        body_elems.append(
+            Paragraph(f"Osio: {_latin1_safe(sec_label)}", sec_style)
+        )
+
+    box = Table(
+        [[body_elems]],
+        colWidths=[16.2 * cm],
+        splitByRow=1,
+    )
+    box.setStyle(TableStyle([
+        ("BOX",        (0, 0), (-1, -1), 2.0, C_BD),
+        ("BACKGROUND", (0, 0), (-1, -1), C_FILL),
+        ("PADDING",    (0, 0), (-1, -1), 14),
+    ]))
+    return [PageBreak(), box]
 
 
 def generate_pdf(
@@ -6276,6 +6366,12 @@ def generate_pdf(
     ]))
     story.append(_brief_tbl)
     story.append(Spacer(1, 6*mm))
+
+    # ── Täydennyslista (jos TÄYDENNETTÄVÄ-merkintöjä löytyi) ─────────────────
+    _gaps = _extract_gaps(sections)
+    if _gaps:
+        for _elem in _taydennyslista_page(_gaps, st, lang):
+            story.append(_elem)
 
     # ── Loppumerkintä ─────────────────────────────────────────────────────────
     story.append(_hr(C_NAVY, 1.0))
