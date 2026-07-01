@@ -552,6 +552,14 @@ class PermitAIRequest(BaseModel):
     n_results: int = 5
 
 
+class PermitChatRequest(BaseModel):
+    question:    str
+    session_id:  str = ""
+    n_results:   int = 6
+    hanketyyppi: str = ""
+    country:     str = "FI"
+
+
 class OptimizeRequest(BaseModel):
     bbox: list          # [lat_min, lon_min, lat_max, lon_max]
     project_type: str   = "bess"
@@ -1284,6 +1292,30 @@ async def permit_ai(request: Request, req: PermitAIRequest):
         return result
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Permit AI -virhe: {exc}")
+
+
+@app.post("/api/chat")
+@limiter.limit("60/hour")
+async def permit_chat(request: Request, req: PermitChatRequest):
+    """
+    Stateful RAG chat with per-session conversation history.
+    Filters RAG results by hanketyyppi + country for relevance.
+    Body: {question, session_id, n_results, hanketyyppi, country}
+    Returns: {answer, sources}
+    """
+    if not req.question.strip():
+        raise HTTPException(status_code=400, detail="Question cannot be empty.")
+    session_id = req.session_id or get_remote_address(request)
+    try:
+        from permit_ai import query_permit_ai_chat
+        result = await asyncio.to_thread(
+            query_permit_ai_chat,
+            req.question, session_id, req.n_results,
+            req.hanketyyppi, req.country,
+        )
+        return result
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Chat-virhe: {exc}")
 
 
 # ── Site Optimizer ───────────────────────────────────────────────────────────

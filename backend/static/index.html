@@ -7197,11 +7197,23 @@ async function askPermit(question) {
 
   sendBtn.disabled = true;
 
+  // Derive context from current UI state
+  const _ht  = (typeof BACKEND_TYPE_MAP !== 'undefined' && selectedProjectType)
+    ? (BACKEND_TYPE_MAP[selectedProjectType] || selectedProjectType)
+    : '';
+  const _cty = (typeof selectedCountry !== 'undefined') ? selectedCountry : 'FI';
+
   try {
-    const resp = await fetch(`${API_BASE}/api/permit-ai`, {
+    const resp = await fetch(`${API_BASE}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, n_results: 5 }),
+      body: JSON.stringify({
+        question,
+        session_id:  _sessionId || '',
+        n_results:   6,
+        hanketyyppi: _ht,
+        country:     _cty,
+      }),
     });
 
     if (!resp.ok) {
