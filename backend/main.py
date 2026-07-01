@@ -2860,7 +2860,11 @@ async def admin_reindex_all_v2_status():
 @app.get("/api/admin/rag-test", dependencies=[Depends(_require_admin)])
 async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS"):
     """Quick RAG confidence check for a country+hanketyyppi pair — no PDF, no LLM, no rate limit."""
-    _gen_app_module.activate_v2()
+    try:
+        _gen_app_module.activate_v2()
+    except Exception as _e:
+        import traceback as _tb
+        return {"status": "error", "stage": "activate_v2", "error": str(_e), "tb": _tb.format_exc()[-800:]}
     try:
         ctx, sources, warn, prec, psrc = await asyncio.to_thread(
             _gen_app_module._rag_context, hanketyyppi, country
@@ -2885,7 +2889,8 @@ async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS"):
             "avg_relevance": round(exc.avg_relevance, 3),
         }
     except Exception as exc:
-        return {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
+        import traceback as _tb
+        return {"status": "error", "error": f"{type(exc).__name__}: {exc}", "tb": _tb.format_exc()[-800:]}
 
 
 @app.get("/api/admin/rag-check-all")
