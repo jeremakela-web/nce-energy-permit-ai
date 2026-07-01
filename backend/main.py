@@ -2900,10 +2900,10 @@ async def admin_rag_check_all(secret: str = ""):
     if not secret or secret != _ADMIN_SECRET:
         raise HTTPException(status_code=403, detail="Forbidden — pass ?secret=ADMIN_SECRET")
 
-    from generate_application import _rag_context, InsufficientSourcesError, activate_v2, _v2_is_ready
+    # _v2_is_ready lives in main.py, not generate_application — import only what GA exports
+    from generate_application import _rag_context, InsufficientSourcesError, activate_v2
     import datetime
-    if _v2_is_ready():
-        activate_v2()
+    activate_v2()   # safe to call multiple times; no-op if already active
 
     TESTS = [
         ("FI", "BESS"),
@@ -2919,45 +2919,49 @@ async def admin_rag_check_all(secret: str = ""):
     MIN_SCORE_FI     = 0.65
     MIN_SCORE_NON_FI = 0.60
 
+    # Semaphore: ChromaDB PersistentClient is not concurrency-safe across many threads;
+    # limit to 2 simultaneous RAG calls to avoid lock contention.
+    _sem = asyncio.Semaphore(2)
+
     async def _run_one(country: str, hanketyyppi: str) -> dict:
         min_score = MIN_SCORE_FI if country == "FI" else MIN_SCORE_NON_FI
-        try:
-            ctx, sources, warn, prec, _ = await asyncio.to_thread(
-                _rag_context, hanketyyppi, country
-            )
-            ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
-            n = len(ctx_chunks)
-            # avg_relevance not directly available on success path — derive from chunk count + warning
-            return {
-                "country":    country,
-                "hanketyyppi": hanketyyppi,
-                "status":     "PASS" if not warn else "PASS/WARN",
-                "chunks_found": n,
-                "avg_relevance": None,   # only available on failure path
-                "min_score":  min_score,
-                "warning":    warn,
-                "sources":    len(sources),
-                "top3_sources": [s.get("display", "?")[:45] for s in sources[:3]],
-            }
-        except InsufficientSourcesError as exc:
-            return {
-                "country":    country,
-                "hanketyyppi": hanketyyppi,
-                "status":     "FAIL",
-                "chunks_found": exc.chunks_found,
-                "avg_relevance": round(exc.avg_relevance, 3),
-                "min_score":  min_score,
-                "warning":    None,
-                "sources":    0,
-                "top3_sources": [],
-            }
-        except Exception as exc:
-            return {
-                "country":    country,
-                "hanketyyppi": hanketyyppi,
-                "status":     "ERROR",
-                "error":      f"{type(exc).__name__}: {exc}",
-            }
+        async with _sem:
+            try:
+                ctx, sources, warn, prec, _ = await asyncio.to_thread(
+                    _rag_context, hanketyyppi, country
+                )
+                ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
+                n = len(ctx_chunks)
+                return {
+                    "country":      country,
+                    "hanketyyppi":  hanketyyppi,
+                    "status":       "PASS" if not warn else "PASS/WARN",
+                    "chunks_found": n,
+                    "avg_relevance": None,  # only on failure path; None = passed threshold
+                    "min_score":    min_score,
+                    "warning":      warn,
+                    "sources":      len(sources),
+                    "top3_sources": [s.get("display", "?")[:45] for s in sources[:3]],
+                }
+            except InsufficientSourcesError as exc:
+                return {
+                    "country":      country,
+                    "hanketyyppi":  hanketyyppi,
+                    "status":       "FAIL",
+                    "chunks_found": exc.chunks_found,
+                    "avg_relevance": round(exc.avg_relevance, 3),
+                    "min_score":    min_score,
+                    "warning":      None,
+                    "sources":      0,
+                    "top3_sources": [],
+                }
+            except Exception as exc:
+                return {
+                    "country":     country,
+                    "hanketyyppi": hanketyyppi,
+                    "status":      "ERROR",
+                    "error":       f"{type(exc).__name__}: {exc}",
+                }
 
     results = await asyncio.gather(*[_run_one(cc, ht) for cc, ht in TESTS])
     passed  = sum(1 for r in results if r["status"].startswith("PASS"))
