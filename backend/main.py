@@ -2906,15 +2906,16 @@ async def admin_rag_check_all(secret: str = ""):
                 ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
                 n = len(ctx_chunks)
                 return {
-                    "country":      country,
-                    "hanketyyppi":  hanketyyppi,
-                    "status":       "PASS" if not warn else "PASS/WARN",
-                    "chunks_found": n,
-                    "avg_relevance": None,  # only on failure path; None = passed threshold
-                    "min_score":    min_score,
-                    "warning":      warn,
-                    "sources":      len(sources),
-                    "top3_sources": [s.get("display", "?")[:45] for s in sources[:3]],
+                    "country":         country,
+                    "hanketyyppi":     hanketyyppi,
+                    "status":          "PASS" if not warn else "PASS/WARN",
+                    "chunks_found":    n,
+                    "avg_relevance":   None,  # only on failure path; None = passed threshold
+                    "min_score":       min_score,
+                    "warning":         warn,
+                    "sources":         len(sources),
+                    "precedent_chunks": len(prec),
+                    "top3_sources":    [s.get("display", "?")[:45] for s in sources[:3]],
                 }
             except InsufficientSourcesError as exc:
                 return {

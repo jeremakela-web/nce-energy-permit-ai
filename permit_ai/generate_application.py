@@ -2214,6 +2214,9 @@ def _rag_context(
             warning_flag = False
 
         # ── Task 3: Precedent retrieval ───────────────────────────────────────
+        # Primary: filter by doc_type="case_law". All current v2 chunks have doc_type='?'
+        # so this returns 0. Fallback: drop the doc_type filter and return top-5 by
+        # semantic similarity — closest regulatory chunks serve as de-facto precedent.
         precedent_chunks:  list[str] = []
         precedent_sources: list[str] = []
         if first_emb:
@@ -2226,14 +2229,28 @@ def _rag_context(
                         {"doc_type": "case_law"},
                     ]},
                 )
-                prec_docs   = prec_results["documents"][0] if prec_results["documents"] else []
-                prec_metas  = (prec_results.get("metadatas") or [[]])[0]
-                for doc, meta in zip(prec_docs, prec_metas):
-                    meta = meta or {}
-                    precedent_chunks.append(doc)
-                    precedent_sources.append(meta.get("source", "Viranomainen"))
+                prec_docs  = prec_results["documents"][0] if prec_results["documents"] else []
+                prec_metas = (prec_results.get("metadatas") or [[]])[0]
             except Exception:
-                pass  # case_law-metadata ei indeksoitu tai yhteensopivuusvirhe
+                prec_docs, prec_metas = [], []
+
+            # Fallback: no case_law docs found — query without doc_type filter
+            if not prec_docs:
+                try:
+                    prec_results = col.query(
+                        query_embeddings=first_emb,
+                        n_results=5,
+                        where={"country": {"$in": [country, "EU"]}},
+                    )
+                    prec_docs  = prec_results["documents"][0] if prec_results["documents"] else []
+                    prec_metas = (prec_results.get("metadatas") or [[]])[0]
+                except Exception:
+                    prec_docs, prec_metas = [], []
+
+            for doc, meta in zip(prec_docs, prec_metas):
+                meta = meta or {}
+                precedent_chunks.append(doc)
+                precedent_sources.append(meta.get("source", "Viranomainen"))
 
         context = "\n\n---\n\n".join(all_docs)
         sources = [{"id": sid, **info} for sid, info in sorted(all_source_meta.items())]
