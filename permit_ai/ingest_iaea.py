@@ -159,11 +159,12 @@ def ingest_iaea(dry_run: bool = False) -> None:
                 new_docs.append(chunk)
                 new_ids.append(id_)
                 new_metas.append({
-                    "country":     "EU",
-                    "lang":        "en",
-                    "source":      source,
-                    "url":         url,
-                    "source_type": "pdf",
+                    "country":         "EU",
+                    "lang":            "en",
+                    "source":          source,
+                    "url":             url,
+                    "source_type":     "pdf",
+                    "hanketyyppi_tag": "SMR,smr_bess",
                 })
 
         print(f"  New chunks: {len(new_docs)}")

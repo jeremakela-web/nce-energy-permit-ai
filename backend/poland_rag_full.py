@@ -387,14 +387,15 @@ def ingest_poland_sources(sources: list[dict] | None = None) -> int:
         ids   = [_chunk_id(name, i) for i in range(len(chunks))]
         metas = [
             {
-                "source":      name,
-                "url":         url,
-                "country":     "PL",
-                "category":    src["category"],
-                "lang":        "pl",
-                "description": src["description"],
-                "ingested_at": ingested_at,
-                "source_type": kind,
+                "source":          name,
+                "url":             url,
+                "country":         "PL",
+                "category":        src["category"],
+                "lang":            "pl",
+                "description":     src["description"],
+                "ingested_at":     ingested_at,
+                "source_type":     kind,
+                "hanketyyppi_tag": "general",
             }
             for _ in chunks
         ]

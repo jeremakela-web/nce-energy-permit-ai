@@ -94,10 +94,11 @@ def ingest(dry_run: bool = False) -> None:
             new_docs.append(chunk)
             new_ids.append(id_)
             new_metas.append({
-                "country":     "FI",
-                "lang":        "fi",
-                "source":      stem,
-                "source_type": "text",
+                "country":         "FI",
+                "lang":            "fi",
+                "source":          stem,
+                "source_type":     "text",
+                "hanketyyppi_tag": "datakeskus",
             })
 
         print(f"  New chunks: {len(new_docs)}")

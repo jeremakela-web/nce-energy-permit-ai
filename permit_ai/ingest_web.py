@@ -281,11 +281,12 @@ def ingest_web(
                     new_docs.append(chunk)
                     new_ids.append(id_)
                     new_metas.append({
-                        "country":     country,
-                        "lang":        lang,
-                        "source":      domain,
-                        "url":         url,
-                        "source_type": "web",
+                        "country":         country,
+                        "lang":            lang,
+                        "source":          domain,
+                        "url":             url,
+                        "source_type":     "web",
+                        "hanketyyppi_tag": "general",
                     })
                     added += 1
 

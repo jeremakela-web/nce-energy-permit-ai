@@ -369,10 +369,11 @@ def ingest() -> None:
             new_docs.append(chunk)
             new_ids.append(id_)
             new_metas.append({
-                "country":     "FI",
-                "lang":        "fi",
-                "source":      source_label,
-                "source_type": "inline_law",
+                "country":         "FI",
+                "lang":            "fi",
+                "source":          source_label,
+                "source_type":     "inline_law",
+                "hanketyyppi_tag": "general",
             })
         print(f"  {doc_id}: {len(chunks)} chunkkia")
 

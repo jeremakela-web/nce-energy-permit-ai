@@ -193,13 +193,14 @@ def ingest_caruna_sources(sources: list[dict] | None = None) -> int:
         ids   = [_chunk_id(name, i) for i in range(len(chunks))]
         metas = [
             {
-                "source":       name,
-                "country":      src["country"],
-                "category":     src["category"],
-                "lang":         src["language"],
-                "description":  src["description"],
-                "ingested_at":  ingested_at,
-                "source_type":  "pdf",
+                "source":          name,
+                "country":         src["country"],
+                "category":        src["category"],
+                "lang":            src["language"],
+                "description":     src["description"],
+                "ingested_at":     ingested_at,
+                "source_type":     "pdf",
+                "hanketyyppi_tag": "general",
             }
             for _ in chunks
         ]

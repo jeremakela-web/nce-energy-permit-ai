@@ -174,9 +174,10 @@ def ingest(
                     new_docs.append(chunk)
                     new_ids.append(id_)
                     new_metas.append({
-                        "country": country,
-                        "lang":    lang,
-                        "source":  fpath.stem,
+                        "country":         country,
+                        "lang":            lang,
+                        "source":          fpath.stem,
+                        "hanketyyppi_tag": "general",
                     })
                     added += 1
                 print(f"  {fpath.name}: {len(chunks)} chunkkia, {added} uutta")

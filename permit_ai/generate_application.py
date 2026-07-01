@@ -2118,38 +2118,9 @@ _HANKE_CFG = {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
-# RAG source-type filtering: prevent cross-hanketyyppi contamination
-# Sources NOT in this dict are unrestricted (pass through to all types).
-# Sources in this dict are only included if the current hanketyyppi is in
-# their allowed set.
-# ─────────────────────────────────────────────────────────────────────────────
-_SOURCE_RELEVANCE: dict[str, frozenset] = {
-    # STUK nuclear safety guides — only relevant for SMR / ydinvoima
-    "YVL_A.1":      frozenset({"SMR", "smr_bess"}),
-    "YVL_B.1":      frozenset({"SMR", "smr_bess"}),
-    "YVL_C.1":      frozenset({"SMR", "smr_bess"}),
-    # IAEA nuclear reactor safety standards — only relevant for SMR / ydinvoima
-    "IAEA_NS-R-5":  frozenset({"SMR", "smr_bess"}),
-    "IAEA_SSG-52":  frozenset({"SMR", "smr_bess"}),
-    "IAEA_SSR-2_1": frozenset({"SMR", "smr_bess"}),
-    # Data-centre-specific documents
-    "bios_datakeskus_sijoittamislupa":           frozenset({"datakeskus"}),
-    "microsoft_espoo_yva_selostus":              frozenset({"datakeskus"}),
-    "rakentamislaki_sijoittamislupa_datakeskus": frozenset({"datakeskus"}),
-    "ymparistolupa_datakeskus_ysl":              frozenset({"datakeskus"}),
-    "ym_datakeskukset":                          frozenset({"datakeskus"}),
-    "datakeskus_luvat_suomi":                    frozenset({"datakeskus"}),
-    # Fingrid transmission-grid (kantaverkko) connection guide — relevant only
-    # for large projects that connect directly to the 110/400 kV grid.
-    # BESS / aurinkovoima typically connect to Carunan distribution grid (jakeluverkko).
-    "fingrid_liittyminen_kantaverkkoon": frozenset({
-        "tuulivoima_maa", "tuulivoima_meri", "SMR", "smr_bess", "teollisuus",
-    }),
-}
-
-# ─────────────────────────────────────────────────────────────────────────────
 # RAG-haku
 # ─────────────────────────────────────────────────────────────────────────────
+from source_policy import is_chunk_relevant as _is_chunk_relevant
 
 def _rag_context(
     hanketyyppi: str,
@@ -2189,11 +2160,10 @@ def _rag_context(
                 if allowed_countries is not None:
                     if meta.get("country", "") not in allowed_countries:
                         continue
-                # Cross-type filter: skip sources restricted to other hanketyypit
-                _src_name = meta.get("source", "")
-                _allowed_types = _SOURCE_RELEVANCE.get(_src_name)
-                if _allowed_types is not None and hanketyyppi not in _allowed_types:
+                # Cross-type filter via source_policy (single source of truth)
+                if not _is_chunk_relevant(meta, hanketyyppi):
                     continue
+                _src_name = meta.get("source", "")
                 if id_ not in seen_ids:
                     seen_ids.add(id_)
                     all_docs.append(doc)

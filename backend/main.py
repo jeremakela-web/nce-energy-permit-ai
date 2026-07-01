@@ -2257,39 +2257,8 @@ async def admin_update_metadata(request: Request):
     _meta_update_jobs[job_id] = {"status": "running", "log": [],
                                   "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
 
-    _DOC_TYPE_MAP = {
-        "rakentamislaki_751_2023": "laki",
-        "kemikaaliturvallisuuslaki_390_2005": "laki",
-        "pelastuslaki_379_2011": "laki",
-        "fingrid_liittyminen_kantaverkkoon": "viranomaisohje",
-        "tukes_liion_opas": "viranomaisohje",
-        "tukes_painelaitteet": "viranomaisohje",
-        "tukes_painelaitteet_sco2": "viranomaisohje",
-        "energiavirasto_energiatehokkuus": "viranomaisohje",
-        "ym_datakeskukset": "viranomaisohje",
-        "datakeskus_luvat_suomi": "viranomaisohje",
-        "YVL_A.1": "viranomaisohje", "YVL_B.1": "viranomaisohje", "YVL_C.1": "viranomaisohje",
-        "lion_2025_bess": "viranomaisohje", "lion_teollisuus_2025": "viranomaisohje",
-        "sjv2024_fingrid": "viranomaisohje", "vjv2024_fingrid": "viranomaisohje",
-        "caruna_network_development_plan_2026": "viranomaisohje",
-        "bios_datakeskus_sijoittamislupa": "viranomaisohje",
-        "microsoft_espoo_yva_selostus": "viranomaisohje",
-        "rakentamislaki_sijoittamislupa_datakeskus": "viranomaisohje",
-        "ymparistolupa_datakeskus_ysl": "viranomaisohje",
-    }
-    _HT_MAP = {
-        "YVL_A.1": "SMR", "YVL_B.1": "SMR", "YVL_C.1": "SMR",
-        "IAEA_NS-R-5": "SMR", "IAEA_SSG-52": "SMR", "IAEA_SSR-2_1": "SMR",
-        "bios_datakeskus_sijoittamislupa": "datakeskus",
-        "microsoft_espoo_yva_selostus": "datakeskus",
-        "rakentamislaki_sijoittamislupa_datakeskus": "datakeskus",
-        "ymparistolupa_datakeskus_ysl": "datakeskus",
-        "ym_datakeskukset": "datakeskus",
-        "datakeskus_luvat_suomi": "datakeskus",
-        "fingrid_liittyminen_kantaverkkoon": "tuulivoima_maa,tuulivoima_meri,SMR,teollisuus",
-    }
-
     def _bg_update():
+        from source_policy import get_doc_type as _get_doc_type, get_hanketyyppi_tag as _get_ht
         log = _meta_update_jobs[job_id]["log"]
         try:
             import chromadb as _chroma
@@ -2308,9 +2277,11 @@ async def admin_update_metadata(request: Request):
                     m = dict(meta or {})
                     src = m.get("source", "")
                     if "doc_type" not in m or m["doc_type"] == "?":
-                        m["doc_type"] = _DOC_TYPE_MAP.get(src, "viranomaisohje")
+                        m["doc_type"] = _get_doc_type(src)
                     if "hanketyyppi_tag" not in m:
-                        m["hanketyyppi_tag"] = _HT_MAP.get(src, "")
+                        # migrate: prefer existing project_types field, else look up by source name
+                        pt = m.get("project_types", "")
+                        m["hanketyyppi_tag"] = pt if pt and pt != "all" else _get_ht(src) or "general"
                     new_metas.append(m)
                 col.update(ids=ids, metadatas=new_metas)
                 updated += len(ids)

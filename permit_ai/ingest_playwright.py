@@ -278,14 +278,15 @@ async def ingest_playwright_async(
                         new_docs.append(chunk)
                         new_ids.append(id_)
                         new_metas.append({
-                            "country":       country,
-                            "source":        source_name,
-                            "doc_type":      doc_type,
-                            "language":      language,
-                            "permit_phase":  permit_phase,
-                            "project_types": project_types,
-                            "url":           url,
-                            "source_type":   "web",
+                            "country":         country,
+                            "source":          source_name,
+                            "doc_type":        doc_type,
+                            "language":        language,
+                            "permit_phase":    permit_phase,
+                            "project_types":   project_types,
+                            "hanketyyppi_tag": project_types,
+                            "url":             url,
+                            "source_type":     "web",
                         })
                         added += 1
 
