@@ -43,6 +43,9 @@ _DOC_TYPE_MAP: dict[str, str] = {
     "YVL_A.1":                       "viranomaisohje",
     "YVL_B.1":                       "viranomaisohje",
     "YVL_C.1":                       "viranomaisohje",
+    "IAEA_NS-R-5":                   "viranomaisohje",
+    "IAEA_SSG-52":                   "viranomaisohje",
+    "IAEA_SSR-2_1":                  "viranomaisohje",
     # Teollisuuden julkaisut ja raportit
     "lion_2025_bess":                "viranomaisohje",
     "lion_teollisuus_2025":          "viranomaisohje",
@@ -57,12 +60,15 @@ _DOC_TYPE_MAP: dict[str, str] = {
 }
 
 _HANKETYYPPI_TAGS: dict[str, str] = {
-    "YVL_A.1":    "SMR",     "YVL_B.1":    "SMR",     "YVL_C.1":    "SMR",
+    "YVL_A.1":      "SMR",  "YVL_B.1":    "SMR",  "YVL_C.1":    "SMR",
+    "IAEA_NS-R-5":  "SMR",  "IAEA_SSG-52": "SMR", "IAEA_SSR-2_1": "SMR",
     "bios_datakeskus_sijoittamislupa":           "datakeskus",
     "microsoft_espoo_yva_selostus":              "datakeskus",
     "rakentamislaki_sijoittamislupa_datakeskus": "datakeskus",
     "ymparistolupa_datakeskus_ysl":              "datakeskus",
     "ym_datakeskukset":                          "datakeskus",
+    "datakeskus_luvat_suomi":                    "datakeskus",
+    "fingrid_liittyminen_kantaverkkoon":         "tuulivoima_maa,tuulivoima_meri,SMR,teollisuus",
 }
 
 

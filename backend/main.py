@@ -2279,11 +2279,14 @@ async def admin_update_metadata(request: Request):
     }
     _HT_MAP = {
         "YVL_A.1": "SMR", "YVL_B.1": "SMR", "YVL_C.1": "SMR",
+        "IAEA_NS-R-5": "SMR", "IAEA_SSG-52": "SMR", "IAEA_SSR-2_1": "SMR",
         "bios_datakeskus_sijoittamislupa": "datakeskus",
         "microsoft_espoo_yva_selostus": "datakeskus",
         "rakentamislaki_sijoittamislupa_datakeskus": "datakeskus",
         "ymparistolupa_datakeskus_ysl": "datakeskus",
         "ym_datakeskukset": "datakeskus",
+        "datakeskus_luvat_suomi": "datakeskus",
+        "fingrid_liittyminen_kantaverkkoon": "tuulivoima_maa,tuulivoima_meri,SMR,teollisuus",
     }
 
     def _bg_update():

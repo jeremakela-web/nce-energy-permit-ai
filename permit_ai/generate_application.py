@@ -2125,15 +2125,26 @@ _HANKE_CFG = {
 # ─────────────────────────────────────────────────────────────────────────────
 _SOURCE_RELEVANCE: dict[str, frozenset] = {
     # STUK nuclear safety guides — only relevant for SMR / ydinvoima
-    "YVL_A.1":    frozenset({"SMR", "smr_bess"}),
-    "YVL_B.1":    frozenset({"SMR", "smr_bess"}),
-    "YVL_C.1":    frozenset({"SMR", "smr_bess"}),
+    "YVL_A.1":      frozenset({"SMR", "smr_bess"}),
+    "YVL_B.1":      frozenset({"SMR", "smr_bess"}),
+    "YVL_C.1":      frozenset({"SMR", "smr_bess"}),
+    # IAEA nuclear reactor safety standards — only relevant for SMR / ydinvoima
+    "IAEA_NS-R-5":  frozenset({"SMR", "smr_bess"}),
+    "IAEA_SSG-52":  frozenset({"SMR", "smr_bess"}),
+    "IAEA_SSR-2_1": frozenset({"SMR", "smr_bess"}),
     # Data-centre-specific documents
     "bios_datakeskus_sijoittamislupa":           frozenset({"datakeskus"}),
     "microsoft_espoo_yva_selostus":              frozenset({"datakeskus"}),
     "rakentamislaki_sijoittamislupa_datakeskus": frozenset({"datakeskus"}),
     "ymparistolupa_datakeskus_ysl":              frozenset({"datakeskus"}),
     "ym_datakeskukset":                          frozenset({"datakeskus"}),
+    "datakeskus_luvat_suomi":                    frozenset({"datakeskus"}),
+    # Fingrid transmission-grid (kantaverkko) connection guide — relevant only
+    # for large projects that connect directly to the 110/400 kV grid.
+    # BESS / aurinkovoima typically connect to Carunan distribution grid (jakeluverkko).
+    "fingrid_liittyminen_kantaverkkoon": frozenset({
+        "tuulivoima_maa", "tuulivoima_meri", "SMR", "smr_bess", "teollisuus",
+    }),
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
