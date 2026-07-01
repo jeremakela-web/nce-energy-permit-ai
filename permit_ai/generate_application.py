@@ -704,11 +704,24 @@ def _proofread_sections(sections: dict) -> dict:
         "Palauta teksti TÄSMÄLLEEN samassa muodossa (===OSIO:key=== -jakajat mukaan lukien), "
         "vain korjattuna."
     )
+    _PROOF_SYSTEM = (
+        "Olet asiantunteva tekninen toimittaja. Korjaat suomalaisia lupahakemusluonnoksia "
+        "diakriittimerkki- ja kielioppivirheiden osalta. Palauta teksti täsmälleen samassa "
+        "rakenteessa kuin sait sen."
+    )
     try:
         resp = anthropic.Anthropic(timeout=120.0).messages.create(
             model=_MODEL_ID,
             max_tokens=6000,
+            system=[{"type": "text", "text": _PROOF_SYSTEM, "cache_control": {"type": "ephemeral"}}],
             messages=[{"role": "user", "content": prompt}],
+        )
+        _pu = resp.usage
+        logger.warning(
+            "[cache/proof] creation=%s read=%s input=%s output=%s",
+            getattr(_pu, "cache_creation_input_tokens", 0),
+            getattr(_pu, "cache_read_input_tokens", 0),
+            _pu.input_tokens, _pu.output_tokens,
         )
         corrected = unicodedata.normalize("NFC", resp.content[0].text)
         result = dict(sections)
@@ -5238,39 +5251,41 @@ def _generate_sections(
         )
         _prec_block = f"\n\n---ENNAKKOTAPAUKSET---\n{_prec_lines}\n---ENNAKKOTAPAUKSET_LOPPU---"
 
-    prompt = f"""{lang_prefix}{country_prefix}{ph["intro"]}
+    # Block 1: stable context — same for identical hanketyyppi/country/phase within 5 min
+    # RAG context here is large (~25k tokens) and cached across concurrent requests
+    prompt_context = (
+        f"{lang_prefix}{country_prefix}"
+        f"{standards_block}{bess_market_block}{critical_block}{context_extra_block}{phase_block}"
+        f"\n\n{ph['rag_intro']}\n{rag_context}{_prec_block}"
+        f"\n\n{write_instr}"
+    )
 
-Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})
-Kiinteistötunnus: {_clean_kt(inp.kiinteistotunnus)}
-Teho: {inp.teho_mw} MW{kap_lisatieto}
-Kunta: {inp.kunta}
-Hakija: {inp.hakija}{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}{ifc_block}
-Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{critical_block}{context_extra_block}{phase_block}
-
-{ph["rag_intro"]}
-{rag_context}{_prec_block}
-
-{write_instr}
-
-## {ph["kuvaus"]}
-{kuvaus_inst}
-
-## {ph["perustelut"]}
-{perustelut_inst}
-
-## {ph["luvat"]}
-{luvat_inst}
-
-## {ph["toimenpiteet"]}
-{toim_inst}"""
+    # Block 2: project-specific — varies per user request, not cached
+    prompt_task = (
+        f"{ph['intro']}\n\n"
+        f"Hanketyyppi: {inp.hanketyyppi} ({cfg['nimi_fi']})\n"
+        f"Kiinteistötunnus: {_clean_kt(inp.kiinteistotunnus)}\n"
+        f"Teho: {inp.teho_mw} MW{kap_lisatieto}\n"
+        f"Kunta: {inp.kunta}\n"
+        f"Hakija: {inp.hakija}"
+        f"{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}{ifc_block}\n"
+        f"Päivämäärä: {now}{viranomainen_ohje}\n\n"
+        f"## {ph['kuvaus']}\n{kuvaus_inst}\n\n"
+        f"## {ph['perustelut']}\n{perustelut_inst}\n\n"
+        f"## {ph['luvat']}\n{luvat_inst}\n\n"
+        f"## {ph['toimenpiteet']}\n{toim_inst}"
+    )
 
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=120.0)
     try:
         resp = claude.messages.create(
             model=_MODEL_ID,
             max_tokens=8000,
-            system=_SYSTEM,
-            messages=[{"role": "user", "content": prompt}],
+            system=[{"type": "text", "text": _SYSTEM, "cache_control": {"type": "ephemeral"}}],
+            messages=[{"role": "user", "content": [
+                {"type": "text", "text": prompt_context, "cache_control": {"type": "ephemeral"}},
+                {"type": "text", "text": prompt_task},
+            ]}],
         )
     except anthropic.RateLimitError:
         raise RuntimeError(
@@ -5294,8 +5309,13 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
     except anthropic.APIConnectionError as _ae:
         raise RuntimeError(f"Anthropic yhteysvirhe: {_ae}")
     raw = unicodedata.normalize("NFC", resp.content[0].text)
-    logger.warning("[DEBUG sections] stop_reason=%s tokens=%s raw_len=%d raw_start=%r",
-                   resp.stop_reason, resp.usage, len(raw), raw[:120])
+    _u = resp.usage
+    logger.warning(
+        "[cache] creation=%s read=%s input=%s output=%s stop=%s raw_len=%d",
+        getattr(_u, "cache_creation_input_tokens", 0),
+        getattr(_u, "cache_read_input_tokens", 0),
+        _u.input_tokens, _u.output_tokens, resp.stop_reason, len(raw),
+    )
     # Write raw to /tmp for debug endpoint
     try:
         with open("/tmp/debug_raw_claude.txt", "w", encoding="utf-8") as _f:
