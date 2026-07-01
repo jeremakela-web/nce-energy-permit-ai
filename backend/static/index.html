@@ -1901,6 +1901,7 @@ const TRANSLATIONS = {
     lbl_market:     'Tavoitemarkkinat',
     map_select_hint:'— Valitse hanketyyppi —',
     map_fi_only:    'Tällä hetkellä saatavilla vain Suomessa — muut maat tulossa pian.',
+    map_fi_gen_all: 'Lupahakemusten generointi: kaikki 8 maata tuettu.',
     gen_country_partial_rag: 'Osittainen RAG-kattavuus',
     gen_country_coming_soon: '🌍 Sääntelykattavuus vaihtelee maittain. Tarkista viranomaisvaatimukset paikallisesti.',
     badge_coming_soon:       'Tulossa',
@@ -2305,6 +2306,7 @@ const TRANSLATIONS = {
     lbl_market:     'Target market',
     map_select_hint:'— Select project type —',
     map_fi_only:    'Currently available for Finland only — other countries coming soon.',
+    map_fi_gen_all: 'Permit generation: all 8 countries supported.',
     gen_country_partial_rag: 'Partial RAG coverage',
     gen_country_coming_soon: '🌍 Regulatory coverage varies by country. Verify local authority requirements.',
     badge_coming_soon:       'Coming soon',
@@ -2699,6 +2701,7 @@ const TRANSLATIONS = {
     lbl_market:     'Målmarknad',
     map_select_hint:'— Välj projekttyp —',
     map_fi_only:    'Tillgänglig för Finland just nu — fler länder kommer snart.',
+    map_fi_gen_all: 'Tillståndsgenerering: alla 8 länder stöds.',
     gen_country_partial_rag: 'Delvis RAG-täckning',
     gen_country_coming_soon: '🌍 Regulatorisk täckning varierar per land. Verifiera lokala myndighetskrav.',
     badge_coming_soon:       'Kommer snart',
@@ -3081,6 +3084,7 @@ const TRANSLATIONS = {
     gen_done_note:  'AI-udkast — kræver ekspertgennemgang inden indsendelse',
     map_select_hint:'— Vælg projekttype —',
     map_fi_only:    'Tilgængelig for Finland i øjeblikket — andre lande kommer snart.',
+    map_fi_gen_all: 'Tilladelsesgenerering: alle 8 lande understøttes.',
     gen_country_partial_rag: 'Delvis RAG-dækning',
     gen_country_coming_soon: '🌍 Regulatorisk dækning varierer per land. Bekræft lokale myndighedskrav.',
     badge_coming_soon:       'Kommer snart',
@@ -3481,6 +3485,7 @@ const TRANSLATIONS = {
     gen_done_note:  'AI-utkast — krever ekspertgjennomgang før innlevering',
     map_select_hint:'— Velg prosjekttype —',
     map_fi_only:    'Tilgjengelig for Finland nå — andre land kommer snart.',
+    map_fi_gen_all: 'Tillatelsegenerering: alle 8 land støttes.',
     gen_country_partial_rag: 'Delvis RAG-dekning',
     gen_country_coming_soon: '🌍 Regulatorisk dekning varierer per land. Bekreft lokale myndighetskrav.',
     badge_coming_soon:       'Kommer snart',
@@ -3881,6 +3886,7 @@ const TRANSLATIONS = {
     gen_done_note:  'Szkic AI — wymaga przeglądu eksperta przed złożeniem',
     map_select_hint:'— Wybierz typ projektu —',
     map_fi_only:    'Obecnie dostępne tylko dla Finlandii — inne kraje wkrótce.',
+    map_fi_gen_all: 'Generowanie wniosków: wszystkie 8 krajów obsługiwane.',
     gen_country_partial_rag: 'Częściowe pokrycie RAG',
     gen_country_coming_soon: '🌍 Zasięg regulacyjny różni się w zależności od kraju. Sprawdź lokalne wymagania.',
     badge_coming_soon:       'Wkrótce',
@@ -4289,6 +4295,7 @@ const TRANSLATIONS = {
     gen_proofread_err:     'Korrektur fehlgeschlagen',
     map_select_hint:'— Projekttyp wählen —',
     map_fi_only:    'Derzeit nur für Finnland verfügbar — andere Länder folgen bald.',
+    map_fi_gen_all: 'Genehmigungsgenerierung: alle 8 Länder unterstützt.',
     gen_country_partial_rag: 'Partielle RAG-Abdeckung',
     gen_country_coming_soon: '🌍 Regulatorische Abdeckung variiert je nach Land. Lokale Behördenanforderungen prüfen.',
     badge_coming_soon:       'Demnächst',
@@ -5654,7 +5661,8 @@ function setMapCountry(code) {
   const isFI    = code === 'FI';
   if (notice) {
     notice.style.display = isFI ? 'none' : 'block';
-    notice.textContent   = t('map_fi_only');
+    notice.innerHTML = t('map_fi_only') +
+      '<br><span style="color:#4a9fd4;opacity:0.9;">' + t('map_fi_gen_all') + '</span>';
   }
   if (form) form.style.display = isFI ? '' : 'none';
 }
@@ -6123,19 +6131,20 @@ async function submitGeneratorForm() {
       }
     }, 15000);
 
-    // Re-enable submit so user can start a new generation while waiting
-    btn.disabled = false;
-    btn.innerHTML = `&#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>`;
-    btn.style.background = '';
-
     log(`${t('log_gen_done')}: ${selectedProjectType} / ${payload.kunta}`, 'ok');
 
-    // Poll for completion — update progress; show download button when done
+    function _btnReset() {
+      btn.disabled = false;
+      btn.innerHTML = `&#x1F4C4; <span data-i18n="gf_submit_btn">${t('gf_submit_btn')}</span>`;
+      btn.style.background = '';
+    }
+
+    // Poll for completion — keep button disabled until done/error/timeout
     if (jobId) {
       const poll = setInterval(async () => {
         try {
           const sr = await fetch(`${API_BASE}/api/proofread/${jobId}`);
-          if (!sr.ok) { clearInterval(poll); clearInterval(_bgTimer); return; }
+          if (!sr.ok) { clearInterval(poll); clearInterval(_bgTimer); _btnReset(); return; }
           const sd = await sr.json();
           if (sd.status === 'done') {
             clearInterval(poll);
@@ -6159,6 +6168,7 @@ async function submitGeneratorForm() {
                 `<a class="gen-dl-btn" href="${API_BASE}/api/proofread/${jobId}/download">` +
                 `&#x2B07; ${t('btn_download_pdf')}</a>`;
             }
+            _btnReset();
           } else if (sd.status === 'error') {
             clearInterval(poll);
             clearInterval(_bgTimer);
@@ -6167,10 +6177,13 @@ async function submitGeneratorForm() {
               proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,69,96,0.08);border:1px solid rgba(233,69,96,0.3);border-radius:8px;font-size:0.78rem;color:#e94560;';
               proofBox.textContent = `${t('proof_failed')}: ${sd.error || ''}`;
             }
+            _btnReset();
           }
-        } catch (_e) { clearInterval(poll); clearInterval(_bgTimer); }
+        } catch (_e) { clearInterval(poll); clearInterval(_bgTimer); _btnReset(); }
       }, 7000);
-      setTimeout(() => { clearInterval(poll); clearInterval(_bgTimer); }, 360_000);
+      setTimeout(() => { clearInterval(poll); clearInterval(_bgTimer); _btnReset(); }, 360_000);
+    } else {
+      _btnReset();
     }
 
   } catch (err) {

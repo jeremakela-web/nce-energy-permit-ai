@@ -5095,8 +5095,9 @@ _BESS_MARKET_DATA: dict[str, dict] = {
 
 
 def _s(lang: str, key: str) -> str:
-    """Hae käännetty merkkijono PDF-layoutille. Fallback → FI."""
-    d = _PDF_STRINGS.get(lang) or _PDF_STRINGS["FI"]
+    """Hae käännetty merkkijono PDF-layoutille. EE/ET → EN fallback; muut → FI."""
+    _lang = "EN" if lang in ("EE", "ET") else lang
+    d = _PDF_STRINGS.get(_lang) or _PDF_STRINGS["FI"]
     return d.get(key) or _PDF_STRINGS["FI"].get(key, key)
 
 
