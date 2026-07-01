@@ -705,7 +705,7 @@ def _proofread_sections(sections: dict) -> dict:
         "vain korjattuna."
     )
     try:
-        resp = anthropic.Anthropic().messages.create(
+        resp = anthropic.Anthropic(timeout=120.0).messages.create(
             model=_MODEL_ID,
             max_tokens=6000,
             messages=[{"role": "user", "content": prompt}],
@@ -724,6 +724,17 @@ def _proofread_sections(sections: dict) -> dict:
             if key in result:
                 result[key] = txt
         return result
+    except anthropic.APIStatusError as _ae:
+        _msg = (
+            f"Anthropic-krediitit lopussa (402) — lisää krediittejä Consolessa"
+            if _ae.status_code == 402
+            else f"Anthropic API virhe {_ae.status_code}"
+        )
+        print(f"[oikoluku] Varoitus: {_msg} — käytetään alkuperäistä tekstiä")
+        return sections
+    except anthropic.APITimeoutError:
+        print("[oikoluku] Varoitus: aikakatkaisu (>120s) — käytetään alkuperäistä tekstiä")
+        return sections
     except Exception as exc:
         print(f"[oikoluku] Varoitus: {exc} — käytetään alkuperäistä tekstiä")
         return sections
@@ -5253,13 +5264,35 @@ Päivämäärä: {now}{viranomainen_ohje}{standards_block}{bess_market_block}{cr
 ## {ph["toimenpiteet"]}
 {toim_inst}"""
 
-    claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    resp   = claude.messages.create(
-        model=_MODEL_ID,
-        max_tokens=8000,
-        system=_SYSTEM,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=120.0)
+    try:
+        resp = claude.messages.create(
+            model=_MODEL_ID,
+            max_tokens=8000,
+            system=_SYSTEM,
+            messages=[{"role": "user", "content": prompt}],
+        )
+    except anthropic.RateLimitError:
+        raise RuntimeError(
+            "API rate limit (429) — pyyntöjä liikaa, yritä hetken kuluttua"
+        )
+    except anthropic.APIStatusError as _ae:
+        if _ae.status_code == 402:
+            raise RuntimeError(
+                "Anthropic-krediitit lopussa — lisää krediittejä Consolessa "
+                "(info@ncenergy.fi)"
+            )
+        if _ae.status_code in (529, 503):
+            raise RuntimeError(
+                f"Anthropic API ylikuormittunut ({_ae.status_code}) — yritä uudelleen"
+            )
+        raise RuntimeError(f"Anthropic API virhe ({_ae.status_code}): {_ae.message}")
+    except anthropic.APITimeoutError:
+        raise RuntimeError(
+            "Claude API -aikakatkaisu (>120s) — palvelin ei vastannut, yritä uudelleen"
+        )
+    except anthropic.APIConnectionError as _ae:
+        raise RuntimeError(f"Anthropic yhteysvirhe: {_ae}")
     raw = unicodedata.normalize("NFC", resp.content[0].text)
     logger.warning("[DEBUG sections] stop_reason=%s tokens=%s raw_len=%d raw_start=%r",
                    resp.stop_reason, resp.usage, len(raw), raw[:120])

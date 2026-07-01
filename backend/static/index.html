@@ -2163,6 +2163,8 @@ const TRANSLATIONS = {
     proof_dl:         'Lataa tarkistettu versio',
     proof_failed:     '⚠️ Oikoluku epäonnistui',
     err_timeout:      'Aikakatkaisu (>300s) — yritä uudelleen',
+    err_restart:      '⚠️ Palvelu käynnistyi uudelleen kesken generoinnin. Yritä uudelleen — tietosi ovat tallessa.',
+    err_api_credit:   '⚠️ API-krediitit lopussa. Ota yhteyttä: info@ncenergy.fi',
     // Dropdown option labels
     opt_vaihe_valitse:     '— Valitse —',
     opt_vaihe_esiselvitys: 'Esiselvitys',
@@ -2568,6 +2570,8 @@ const TRANSLATIONS = {
     proof_dl:         'Download proofread version',
     proof_failed:     '⚠️ Proofreading failed',
     err_timeout:      'Timeout (>300s) — please try again',
+    err_restart:      '⚠️ Service restarted during generation. Please try again — your data is safe.',
+    err_api_credit:   '⚠️ API credits exhausted. Contact: info@ncenergy.fi',
     // Dropdown option labels
     opt_vaihe_valitse:     '— Select —',
     opt_vaihe_esiselvitys: 'Pre-study',
@@ -2963,6 +2967,8 @@ const TRANSLATIONS = {
     proof_dl:         'Ladda ned korrekturläst version',
     proof_failed:     '⚠️ Korrekturläsningen misslyckades',
     err_timeout:      'Timeout (>300s) — försök igen',
+    err_restart:      '⚠️ Tjänsten startade om under genereringen. Försök igen — dina uppgifter är säkra.',
+    err_api_credit:   '⚠️ API-krediter slut. Kontakta: info@ncenergy.fi',
     // Dropdown option labels
     opt_vaihe_valitse:     '— Välj —',
     opt_vaihe_esiselvitys: 'Förstudie',
@@ -3186,6 +3192,8 @@ const TRANSLATIONS = {
     proof_dl:       'Download korrekturlæst version',
     proof_failed:   '⚠️ Korrekturlæsning mislykkedes',
     err_timeout:    'Timeout (>300s) — prøv igen',
+    err_restart:    '⚠️ Tjenesten genstartede under generering. Prøv igen — dine data er sikre.',
+    err_api_credit: '⚠️ API-kreditter opbrugt. Kontakt: info@ncenergy.fi',
     err_gen_failed: 'Generering mislykkedes',
     opt_vaihe_valitse: '— Vælg —',
     opt_vaihe_esiselvitys: 'Forundersøgelse',
@@ -3587,6 +3595,8 @@ const TRANSLATIONS = {
     proof_dl:       'Last ned korrekturlest versjon',
     proof_failed:   '⚠️ Korrekturlesing mislyktes',
     err_timeout:    'Tidsavbrudd (>300s) — prøv igjen',
+    err_restart:    '⚠️ Tjenesten startet på nytt under generering. Prøv igjen — dataene dine er trygge.',
+    err_api_credit: '⚠️ API-kreditter oppbrukt. Kontakt: info@ncenergy.fi',
     err_gen_failed: 'Generering mislyktes',
     opt_vaihe_valitse: '— Velg —',
     opt_vaihe_esiselvitys: 'Forstudie',
@@ -3988,6 +3998,8 @@ const TRANSLATIONS = {
     proof_dl:       'Pobierz wersję po korekcie',
     proof_failed:   '⚠️ Korekta nie powiodła się',
     err_timeout:    'Limit czasu (>300s) — spróbuj ponownie',
+    err_restart:    '⚠️ Usługa uruchomiła się ponownie podczas generowania. Spróbuj ponownie — Twoje dane są bezpieczne.',
+    err_api_credit: '⚠️ Kredyty API wyczerpane. Kontakt: info@ncenergy.fi',
     err_gen_failed: 'Generowanie nie powiodło się',
     opt_vaihe_valitse: '— Wybierz —',
     opt_vaihe_esiselvitys: 'Analiza wstępna',
@@ -4612,6 +4624,8 @@ const TRANSLATIONS = {
     proof_dl:            'Geprüfte Version herunterladen',
     proof_failed:        '⚠️ Korrektur fehlgeschlagen',
     err_timeout:         'Zeitüberschreitung (>300s) — erneut versuchen',
+    err_restart:         '⚠️ Dienst wurde während der Generierung neu gestartet. Bitte erneut versuchen — Ihre Daten sind sicher.',
+    err_api_credit:      '⚠️ API-Guthaben aufgebraucht. Kontakt: info@ncenergy.fi',
     err_gen_failed:      'Generierung fehlgeschlagen',
     // Permits info box
     permits_viranomaiset:'Behörden &amp; Genehmigungen',
@@ -6144,7 +6158,15 @@ async function submitGeneratorForm() {
       const poll = setInterval(async () => {
         try {
           const sr = await fetch(`${API_BASE}/api/proofread/${jobId}`);
-          if (!sr.ok) { clearInterval(poll); clearInterval(_bgTimer); _btnReset(); return; }
+          if (!sr.ok) {
+            clearInterval(poll); clearInterval(_bgTimer);
+            if (progWrap) progWrap.classList.remove('visible');
+            if (proofBox) {
+              proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,170,0,0.08);border:1px solid rgba(233,170,0,0.3);border-radius:8px;font-size:0.78rem;color:#c8920a;';
+              proofBox.innerHTML = t('err_restart');
+            }
+            _btnReset(); return;
+          }
           const sd = await sr.json();
           if (sd.status === 'done') {
             clearInterval(poll);
@@ -6174,14 +6196,29 @@ async function submitGeneratorForm() {
             clearInterval(_bgTimer);
             if (progWrap) progWrap.classList.remove('visible');
             if (proofBox) {
-              proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,69,96,0.08);border:1px solid rgba(233,69,96,0.3);border-radius:8px;font-size:0.78rem;color:#e94560;';
-              proofBox.textContent = `${t('proof_failed')}: ${sd.error || ''}`;
+              const _errMsg = sd.error || '';
+              const _isCredit = /kredit|credit|402|krediit/i.test(_errMsg);
+              if (_isCredit) {
+                proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,170,0,0.08);border:1px solid rgba(233,170,0,0.3);border-radius:8px;font-size:0.78rem;color:#c8920a;';
+                proofBox.innerHTML = t('err_api_credit');
+              } else {
+                proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,69,96,0.08);border:1px solid rgba(233,69,96,0.3);border-radius:8px;font-size:0.78rem;color:#e94560;';
+                proofBox.textContent = `${t('proof_failed')}: ${_errMsg}`;
+              }
             }
             _btnReset();
           }
         } catch (_e) { clearInterval(poll); clearInterval(_bgTimer); _btnReset(); }
       }, 7000);
-      setTimeout(() => { clearInterval(poll); clearInterval(_bgTimer); _btnReset(); }, 360_000);
+      setTimeout(() => {
+        clearInterval(poll); clearInterval(_bgTimer);
+        if (progWrap) progWrap.classList.remove('visible');
+        if (proofBox) {
+          proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,170,0,0.08);border:1px solid rgba(233,170,0,0.3);border-radius:8px;font-size:0.78rem;color:#c8920a;';
+          proofBox.innerHTML = t('err_timeout');
+        }
+        _btnReset();
+      }, 360_000);
     } else {
       _btnReset();
     }
