@@ -7217,8 +7217,8 @@ async function askPermit(question) {
     });
 
     if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.detail || `HTTP ${resp.status}`);
+      const errBody = await resp.json().catch(() => ({}));
+      throw new Error(errBody.detail || `HTTP ${resp.status}`);
     }
 
     const data = await resp.json();
@@ -7238,7 +7238,13 @@ async function askPermit(question) {
     typing.remove();
     const errDiv = document.createElement('div');
     errDiv.className = 'chat-msg ai';
-    errDiv.innerHTML = `<div class="bubble" style="color:#e94560;">${t('log_error_pfx')} ${err.message}</div>`;
+    // Network-level errors (no server response) show a clear Finnish message
+    const _isNetwork = err instanceof TypeError ||
+      /load failed|failed to fetch|network/i.test(err.message);
+    const _msg = _isNetwork
+      ? t('err_restart')   // "Palvelin ei vastannut — yritä hetken kuluttua uudelleen"
+      : `${t('log_error_pfx')} ${err.message}`;
+    errDiv.innerHTML = `<div class="bubble" style="color:#c8920a;background:rgba(233,170,0,0.08);border:1px solid rgba(233,170,0,0.3);border-radius:8px;padding:10px 14px;">${_msg}</div>`;
     msgs.appendChild(errDiv);
     log(`${t('log_chat_error_pfx')} ${err.message}`, 'err');
   }

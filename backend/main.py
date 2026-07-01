@@ -52,7 +52,7 @@ from heritage_api import get_heritage_sites
 from gtk_api import get_soil_type
 from ai_strategy import get_lupaprosessi_strategy
 from report import generate_bess_report
-from permit_ai import query_permit_ai
+from permit_ai import query_permit_ai, query_permit_ai_chat
 import permit_ai as _permit_ai_module
 import rtb_store as _rtb
 
@@ -1307,7 +1307,6 @@ async def permit_chat(request: Request, req: PermitChatRequest):
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
     session_id = req.session_id or get_remote_address(request)
     try:
-        from permit_ai import query_permit_ai_chat
         result = await asyncio.to_thread(
             query_permit_ai_chat,
             req.question, session_id, req.n_results,
