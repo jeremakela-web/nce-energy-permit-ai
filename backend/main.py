@@ -2860,12 +2860,10 @@ async def admin_reindex_all_v2_status():
 @app.get("/api/admin/rag-test", dependencies=[Depends(_require_admin)])
 async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS"):
     """Quick RAG confidence check for a country+hanketyyppi pair — no PDF, no LLM, no rate limit."""
-    from generate_application import _rag_context, InsufficientSourcesError, activate_v2, _v2_is_ready
-    if _v2_is_ready():
-        activate_v2()
+    _gen_app_module.activate_v2()
     try:
         ctx, sources, warn, prec, psrc = await asyncio.to_thread(
-            _rag_context, hanketyyppi, country
+            _gen_app_module._rag_context, hanketyyppi, country
         )
         ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
         return {
@@ -2900,10 +2898,8 @@ async def admin_rag_check_all(secret: str = ""):
     if not secret or secret != _ADMIN_SECRET:
         raise HTTPException(status_code=403, detail="Forbidden — pass ?secret=ADMIN_SECRET")
 
-    # _v2_is_ready lives in main.py, not generate_application — import only what GA exports
-    from generate_application import _rag_context, InsufficientSourcesError, activate_v2
     import datetime
-    activate_v2()   # safe to call multiple times; no-op if already active
+    _gen_app_module.activate_v2()   # idempotent; uses already-loaded module, no re-import
 
     TESTS = [
         ("FI", "BESS"),
@@ -2928,7 +2924,7 @@ async def admin_rag_check_all(secret: str = ""):
         async with _sem:
             try:
                 ctx, sources, warn, prec, _ = await asyncio.to_thread(
-                    _rag_context, hanketyyppi, country
+                    _gen_app_module._rag_context, hanketyyppi, country
                 )
                 ctx_chunks = ctx.split("\n\n---\n\n") if ctx else []
                 n = len(ctx_chunks)
