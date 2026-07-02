@@ -5307,6 +5307,28 @@ def _generate_sections(
         + "\n"
     )
 
+    # Missing fields — Claude MUST insert [TÄYDENNETTÄVÄ] wherever these would be needed
+    _missing_parts: list[str] = []
+    if not (inp.y_tunnus or "").strip():
+        _missing_parts.append("Y-tunnus (rekisteröintinumero)")
+    if not (inp.osoite or "").strip():
+        _missing_parts.append("hankkeen tarkka osoite tai koordinaatit")
+    if not inp.sijainti_ymparistovaikutukset:
+        _missing_parts.append("sijainti- ja ympäristövaikutustiedot")
+    if inp.hanketyyppi == "BESS" and not inp.kapasiteetti_mwh:
+        _missing_parts.append("varastointikapasiteetti (MWh)")
+    if not inp.kohdeviranomainen:
+        _missing_parts.append("kohdeviranomainen / lupaa myöntävä viranomainen")
+    _missing_block = ""
+    if _missing_parts:
+        _missing_block = (
+            "\n\nPUUTTUVAT HAKIJAN SYÖTETIEDOT — PAKOLLINEN TÄYDENNYS:\n"
+            "Hakija EI ole toimittanut seuraavia tietoja. "
+            "Kirjoita [TÄYDENNETTÄVÄ – <tiedon nimi>] JOKAISEEN kohtaan tekstissä, "
+            "jossa kyseinen tieto olisi välttämätön. ÄLÄ täytä näitä arvauksilla:\n"
+            + "".join(f"  • {f}\n" for f in _missing_parts)
+        )
+
     # Block 2: project-specific — varies per user request, not cached
     prompt_task = (
         f"{ph['intro']}\n\n"
@@ -5316,7 +5338,7 @@ def _generate_sections(
         f"Kunta: {inp.kunta}\n"
         f"Hakija: {inp.hakija}"
         f"{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}{ifc_block}\n"
-        f"Päivämäärä: {now}{_known_block}{viranomainen_ohje}\n\n"
+        f"Päivämäärä: {now}{_known_block}{_missing_block}{viranomainen_ohje}\n\n"
         f"## {ph['kuvaus']}\n{kuvaus_inst}\n\n"
         f"## {ph['perustelut']}\n{perustelut_inst}\n\n"
         f"## {ph['luvat']}\n{luvat_inst}\n\n"
@@ -5419,15 +5441,16 @@ def _strip_known_gap_tags(sections: dict, inp: "ApplicationInput") -> dict:
     # the field is actually already known from the input.
     known_kw: set[str] = set()
     if inp.kiinteistotunnus:
-        known_kw |= {"kiinteistötunnus", "kiinteistotunnus", "tunnus"}
+        # Use precise compound terms — do NOT add bare "tunnus" as it matches Y-tunnus
+        known_kw |= {"kiinteistötunnus", "kiinteistotunnus"}
     if inp.kunta:
-        known_kw |= {"sijaintikunta", "kunta"}
+        known_kw |= {"sijaintikunta"}  # "kunta" alone is too broad (e.g. "kuntakohtainen")
     if inp.hakija:
         known_kw |= {"hakija", "hakijan nimi", "hakijan"}
     if inp.teho_mw:
-        known_kw |= {"teho", "megawatti"}
+        known_kw |= {"teho mw", "megawatti"}  # avoid bare "teho" matching "tehostaa" etc.
     if inp.kapasiteetti_mwh:
-        known_kw |= {"kapasiteetti", "mwh", "megawattitunti"}
+        known_kw |= {"kapasiteetti mwh", "megawattitunti"}
 
     def _filter(m: re.Match) -> str:
         desc = m.group(1).lower()
@@ -5958,6 +5981,17 @@ def generate_pdf(
     """Rakenna PDF ja palauta bytes."""
     prec_chunks  = prec_chunks  or []
     prec_sources = prec_sources or []
+
+    # Inject hardcoded market data as an explicit source for transparency
+    _country = getattr(inp, "country", "FI") or "FI"
+    if inp.hanketyyppi == "BESS" and not any(s.get("id") == "bess_market_index" for s in sources):
+        _md = _BESS_MARKET_DATA.get(_country, _BESS_MARKET_DATA["FI"])
+        sources = list(sources) + [{
+            "id":      "bess_market_index",
+            "display": f"{_md['source']} — {_md['index']} {_md['unit']} ({_md['date']}, kovakoodattu arvio)",
+            "country": "EU",
+        }]
+
     # Hard cap: enintään 3 "Asiantuntijatarkistus suositellaan" VAIN sisältöosioissa
     _SEC_SEP = "\x00||SEC||\x00"
     _str_keys = [k for k, v in sections.items()
