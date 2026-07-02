@@ -3490,7 +3490,14 @@ _SYSTEM = (
     "muodossa [TÄYDENNETTÄVÄ – <lyhyt kuvaus puuttuvasta tiedosta>] ilman sisältöä sen ympärille. "
     "Käytä tätä merkintää VAIN silloin kun jokin konkreettinen hakijalta saatava syötetieto "
     "puuttuu — ÄLÄ käytä sitä epävarmoille faktoille (niille on ⚠️-merkintä) eikä yleisille "
-    "arvauksille. Merkinnän lyhyt kuvaus kertoo täsmälleen mitä tietoa tarvitaan."
+    "arvauksille. Merkinnän lyhyt kuvaus kertoo täsmälleen mitä tietoa tarvitaan. "
+    "MARKKINATILASTOSÄÄNTÖ: Älä koskaan mainitse tarkkoja ulkoisia markkinatilastoja, "
+    "indeksejä, hintoja tai määrällisiä lukemia (esim. '€/MW/vuosi', 'reservimarkkinahinta X€', "
+    "'kapasiteettimaksu Y%', tiettyä indeksipistettä tai raporttinimeä) elleivät ne löydy "
+    "suoraan annetuista RAG-lähteistä. Tällainen tieto on usein koulutusaineistosta peräisin "
+    "eikä välttämättä pidä paikkaansa — se on hallusinaatioriskin ydintyyppi. "
+    "Jos haluat viitata markkinakontekstiin ilman vahvistettua RAG-lähdettä, "
+    "käytä merkintää [TÄYDENNETTÄVÄ – ajankohtaiset markkinatiedot] tai jätä luku kokonaan mainitsematta."
 )
 
 _LANG_INSTRUCTIONS: dict[str, str] = {
@@ -5241,10 +5248,13 @@ def _generate_sections(
     if inp.hanketyyppi == "BESS":
         _md = _BESS_MARKET_DATA.get(country, _BESS_MARKET_DATA["FI"])
         bess_market_block = (
-            f"\nEuroopan BESS-reservimarkkinat {country}-indeksi: "
-            f"{_md['index']} {_md['unit']} 2h-akustolle "
-            f"({_md['date']}, lähde: {_md['source']}). "
-            f"Mainitse tämä perustelut-osiossa."
+            f"\nTAUSTATIETO (suuruusluokka-arvio, ei vahvistettua tuoretta dataa): "
+            f"BESS-reservimarkkinat {country}:ssa ovat suuruusluokaltaan "
+            f"satoja tuhansia euroja per MW per vuosi 2h-varastolle. "
+            f"ÄLÄ mainitse tarkkoja lukemia (€/MW/vuosi, indeksipisteitä) eikä "
+            f"ulkoisia raporttinimiä (esim. Clean Horizon Storage Index) tekstissä — "
+            f"nämä tiedot eivät ole RAG-lähteistä vahvistettuja. "
+            f"Jos markkina-arvo on olennainen, käytä [TÄYDENNETTÄVÄ – ajankohtainen reservimarkkinahinta-arvio]."
         )
 
     critical_block = ""
@@ -5978,7 +5988,7 @@ Anna kokonaislukupisteytys asteikolla 1–5 jokaiselle kriteerille ja yksi lyhyt
 Kriteerit:
 1. viittaukset  — Lakiviittausten relevanttius ja tarkkuus (1=puuttuu/virheelliset, 5=täsmälliset ja kattavat)
 2. lupakattavuus — Tarvittavien lupamenettelyjen kattavuus (1=merkittäviä aukkoja, 5=kaikki luvat käsitelty)
-3. epävarmuus   — Epävarmuuden hallinta (1=faktoja esitetty arvauksina, 5=⚠️-merkinnät asiallisesti käytetty)
+3. epävarmuus   — Epävarmuuden hallinta. PUNAINEN LIPPU: jos tekstissä esiintyy tarkka määrällinen lukema (€/MW/vuosi, %, €/MWh, indeksipiste tms.) yhdistettynä nimettyyn ulkoiseen lähteeseen tai raporttiin (esim. "Clean Horizon Storage Index", "BNEF", "IEA Storage Tracker") — mutta kyseinen lähde EI löydy raportin lähdeluettelosta — laske 2 pistettä ja mainitse tämä perustelussa nimenomaisesti. (1=vahvistamattomia tarkkoja ulkoisia lukuja esitetty faktana ilman lähdettä, 5=⚠️-merkinnät asiallisesti käytetty eikä vahvistamattomia tarkkoja markkinaviittauksia)
 4. kattavuus    — Sisällön syvyys ja pituus (1=pintapuolinen, 5=perusteellinen)
 5. valmisteluaste — Hakemusvalmisteluaste (1=raakaaineisto, 5=lähes jätettävissä sellaisenaan)
 
