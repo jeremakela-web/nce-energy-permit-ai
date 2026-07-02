@@ -76,6 +76,7 @@ class InsufficientSourcesError(Exception):
 _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
+_RAQS_DB     = os.path.join(_DB_DIR, "raqs_reviews.db")
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
 _MODEL_ID      = "claude-sonnet-4-5"
 _MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
@@ -5968,6 +5969,232 @@ def _taydennyslista_page(gaps: list[tuple[str, str]], st: dict, lang: str = "FI"
     return [PageBreak(), box]
 
 
+# ─── RAQS: Regulatory Assurance & Quality System — reviewing agent ───────────
+
+_RAQS_SYSTEM = """\
+Olet sääntelylaadunvarmistusagentti (RAQS). Arvioi annettu energialupaluonnos viidellä kriteerillä.
+Anna kokonaislukupisteytys asteikolla 1–5 jokaiselle kriteerille ja yksi lyhyt perustelu (max 15 sanaa).
+
+Kriteerit:
+1. viittaukset  — Lakiviittausten relevanttius ja tarkkuus (1=puuttuu/virheelliset, 5=täsmälliset ja kattavat)
+2. lupakattavuus — Tarvittavien lupamenettelyjen kattavuus (1=merkittäviä aukkoja, 5=kaikki luvat käsitelty)
+3. epävarmuus   — Epävarmuuden hallinta (1=faktoja esitetty arvauksina, 5=⚠️-merkinnät asiallisesti käytetty)
+4. kattavuus    — Sisällön syvyys ja pituus (1=pintapuolinen, 5=perusteellinen)
+5. valmisteluaste — Hakemusvalmisteluaste (1=raakaaineisto, 5=lähes jätettävissä sellaisenaan)
+
+Vastaa VAIN validilla JSON-objektilla, ei muuta tekstiä:
+{
+  "viittaukset":    {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
+  "lupakattavuus":  {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
+  "epävarmuus":     {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
+  "kattavuus":      {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
+  "valmisteluaste": {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
+  "yhteenveto":     "<max 25 sanaa>"
+}
+"""
+
+_RAQS_LABELS = {
+    "viittaukset":    "Lakiviittaukset",
+    "lupakattavuus":  "Lupakattavuus",
+    "epävarmuus":     "Epävarmuudenhallinta",
+    "kattavuus":      "Sisällön kattavuus",
+    "valmisteluaste": "Hakemusvalmisteluaste",
+}
+
+_RAQS_ORDER = ["viittaukset", "lupakattavuus", "epävarmuus", "kattavuus", "valmisteluaste"]
+
+
+def _raqs_init_db() -> None:
+    import sqlite3
+    os.makedirs(os.path.dirname(_RAQS_DB), exist_ok=True)
+    with sqlite3.connect(_RAQS_DB) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS raqs_reviews (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at       TEXT    NOT NULL,
+                kiinteistotunnus TEXT,
+                kunta            TEXT,
+                hanketyyppi      TEXT,
+                teho_mw          REAL,
+                scores_json      TEXT    NOT NULL,
+                overall          REAL
+            )
+        """)
+
+
+def _raqs_store(review: dict, inp: "ApplicationInput") -> None:
+    import sqlite3, json
+    from datetime import datetime, timezone
+    try:
+        _raqs_init_db()
+        scores = [review[k]["pisteet"] for k in _RAQS_ORDER if k in review]
+        overall = round(sum(scores) / len(scores), 2) if scores else None
+        with sqlite3.connect(_RAQS_DB) as conn:
+            conn.execute(
+                "INSERT INTO raqs_reviews "
+                "(created_at, kiinteistotunnus, kunta, hanketyyppi, teho_mw, scores_json, overall) "
+                "VALUES (?,?,?,?,?,?,?)",
+                (
+                    datetime.now(timezone.utc).isoformat(),
+                    getattr(inp, "kiinteistotunnus", None),
+                    getattr(inp, "kunta", None),
+                    getattr(inp, "hanketyyppi", None),
+                    getattr(inp, "teho_mw", None),
+                    json.dumps(review, ensure_ascii=False),
+                    overall,
+                ),
+            )
+    except Exception:
+        pass  # never block PDF generation
+
+
+def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
+    """Call Haiku to score sections on 5 RAQS criteria. Returns parsed dict or None."""
+    import json as _json
+
+    # Build compact section summary — only text keys, capped at 800 chars each
+    summary_parts = []
+    for key in ["kuvaus", "perustelut", "luvat_teksti", "toimenpiteet"]:
+        v = sections.get(key, "")
+        if isinstance(v, str) and v.strip():
+            summary_parts.append(f"## {key}\n{v[:800]}")
+    sections_text = "\n\n".join(summary_parts)
+
+    prompt = (
+        f"Hanketyyppi: {getattr(inp, 'hanketyyppi', '?')} | "
+        f"Teho: {getattr(inp, 'teho_mw', '?')} MW | "
+        f"Kunta: {getattr(inp, 'kunta', '?')}\n\n"
+        f"LUONNOKSEN SISÄLTÖ:\n{sections_text}"
+    )
+
+    try:
+        client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=30.0)
+        resp = client.messages.create(
+            model=_MODEL_ID_FAST,
+            max_tokens=1024,
+            system=[{
+                "type": "text",
+                "text": _RAQS_SYSTEM,
+                "cache_control": {"type": "ephemeral"},
+            }],
+            messages=[{"role": "user", "content": prompt}],
+        )
+        raw = resp.content[0].text.strip()
+        # strip optional markdown code fences
+        raw = re.sub(r"^```[a-z]*\s*", "", raw)
+        raw = re.sub(r"\s*```$", "", raw).strip()
+        if not raw:
+            return None
+        result = _json.loads(raw)
+        _raqs_store(result, inp)
+        return result
+    except Exception:
+        return None
+
+
+def _raqs_page(review: dict, st: dict) -> list:
+    """Build RAQS score page PDF elements (PageBreak + navy-bordered box)."""
+    C_FILL = colors.HexColor("#f0f4ff")
+    C_BD   = colors.HexColor("#1a3a5c")
+    C_HDR  = colors.HexColor("#1a3a5c")
+
+    heading_style = ParagraphStyle(
+        "raqs_hdr", fontSize=13, fontName=PDF_FONT_BOLD,
+        textColor=C_HDR, spaceAfter=4,
+    )
+    sub_style = ParagraphStyle(
+        "raqs_sub", fontSize=8, textColor=colors.HexColor("#555555"),
+        leading=11, spaceAfter=10,
+    )
+    row_label_style = ParagraphStyle(
+        "raqs_lbl", fontSize=9, fontName=PDF_FONT_BOLD, leading=12,
+    )
+    row_score_style = ParagraphStyle(
+        "raqs_sc", fontSize=11, fontName=PDF_FONT_BOLD,
+        textColor=C_HDR, alignment=TA_CENTER, leading=12,
+    )
+    row_note_style = ParagraphStyle(
+        "raqs_nt", fontSize=8, textColor=colors.HexColor("#444444"),
+        leading=11, leftIndent=4,
+    )
+    summary_style = ParagraphStyle(
+        "raqs_sum", fontSize=8.5, textColor=colors.HexColor("#333333"),
+        leading=12, spaceAfter=0, spaceBefore=8,
+    )
+    disc_style = ParagraphStyle(
+        "raqs_disc", fontSize=7, textColor=colors.HexColor("#888888"),
+        leading=10, spaceBefore=6,
+    )
+
+    def _dots(score: int) -> str:
+        score = max(1, min(5, score))
+        return "●" * score + "○" * (5 - score)
+
+    scores = [review[k]["pisteet"] for k in _RAQS_ORDER if k in review]
+    overall = round(sum(scores) / len(scores), 1) if scores else None
+
+    body_elems: list = [
+        Paragraph("RAQS-arviointi", heading_style),
+        Paragraph(
+            "AI-itsearvio (Regulatory Assurance & Quality System) — ei korvaa asiantuntijatarkistusta. "
+            "Pisteet 1–5 per kriteeri; korkea pistemäärä = parempi laatu.",
+            sub_style,
+        ),
+    ]
+
+    rows = []
+    for key in _RAQS_ORDER:
+        if key not in review:
+            continue
+        entry = review[key]
+        sc = int(entry.get("pisteet", 0))
+        note = _latin1_safe(entry.get("perustelu", ""))
+        rows.append([
+            Paragraph(_RAQS_LABELS.get(key, key), row_label_style),
+            Paragraph(_dots(sc), row_score_style),
+            Paragraph(f"{sc}/5", row_score_style),
+            Paragraph(note, row_note_style),
+        ])
+
+    if rows:
+        score_tbl = Table(
+            rows,
+            colWidths=[4.8 * cm, 2.4 * cm, 1.2 * cm, 7.8 * cm],
+            repeatRows=0,
+        )
+        score_tbl.setStyle(TableStyle([
+            ("VALIGN",      (0, 0), (-1, -1), "MIDDLE"),
+            ("ROWBACKGROUNDS", (0, 0), (-1, -1),
+             [colors.HexColor("#e8edf8"), colors.HexColor("#f0f4ff")]),
+            ("TOPPADDING",  (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("LEFTPADDING", (0, 0), (-1, -1), 6),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ]))
+        body_elems.append(score_tbl)
+
+    if overall is not None:
+        body_elems.append(Paragraph(
+            f"<b>Kokonaispistemäärä: {overall}/5</b> — "
+            + _latin1_safe(review.get("yhteenveto", "")),
+            summary_style,
+        ))
+
+    body_elems.append(Paragraph(
+        "RAQS-arvio tuotettu automaattisesti (claude-haiku). "
+        "Arvioi aina luonnos ennen viranomaisen käsittelyyn toimittamista.",
+        disc_style,
+    ))
+
+    box = Table([[body_elems]], colWidths=[16.2 * cm], splitByRow=1)
+    box.setStyle(TableStyle([
+        ("BOX",        (0, 0), (-1, -1), 2.0, C_BD),
+        ("BACKGROUND", (0, 0), (-1, -1), C_FILL),
+        ("PADDING",    (0, 0), (-1, -1), 14),
+    ]))
+    return [PageBreak(), box]
+
+
 def generate_pdf(
     inp: ApplicationInput,
     sections: dict,
@@ -6489,6 +6716,12 @@ def generate_pdf(
     _gaps = _extract_gaps(sections)
     if _gaps:
         for _elem in _taydennyslista_page(_gaps, st, lang):
+            story.append(_elem)
+
+    # ── RAQS: reviewing agent — Haiku-arvio sisällön laadusta ────────────────
+    _raqs_result = _raqs_review(sections, inp)
+    if _raqs_result:
+        for _elem in _raqs_page(_raqs_result, st):
             story.append(_elem)
 
     # ── Loppumerkintä ─────────────────────────────────────────────────────────
