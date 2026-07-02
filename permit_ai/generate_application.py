@@ -3497,7 +3497,17 @@ _SYSTEM = (
     "suoraan annetuista RAG-lähteistä. Tällainen tieto on usein koulutusaineistosta peräisin "
     "eikä välttämättä pidä paikkaansa — se on hallusinaatioriskin ydintyyppi. "
     "Jos haluat viitata markkinakontekstiin ilman vahvistettua RAG-lähdettä, "
-    "käytä merkintää [TÄYDENNETTÄVÄ – ajankohtaiset markkinatiedot] tai jätä luku kokonaan mainitsematta."
+    "käytä merkintää [TÄYDENNETTÄVÄ – ajankohtaiset markkinatiedot] tai jätä luku kokonaan mainitsematta. "
+    "PAKOLLINEN SÄÄNTÖ: Kun esität tarkan teknisen, tieteellisen tai "
+    "tilastollisen väitteen (mittausluku, aikaraja, prosenttiosuus tms.) "
+    "NIMETYN ulkoisen lähteen kanssa (tutkimus, yritys, standardiorganisaatio, "
+    "testilaboratorio), lähdenimi SAA tulla vain suoraan tälle kutsulle "
+    "palautetusta RAG-kontekstista. Jos väite on perusteltu mutta sinulla ei "
+    "ole RAG-kontekstissa nimettyä lähdettä sille: (a) poista nimetty "
+    "attribuutio kokonaan ja esitä väite yleisenä alan käytäntönä, TAI "
+    "(b) merkitse väite [Huom] Asiantuntijatarkistus suositellaan -tagilla. "
+    "Älä koskaan keksi tutkimuksen, yrityksen tai standardin nimeä "
+    "paikkaamaan puuttuvaa lähdettä."
 )
 
 _LANG_INSTRUCTIONS: dict[str, str] = {
