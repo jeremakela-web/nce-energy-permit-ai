@@ -5290,6 +5290,23 @@ def _generate_sections(
         f"\n\n{write_instr}"
     )
 
+    # Known fields guard — prevents [TÄYDENNETTÄVÄ] for already-provided input values
+    _known_parts = [
+        f"kiinteistötunnus={_clean_kt(inp.kiinteistotunnus)}",
+        f"sijaintikunta={inp.kunta}",
+        f"hakija={inp.hakija}",
+        f"teho={inp.teho_mw} MW",
+    ]
+    if inp.kapasiteetti_mwh:
+        _known_parts.append(f"kapasiteetti={inp.kapasiteetti_mwh} MWh")
+    if inp.sijainti_ymparistovaikutukset:
+        _known_parts.append("sijainti- ja ympäristötiedot (annettu yllä)")
+    _known_block = (
+        "\n\nTUNNETUT SYÖTETIEDOT — ÄLÄ merkitse näitä [TÄYDENNETTÄVÄ]-tagilla:\n"
+        + ", ".join(_known_parts)
+        + "\n"
+    )
+
     # Block 2: project-specific — varies per user request, not cached
     prompt_task = (
         f"{ph['intro']}\n\n"
@@ -5299,7 +5316,7 @@ def _generate_sections(
         f"Kunta: {inp.kunta}\n"
         f"Hakija: {inp.hakija}"
         f"{sijainti_lisatieto}{vaihe_lisatieto}{viranomainen_lisatieto}{ifc_block}\n"
-        f"Päivämäärä: {now}{viranomainen_ohje}\n\n"
+        f"Päivämäärä: {now}{_known_block}{viranomainen_ohje}\n\n"
         f"## {ph['kuvaus']}\n{kuvaus_inst}\n\n"
         f"## {ph['perustelut']}\n{perustelut_inst}\n\n"
         f"## {ph['luvat']}\n{luvat_inst}\n\n"
@@ -5389,7 +5406,43 @@ def _generate_sections(
         "toimenpiteet":  _extract(raw, h[3], []),
     }
     logger.warning("[DEBUG sections] lengths: %s", {k: len(v) for k, v in result.items()})
+
+    # Strip [TÄYDENNETTÄVÄ] tags for fields already provided in inp
+    result = _strip_known_gap_tags(result, inp)
+
     return result
+
+
+def _strip_known_gap_tags(sections: dict, inp: "ApplicationInput") -> dict:
+    """Remove spurious [TÄYDENNETTÄVÄ] tags for values already given in inp."""
+    # Build a set of lower-case keywords from the description that indicate
+    # the field is actually already known from the input.
+    known_kw: set[str] = set()
+    if inp.kiinteistotunnus:
+        known_kw |= {"kiinteistötunnus", "kiinteistotunnus", "tunnus"}
+    if inp.kunta:
+        known_kw |= {"sijaintikunta", "kunta"}
+    if inp.hakija:
+        known_kw |= {"hakija", "hakijan nimi", "hakijan"}
+    if inp.teho_mw:
+        known_kw |= {"teho", "megawatti"}
+    if inp.kapasiteetti_mwh:
+        known_kw |= {"kapasiteetti", "mwh", "megawattitunti"}
+
+    def _filter(m: re.Match) -> str:
+        desc = m.group(1).lower()
+        if any(kw in desc for kw in known_kw):
+            return ""
+        return m.group(0)
+
+    def _clean(v: str) -> str:
+        v = re.sub(r'\[TÄYDENNETTÄVÄ\s*–\s*([^\]]+)\]', _filter, v)
+        v = re.sub(r' {2,}', ' ', v)   # collapse double spaces left by removed tags
+        v = re.sub(r'\n {2,}', '\n', v)
+        return v
+
+    return {k: (_clean(v) if isinstance(v, str) else v)
+            for k, v in sections.items()}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -5798,14 +5851,45 @@ _GAP_SECTION_LABELS: dict[str, str] = {
 
 
 def _extract_gaps(sections: dict) -> list[tuple[str, str]]:
-    """Return list of (section_label, description) for every [TÄYDENNETTÄVÄ] tag found."""
-    gaps = []
+    """Return list of (section_label, description) for every gap found.
+
+    Detects two kinds of gaps:
+    - Explicit: [TÄYDENNETTÄVÄ – ...] tags in the AI output
+    - Heuristic: thin sections (<150 chars) or placeholder text patterns
+    """
+    _PLACEHOLDER_RE = re.compile(
+        r'\bToimenpide\s+[A-Z]\b'       # "Toimenpide A", "Toimenpide B"
+        r'|\[lisää\s'                    # [lisää jotain]
+        r'|\bXXX\b'
+        r'|\bTBD\b(?!\s*\w)',
+        re.IGNORECASE,
+    )
+    _THIN_THRESHOLD = 150  # chars
+
+    gaps: list[tuple[str, str]] = []
+    seen_heuristic: set[str] = set()  # avoid duplicate heuristic entries per section
+
     for key, text in sections.items():
         if not isinstance(text, str):
             continue
         label = _GAP_SECTION_LABELS.get(key, key)
+
+        # Explicit [TÄYDENNETTÄVÄ] tags
         for m in _GAP_RE.finditer(text):
             gaps.append((label, m.group(1).strip()))
+
+        # Heuristic: thin section
+        stripped = text.strip()
+        if stripped and len(stripped) < _THIN_THRESHOLD and label not in seen_heuristic:
+            seen_heuristic.add(label)
+            gaps.append((label, "Osio on epätyypillisen lyhyt — lisää asianmukainen sisältö ennen jättämistä"))
+
+        # Heuristic: placeholder text
+        ph_m = _PLACEHOLDER_RE.search(stripped)
+        if ph_m and label not in seen_heuristic:
+            seen_heuristic.add(label)
+            gaps.append((label, f"Placeholder-teksti havaittu: '{ph_m.group()}' — korvaa todellisella sisällöllä"))
+
     return gaps
 
 
