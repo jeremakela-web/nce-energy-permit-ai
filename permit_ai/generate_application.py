@@ -3912,6 +3912,26 @@ _COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
             "nuclear energy law Estonia parliament permit missing",
         ],
     },
+    "LV": {
+        "BESS": [
+            "enerģijas uzkrāšanas sistēma BESS akumulators Latvija licencēšana SPRK",
+            "litija jonu baterija ugunsdrošība pieslegums Sadales tikls AST",
+            "battery energy storage permit Latvia electricity market SPRK registration",
+        ],
+        "tuulivoima_maa": [
+            "vēja elektrostacija izvietošana būvatļauja pašvaldība Latvija SPRK",
+            "vēja parks IVN VPVB vides ietekmes novērtējums teritorijas plānojums",
+            "wind farm permit Latvia EIA VPVB municipal building permit setback",
+        ],
+        "tuulivoima_meri": [
+            "jūras vēja enerģija offshore vēja parks Latvija Jūras kodekss",
+            "offshore wind energy permit Latvia maritime spatial planning",
+        ],
+        "aurinkovoima": [
+            "saules enerģija fotoelements saules parks Latvija būvatļauja",
+            "solar PV permit Latvia grid connection Sadales tikls SPRK registration",
+        ],
+    },
 }
 
 # Country-variant and new-type aliases — map to nearest base type so _HANKE_CFG
