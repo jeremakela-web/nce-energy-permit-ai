@@ -36,6 +36,10 @@ import re
 import sys
 from pathlib import Path
 
+# Single source of truth for project-type tagging — same as build_index.py
+sys.path.insert(0, str(Path(__file__).parent))
+from source_policy import get_hanketyyppi_tag as _get_tag
+
 HERE = Path(__file__).parent
 ROOT = HERE.parent          # bess_tool/
 DB_DIR   = HERE / "embeddings"
@@ -177,7 +181,7 @@ def ingest(
                         "country":         country,
                         "lang":            lang,
                         "source":          fpath.stem,
-                        "hanketyyppi_tag": "general",
+                        "hanketyyppi_tag": _get_tag(fpath.stem),
                     })
                     added += 1
                 print(f"  {fpath.name}: {len(chunks)} chunkkia, {added} uutta")

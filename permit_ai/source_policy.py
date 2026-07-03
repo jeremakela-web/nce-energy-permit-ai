@@ -60,6 +60,16 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # directly to the 110/400 kV grid. BESS / aurinkovoima use distribution grid
     # (jakeluverkko, typically Carunan 20 kV).
     "fingrid_liittyminen_kantaverkkoon": "tuulivoima_maa,tuulivoima_meri,SMR,smr_bess,teollisuus",
+    # DA — nuclear/radiation safety (Sikkerhedsstyrelsen) and datacenter
+    "sik_nuclear_smr_stralebebeskyttelse": "SMR",
+    "sik_sco2_tryk_modulaert_kraftanlaeg": "SMR",
+    "sik_stralebeskyttelse":               "SMR",
+    "ens_datacentre_energikrav":           "datakeskus",
+    # NO — nuclear regulatory (DSA/NVE)
+    "dsa_nve_smr_nuclear_regulatory":      "SMR",
+    # EE — nuclear regulatory draft and mixed BESS/datacenter/industrial permitting
+    "smr_nuclear_regulatory_estonia_draft":          "SMR",
+    "bess_datakeskus_teollisuus_ehitus_permitting":  "BESS,datakeskus,teollisuus",
 }
 
 
