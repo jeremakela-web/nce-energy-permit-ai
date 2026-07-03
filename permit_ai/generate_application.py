@@ -6214,12 +6214,16 @@ Vastaa VAIN validilla JSON-objektilla, ei muuta tekstiä:
 
 _RAQS_LANG_INSTRUCTION = {
     "EN": (
-        "IMPORTANT: Write all 'perustelu' values and the 'yhteenveto' field in English. "
-        "JSON keys remain as-is; only the text values change language."
+        "CRITICAL OUTPUT RULE: All text values in the JSON response MUST be in English. "
+        "This means every 'perustelu' justification and the 'yhteenveto' summary must be "
+        "written in English — regardless of the language of the content you are reviewing. "
+        "JSON keys (viittaukset, lupakattavuus, etc.) stay unchanged; only the text values change language."
     ),
     "SE": (
-        "VIKTIGT: Skriv alla 'perustelu'-värden och fältet 'yhteenveto' på svenska. "
-        "JSON-nycklarna förblir oförändrade; endast textvärdena byter språk."
+        "KRITISK UTDATAREGEL: Alla textvärden i JSON-svaret MÅSTE vara på svenska. "
+        "Det innebär att varje 'perustelu'-motivering och 'yhteenveto'-sammanfattning ska "
+        "skrivas på svenska — oavsett vilket språk det granskade innehållet är på. "
+        "JSON-nycklar (viittaukset, lupakattavuus osv.) förblir oförändrade; bara textvärdena byter språk."
     ),
 }
 
@@ -6227,7 +6231,8 @@ _RAQS_LANG_INSTRUCTION = {
 def _raqs_system_prompt(lang: str) -> str:
     instr = _RAQS_LANG_INSTRUCTION.get(lang, "")
     if instr:
-        return _RAQS_SYSTEM_BASE.rstrip() + "\n\n" + instr + "\n"
+        # Prepend the language rule so the model sees it before the Finnish criteria text
+        return instr + "\n\n" + _RAQS_SYSTEM_BASE
     return _RAQS_SYSTEM_BASE
 
 
