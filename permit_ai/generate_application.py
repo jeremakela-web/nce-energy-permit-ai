@@ -5459,6 +5459,9 @@ _FI_STATUTE_NAME_EN: list[tuple[str, str]] = [
     (r"Laki\s+ympäristövaikutusten\s+arviointimenettelystä\b", "EIA Act"),
     (r"\bYVA-laki\b",                                  "EIA Act"),
     (r"paloturvallisuusselvitys\b",                     "fire safety report"),
+    (r"\bpaloturvallisuus\b",                           "fire safety"),
+    (r"\brakennusvalvonta\b",                           "building control"),
+    (r"\bLakiviittaukset\b",                            "Legal references"),
 ]
 _FI_STATUTE_RE_EN: list[tuple] = [
     (re.compile(pat, re.IGNORECASE), repl)
@@ -6572,7 +6575,10 @@ def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
             continue
         entry = review[key]
         sc = int(entry.get("pisteet", 0))
-        note = _latin1_safe(entry.get("perustelu", ""))
+        perustelu_raw = entry.get("perustelu", "")
+        if lang != "FI":
+            perustelu_raw = _translate_fi_statute_names(perustelu_raw)
+        note = _latin1_safe(perustelu_raw)
         lbl_key = _RAQS_CRITERION_KEY.get(key, key)
         rows.append([
             Paragraph(_s(lang, lbl_key), row_label_style),
@@ -6599,9 +6605,12 @@ def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
         body_elems.append(score_tbl)
 
     if overall is not None:
+        yhteenveto_raw = review.get("yhteenveto", "")
+        if lang != "FI":
+            yhteenveto_raw = _translate_fi_statute_names(yhteenveto_raw)
         body_elems.append(Paragraph(
             f"<b>{_s(lang, 'raqs_overall')}: {overall}/5</b> — "
-            + _latin1_safe(review.get("yhteenveto", "")),
+            + _latin1_safe(yhteenveto_raw),
             summary_style,
         ))
 
