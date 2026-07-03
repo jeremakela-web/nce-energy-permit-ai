@@ -1350,6 +1350,7 @@
           <option value="EE">🇪🇪 Estonia (EE)</option>
           <option value="PL">🇵🇱 Polska (PL)</option>
           <option value="DE">🇩🇪 Deutschland (DE)</option>
+          <option value="LV">🇱🇻 Latvija (LV)</option>
         </select>
       </div>
       <!-- country option texts are updated by _rebuildCountrySelect() on language change -->
@@ -2242,6 +2243,7 @@ const TRANSLATIONS = {
     country_ee:       'Viro',
     country_pl:       'Puola',
     country_de:       'Saksa',
+    country_lv:       'Latvia',
     country_detected: 'Maa tunnistettu automaattisesti:',
     country_hint:     'Valitse ensin kohdemaasi',
     lbl_country:      'Maa',
@@ -2641,6 +2643,7 @@ const TRANSLATIONS = {
     country_ee:       'Estonia',
     country_pl:       'Poland',
     country_de:       'Germany',
+    country_lv:       'Latvia',
     country_detected: 'Country detected automatically:',
     country_hint:     'Select your target country first',
     lbl_country:      'Country',
@@ -3038,6 +3041,7 @@ const TRANSLATIONS = {
     country_ee:       'Estland',
     country_pl:       'Polen',
     country_de:       'Tyskland',
+    country_lv:       'Lettland',
     country_detected: 'Land identifierat automatiskt:',
     country_hint:     'Välj målland först',
     lbl_country:      'Land',
@@ -3213,6 +3217,7 @@ const TRANSLATIONS = {
     country_ee:     'Estland',
     country_pl:     'Polen',
     country_de:     'Tyskland',
+    country_lv:     'Letland',
     country_detected: 'Land registreret automatisk:',
     country_hint:   'Vælg dit målland først',
     lbl_country:    'Land',
@@ -3616,6 +3621,7 @@ const TRANSLATIONS = {
     country_ee:     'Estland',
     country_pl:     'Polen',
     country_de:     'Tyskland',
+    country_lv:     'Latvia',
     country_detected: 'Land registrert automatisk:',
     country_hint:   'Velg ditt målland først',
     lbl_country:    'Land',
@@ -4019,6 +4025,7 @@ const TRANSLATIONS = {
     country_ee:     'Estonia',
     country_pl:     'Polska',
     country_de:     'Niemcy',
+    country_lv:     'Łotwa',
     country_detected: 'Kraj wykryty automatycznie:',
     country_hint:   'Najpierw wybierz kraj docelowy',
     lbl_country:    'Kraj',
@@ -4531,6 +4538,7 @@ const TRANSLATIONS = {
     country_ee:            'Estland',
     country_pl:            'Polen',
     country_de:            'Deutschland',
+    country_lv:            'Lettland',
     country_detected:      'Land erkannt:',
     // Map sidebar
     lbl_map_type:          'Projekttyp',
@@ -4733,6 +4741,7 @@ const TRANSLATIONS = {
     country_ee:     'Eesti',
     country_pl:     'Poola',
     country_de:     'Saksamaa',
+    country_lv:     'Läti',
     country_detected: 'Riik tuvastati automaatselt:',
     gen_country_partial_rag: 'Osaline RAG-katvus',
     gen_country_coming_soon: '🌍 Regulatiivne katvus varieerub riigiti. Kontrollige kohalikke asutuse nõudeid.',
@@ -4771,6 +4780,7 @@ const LANG_META = {
   ET: { flag: '🇪🇪', label: 'ET' },
   PL: { flag: '🇵🇱', label: 'PL' },
   DE: { flag: '🇩🇪', label: 'DE' },
+  LV: { flag: '🇱🇻', label: 'LV' },
 };
 
 const LUPA_I18N = {
@@ -5511,6 +5521,7 @@ function _rebuildCountrySelect() {
     { code: 'EE', flag: '🇪🇪', key: 'country_ee' },
     { code: 'PL', flag: '🇵🇱', key: 'country_pl' },
     { code: 'DE', flag: '🇩🇪', key: 'country_de' },
+    { code: 'LV', flag: '🇱🇻', key: 'country_lv' },
   ];
   sel.innerHTML = countries.map(c =>
     `<option value="${c.code}">${c.flag} ${t(c.key)} (${c.code})</option>`
@@ -5563,6 +5574,9 @@ const COUNTRY_HINTS = {
        'sillamäe','kuressaare','võru'],
   PL: ['warsaw','warszawa','kraków','łódź','wrocław','poznań','gdańsk',
        'szczecin','bydgoszcz','lublin'],
+  LV: ['riga','rīga','daugavpils','liepāja','liepaja','jelgava','jūrmala',
+       'jurmala','valmiera','ventspils','rēzekne','rezekne','ogre','jēkabpils',
+       'jekabpils','salaspils','tukums','sigulda','bauska','cēsis','cesis'],
 };
 
 function detectCountry(text) {
@@ -5639,7 +5653,7 @@ function setCountry(code) {
   if (topSel && topSel.value !== code) topSel.value = code;
 
   // Sync modal button bar
-  ['FI','SE','DA','NO','EE','PL','DE'].forEach(c => {
+  ['FI','SE','DA','NO','EE','PL','DE','LV'].forEach(c => {
     const btn = document.getElementById('country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
@@ -7662,6 +7676,7 @@ function archExportJson() {
         <button class="lang-btn" id="country-btn-EE" onclick="setCountry('EE')">🇪🇪 EE</button>
         <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
         <button class="lang-btn" id="country-btn-DE" onclick="setCountry('DE')">🇩🇪 DE</button>
+        <button class="lang-btn" id="country-btn-LV" onclick="setCountry('LV')">🇱🇻 LV</button>
       </div>
       <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
       <div id="gen-country-hint" class="gen-country-hint" style="display:none;" data-i18n="country_hint">Valitse ensin kohdemaasi</div>

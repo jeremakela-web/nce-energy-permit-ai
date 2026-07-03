@@ -1254,7 +1254,7 @@ async def proofread_status(job_id: str):
 
 
 _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
-                "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}
+                "DA": "ansøgning", "NO": "søknad", "PL": "wniosek", "LV": "pieteikums"}
 
 
 def _fn(s: str) -> str:
@@ -2077,8 +2077,8 @@ async def parse_ifc(
             status_code=400,
             detail=f"project_type oltava: {', '.join(sorted(allowed_project_types))}",
         )
-    if country not in {"FI", "SE", "DA", "NO", "PL", "DE"}:
-        raise HTTPException(status_code=400, detail="country oltava: FI, SE, DA, NO, PL, DE")
+    if country not in {"FI", "SE", "DA", "NO", "PL", "DE", "LV"}:
+        raise HTTPException(status_code=400, detail="country oltava: FI, SE, DA, NO, PL, DE, LV")
 
     ifc_data = _extract_ifc_data(content)
     permit_map = _map_to_permit(ifc_data, project_type=project_type, country=country)
@@ -2201,7 +2201,7 @@ async def admin_ingest(request: Request):
     except Exception:
         pass
 
-    _valid = {"SE", "DA", "NO", "PL"}
+    _valid = {"SE", "DA", "NO", "PL", "LV"}
     raw_countries = body.get("countries", list(_valid))
     countries = [c.upper() for c in raw_countries if c.upper() in _valid]
     if not countries:
@@ -2748,6 +2748,17 @@ async def admin_ingest_poland_full():
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.post("/api/admin/ingest-latvia", dependencies=[Depends(_require_admin)])
+async def admin_ingest_latvia():
+    """Download Latvian regulatory HTML/PDFs and upsert chunks into ChromaDB. Admin only."""
+    try:
+        from latvia_ingestion import ingest_latvia_sources
+        count = ingest_latvia_sources()
+        return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 @app.post("/api/admin/ingest-caruna", dependencies=[Depends(_require_admin)])
 async def admin_ingest_caruna():
     """Download Caruna PDFs and upsert chunks into ChromaDB. Admin only."""
@@ -2834,7 +2845,7 @@ async def admin_reindex_ee_v2():
 # EE is skipped (already complete). Processes one country at a time in
 # 100-chunk batches with 0.5 s pauses to avoid OOM on the Render instance.
 
-_REINDEX_ALL_COUNTRIES = ["FI", "SE", "DA", "NO", "PL", "EU", "DE"]
+_REINDEX_ALL_COUNTRIES = ["FI", "SE", "DA", "NO", "PL", "EU", "DE", "LV"]
 _BULK_REINDEX_JOB: dict = {}
 
 
@@ -2989,6 +3000,7 @@ async def admin_rag_check_all(secret: str = ""):
         ("EU", "BESS"),
         ("EE", "BESS"),
         ("DE", "BESS"),
+        ("LV", "BESS"),
     ]
     MIN_SCORE_FI     = 0.65
     MIN_SCORE_NON_FI = 0.60

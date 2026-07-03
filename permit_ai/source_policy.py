@@ -70,6 +70,22 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # EE — nuclear regulatory draft and mixed BESS/datacenter/industrial permitting
     "smr_nuclear_regulatory_estonia_draft":          "SMR",
     "bess_datakeskus_teollisuus_ehitus_permitting":  "BESS,datakeskus,teollisuus",
+    # LV — energy-type-specific sources (Latvia has no nuclear)
+    # Transmission grid connection (AST) — energy projects only, not housing/agriculture
+    "lv_ast_sistemas_pievienošanas_noteikumi":       "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,teollisuus,SMR",
+    # Distribution grid (Sadales tīkls) — smaller energy projects, not SMR/industrial
+    "lv_sadales_tikls_pievienošanas_kārtiba":        "BESS,aurinkovoima,tuulivoima_maa",
+    # SPRK licensing — energy generation/storage projects only
+    "lv_sprk_elektroenerģijas_ražošanas_licence":    "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
+    "lv_mk_631_licencesanas_noteikumi":              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,teollisuus",
+    # Renewables law — only for renewable energy and co-located BESS
+    "lv_atjaunojamas_energijas_likums":              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
+    # BESS market/balancing — BESS only
+    "lv_bess_balansesanas_tirgus_ast":               "BESS",
+    # Wind-specific regulations
+    "lv_veja_energija_buvniecibas_noteikumi":        "tuulivoima_maa,tuulivoima_meri",
+    # BESS fire safety — BESS and datakeskus (both use large Li-ion)
+    "lv_ugunsdrošibas_bess_prasibas":               "BESS,datakeskus",
 }
 
 

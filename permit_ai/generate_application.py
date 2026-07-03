@@ -2504,6 +2504,69 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Mark uncertain items: [Requires verification against Estonian regulations].\n\n"
         ),
     },
+    "LV": {
+        "name": "Latvia / Latvija",
+        "authorities": [
+            "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija — utilities regulator)",
+            "VPVB (Vides pārraudzības valsts birojs — EIA screening authority, under VARAM)",
+            "Valsts vides dienests (VVD — environmental permit authority)",
+            "Pašvaldības būvvalde (Municipal building authority — building permits)",
+            "AST (Augstsprieguma tīkls — TSO, transmission grid connection)",
+            "Sadales tīkls AS (DSO — distribution grid connection for smaller projects)",
+            "VUGD (Valsts ugunsdzēsības un glābšanas dienests — fire safety authority)",
+            "LGS (Latvijas gaisa satiksme — aviation obstacle clearance)",
+            "NBS (Nacionālie bruņotie spēki — military radar clearance for wind)",
+        ],
+        "key_laws": [
+            "Elektroenerģijas tirgus likums (ETL, 2005) — electricity market, SPRK licensing",
+            "Atjaunojamās enerģijas likums (AEL, 2022/2023) — renewables and BESS co-location",
+            "Enerģētikas likums (1998) — energy sector framework",
+            "Likums par ietekmes uz vidi novērtējumu (IVN likums) — EIA procedure",
+            "Vides aizsardzības likums (1997) — environmental permits (A/B/C kategorija)",
+            "Būvniecības likums (2013) — building permits (Būvatļauja) from pašvaldības būvvalde",
+            "Teritorijas attīstības plānošanas likums (2011) — spatial planning, detālplānojums",
+            "MK noteikumi Nr. 631 — electricity generation licensing procedure",
+        ],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in LATVIA (Latvija). "
+            "Apply Latvian regulatory framework throughout — do NOT use Finnish law references.\n"
+            "Key authorities: "
+            "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija — electricity licensing: "
+            "ražošanas licence >1 MW, reģistrācija 50 kW–1 MW, below 50 kW no action), "
+            "VPVB (Vides pārraudzības valsts birojs — EIA/IVN screening and decisions), "
+            "Valsts vides dienests VVD (environmental permits, A/B/C kategorija), "
+            "Pašvaldības būvvalde (municipal building authority — Būvatļauja; "
+            "IMPORTANT: exact requirements vary by municipality, always verify locally), "
+            "AST — Augstsprieguma tīkls (TSO — transmission grid connection ≥110 kV, "
+            "tehniskie noteikumi → pievienošanas līgums), "
+            "Sadales tīkls AS (DSO — distribution grid connection for projects <110 kV), "
+            "VUGD (State Fire and Rescue Service — ugunsdrošības atzinums mandatory for BESS), "
+            "LGS (Latvijas gaisa satiksme — aviation obstacle clearance for wind >60m), "
+            "NBS (Nacionālie bruņotie spēki — military radar clearance for wind).\n"
+            "Key laws: Elektroenerģijas tirgus likums ETL (electricity market, grid connection ETL §§73-83), "
+            "Atjaunojamās enerģijas likums AEL (2023 — renewables auctions, net metering, BESS co-location), "
+            "Vides aizsardzības likums (environmental permits), "
+            "Likums par ietekmes uz vidi novērtējumu IVN likums (EIA = IVN; screening by VPVB; "
+            "mandatory for wind >2 turbines or >5 MW), "
+            "Būvniecības likums (building permit = Būvatļauja from pašvaldības būvvalde; "
+            "digital submission via BIS portal bis.gov.lv; 3 levels: apliecinājums / "
+            "paskaidrojuma raksts / būvatļauja), "
+            "Teritorijas attīstības plānošanas likums (spatial plan = teritorijas plānojums; "
+            "detailed plan = detālplānojums; municipal council dome lēmums required), "
+            "MK noteikumi Nr. 631 (electricity generation licensing procedure details).\n"
+            "Latvia-specific notes: "
+            "Latvia has NO nuclear power plants and no nuclear regulatory framework — "
+            "SMR projects would require entirely new primary legislation before any permit path exists. "
+            "BESS market: FCR/mFRR via AST balancing tenders; Baltic desynchronisation from "
+            "IPS/UPS planned 2025 — impacts reserve market volumes significantly. "
+            "Municipal building permits (Būvatļauja) are issued by pašvaldību būvvaldes — "
+            "requirements vary by municipality; this document uses general principles from "
+            "Būvniecības likums but local verification is always required. "
+            "Replace ALL Finnish law references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Fingrid) "
+            "with the Latvian equivalents listed above. "
+            "Mark uncertain items: [Requires verification against Latvian regulations].\n\n"
+        ),
+    },
     "DE": {
         "name": "Germany / Deutschland",
         "authorities": [
@@ -3212,6 +3275,118 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Kasutusluba (use permit)",            "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS) §§61-75"),
         ],
     },
+    # ── Latvija ───────────────────────────────────────────────────────────────
+    "LV": {
+        # ── BESS ──────────────────────────────────────────────────────────────
+        "BESS": [
+            ("Detālplānojums (ja nepieciešams)",        "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("IVN / Sākotnējā izvērtēšana",             "VPVB (Vides pārraudzības valsts birojs)",           "Likums par ietekmes uz vidi novērtējumu (IVN likums)"),
+            ("Ugunsdrošības atzinums (BESS)",           "VUGD (Valsts ugunsdzēsības un glābšanas dienests)", "Ugunsdrošības un ugunsdzēsības likums — obligāts"),
+            ("Būvatļauja (būvniecības atļauja)",        "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013) — digitāli caur BIS (bis.gov.lv)"),
+            ("SPRK reģistrācija vai ražošanas licence", "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija)", "ETL; MK noteikumi Nr. 631 — licence >1 MW, reģistrācija 50 kW–1 MW"),
+            ("Pievienošanas līgums (tīkla pieslēgums)", "AST (Augstsprieguma tīkls) vai Sadales tīkls AS",   "Elektroenerģijas tirgus likums §§73-83; RfG 2016/631 + DCC 2016/1388"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── Tuulivoima (onshore) ──────────────────────────────────────────────
+        "tuulivoima_maa": [
+            ("Detālplānojums",                          "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("IVN (pilna procedūra)",                   "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums — obligāts >2 turbīnas vai >5 MW"),
+            ("NBS radiolokācijas saskaņojums",          "NBS (Nacionālie bruņotie spēki / Aizsardzības min.)", "Nacionālās drošības prasības — obligāts"),
+            ("LGS šķērsļa atzinums",                   "LGS (Latvijas gaisa satiksme)",                     "Aviācijas likums — turbīnām >60m kopgarums"),
+            ("Būvatļauja (vēja elektrostacija)",        "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013); MK noteikumi par VES būvniecību"),
+            ("SPRK ražošanas licence",                  "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija)", "Elektroenerģijas tirgus likums; MK noteikumi Nr. 631 — >1 MW"),
+            ("Pievienošanas līgums (AST / tīkls)",      "AST (Augstsprieguma tīkls)",                        "ETL §§73-83; Komisijas regula (ES) 2016/631 (RfG)"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── Aurinkovoima ──────────────────────────────────────────────────────
+        "aurinkovoima": [
+            ("Detālplānojums (ja nepieciešams)",        "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("IVN / Sākotnējā izvērtēšana (>50 ha)",   "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums — screening ja laukums >50 ha"),
+            ("Būvatļauja (saules paneļu parks)",        "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013)"),
+            ("SPRK ražošanas licence vai reģistrācija", "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija)", "ETL; MK noteikumi Nr. 631 — licence >1 MW, reģistrācija 50 kW–1 MW"),
+            ("Pievienošanas līgums (Sadales tīkls / AST)", "Sadales tīkls AS vai AST",                       "ETL §§73-83; Komisijas regula (ES) 2016/631 (RfG)"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── Offshore wind ─────────────────────────────────────────────────────
+        "tuulivoima_meri": [
+            ("Jūras akvatorijas izmantošanas atļauja",  "Ekonomikas ministrija / Vides ministrija",          "Jūras kodekss; Teritorijas attīstības plānošanas likums"),
+            ("IVN (pilna procedūra, obligāta)",         "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums — obligāta visiem jūras vēja projektiem"),
+            ("NBS un LGS saskaņojums",                  "NBS + LGS (Latvijas gaisa satiksme)",               "Nacionālās drošības un aviācijas prasības"),
+            ("Būvatļauja (jūras būvniecība)",           "Pašvaldības būvvalde + jūras iestādes",             "Būvniecības likums + Jūras kodekss"),
+            ("SPRK ražošanas licence",                  "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija)", "ETL; MK noteikumi Nr. 631"),
+            ("Pievienošanas līgums (AST jūras kabelis)", "AST (Augstsprieguma tīkls)",                       "ETL §§73-83; Komisijas regula (ES) 2016/1447 (HVDC)"),
+        ],
+        # ── offshore_wind alias ───────────────────────────────────────────────
+        "offshore_wind": [
+            ("Jūras akvatorijas izmantošanas atļauja",  "Ekonomikas ministrija / Vides ministrija",          "Jūras kodekss; Teritorijas attīstības plānošanas likums"),
+            ("IVN (pilna procedūra, obligāta)",         "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums — obligāta visiem jūras vēja projektiem"),
+            ("NBS un LGS saskaņojums",                  "NBS + LGS (Latvijas gaisa satiksme)",               "Nacionālās drošības un aviācijas prasības"),
+            ("Būvatļauja (jūras būvniecība)",           "Pašvaldības būvvalde + jūras iestādes",             "Būvniecības likums + Jūras kodekss"),
+            ("SPRK ražošanas licence",                  "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija)", "ETL; MK noteikumi Nr. 631"),
+            ("Pievienošanas līgums (AST jūras kabelis)", "AST (Augstsprieguma tīkls)",                       "ETL §§73-83; Komisijas regula (ES) 2016/1447 (HVDC)"),
+        ],
+        # ── SMR — regWarning: no nuclear framework in Latvia ──────────────────
+        "SMR": [
+            ("⚠️ Kodolenerģijas likums neeksistē",      "Saeima (Parliament) — nav spēkā esoša tiesiskā regulējuma", "Latvijā nav kodolelektrostaciju un nav kodolenerģijas primārā likumdošanas"),
+            ("⚠️ Principa lēmums (Saeimas lēmums, nepieciešams)", "Saeima / Ministru kabinets",            "Jāpieņem jauns primārais likums pirms jebkādas atļaujas piešķiršanas"),
+            ("IVN (pilna procedūra, obligāta)",         "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums — obligāta kodolobiektu gadījumā"),
+            ("Būvatļauja (obligāti jauni nosacījumi)",  "Pašvaldības būvvalde + valsts iestāde (jānosaka)",  "Būvniecības likums — kodolobijektiem nav īpašu noteikumu"),
+            ("Pievienošanas līgums (AST)",              "AST (Augstsprieguma tīkls)",                        "ETL §§73-83"),
+        ],
+        # ── Datakeskus ────────────────────────────────────────────────────────
+        "datakeskus": [
+            ("Detālplānojums (ja nepieciešams)",        "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("IVN / Sākotnējā izvērtēšana (lielie DC)", "VPVB (Vides pārraudzības valsts birojs)",          "IVN likums — lieliem enerģijas lietotājiem"),
+            ("Vides atļauja (B/C kategorija)",          "Valsts vides dienests (VVD)",                       "Vides aizsardzības likums (1997)"),
+            ("Būvatļauja",                              "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013) — caur BIS portālu"),
+            ("Pievienošanas līgums (tīkla pieslēgums)", "AST (Augstsprieguma tīkls) vai Sadales tīkls AS",   "ETL §§73-83"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── Teollisuus ────────────────────────────────────────────────────────
+        "teollisuus": [
+            ("Detālplānojums (ja nepieciešams)",        "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("Vides atļauja (A/B/C kategorija)",        "Valsts vides dienests (VVD) / VPVB",                "Vides aizsardzības likums (1997) — kategorija atkarīga no darbības veida"),
+            ("IVN / Sākotnējā izvērtēšana",             "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums"),
+            ("Būvatļauja",                              "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013)"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── Asuinrakennus ─────────────────────────────────────────────────────
+        "asuinrakennus": [
+            ("Detālplānojums (ja nepieciešams)",        "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("Būvatļauja vai paskaidrojuma raksts",     "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013) — mazām ēkām paskaidrojuma raksts"),
+            ("Naapurikuuleminen (kaimiņu piekrišana)",  "Pašvaldības būvvalde / hakija",                     "Būvniecības likums (2013)"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── Liikerakennus ─────────────────────────────────────────────────────
+        "liikerakennus": [
+            ("Detālplānojums (ja nepieciešams)",        "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("Būvatļauja",                              "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013)"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── Maatalous ─────────────────────────────────────────────────────────
+        "maatalous": [
+            ("Būvatļauja vai apliecinājums",            "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013) §§ — mazajām ēkām apliecinājums"),
+            ("Vides atļauja (lieliem lauksaimniecības uzņ.)", "Valsts vides dienests (VVD)",               "Vides aizsardzības likums — IPPC slieksnis lauksaimniecībā"),
+            ("Zemes izmantošanas maiņas atļauja (ja nepieciešams)", "Zemkopības ministrija / pašvaldība",  "Likums par zemes dzīlēm / lauksaimnieciskās zemes aizsardzības likums"),
+        ],
+        # ── Hybridi (BESS + wind/solar) ───────────────────────────────────────
+        "hybridi": [
+            ("Detālplānojums",                          "Pašvaldības dome (Municipal council)",              "Teritorijas attīstības plānošanas likums (2011)"),
+            ("IVN (pilna procedūra)",                   "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums"),
+            ("Ugunsdrošības atzinums (BESS daļa)",      "VUGD (Valsts ugunsdzēsības un glābšanas dienests)", "Ugunsdrošības un ugunsdzēsības likums — obligāts"),
+            ("Būvatļauja",                              "Pašvaldības būvvalde — PRASĪBAS VARIĒ PĒC PAŠVALDĪBAS", "Būvniecības likums (2013)"),
+            ("SPRK ražošanas licence vai reģistrācija", "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija)", "ETL; MK noteikumi Nr. 631"),
+            ("Pievienošanas līgums",                    "AST (Augstsprieguma tīkls) vai Sadales tīkls AS",   "ETL §§73-83; RfG 2016/631"),
+            ("Nodošana ekspluatācijā",                  "Pašvaldības būvvalde",                              "Būvniecības likums (2013)"),
+        ],
+        # ── smr_lv alias ─────────────────────────────────────────────────────
+        "smr_lv": [
+            ("⚠️ Kodolenerģijas likums neeksistē",      "Saeima (Parliament) — nav spēkā esoša tiesiskā regulējuma", "Latvijā nav kodolelektrostaciju un nav kodolenerģijas primārā likumdošanas"),
+            ("⚠️ Principa lēmums (Saeimas lēmums, nepieciešams)", "Saeima / Ministru kabinets",            "Jāpieņem jauns primārais likums pirms jebkādas atļaujas piešķiršanas"),
+            ("IVN (pilna procedūra, obligāta)",         "VPVB (Vides pārraudzības valsts birojs)",           "IVN likums"),
+            ("Pievienošanas līgums (AST)",              "AST (Augstsprieguma tīkls)",                        "ETL §§73-83"),
+        ],
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -3746,6 +3921,7 @@ _HANKE_CFG["smr_no"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_da"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_de"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_ee"]       = _HANKE_CFG["SMR"]
+_HANKE_CFG["smr_lv"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["offshore_wind"] = _HANKE_CFG["tuulivoima_meri"]
 _HANKE_CFG["egs"]           = _HANKE_CFG["aurinkovoima"]
 
@@ -5163,12 +5339,13 @@ _BESS_MARKET_DATA: dict[str, dict] = {
     "NO": {"index": 130, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
     "PL": {"index": 775, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
     "EE": {"index": 120, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index (estimate)", "date": "Q1/2026"},
+    "LV": {"index": 115, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index (estimate)", "date": "Q1/2026"},
 }
 
 
 def _s(lang: str, key: str) -> str:
     """Hae käännetty merkkijono PDF-layoutille. EE/ET → EN fallback; muut → FI."""
-    _lang = "EN" if lang in ("EE", "ET") else lang
+    _lang = "EN" if lang in ("EE", "ET", "LV") else lang
     d = _PDF_STRINGS.get(_lang) or _PDF_STRINGS["FI"]
     return d.get(key) or _PDF_STRINGS["FI"].get(key, key)
 
