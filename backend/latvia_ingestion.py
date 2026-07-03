@@ -94,19 +94,22 @@ LATVIA_SOURCES: list[dict] = [
     },
     {
         "name": "lv_atjaunojamas_energijas_likums",
-        "url": "https://likumi.lv/ta/id/330016",
+        "url": "https://likumi.lv/ta/id/317215",
         "type": "html",
         "category": "renewable_energy_law",
         "description": (
-            "Atjaunojamās enerģijas likums (AEL, adopted 2022, in force 01.01.2023). "
-            "Replaces prior OZE support framework. Governs wind, solar (PV), hydro, biomass, "
-            "and BESS co-located with renewables. "
-            "Renewables auction system (izsoles): SPRK administers competitive tenders for "
-            "support (garantētā iepirkuma cena or prēmija). "
-            "Grid priority (tīkla prioritāte) for renewables dispatch. "
+            "MK noteikumi Nr. 317215 'Noteikumi par elektroenerģijas ražošanu, izmantojot "
+            "atjaunīgos energoresursus, kā arī par cenu noteikšanas kārtību un uzraudzību' "
+            "(consolidated). Governs wind, solar PV, hydro, biomass electricity production "
+            "and BESS co-located with renewables in Latvia. "
+            "OZE support framework: obligātais iepirkums (mandatory purchase) and prēmija "
+            "(feed-in premium) mechanisms administered by SPRK. "
+            "Renewables auction system (izsoles): SPRK administers competitive tenders. "
+            "Grid priority (tīkla prioritāte) for renewables dispatch per ETL. "
             "Net metering (neto norēķini) available for prosumers up to 0.25 MW. "
-            "BESS co-located with renewables: simplified registration under AEL §§18-24. "
-            "Target: 80% renewables in electricity consumption by 2030."
+            "BESS co-located with renewables: conditions for simplified SPRK registration. "
+            "Target: 80% renewables in electricity consumption by 2030. "
+            "Sets technical requirements for renewable energy plants and monitoring obligations."
         ),
     },
     # ── Environmental & EIA ───────────────────────────────────────────────────
@@ -210,14 +213,15 @@ LATVIA_SOURCES: list[dict] = [
     # ── Grid connection — transmission ────────────────────────────────────────
     {
         "name": "lv_ast_sistemas_pievienošanas_noteikumi",
-        "url": "https://www.ast.lv/lv/dokumenti/nozares-dokumenti",
+        "url": "https://likumi.lv/ta/id/326536",
         "type": "html",
         "category": "grid_connection_transmission",
         "description": (
-            "AST (Augstsprieguma tīkls) sistēmas pievienošanas noteikumi. "
-            "Grid connection rules for 110/330 kV transmission system. "
+            "MK noteikumi 'Sistēmas pieslēguma noteikumi elektroenerģijas pārvades sistēmai' "
+            "(ID 326536, likumi.lv). Regulatory framework for 110/330 kV transmission "
+            "grid connection in Latvia, administered by AST (Augstsprieguma tīkls). "
             "Applies to: generators and storage connecting at transmission voltage level "
-            "(typically >10 MW BESS, large wind/solar parks). "
+            "(typically >10 MW BESS, large wind/solar parks, industrial consumers >1 MW). "
             "Three-step process: "
             "(1) Tehniskie noteikumi (technical conditions) — submit application to AST, "
             "AST issues conditions within 30 working days; "
@@ -226,15 +230,15 @@ LATVIA_SOURCES: list[dict] = [
             "AST also administers system services: FCR (Frequency Containment Reserve), "
             "FRR (Frequency Restoration Reserve), mFRR — BESS participation requires "
             "separate atbildīgās puses līgums (balance responsible party agreement). "
-            "Latvia–Lithuania–Estonia synchronisation with Continental European grid planned "
-            "by 2025 (desynchronisation from IPS/UPS) — impacts grid connection technical "
+            "Latvia–Lithuania–Estonia synchronisation with Continental European grid "
+            "(desynchronisation from IPS/UPS) — impacts grid connection technical "
             "requirements and reserve market obligations."
         ),
     },
     # ── Grid connection — distribution ────────────────────────────────────────
     {
         "name": "lv_sadales_tikls_pievienošanas_kārtiba",
-        "url": "https://www.sadalestikls.lv/lv/pakalpojumi/pieslēgums/atjaunojamo-energoresursu-un-energouzkrāšanas-sistēmas",
+        "url": "https://sadalestikls.lv/lv/elektrostacijas-pieslegsana",
         "type": "html",
         "category": "grid_connection_distribution",
         "description": (
@@ -255,7 +259,7 @@ LATVIA_SOURCES: list[dict] = [
     # ── SPRK licensing & registration ─────────────────────────────────────────
     {
         "name": "lv_sprk_elektroenerģijas_ražošanas_licence",
-        "url": "https://www.sprk.gov.lv/lv/elektroenergetika/atjaunojamais-energoavots-un-energouzkrasanas-jaudu-kopu",
+        "url": "https://www.sprk.gov.lv/content/registresanalicencesana-1",
         "type": "html",
         "category": "electricity_generation_licensing",
         "description": (
@@ -277,22 +281,24 @@ LATVIA_SOURCES: list[dict] = [
     },
     {
         "name": "lv_mk_631_licencesanas_noteikumi",
-        "url": "https://likumi.lv/ta/id/58490",
+        "url": "https://likumi.lv/ta/id/348679",
         "type": "html",
         "category": "electricity_licensing_regulations",
         "description": (
-            "Ministru kabineta noteikumi Nr. 631 'Elektroenerģijas ražošanas, pārvades "
-            "un sadales licencēšanas noteikumi' (consolidated). "
-            "Detailed licensing procedure for electricity generation facilities in Latvia. "
-            "Required documentation for ražošanas licence application: "
+            "MK noteikumi Nr. 348679 'Noteikumi par atļaujām jaunas elektroenerģijas "
+            "ražošanas iekārtas ieviešanai vai elektroenerģijas ražošanas jaudas "
+            "palielināšanai' (consolidated). "
+            "Permit procedure for introducing new electricity generation capacity in Latvia. "
+            "Applies to wind, solar, BESS, and other electricity generation technologies. "
+            "Required documentation for atļauja (permit) application: "
             "1. Uzņēmuma reģistrācijas apliecība (company registration certificate, UR); "
-            "2. Tehniskie parametri (installed capacity, voltage level, fuel/technology type); "
+            "2. Tehniskie parametri (installed capacity, voltage level, technology type); "
             "3. Būvatļauja or equivalent (building permit from pašvaldības būvvalde); "
             "4. Pievienošanas līgums (grid connection agreement from AST or Sadales tīkls); "
             "5. Ugunsdrošības atzinums (fire safety certificate — VUGD inspection); "
-            "6. Civiltiesiskās atbildības apdrošināšana (liability insurance). "
-            "Fee: €250–500 depending on capacity. Processing: 30 working days. "
-            "Licence valid indefinitely but subject to annual compliance verification."
+            "6. IVN atzinums (EIA opinion, if EIA was required). "
+            "Processing: 30 working days. Issued by the Ministry of Economics (Ekonomikas ministrija). "
+            "Licence valid indefinitely but subject to annual compliance verification by SPRK."
         ),
     },
     # ── VARAM / EIA process guidance ──────────────────────────────────────────
@@ -319,46 +325,50 @@ LATVIA_SOURCES: list[dict] = [
     # ── BESS market & balancing ───────────────────────────────────────────────
     {
         "name": "lv_bess_balansesanas_tirgus_ast",
-        "url": "https://www.ast.lv/lv/pakalpojumi/energijas-balansesana",
+        "url": "https://www.sprk.gov.lv/lv/elektroenergijas-nozare-0",
         "type": "html",
         "category": "bess_market_balancing",
         "description": (
-            "AST balansēšanas pakalpojumi un BESS tirgus dalība Latvijā. "
+            "SPRK (Sabiedrisko pakalpojumu regulēšanas komisija) elektroenerģijas nozares "
+            "regulatīvā informācija, tostarp par BESS tirgus dalību un balansēšanas pakalpojumiem. "
             "BESS can participate in Latvian balancing market as: "
             "(1) FCR provider (Frequency Containment Reserve) — symmetric ±MW response, "
-            "30-second activation time, monthly tender by ENTSO-E Baltic TSOs; "
+            "30-second activation time, monthly tender coordinated by AST and ENTSO-E Baltic TSOs; "
             "(2) mFRR provider (manual Frequency Restoration Reserve) — activation within 12.5 min; "
             "(3) Intraday energy arbitrage — no specific licence beyond ražošanas licence. "
             "Prerequisites for balancing market: "
             "atbildīgā puse (balance responsible party) status — either own BRP or agree "
             "with existing BRP; SCADA connection to AST required for >1 MW BESS. "
-            "Latvia joined PICASSO (FCR/aFRR) and MARI (mFRR) EU balancing platforms — "
-            "increases market liquidity and capacity payment levels. "
-            "Baltic synchronisation with Continental Europe (planned 2025) will significantly "
-            "impact reserve sizing and market volumes."
+            "Latvia joined PICASSO (FCR/aFRR) and MARI (mFRR) EU balancing platforms. "
+            "Baltic desynchronisation from IPS/UPS and synchronisation with Continental European "
+            "grid significantly impacts reserve sizing and balancing market volumes in Latvia. "
+            "Note: AST (augstsprieguma-tikls.lv) direct pages use bot protection; "
+            "regulatory framework available via SPRK and likumi.lv."
         ),
     },
     # ── Wind energy specific ──────────────────────────────────────────────────
     {
         "name": "lv_veja_energija_buvniecibas_noteikumi",
-        "url": "https://likumi.lv/ta/id/306174",
+        "url": "https://likumi.lv/ta/id/256866",
         "type": "html",
         "category": "wind_energy_regulations",
         "description": (
-            "MK noteikumi par vēja elektrostaciju izvietošanu un būvniecību. "
-            "Specific requirements for wind turbine siting and construction in Latvia. "
-            "Minimum setback distances: "
-            "• 500m from residential buildings (dzīvojamas ēkas); "
-            "• 1× rotor diameter from neighbouring land parcels (property boundary). "
+            "MK noteikumi Nr. 256866 'Vispārīgie teritorijas plānošanas, izmantošanas un "
+            "apbūves noteikumi' (consolidated). General territorial planning regulation "
+            "that contains specific wind turbine (vēja elektrostacija) siting requirements. "
+            "Wind turbine placement rules (§§covering enerģētikas objekti): "
+            "• 500m minimum setback from residential buildings for turbines 20 kW–2 MW; "
+            "• 800m minimum setback for larger wind parks; "
+            "• Allowed in: industrial (R), technical (TA), agricultural (L), forest (M) zones; "
+            "• Prohibited in nature reserves and near protected habitats per IVN atzinums. "
+            "• 1× rotor diameter minimum from neighbouring land boundary. "
             "Radar and aviation clearance mandatory: "
-            "• LGS (Latvijas gaisa satiksme — Latvian Air Traffic) — aviation obstacle clearance "
-            "for turbines >60m total height (Latvijas Gaisa satiksmes instrukcija); "
-            "• NBS (Nacionālie bruņotie spēki) — military radar clearance "
-            "(koordinē ar Aizsardzības ministriju); "
-            "• LAAAS radar clearance for turbines near airports. "
-            "IVN typically mandatory for >2 turbines. "
-            "Offshore wind: separate regulatory track — Jūras kodekss, "
-            "Ekonomikas ministrija licenses offshore area utilisation rights."
+            "• LGS (Latvijas gaisa satiksme) — aviation obstacle clearance for >60m height; "
+            "• NBS (Nacionālie bruņotie spēki) — military radar clearance; "
+            "• LAAAS radar clearance near airports. "
+            "Municipal territory plan (novada teritorijas plānojums) must designate zones "
+            "where wind energy is permitted; IVN required for parks >2 turbines. "
+            "Offshore wind: separate regulatory track — Jūras kodekss + Ekonomikas ministrija."
         ),
     },
     # ── Municipal building permit process ─────────────────────────────────────
@@ -390,23 +400,25 @@ LATVIA_SOURCES: list[dict] = [
     # ── BESS fire safety ──────────────────────────────────────────────────────
     {
         "name": "lv_ugunsdrošibas_bess_prasibas",
-        "url": "https://www.vugd.gov.lv/lv/normativie-dokumenti/metodiskie-materiali",
+        "url": "https://likumi.lv/ta/id/364042",
         "type": "html",
         "category": "fire_safety_bess",
         "description": (
-            "VUGD (Valsts ugunsdzēsības un glābšanas dienests — State Fire and Rescue Service) "
-            "prasības enerģijas uzkrāšanas sistēmām (BESS). "
+            "Ugunsdrošības, ugunsdzēsības un glābšanas darbu likums (likumi.lv ID 364042, "
+            "in force 13.11.2025). New consolidated fire safety framework law administered "
+            "by VUGD (Valsts ugunsdzēsības un glābšanas dienests). "
+            "Replaces previous Ugunsdrošības un ugunsdzēsības likums (ID 68293). "
             "Ugunsdrošības atzinums (fire safety certificate) mandatory for commercial BESS. "
             "Requirements reference IEC 62619, NFPA 855, EN 50604-1 for Li-ion storage systems. "
-            "VUGD inspection required before commissioning. "
-            "Key requirements: "
+            "VUGD inspection (ugunsdrošības pārbaude) required before commissioning. "
+            "Key requirements for BESS installations: "
             "• Sprinkler system or equivalent suppression for Li-ion >100 kWh in enclosed space; "
             "• Gas detection, temperature monitoring, BMS (battery management system); "
-            "• Emergency shutdown (ESD) system; "
+            "• Emergency shutdown (ESD) system with VUGD-approved design; "
             "• Firefighter access route (ugunsdzēsēju piekļuves ceļš) ≥3.5m wide; "
-            "• Minimum 5m separation from other buildings or structures. "
-            "Outdoor containerized BESS: simplified requirements but VUGD notification required. "
-            "Coordinate with local pašvaldības ugunsdrošības inspekcija before design."
+            "• Minimum 5m separation from other structures. "
+            "Outdoor containerized BESS: simplified requirements but mandatory VUGD notification. "
+            "Coordinate with local VUGD territorial department before design finalisation."
         ),
     },
 ]
