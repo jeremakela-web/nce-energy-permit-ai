@@ -2246,7 +2246,9 @@ def _rag_context(
         # so the blended avg is inherently ~0.04-0.06 lower than a pure-FI retrieval.
         # Very small collections (EU=586, EE=79, DE=60 chunks) pull the avg further down even after
         # top-50 trimming; 0.52 covers them while still blocking truly irrelevant context (< 0.50).
-        _min_score = 0.52 if country != "FI" else 0.65
+        # LV exception: Latvian text scores ~0.05 lower than other non-FI languages with mpnet
+        # (BESS avg=0.51, aurinkovoima avg=0.49 on 157 genuine LV chunks). Use 0.46 floor for LV.
+        _min_score = 0.46 if country == "LV" else (0.52 if country != "FI" else 0.65)
         if chunks_returned < 5 or avg_score < _min_score:
             logger.warning(
                 "RAG_FAIL: %s %s chunks=%d avg_score=%.2f",
