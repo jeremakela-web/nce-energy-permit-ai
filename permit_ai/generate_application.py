@@ -4444,6 +4444,7 @@ _LUPA_TRANS: dict[str, dict[str, str]] = {
 _LAW_TRANS: dict[str, dict[str, str]] = {
     "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöskyddslagen (YSL 527/2014)",                      "DA": "Miljøbeskyttelsesloven (YSL 527/2014)",                   "NO": "Miljøvernloven (YSL 527/2014)",                    "PL": "Ustawa o ochronie środowiska (YSL 527/2014)"},
     "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Bygglag / Plan- och bygglag (751/2023 / 132/1999)",    "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999)",        "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999)", "PL": "Prawo budowlane / Ustawa o zagospodarowaniu przestrzennym (751/2023 / 132/1999)"},
+    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Bygglagen 751/2023",                                   "DA": "Byggeloven 751/2023",                                     "NO": "Byggeloven 751/2023",                              "PL": "Prawo budowlane 751/2023"},
     "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Bygglagen 751/2023, § 44",                             "DA": "Byggeloven 751/2023, § 44",                               "NO": "Byggeloven 751/2023, § 44",                        "PL": "Prawo budowlane 751/2023, § 44"},
     "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Räddningslagen 379/2011, § 15",                        "DA": "Redningstjenesteloven 379/2011, § 15",                    "NO": "Brannvernloven 379/2011, § 15",                    "PL": "Ustawa o ochronie przeciwpożarowej 379/2011, § 15"},
     "Sähkömarkkinalaki 588/2013":                           {"EN": "Electricity Market Act (588/2013)",                                    "SE": "Elmarknadslagen (588/2013)",                           "DA": "Elmarkedsloven (588/2013)",                               "NO": "Energiloven (588/2013)",                           "PL": "Ustawa o rynku energii elektrycznej (588/2013)"},
@@ -5457,6 +5458,7 @@ _FI_STATUTE_NAME_EN: list[tuple[str, str]] = [
     (r"Ydinenergiaalaki\b",                            "Nuclear Energy Act"),
     (r"Laki\s+ympäristövaikutusten\s+arviointimenettelystä\b", "EIA Act"),
     (r"\bYVA-laki\b",                                  "EIA Act"),
+    (r"paloturvallisuusselvitys\b",                     "fire safety report"),
 ]
 _FI_STATUTE_RE_EN: list[tuple] = [
     (re.compile(pat, re.IGNORECASE), repl)
@@ -5513,6 +5515,7 @@ _FI_LEAK_MARKERS: list[str] = [
     "Hakemusvalmisteluaste", "Kokonaispistemäärä", "RAQS-arviointi",
     # Standards table authority descriptors (caught 2026-07-03)
     "kemikaalit", "paloturvallisuus", "sähköturvallisuus",
+    "paloturvallisuusselvitys",
     # Finnish statute names that should not appear in EN/SE output
     "Rakentamislaki", "Ympäristönsuojelulaki", "Pelastuslaki",
     "Sähkömarkkinalaki", "Kemikaaliturvallisuuslaki", "Luonnonsuojelulaki",
@@ -5521,7 +5524,7 @@ _FI_LEAK_MARKERS: list[str] = [
 ]
 # Compile once for efficiency
 _FI_LEAK_RE: re.Pattern = re.compile(
-    "|".join(re.escape(m) for m in _FI_LEAK_MARKERS),
+    "|".join(r"\b" + re.escape(m) + r"\b" for m in _FI_LEAK_MARKERS),
     re.IGNORECASE,
 )
 
