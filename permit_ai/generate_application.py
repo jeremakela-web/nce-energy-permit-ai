@@ -4695,6 +4695,24 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "taikka suunnittelutarveratkaisua."),
         "nce_info_desc":   ("NCE Permit AI on tekoälypohjainen työkalu energiahankkeiden "
                             "lupaprosessien automatisointiin."),
+        # RAQS self-assessment page strings
+        "raqs_heading":    "RAQS-arviointi",
+        "raqs_subtitle":   ("AI-itsearvio (Regulatory Assurance & Quality System) — ei korvaa asiantuntijatarkistusta. "
+                            "Pisteet 1–5 per kriteeri; korkea pistemäärä = parempi laatu."),
+        "raqs_overall":    "Kokonaispistemäärä",
+        "raqs_disclaimer": ("RAQS-arvio tuotettu automaattisesti (claude-haiku). "
+                            "Arvioi aina luonnos ennen viranomaisen käsittelyyn toimittamista."),
+        "raqs_lbl_viittaukset":    "Lakiviittaukset",
+        "raqs_lbl_lupakattavuus":  "Lupakattavuus",
+        "raqs_lbl_epävarmuus":     "Epävarmuudenhallinta",
+        "raqs_lbl_kattavuus":      "Sisällön kattavuus",
+        "raqs_lbl_valmisteluaste": "Hakemusvalmisteluaste",
+        # Täydennyslista (completion checklist) page strings
+        "taydennys_heading":  "Täydennyslista",
+        "taydennys_subtitle": ("Alla olevat kohdat vaativat täydentämistä ennen hakemuksen jättämistä "
+                               "viranomaiselle. Löydät nämä kohdat myös tekstissä oransseina "
+                               "[TÄYDENNETTÄVÄ]-merkintöinä."),
+        "taydennys_osio":     "Osio",
     },
     "EN": {
         "sub_title":       "Construction Permit Application Draft",
@@ -4781,6 +4799,23 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "plan, an amendment to one, or a planning permit."),
         "nce_info_desc":   ("NCE Permit AI is an AI-powered tool for automating permit processes "
                             "in energy projects."),
+        # RAQS self-assessment page strings
+        "raqs_heading":    "RAQS Assessment",
+        "raqs_subtitle":   ("AI self-assessment (Regulatory Assurance & Quality System) — does not replace expert review. "
+                            "Score 1–5 per criterion; higher score = better quality."),
+        "raqs_overall":    "Overall score",
+        "raqs_disclaimer": ("RAQS assessment generated automatically (claude-haiku). "
+                            "Always review the draft before submitting to the permitting authority."),
+        "raqs_lbl_viittaukset":    "Legal References",
+        "raqs_lbl_lupakattavuus":  "Permit Coverage",
+        "raqs_lbl_epävarmuus":     "Uncertainty Management",
+        "raqs_lbl_kattavuus":      "Content Depth",
+        "raqs_lbl_valmisteluaste": "Application Readiness",
+        # Completion checklist page strings
+        "taydennys_heading":  "Completion Checklist",
+        "taydennys_subtitle": ("The following items require completion before the application is submitted to the authority. "
+                               "You will also find these items in the text as orange [REQUIRED] markers."),
+        "taydennys_osio":     "Section",
     },
     "SE": {
         "sub_title":       "Bygglovsansökan — utkast",
@@ -4863,6 +4898,23 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "av en sådan eller ett planeringstillstånd."),
         "nce_info_desc":   ("NCE Permit AI är ett AI-drivet verktyg för att automatisera "
                             "tillståndsprocesser inom energiprojekt."),
+        # RAQS self-assessment page strings
+        "raqs_heading":    "RAQS-bedömning",
+        "raqs_subtitle":   ("AI-självbedömning (Regulatory Assurance & Quality System) — ersätter inte expertgranskning. "
+                            "Poäng 1–5 per kriterium; högre poäng = bättre kvalitet."),
+        "raqs_overall":    "Totalpoäng",
+        "raqs_disclaimer": ("RAQS-bedömning genererad automatiskt (claude-haiku). "
+                            "Granska alltid utkastet innan det skickas till tillståndsmyndigheten."),
+        "raqs_lbl_viittaukset":    "Lagreferenser",
+        "raqs_lbl_lupakattavuus":  "Tillståndstäckning",
+        "raqs_lbl_epävarmuus":     "Osäkerhetshantering",
+        "raqs_lbl_kattavuus":      "Innehållsdjup",
+        "raqs_lbl_valmisteluaste": "Ansökningsberedskap",
+        # Completion checklist page strings
+        "taydennys_heading":  "Kompletteringslista",
+        "taydennys_subtitle": ("Följande punkter kräver komplettering innan ansökan lämnas in till myndigheten. "
+                               "Du hittar även dessa punkter i texten som orange [KOMPLETTERA]-markeringar."),
+        "taydennys_osio":     "Avsnitt",
     },
     "DA": {
         "sub_title":       "Byggetilladelsesansøgning — udkast",
@@ -5285,6 +5337,28 @@ _NATIONAL_SUPERVISORS: dict[str, dict[str, str]] = {
         "vesivoima":      "AVI (vesilupa), ELY-keskus, Tukes",
         "_generic":       "Tukes (turvallisuus), Kunta (rakennusvalvonta)",
     },
+    # FI country, output_language=EN — keep entity names, translate parenthetical descriptors
+    "FI_EN": {
+        "BESS":           "Tukes (chemicals/electrical), Pelastuslaitos (fire safety)",
+        "tuulivoima_maa": "ELY-keskus / Luova (EIA), Tukes (electrical safety)",
+        "tuulivoima_meri":"ELY-keskus / Luova (EIA), Traficom, Tukes",
+        "aurinkovoima":   "Tukes (electrical safety), Kunta (building control)",
+        "SMR":            "STUK (nuclear safety, YVL guidelines), TEM (government resolution)",
+        "smr_bess":       "STUK (nuclear safety), Tukes (BESS component)",
+        "vesivoima":      "AVI (water permit), ELY-keskus, Tukes",
+        "_generic":       "Tukes (safety), Kunta (building control)",
+    },
+    # FI country, output_language=SE
+    "FI_SE": {
+        "BESS":           "Tukes (kemikalier/el), Pelastuslaitos (brandsäkerhet)",
+        "tuulivoima_maa": "ELY-keskus / Luova (MKB), Tukes (elsäkerhet)",
+        "tuulivoima_meri":"ELY-keskus / Luova (MKB), Traficom, Tukes",
+        "aurinkovoima":   "Tukes (elsäkerhet), Kunta (byggnadskontroll)",
+        "SMR":            "STUK (kärnsäkerhet, YVL-anvisningar), TEM (principbeslut)",
+        "smr_bess":       "STUK (kärnsäkerhet), Tukes (BESS-komponent)",
+        "vesivoima":      "AVI (vattentillstånd), ELY-keskus, Tukes",
+        "_generic":       "Tukes (säkerhet), Kunta (byggnadskontroll)",
+    },
     "SE": {
         "BESS":           "MSB (Myndigheten för samhällsskydd och beredskap), Ei",
         "tuulivoima_maa": "Länsstyrelsen, Energimyndigheten, Naturvårdsverket",
@@ -5363,6 +5437,113 @@ _BESS_MARKET_DATA: dict[str, dict] = {
     "EE": {"index": 120, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index (estimate)", "date": "Q1/2026"},
     "LV": {"index": 115, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index (estimate)", "date": "Q1/2026"},
 }
+
+
+# ─── Finnish statute name → English translation (applied to body text when lang=EN) ───
+# Replaces Finnish law names that leak from the prompt into EN body text.
+# Keys are word-boundary-anchored Finnish statute names; values are English equivalents.
+_FI_STATUTE_NAME_EN: list[tuple[str, str]] = [
+    (r"Rakentamislaki\b",                              "Building Act"),
+    (r"Maankäyttö- ja rakennuslaki\b",                 "Land Use and Building Act"),
+    (r"\bMRL\b(?!\s*\d)",                              "LUBA"),   # bare MRL abbreviation
+    (r"Ympäristönsuojelulaki\b",                       "Environmental Protection Act"),
+    (r"\bYSL\b(?!\s*\d)",                              "EPA"),
+    (r"Pelastuslaki\b",                                "Rescue Act"),
+    (r"Sähkömarkkinalaki\b",                           "Electricity Market Act"),
+    (r"Kemikaaliturvallisuuslaki\b",                   "Chemical Safety Act"),
+    (r"Luonnonsuojelulaki\b",                          "Nature Conservation Act"),
+    (r"Vesilaki\b",                                    "Water Act"),
+    (r"Säteilylaki\b",                                 "Radiation Act"),
+    (r"Ydinenergiaalaki\b",                            "Nuclear Energy Act"),
+    (r"Laki\s+ympäristövaikutusten\s+arviointimenettelystä\b", "EIA Act"),
+    (r"\bYVA-laki\b",                                  "EIA Act"),
+]
+_FI_STATUTE_RE_EN: list[tuple] = [
+    (re.compile(pat, re.IGNORECASE), repl)
+    for pat, repl in _FI_STATUTE_NAME_EN
+]
+
+
+def _translate_fi_statute_names(text: str) -> str:
+    """Replace Finnish statute names with English equivalents in body text."""
+    for rx, repl in _FI_STATUTE_RE_EN:
+        text = rx.sub(repl, text)
+    return text
+
+
+def _dedup_statute_bullets(text: str) -> str:
+    """Remove less-specific statute bullets when a more specific version of the same statute exists.
+    E.g. '• Building Act 751/2023' is dropped when '• Building Act 751/2023, § 44' also appears."""
+    statute_num_re = re.compile(r"\b(\d{2,4}/\d{4})\b")
+    bullet_re = re.compile(r"^[-•*]\s+|^\d+[.)]\s+")
+    lines = text.splitlines()
+    # Map statute number → list of (line_idx, line_text) for bullet lines only
+    num_to_idxs: dict[str, list[int]] = {}
+    for i, line in enumerate(lines):
+        if bullet_re.match(line.strip()):
+            for num in statute_num_re.findall(line):
+                num_to_idxs.setdefault(num, []).append(i)
+    # For each statute with 2+ bullets: drop the shorter (less specific) ones
+    remove_idxs: set[int] = set()
+    for idxs in num_to_idxs.values():
+        if len(idxs) > 1:
+            by_len = sorted(idxs, key=lambda i: len(lines[i]), reverse=True)
+            remove_idxs.update(by_len[1:])
+    return "\n".join(line for i, line in enumerate(lines) if i not in remove_idxs)
+
+
+def _apply_en_statute_fixes(sections: dict) -> dict:
+    """Translate Finnish statute names and deduplicate bullets in body text for EN output."""
+    result = {}
+    for k, v in sections.items():
+        if isinstance(v, str) and v.strip():
+            v = _translate_fi_statute_names(v)
+            v = _dedup_statute_bullets(v)
+        result[k] = v
+    return result
+
+
+# ─── Language-consistency guardrail ───────────────────────────────────────────
+# Markers that are distinctly Finnish compound words — should never appear in a
+# non-FI language output. These are NOT proper nouns (authority names like "Tukes"
+# are explicitly excluded). Update this list whenever a new leak is found.
+_FI_LEAK_MARKERS: list[str] = [
+    # RAQS page labels (caught in session 2026-07-03, now fixed via _PDF_STRINGS)
+    "Lakiviittaukset", "Lupakattavuus", "Epävarmuudenhallinta",
+    "Hakemusvalmisteluaste", "Kokonaispistemäärä", "RAQS-arviointi",
+    # Standards table authority descriptors (caught 2026-07-03)
+    "kemikaalit", "paloturvallisuus", "sähköturvallisuus",
+    # Finnish statute names that should not appear in EN/SE output
+    "Rakentamislaki", "Ympäristönsuojelulaki", "Pelastuslaki",
+    "Sähkömarkkinalaki", "Kemikaaliturvallisuuslaki", "Luonnonsuojelulaki",
+    # Common Finnish body-text words that shouldn't appear in non-FI output
+    "rakennusvalvonta", "perustelu", "yhteenveto",
+]
+# Compile once for efficiency
+_FI_LEAK_RE: re.Pattern = re.compile(
+    "|".join(re.escape(m) for m in _FI_LEAK_MARKERS),
+    re.IGNORECASE,
+)
+
+
+def check_fi_language_leak(text: str) -> list[str]:
+    """Return list of Finnish marker matches found in text. Empty = clean.
+
+    Call after generating a non-FI report to detect language-consistency regressions.
+    Accepts either raw section text or PDF-extracted text.
+    """
+    found = []
+    for m in _FI_LEAK_RE.finditer(text):
+        found.append(f"'{m.group()}' at char {m.start()}")
+    return found
+
+
+def _sections_language_check(sections: dict, lang: str) -> list[str]:
+    """Run Finnish-leak check over all text sections. Returns match list or []."""
+    if lang == "FI":
+        return []
+    combined = " ".join(v for v in sections.values() if isinstance(v, str))
+    return check_fi_language_leak(combined)
 
 
 def _s(lang: str, key: str) -> str:
@@ -5817,7 +5998,9 @@ def _standards_table(hanketyyppi: str, country: str, lang: str, st: dict) -> Tab
     """ISO/IEC-standarditaulukko: Standardi | Soveltamisala | Valvova viranomainen."""
     std_key    = _HANKE_STD_KEY.get(hanketyyppi, "_generic")
     standards  = _ISO_STANDARDS.get(std_key, _ISO_STANDARDS["_generic"])
-    sup_country = _NATIONAL_SUPERVISORS.get(country, _NATIONAL_SUPERVISORS["FI"])
+    # Prefer lang-qualified key (e.g. "FI_EN") so descriptor words are in the output language
+    _sup_key = f"{country}_{lang}" if lang != "FI" else country
+    sup_country = _NATIONAL_SUPERVISORS.get(_sup_key) or _NATIONAL_SUPERVISORS.get(country, _NATIONAL_SUPERVISORS["FI"])
     supervisor = sup_country.get(hanketyyppi) or sup_country.get("_generic", "–")
 
     _th  = ParagraphStyle("stth",  fontSize=8.5, fontName=PDF_FONT_BOLD)
@@ -6159,20 +6342,15 @@ def _taydennyslista_page(gaps: list[tuple[str, str]], st: dict, lang: str = "FI"
     )
 
     body_elems = [
-        Paragraph("Täydennyslista", heading_style),
-        Paragraph(
-            "Alla olevat kohdat vaativat täydentämistä ennen hakemuksen jättämistä "
-            "viranomaiselle. Löydät nämä kohdat myös tekstissä oransseina "
-            "[TÄYDENNETTÄVÄ]-merkintöinä.",
-            sub_style,
-        ),
+        Paragraph(_s(lang, "taydennys_heading"), heading_style),
+        Paragraph(_s(lang, "taydennys_subtitle"), sub_style),
     ]
     for i, (sec_label, desc) in enumerate(gaps, 1):
         body_elems.append(
             Paragraph(f"<b>{i}.</b> ☐ {_latin1_safe(desc)}", item_style)
         )
         body_elems.append(
-            Paragraph(f"Osio: {_latin1_safe(sec_label)}", sec_style)
+            Paragraph(f"{_s(lang, 'taydennys_osio')}: {_latin1_safe(sec_label)}", sec_style)
         )
 
     box = Table(
@@ -6236,71 +6414,14 @@ def _raqs_system_prompt(lang: str) -> str:
     return _RAQS_SYSTEM_BASE
 
 
-_RAQS_LABELS_I18N: dict[str, dict[str, str]] = {
-    "FI": {
-        "viittaukset":    "Lakiviittaukset",
-        "lupakattavuus":  "Lupakattavuus",
-        "epävarmuus":     "Epävarmuudenhallinta",
-        "kattavuus":      "Sisällön kattavuus",
-        "valmisteluaste": "Hakemusvalmisteluaste",
-    },
-    "EN": {
-        "viittaukset":    "Legal References",
-        "lupakattavuus":  "Permit Coverage",
-        "epävarmuus":     "Uncertainty Management",
-        "kattavuus":      "Content Depth",
-        "valmisteluaste": "Application Readiness",
-    },
-    "SE": {
-        "viittaukset":    "Lagreferenser",
-        "lupakattavuus":  "Tillståndstäckning",
-        "epävarmuus":     "Osäkerhetshantering",
-        "kattavuus":      "Innehållsdjup",
-        "valmisteluaste": "Ansökningsberedskap",
-    },
+# RAQS criterion key → _PDF_STRINGS key suffix (used by _raqs_page via _s())
+_RAQS_CRITERION_KEY: dict[str, str] = {
+    "viittaukset":    "raqs_lbl_viittaukset",
+    "lupakattavuus":  "raqs_lbl_lupakattavuus",
+    "epävarmuus":     "raqs_lbl_epävarmuus",
+    "kattavuus":      "raqs_lbl_kattavuus",
+    "valmisteluaste": "raqs_lbl_valmisteluaste",
 }
-
-_RAQS_UI_I18N: dict[str, dict[str, str]] = {
-    "FI": {
-        "heading":   "RAQS-arviointi",
-        "subtitle":  (
-            "AI-itsearvio (Regulatory Assurance & Quality System) — ei korvaa asiantuntijatarkistusta. "
-            "Pisteet 1–5 per kriteeri; korkea pistemäärä = parempi laatu."
-        ),
-        "overall":   "Kokonaispistemäärä",
-        "disclaimer": (
-            "RAQS-arvio tuotettu automaattisesti (claude-haiku). "
-            "Arvioi aina luonnos ennen viranomaisen käsittelyyn toimittamista."
-        ),
-    },
-    "EN": {
-        "heading":   "RAQS Assessment",
-        "subtitle":  (
-            "AI self-assessment (Regulatory Assurance & Quality System) — does not replace expert review. "
-            "Score 1–5 per criterion; higher score = better quality."
-        ),
-        "overall":   "Overall score",
-        "disclaimer": (
-            "RAQS assessment generated automatically (claude-haiku). "
-            "Always review the draft before submitting to the permitting authority."
-        ),
-    },
-    "SE": {
-        "heading":   "RAQS-bedömning",
-        "subtitle":  (
-            "AI-självbedömning (Regulatory Assurance & Quality System) — ersätter inte expertgranskning. "
-            "Poäng 1–5 per kriterium; högre poäng = bättre kvalitet."
-        ),
-        "overall":   "Totalpoäng",
-        "disclaimer": (
-            "RAQS-bedömning genererad automatiskt (claude-haiku). "
-            "Granska alltid utkastet innan det skickas till tillståndsmyndigheten."
-        ),
-    },
-}
-
-# Keep legacy name for any external references
-_RAQS_LABELS = _RAQS_LABELS_I18N["FI"]
 
 _RAQS_ORDER = ["viittaukset", "lupakattavuus", "epävarmuus", "kattavuus", "valmisteluaste"]
 
@@ -6430,9 +6551,6 @@ def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
         leading=10, spaceBefore=6,
     )
 
-    _ui = _RAQS_UI_I18N.get(lang, _RAQS_UI_I18N["FI"])
-    _labels = _RAQS_LABELS_I18N.get(lang, _RAQS_LABELS_I18N["FI"])
-
     def _dots(score: int) -> str:
         score = max(1, min(5, score))
         return "●" * score + "○" * (5 - score)
@@ -6441,8 +6559,8 @@ def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
     overall = round(sum(scores) / len(scores), 1) if scores else None
 
     body_elems: list = [
-        Paragraph(_ui["heading"], heading_style),
-        Paragraph(_ui["subtitle"], sub_style),
+        Paragraph(_s(lang, "raqs_heading"), heading_style),
+        Paragraph(_s(lang, "raqs_subtitle"), sub_style),
     ]
 
     rows = []
@@ -6452,8 +6570,9 @@ def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
         entry = review[key]
         sc = int(entry.get("pisteet", 0))
         note = _latin1_safe(entry.get("perustelu", ""))
+        lbl_key = _RAQS_CRITERION_KEY.get(key, key)
         rows.append([
-            Paragraph(_labels.get(key, key), row_label_style),
+            Paragraph(_s(lang, lbl_key), row_label_style),
             Paragraph(_dots(sc), row_score_style),
             Paragraph(f"{sc}/5", row_score_style),
             Paragraph(note, row_note_style),
@@ -6478,12 +6597,12 @@ def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
 
     if overall is not None:
         body_elems.append(Paragraph(
-            f"<b>{_ui['overall']}: {overall}/5</b> — "
+            f"<b>{_s(lang, 'raqs_overall')}: {overall}/5</b> — "
             + _latin1_safe(review.get("yhteenveto", "")),
             summary_style,
         ))
 
-    body_elems.append(Paragraph(_ui["disclaimer"], disc_style))
+    body_elems.append(Paragraph(_s(lang, "raqs_disclaimer"), disc_style))
 
     box = Table([[body_elems]], colWidths=[16.2 * cm], splitByRow=1)
     box.setStyle(TableStyle([
@@ -6528,6 +6647,20 @@ def generate_pdf(
         sections = dict(sections)
         for _k, _part in zip(_str_keys, _combined.split(_SEC_SEP)):
             sections[_k] = _part
+
+    # For non-FI output: translate Finnish statute names and deduplicate bullets
+    _lang_pdf = getattr(inp, "lang", "FI") or "FI"
+    if _lang_pdf != "FI":
+        sections = _apply_en_statute_fixes(sections)
+
+    # Language-consistency guardrail: log any Finnish markers that leaked into body text
+    _lang_leaks = _sections_language_check(sections, _lang_pdf)
+    if _lang_leaks:
+        logger.warning(
+            "[lang-leak] %s/%s/%s — %d Finnish marker(s) found in non-FI output: %s",
+            getattr(inp, "hanketyyppi", "?"), getattr(inp, "country", "?"), _lang_pdf,
+            len(_lang_leaks), _lang_leaks[:10],
+        )
 
     buf    = io.BytesIO()
     now    = datetime.now().strftime("%d.%m.%Y")
