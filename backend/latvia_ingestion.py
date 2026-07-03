@@ -371,6 +371,29 @@ LATVIA_SOURCES: list[dict] = [
             "Offshore wind: separate regulatory track — Jūras kodekss + Ekonomikas ministrija."
         ),
     },
+    # ── Wind energy — BVKB regulatory overview ───────────────────────────────
+    {
+        "name": "lv_bvkb_veja_elektrostacija",
+        "url": "https://www.bvkb.gov.lv/lv/veja-elektrostacija-ves",
+        "type": "html",
+        "category": "wind_energy_regulations",
+        "description": (
+            "BVKB (Būvniecības valsts kontroles birojs — Building State Control Bureau) "
+            "regulatīvā rokasgrāmata vēja elektrostacijas (VES) būvniecībai Latvijā. "
+            "Covers the full regulatory sequence for wind turbine (vēja elektrostacija) projects: "
+            "• IVN (Ietekmes uz vidi novērtējums) screening — mandatory for >2 turbines or >5 MW; "
+            "• Teritorijas plānojums (land-use plan) — must designate the site for wind energy; "
+            "• Lokālplānojums or detālplānojums may be required for specific sites; "
+            "• Tehniskie noteikumi (technical conditions) from AST or Sadales tīkls for grid; "
+            "• Būvatļauja (building permit) from pašvaldības būvvalde (municipal authority); "
+            "• Distance requirements: 800m from residential buildings for large wind parks; "
+            "• Community payment (maksājums kopienai): €2,500/MW/year for turbines ≥100m; "
+            "• Aviation obstacle clearance: LGS for >60m height; NBS military radar; "
+            "• Nodošana ekspluatācijā (commissioning) sign-off via BIS portal. "
+            "BVKB is Latvia's national building supervisory authority — their guidance reflects "
+            "current regulatory practice across all pašvaldības."
+        ),
+    },
     # ── Municipal building permit process ─────────────────────────────────────
     {
         "name": "lv_buvniecibas_informacijas_sistema_bis",

@@ -84,6 +84,8 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "lv_bess_balansesanas_tirgus_ast":               "BESS",
     # Wind-specific regulations
     "lv_veja_energija_buvniecibas_noteikumi":        "tuulivoima_maa,tuulivoima_meri",
+    # BVKB wind turbine regulatory overview — wind only
+    "lv_bvkb_veja_elektrostacija":                  "tuulivoima_maa,tuulivoima_meri",
     # BESS fire safety — BESS and datakeskus (both use large Li-ion)
     "lv_ugunsdrošibas_bess_prasibas":               "BESS,datakeskus",
 }
