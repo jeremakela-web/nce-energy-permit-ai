@@ -6190,7 +6190,7 @@ def _taydennyslista_page(gaps: list[tuple[str, str]], st: dict, lang: str = "FI"
 
 # ─── RAQS: Regulatory Assurance & Quality System — reviewing agent ───────────
 
-_RAQS_SYSTEM = """\
+_RAQS_SYSTEM_BASE = """\
 Olet sääntelylaadunvarmistusagentti (RAQS). Arvioi annettu energialupaluonnos viidellä kriteerillä.
 Anna kokonaislukupisteytys asteikolla 1–5 jokaiselle kriteerille ja yksi lyhyt perustelu (max 15 sanaa).
 
@@ -6212,13 +6212,90 @@ Vastaa VAIN validilla JSON-objektilla, ei muuta tekstiä:
 }
 """
 
-_RAQS_LABELS = {
-    "viittaukset":    "Lakiviittaukset",
-    "lupakattavuus":  "Lupakattavuus",
-    "epävarmuus":     "Epävarmuudenhallinta",
-    "kattavuus":      "Sisällön kattavuus",
-    "valmisteluaste": "Hakemusvalmisteluaste",
+_RAQS_LANG_INSTRUCTION = {
+    "EN": (
+        "IMPORTANT: Write all 'perustelu' values and the 'yhteenveto' field in English. "
+        "JSON keys remain as-is; only the text values change language."
+    ),
+    "SE": (
+        "VIKTIGT: Skriv alla 'perustelu'-värden och fältet 'yhteenveto' på svenska. "
+        "JSON-nycklarna förblir oförändrade; endast textvärdena byter språk."
+    ),
 }
+
+
+def _raqs_system_prompt(lang: str) -> str:
+    instr = _RAQS_LANG_INSTRUCTION.get(lang, "")
+    if instr:
+        return _RAQS_SYSTEM_BASE.rstrip() + "\n\n" + instr + "\n"
+    return _RAQS_SYSTEM_BASE
+
+
+_RAQS_LABELS_I18N: dict[str, dict[str, str]] = {
+    "FI": {
+        "viittaukset":    "Lakiviittaukset",
+        "lupakattavuus":  "Lupakattavuus",
+        "epävarmuus":     "Epävarmuudenhallinta",
+        "kattavuus":      "Sisällön kattavuus",
+        "valmisteluaste": "Hakemusvalmisteluaste",
+    },
+    "EN": {
+        "viittaukset":    "Legal References",
+        "lupakattavuus":  "Permit Coverage",
+        "epävarmuus":     "Uncertainty Management",
+        "kattavuus":      "Content Depth",
+        "valmisteluaste": "Application Readiness",
+    },
+    "SE": {
+        "viittaukset":    "Lagreferenser",
+        "lupakattavuus":  "Tillståndstäckning",
+        "epävarmuus":     "Osäkerhetshantering",
+        "kattavuus":      "Innehållsdjup",
+        "valmisteluaste": "Ansökningsberedskap",
+    },
+}
+
+_RAQS_UI_I18N: dict[str, dict[str, str]] = {
+    "FI": {
+        "heading":   "RAQS-arviointi",
+        "subtitle":  (
+            "AI-itsearvio (Regulatory Assurance & Quality System) — ei korvaa asiantuntijatarkistusta. "
+            "Pisteet 1–5 per kriteeri; korkea pistemäärä = parempi laatu."
+        ),
+        "overall":   "Kokonaispistemäärä",
+        "disclaimer": (
+            "RAQS-arvio tuotettu automaattisesti (claude-haiku). "
+            "Arvioi aina luonnos ennen viranomaisen käsittelyyn toimittamista."
+        ),
+    },
+    "EN": {
+        "heading":   "RAQS Assessment",
+        "subtitle":  (
+            "AI self-assessment (Regulatory Assurance & Quality System) — does not replace expert review. "
+            "Score 1–5 per criterion; higher score = better quality."
+        ),
+        "overall":   "Overall score",
+        "disclaimer": (
+            "RAQS assessment generated automatically (claude-haiku). "
+            "Always review the draft before submitting to the permitting authority."
+        ),
+    },
+    "SE": {
+        "heading":   "RAQS-bedömning",
+        "subtitle":  (
+            "AI-självbedömning (Regulatory Assurance & Quality System) — ersätter inte expertgranskning. "
+            "Poäng 1–5 per kriterium; högre poäng = bättre kvalitet."
+        ),
+        "overall":   "Totalpoäng",
+        "disclaimer": (
+            "RAQS-bedömning genererad automatiskt (claude-haiku). "
+            "Granska alltid utkastet innan det skickas till tillståndsmyndigheten."
+        ),
+    },
+}
+
+# Keep legacy name for any external references
+_RAQS_LABELS = _RAQS_LABELS_I18N["FI"]
 
 _RAQS_ORDER = ["viittaukset", "lupakattavuus", "epävarmuus", "kattavuus", "valmisteluaste"]
 
@@ -6271,6 +6348,8 @@ def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
     """Call Haiku to score sections on 5 RAQS criteria. Returns parsed dict or None."""
     import json as _json
 
+    lang = getattr(inp, "lang", "FI") or "FI"
+
     # Build compact section summary — only text keys, capped at 800 chars each
     summary_parts = []
     for key in ["kuvaus", "perustelut", "luvat_teksti", "toimenpiteet"]:
@@ -6293,7 +6372,7 @@ def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
             max_tokens=1024,
             system=[{
                 "type": "text",
-                "text": _RAQS_SYSTEM,
+                "text": _raqs_system_prompt(lang),
                 "cache_control": {"type": "ephemeral"},
             }],
             messages=[{"role": "user", "content": prompt}],
@@ -6306,12 +6385,13 @@ def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
             return None
         result = _json.loads(raw)
         _raqs_store(result, inp)
+        result["_lang"] = lang  # carry lang through to _raqs_page
         return result
     except Exception:
         return None
 
 
-def _raqs_page(review: dict, st: dict) -> list:
+def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
     """Build RAQS score page PDF elements (PageBreak + navy-bordered box)."""
     C_FILL = colors.HexColor("#f0f4ff")
     C_BD   = colors.HexColor("#1a3a5c")
@@ -6345,6 +6425,9 @@ def _raqs_page(review: dict, st: dict) -> list:
         leading=10, spaceBefore=6,
     )
 
+    _ui = _RAQS_UI_I18N.get(lang, _RAQS_UI_I18N["FI"])
+    _labels = _RAQS_LABELS_I18N.get(lang, _RAQS_LABELS_I18N["FI"])
+
     def _dots(score: int) -> str:
         score = max(1, min(5, score))
         return "●" * score + "○" * (5 - score)
@@ -6353,12 +6436,8 @@ def _raqs_page(review: dict, st: dict) -> list:
     overall = round(sum(scores) / len(scores), 1) if scores else None
 
     body_elems: list = [
-        Paragraph("RAQS-arviointi", heading_style),
-        Paragraph(
-            "AI-itsearvio (Regulatory Assurance & Quality System) — ei korvaa asiantuntijatarkistusta. "
-            "Pisteet 1–5 per kriteeri; korkea pistemäärä = parempi laatu.",
-            sub_style,
-        ),
+        Paragraph(_ui["heading"], heading_style),
+        Paragraph(_ui["subtitle"], sub_style),
     ]
 
     rows = []
@@ -6369,7 +6448,7 @@ def _raqs_page(review: dict, st: dict) -> list:
         sc = int(entry.get("pisteet", 0))
         note = _latin1_safe(entry.get("perustelu", ""))
         rows.append([
-            Paragraph(_RAQS_LABELS.get(key, key), row_label_style),
+            Paragraph(_labels.get(key, key), row_label_style),
             Paragraph(_dots(sc), row_score_style),
             Paragraph(f"{sc}/5", row_score_style),
             Paragraph(note, row_note_style),
@@ -6394,16 +6473,12 @@ def _raqs_page(review: dict, st: dict) -> list:
 
     if overall is not None:
         body_elems.append(Paragraph(
-            f"<b>Kokonaispistemäärä: {overall}/5</b> — "
+            f"<b>{_ui['overall']}: {overall}/5</b> — "
             + _latin1_safe(review.get("yhteenveto", "")),
             summary_style,
         ))
 
-    body_elems.append(Paragraph(
-        "RAQS-arvio tuotettu automaattisesti (claude-haiku). "
-        "Arvioi aina luonnos ennen viranomaisen käsittelyyn toimittamista.",
-        disc_style,
-    ))
+    body_elems.append(Paragraph(_ui["disclaimer"], disc_style))
 
     box = Table([[body_elems]], colWidths=[16.2 * cm], splitByRow=1)
     box.setStyle(TableStyle([
@@ -6940,7 +7015,8 @@ def generate_pdf(
     # ── RAQS: reviewing agent — Haiku-arvio sisällön laadusta ────────────────
     _raqs_result = _raqs_review(sections, inp)
     if _raqs_result:
-        for _elem in _raqs_page(_raqs_result, st):
+        _raqs_lang = _raqs_result.pop("_lang", lang)
+        for _elem in _raqs_page(_raqs_result, st, _raqs_lang):
             story.append(_elem)
 
     # ── Loppumerkintä ─────────────────────────────────────────────────────────
