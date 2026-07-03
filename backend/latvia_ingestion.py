@@ -374,7 +374,7 @@ LATVIA_SOURCES: list[dict] = [
     # ── Municipal building permit process ─────────────────────────────────────
     {
         "name": "lv_buvniecibas_informacijas_sistema_bis",
-        "url": "https://bis.gov.lv/lv/buvniecibas-process/buvniecibas-ieceres-iesniegums",
+        "url": "https://bis.gov.lv/sabiedribas-informesana/buvnieciba",
         "type": "html",
         "category": "municipal_building_permit",
         "description": (
