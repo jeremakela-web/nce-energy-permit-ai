@@ -88,6 +88,27 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "lv_bvkb_veja_elektrostacija":                  "tuulivoima_maa,tuulivoima_meri",
     # BESS fire safety — BESS and datakeskus (both use large Li-ion)
     "lv_ugunsdrošibas_bess_prasibas":               "BESS,datakeskus",
+    # LT — energy-type-specific sources (Lithuania has no nuclear power plants)
+    # Transmission grid connection (LITGRID) — energy projects only
+    "lt_litgrid_prisijungimo_tvarka":                "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,teollisuus",
+    # Distribution grid (ESO) — smaller energy projects, not SMR/industrial
+    "lt_eso_gamintojams_prisijungimas":              "BESS,aurinkovoima,tuulivoima_maa",
+    # VERT generation licensing — energy generation/storage projects only
+    "lt_vert_elektros_gamybos_licencija":            "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
+    # VERT OZE auctions — renewables and co-located BESS
+    "lt_vert_oze_aukcionai_kvota":                   "tuulivoima_maa,tuulivoima_meri,aurinkovoima",
+    # Renewables law — only for renewable energy and co-located BESS
+    "lt_atsinaujinancio_resurso_energetikos_istatymas": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
+    # BESS balancing market — BESS only
+    "lt_litgrid_balansavimo_rinka":                  "BESS",
+    # Wind energy special plan — wind only
+    "lt_vejo_energetikos_specialusis_planas":        "tuulivoima_maa,tuulivoima_meri",
+    "lt_vert_vejo_energetika":                       "tuulivoima_maa,tuulivoima_meri",
+    # BESS fire safety — BESS and datakeskus (both use large Li-ion batteries)
+    "lt_priesgaisrines_saugos_taisykles":            "BESS,datakeskus",
+    # EIA law — all energy projects requiring PAV (BESS, wind, solar, SMR)
+    "lt_pav_istatymas":                              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR",
+    "lt_pav_kategoriju_sarasas":                     "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR",
 }
 
 

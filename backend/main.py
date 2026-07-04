@@ -2759,6 +2759,17 @@ async def admin_ingest_latvia():
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.post("/api/admin/ingest-lithuania", dependencies=[Depends(_require_admin)])
+async def admin_ingest_lithuania():
+    """Download Lithuanian regulatory HTML/PDFs and upsert chunks into ChromaDB. Admin only."""
+    try:
+        from lithuania_ingestion import ingest_lithuania_sources
+        count = ingest_lithuania_sources()
+        return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 @app.post("/api/admin/ingest-caruna", dependencies=[Depends(_require_admin)])
 async def admin_ingest_caruna():
     """Download Caruna PDFs and upsert chunks into ChromaDB. Admin only."""

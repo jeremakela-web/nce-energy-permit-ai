@@ -2569,6 +2569,73 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Mark uncertain items: [Requires verification against Latvian regulations].\n\n"
         ),
     },
+    "LT": {
+        "name": "Lithuania / Lietuva",
+        "authorities": [
+            "VERT (Valstybinė energetikos reguliavimo taryba — independent energy regulator, electricity licensing)",
+            "LITGRID AB (TSO — transmission grid connection 110/330 kV, balancing market)",
+            "ESO (Energijos skirstymo operatorius — DSO, distribution grid connection)",
+            "Savivaldybės administracija (Municipal administration — statybos leidimas / building permit)",
+            "AAA (Aplinkos apsaugos agentūra — EIA/PAV screening authority, under Aplinkos ministerija)",
+            "PAGD (Priešgaisrinės apsaugos ir gelbėjimo departamentas — fire safety authority, under Interior Ministry)",
+            "ANCO / Civilinės aviacijos administracija (CAA Lithuania — aviation obstacle clearance for wind >45m)",
+            "Lietuvos kariuomenė (Lithuanian Armed Forces — military radar clearance for wind parks)",
+        ],
+        "key_laws": [
+            "Elektros energetikos įstatymas (EEĮ, 2000) — electricity market, VERT licensing",
+            "Atsinaujinančių išteklių energetikos įstatymas (AIEI, 2011) — renewables, OZE auctions, BESS co-location",
+            "Energetikos įstatymas (2002) — energy sector framework, VERT mandate",
+            "Planuojamos ūkinės veiklos poveikio aplinkai vertinimo įstatymas (PAV įstatymas) — EIA procedure",
+            "Statybos įstatymas (consolidated) — building permits (statybos leidimas) via INFOSTATYBA",
+            "Teritorijų planavimo įstatymas (consolidated) — spatial planning, bendrasis planas, detalusis planas",
+            "Aplinkos apsaugos įstatymas — environmental permits (taršos leidimas/TIPK)",
+        ],
+        "prompt_prefix": (
+            "IMPORTANT — COUNTRY: This project is located in LITHUANIA (Lietuva). "
+            "Apply Lithuanian regulatory framework throughout — do NOT use Finnish law references.\n"
+            "Key authorities: "
+            "VERT (Valstybinė energetikos reguliavimo taryba — electricity generation licensing: "
+            "gamybos licencija >100 kW, registracija 10–100 kW, below 10 kW no action required), "
+            "LITGRID AB (TSO — transmission grid connection 110/330 kV for projects >5 MW; "
+            "techniniai prisijungimo sąlygai → tinklų prijungimo sutartis), "
+            "ESO (Energijos skirstymo operatorius — DSO, distribution grid connection for projects <5 MW), "
+            "Savivaldybės administracija (municipal administration — statybos leidimas; "
+            "IMPORTANT: exact requirements vary by municipality, always verify locally; "
+            "digital submission via INFOSTATYBA portal infostatyba.planuojuinfo.lt), "
+            "AAA (Aplinkos apsaugos agentūra — PAV/EIA screening and decisions; "
+            "mandatory PAV for wind >5 turbines or >30 MW; solar >50 MW; BESS screening recommended >10 MWh), "
+            "PAGD (Priešgaisrinės apsaugos ir gelbėjimo departamentas — fire safety examination, "
+            "priešgaisrinės saugos ekspertizė mandatory before statybos leidimas for BESS), "
+            "ANCO/CAA Lithuania (aviation obstacle clearance for wind >45m height), "
+            "Lietuvos kariuomenė (mandatory military radar clearance for all wind parks).\n"
+            "Key laws: Elektros energetikos įstatymas EEĮ (electricity market, VERT licensing thresholds), "
+            "Atsinaujinančių išteklių energetikos įstatymas AIEI "
+            "(renewables, OZE feed-in premium auctions administered by VERT, "
+            "net metering for prosumers ≤30 kW, BESS co-location with renewables), "
+            "PAV įstatymas (EIA = PAV; two-stage: atranka screening by AAA then full PAV ataskaita; "
+            "typical duration 6–18 months; PAV ataskaita must precede statybos leidimas), "
+            "Statybos įstatymas (building permit = statybos leidimas from savivaldybės administracija; "
+            "INFOSTATYBA portal; standard timeline 20–40 working days for complete submission), "
+            "Teritorijų planavimo įstatymas (bendrasis planas / specialusis planas / detalusis planas; "
+            "detalusis planas required for wind parks >1 turbine in most municipalities; "
+            "bendrasis planas must designate wind energy zones), "
+            "Energetikos įstatymas (energy sector framework, VERT mandate and independence), "
+            "Aplinkos apsaugos įstatymas (environmental permit: taršos leidimas or TIPK/TIPK-A).\n"
+            "Lithuania-specific notes: "
+            "Lithuania has NO operating nuclear power plants (Ignalina NPP shut down 2009) — "
+            "SMR projects would require entirely new primary legislation before any permit path exists. "
+            "BESS market: FCR/aFRR/mFRR balancing via LITGRID tenders; "
+            "BESS >100 kW participating in balancing market requires balanso atsakingosios šalies (BRP) "
+            "sutartis with LITGRID; SCADA connection to LITGRID required for >1 MW BESS. "
+            "Baltic desynchronisation from IPS/UPS to Continental European grid significantly increases "
+            "FCR/FRR market volumes — major BESS business case driver. "
+            "VERT OZE auctions (aukcionai) allocate competitive support (fiksuota priemoka/FIP) for "
+            "10–20 years to winning wind/solar projects. "
+            "Replace ALL Finnish law references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Fingrid) "
+            "with Lithuanian equivalents listed above. "
+            "Mark uncertain items: [Requires verification against Lithuanian regulations].\n\n"
+        ),
+    },
     "DE": {
         "name": "Germany / Deutschland",
         "authorities": [
@@ -3389,6 +3456,96 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Pievienošanas līgums (AST)",              "AST (Augstsprieguma tīkls)",                        "ETL §§73-83"),
         ],
     },
+    # ── Lietuva ───────────────────────────────────────────────────────────────
+    "LT": {
+        # ── BESS ──────────────────────────────────────────────────────────────
+        "BESS": [
+            ("Detalusis planas (jei reikalingas)",       "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas (consolidated)"),
+            ("PAV atranka arba PAV (stambūs projektai)", "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas — AAA screening rekomenduojamas visiems >10 MWh projektams"),
+            ("Priešgaisrinės saugos ekspertizė (BESS)",  "PAGD (Priešgaisrinės apsaugos ir gelbėjimo departamentas)", "Priešgaisrinės saugos taisyklės — privaloma prieš statybos leidimą"),
+            ("Statybos leidimas",                        "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas — teikiama per INFOSTATYBA portalą (infostatyba.planuojuinfo.lt)"),
+            ("VERT gamybos licencija arba registracija", "VERT (Valstybinė energetikos reguliavimo taryba)",  "EEĮ — licencija >100 kW, registracija 10–100 kW"),
+            ("Tinklų prisijungimo sutartis",             "LITGRID AB (>5 MW) arba ESO (<5 MW)",               "Elektros energetikos įstatymas; RfG 2016/631 + DCC 2016/1388"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas — per INFOSTATYBA"),
+        ],
+        # ── Tuulivoima (onshore) ──────────────────────────────────────────────
+        "tuulivoima_maa": [
+            ("Detalusis planas",                         "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas — privalomas >1 turbinai daugelyje savivaldybių"),
+            ("PAV (pilna procedūra)",                    "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas — privaloma >5 turbinos arba >30 MW; atranka 2–5 turbinoms"),
+            ("Kariuomenės radiolokacinis suderinimas",   "Lietuvos kariuomenė / Krašto apsaugos ministerija", "Nacionalinio saugumo reikalavimai — privalomas visiems vėjo parkams"),
+            ("Oro navigacijos suderinimas",              "ANCO / Civilinės aviacijos administracija (CAA)",   "Aviacijos taisyklės — turbinoms >45m aukštis"),
+            ("Statybos leidimas (vėjo elektrinė)",       "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas; Vėjo energetikos specialusis planas (zonavimas)"),
+            ("VERT gamybos licencija",                   "VERT (Valstybinė energetikos reguliavimo taryba)",  "EEĮ; AIEI — privaloma >100 kW"),
+            ("Tinklų prisijungimo sutartis (LITGRID)",   "LITGRID AB (Lietuvos perdavimo sistemos operatorius)", "EEĮ; Komisijos reglamentas (ES) 2016/631 (RfG)"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas"),
+        ],
+        # ── Aurinkovoima ──────────────────────────────────────────────────────
+        "aurinkovoima": [
+            ("Detalusis planas (jei reikalingas)",       "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas"),
+            ("PAV atranka arba PAV (>50 MW / >100 ha)",  "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas — privaloma >50 MW (>100 ha); atranka >10 MW (>25 ha)"),
+            ("Statybos leidimas (saulės parkas)",        "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas — per INFOSTATYBA"),
+            ("VERT gamybos licencija arba registracija", "VERT (Valstybinė energetikos reguliavimo taryba)",  "EEĮ; AIEI — licencija >100 kW, registracija 10–100 kW"),
+            ("Tinklų prisijungimo sutartis (ESO / LITGRID)", "ESO (Energijos skirstymo operatorius) arba LITGRID", "EEĮ; Komisijos reglamentas (ES) 2016/631 (RfG)"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas"),
+        ],
+        # ── Offshore wind ─────────────────────────────────────────────────────
+        "tuulivoima_meri": [
+            ("Jūrinės erdvės planavimo dokumentas",      "Aplinkos ministerija / Susisiekimo ministerija",    "Lietuvos Respublikos teritorijų planavimo įstatymas; Jūros kodeksas"),
+            ("PAV (pilna procedūra, privaloma)",         "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas — privaloma visiems jūros vėjo projektams"),
+            ("Kariuomenės ir oro navigacijos suderinimas", "Lietuvos kariuomenė + ANCO/CAA",                  "Nacionalinio saugumo ir aviacijos reikalavimai"),
+            ("Statybos leidimas (jūros statiniai)",      "Savivaldybės administracija + jūros institucijos",  "Statybos įstatymas + Jūros kodeksas"),
+            ("VERT gamybos licencija",                   "VERT (Valstybinė energetikos reguliavimo taryba)",  "EEĮ; AIEI"),
+            ("Tinklų prisijungimo sutartis (LITGRID, jūros kabelis)", "LITGRID AB",                          "EEĮ; Komisijos reglamentas (ES) 2016/1447 (HVDC)"),
+        ],
+        # ── SMR — regWarning: no nuclear framework in Lithuania ───────────────
+        "SMR": [
+            ("⚠️ Branduolinės energetikos įstatymas neegzistuoja", "Seimas (Parliament) — nėra galiojančios teisinės bazės", "Lietuva neturi branduolinių elektrinių (Ignalinos AE uždaryta 2009) ir nėra pirminės branduolinės energetikos teisės aktų"),
+            ("⚠️ Principinis sprendimas (Seimo sprendimas, būtinas)", "Seimas / Vyriausybė",                "Prieš bet kokio leidimo išdavimą būtina priimti naują pirminį teisės aktą"),
+            ("PAV (pilna procedūra, privaloma)",         "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas — privaloma branduoliniams objektams"),
+            ("Statybos leidimas (specialios sąlygos)",   "Savivaldybės administracija + valstybės institucija (nustatyti)", "Statybos įstatymas — branduoliniams objektams nėra specialių nuostatų"),
+            ("Tinklų prisijungimo sutartis (LITGRID)",   "LITGRID AB",                                        "EEĮ §§73-83"),
+        ],
+        # ── Datakeskus ────────────────────────────────────────────────────────
+        "datakeskus": [
+            ("Detalusis planas (jei reikalingas)",       "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas"),
+            ("PAV atranka arba PAV (dideli DC)",         "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas — dideliems energijos vartotojams"),
+            ("Taršos leidimas (B/C kategorija)",         "Aplinkos apsaugos agentūra (AAA) / rajonas",        "Aplinkos apsaugos įstatymas"),
+            ("Statybos leidimas",                        "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas — per INFOSTATYBA"),
+            ("Tinklų prisijungimo sutartis",             "LITGRID AB arba ESO",                               "EEĮ §§73-83"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas"),
+        ],
+        # ── Teollisuus ────────────────────────────────────────────────────────
+        "teollisuus": [
+            ("Detalusis planas (jei reikalingas)",       "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas"),
+            ("Taršos leidimas arba TIPK (A/B kategorija)", "AAA / rajono aplinkos apsaugos departamentas",    "Aplinkos apsaugos įstatymas — kategorija priklauso nuo veiklos tipo"),
+            ("PAV atranka arba PAV",                     "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas"),
+            ("Statybos leidimas",                        "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas"),
+        ],
+        # ── Asuinrakennus ─────────────────────────────────────────────────────
+        "asuinrakennus": [
+            ("Detalusis planas (jei reikalingas)",       "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas"),
+            ("Statybos leidimas arba rašytinis pritarimas", "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas — supaprastintas kelias mažiems statiniams"),
+            ("Kaimynų informavimas",                     "Savivaldybės administracija / pareiškėjas",         "Statybos įstatymas"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas"),
+        ],
+        # ── Liikerakennus ─────────────────────────────────────────────────────
+        "liikerakennus": [
+            ("Detalusis planas (jei reikalingas)",       "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas"),
+            ("Statybos leidimas",                        "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas — per INFOSTATYBA"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas"),
+        ],
+        # ── Hybridi (BESS + wind/solar) ───────────────────────────────────────
+        "hybridi": [
+            ("Detalusis planas",                         "Savivaldybės taryba (Municipal council)",            "Teritorijų planavimo įstatymas"),
+            ("PAV (pilna procedūra)",                    "AAA (Aplinkos apsaugos agentūra)",                  "PAV įstatymas"),
+            ("Priešgaisrinės saugos ekspertizė (BESS dalis)", "PAGD (Priešgaisrinės apsaugos ir gelbėjimo departamentas)", "Priešgaisrinės saugos taisyklės — privaloma"),
+            ("Statybos leidimas",                        "Savivaldybės administracija — REIKALAVIMAI SKIRIASI PAGAL SAVIVALDYBĘ", "Statybos įstatymas — per INFOSTATYBA"),
+            ("VERT gamybos licencija arba registracija", "VERT (Valstybinė energetikos reguliavimo taryba)",  "EEĮ; AIEI"),
+            ("Tinklų prisijungimo sutartis",             "LITGRID AB arba ESO",                               "EEĮ; RfG 2016/631"),
+            ("Statinio pripažinimas tinkamu naudoti",    "Savivaldybės administracija",                       "Statybos įstatymas"),
+        ],
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -3932,6 +4089,26 @@ _COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
         "aurinkovoima": [
             "saules enerģija fotoelements saules parks Latvija būvatļauja",
             "solar PV permit Latvia grid connection Sadales tikls SPRK registration",
+        ],
+    },
+    "LT": {
+        "BESS": [
+            "baterinis energijos kaupiklis BESS akumuliatorius Lietuva VERT licencija",
+            "ličio jonų baterija priešgaisrinė sauga prisijungimas ESO LITGRID",
+            "battery energy storage permit Lithuania VERT registration fire safety PAGD",
+        ],
+        "tuulivoima_maa": [
+            "vėjo elektrinė statybos leidimas savivaldybė Lietuva VERT licencija",
+            "vėjo parkas PAV poveikio aplinkai vertinimas AAA detalusis planas",
+            "wind farm permit Lithuania EIA PAV municipal building permit setback radar",
+        ],
+        "tuulivoima_meri": [
+            "jūros vėjo energija offshore vėjo parkas Lietuva jūros erdvės planavimas",
+            "offshore wind energy permit Lithuania maritime spatial planning LITGRID",
+        ],
+        "aurinkovoima": [
+            "saulės energija fotovoltika saulės parkas Lietuva statybos leidimas",
+            "solar PV permit Lithuania grid connection ESO VERT registration AIEI",
         ],
     },
 }
