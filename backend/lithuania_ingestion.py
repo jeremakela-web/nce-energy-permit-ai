@@ -237,7 +237,7 @@ LITHUANIA_SOURCES: list[dict] = [
     # ── Grid connection — transmission ────────────────────────────────────────
     {
         "name": "lt_litgrid_prisijungimo_tvarka",
-        "url": "https://www.litgrid.eu/lt/paslaugos/prisijungimas-prie-tinklu/",
+        "url": "https://www.litgrid.eu/",
         "type": "html",
         "category": "grid_connection_transmission",
         "description": (
@@ -263,7 +263,7 @@ LITHUANIA_SOURCES: list[dict] = [
     # ── Grid connection — distribution ────────────────────────────────────────
     {
         "name": "lt_eso_gamintojams_prisijungimas",
-        "url": "https://www.eso.lt/lt/verslo-klientams/elektros-energija/gamintojai-ir-vartotojai-gamintojai/",
+        "url": "https://www.eso.lt/lt/gamintojams/",
         "type": "html",
         "category": "grid_connection_distribution",
         "description": (
@@ -402,7 +402,7 @@ LITHUANIA_SOURCES: list[dict] = [
     # ── BESS market & balancing ───────────────────────────────────────────────
     {
         "name": "lt_litgrid_balansavimo_rinka",
-        "url": "https://www.litgrid.eu/lt/paslaugos/sistemos-paslaugos/",
+        "url": "https://www.litgrid.eu/",
         "type": "html",
         "category": "bess_market_balancing",
         "description": (
@@ -427,7 +427,7 @@ LITHUANIA_SOURCES: list[dict] = [
     # ── Municipal building permit process ─────────────────────────────────────
     {
         "name": "lt_infostatyba_statybos_leidimas",
-        "url": "https://infostatyba.planuojuinfo.lt/",
+        "url": "https://infostatyba.lt/",
         "type": "html",
         "category": "municipal_building_permit",
         "description": (
