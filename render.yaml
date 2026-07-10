@@ -1,4 +1,9 @@
 services:
+  - type: redis
+    name: permit-ai-redis
+    plan: starter        # 256 MB persistent — free tier has no persistence and too few connections
+    maxmemoryPolicy: noeviction  # never evict job entries from the task queue
+
   - type: web
     name: nce-energy-permit-ai
     runtime: python
@@ -17,4 +22,12 @@ services:
         value: /opt/render/project/src
       - key: SENTENCE_TRANSFORMERS_HOME
         value: /opt/render/project/src/.model_cache
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: permit-ai-redis
+          property: connectionString
     healthCheckPath: /api/health
+    # NOTE: ARQ worker runs in-process (see _arq_startup in main.py).
+    # A separate type:worker service is blocked until ChromaDB moves to server
+    # mode — the persistent disk (permit-ai-data) can only mount on one service.
