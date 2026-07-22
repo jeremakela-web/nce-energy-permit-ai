@@ -109,6 +109,14 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # EIA law — all energy projects requiring PAV (BESS, wind, solar, SMR)
     "lt_pav_istatymas":                              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR",
     "lt_pav_kategoriju_sarasas":                     "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR",
+    # SE — BESS fire safety (RISE 2023:117 + Boverket BFS 2024:7) — BESS and datakeskus
+    "boverket_rise_bess_brandsakerhet":              "BESS,datakeskus",
+    # DA — BESS fire safety (Beredskabsstyrelsen 2023 vejledning + DBI gap analysis 2025)
+    "beredskabsstyrelsen_dbi_bess_brandsikkerhed":   "BESS,datakeskus",
+    # NO — BESS fire safety (NEK 488:2024, NEK 487:2022, TEK17 kap. 11, DSB 2021)
+    "nek_dsb_bess_brannsikkerhet":                   "BESS,datakeskus",
+    # EE — BESS fire safety (Päästeamet Dec 2024 guidance, Tuleohutuse seadus, EVS 812-7)
+    "paasteamet_bess_tuleohutus":                    "BESS,datakeskus",
 }
 
 
