@@ -1,0 +1,189 @@
+BESS FIRE SAFETY IN ESTONIA — PÄÄSTEAMET GUIDANCE, TULEOHUTUSE SEADUS, EVS 812-7
+AKUPANKADE TULEOHUTUSNÕUDED — BATTERY ENERGY STORAGE SYSTEM (BESS) FIRE SAFETY
+Source 1: Päästeamet (Estonian Rescue Board) guidance, December 2024: "Ehitistes oluliste
+          tuleohutusnõuete tagamine akupankade paigaldamisel" (Ensuring essential fire
+          safety requirements in buildings when installing battery banks)
+Source 2: Tuleohutuse seadus (Fire Safety Act)
+Source 3: Siseministri määrus nr 17 (2021) (Minister of the Interior Regulation No. 17,
+          2021 — fire safety requirements for buildings)
+Source 4: EVS 812-7:2018 (Estonian fire safety design standard, Part 7)
+Authority: Päästeamet (Rescue Board), Siseministeerium (Ministry of the Interior)
+Language: Estonian (summary in English for RAG indexing)
+
+=== PART 1: SCOPE AND REGULATORY BASIS ===
+
+Päästeamet's December 2024 guidance is the first Estonian document to specifically
+address the fire safety of akupangad (battery banks / battery energy storage systems)
+installed inside or attached to buildings, closing a gap that previously existed between
+the general Tuleohutuse seadus (Fire Safety Act), the building-level technical
+requirements of Siseministri määrus nr 17 (2021), and the fire safety design standard
+EVS 812-7:2018. The guidance applies the existing legal framework's essential
+requirements (olulised nõuded) specifically to battery installations, rather than
+creating an entirely new statute — meaning compliance is achieved by satisfying
+Tuleohutuse seadus and Siseministri määrus nr 17 as interpreted for battery banks by the
+December 2024 guidance, together with EVS 812-7:2018 design requirements.
+
+=== PART 2: THE >5 kWh THRESHOLD — TULETÕKKESEKTSIOON REQUIREMENT ===
+
+The key capacity threshold in the Päästeamet guidance is 5 kWh of nominal battery energy
+content:
+
+- Below 5 kWh: the installation is treated as a minor electrical installation; general
+  building electrical safety rules apply but no dedicated fire compartment is mandated.
+- Above 5 kWh: the battery bank must be installed within its own tuletõkkesektsioon
+  (fire compartment) rated EI 30 (30 minutes integrity and insulation), separating the
+  battery installation from the rest of the building both structurally and in terms of
+  fire/smoke spread.
+
+This EI 30 tuletõkkesektsioon requirement is the central technical obligation of the
+guidance and is the threshold that Estonian BESS/datakeskus/teollisuus projects with any
+meaningful battery capacity (well above typical residential backup systems) will need to
+satisfy as a matter of course.
+
+=== PART 3: FIRE DOOR AND ROOM-USE RESTRICTIONS ===
+
+Within the EI 30 tuletõkkesektsioon:
+
+1. Fire door (tuletõkkeuks) required:
+   - Access to the battery compartment must be through a fire-rated door matching the
+     compartment's EI 30 classification, self-closing, to prevent fire/smoke spread
+     through the access opening.
+
+2. Room use strictly limited:
+   - The compartment housing the battery bank may contain only the battery equipment
+     itself and directly associated electrical equipment (inverters, battery management
+     system hardware, protection/switching equipment necessary for the battery
+     installation's operation).
+   - No other storage, unrelated equipment, or unrelated activity is permitted within the
+     same fire compartment — this prevents additional fuel load and unrelated ignition
+     sources from being introduced into the battery compartment.
+
+=== PART 4: VENTILATION AND SMOKE EXTRACTION ===
+
+- Natural ventilation is acceptable where the compartment design provides adequate
+  passive air exchange to prevent accumulation of off-gases under normal operating
+  conditions.
+- Where natural ventilation is not achievable (e.g. an internal compartment without
+  external wall openings), mechanical smoke extraction (mehaaniline suitse
+  eemaldamine) is required, sized to remove combustion/off-gas products and maintain
+  tenable conditions for both normal off-gassing scenarios and in the event of an
+  incipient thermal event, discharging to a safe external location.
+- The choice between natural ventilation and mandatory mechanical extraction must be
+  justified in the fire safety design documentation submitted as part of the building
+  permit (ehitusluba) application, with reference to EVS 812-7:2018.
+
+=== PART 5: THERMAL MANAGEMENT — 5-25°C OPERATING RANGE ===
+
+The guidance specifies a target ambient temperature range of 5°C to 25°C within the
+battery compartment for safe thermal management of the installation. Maintaining the
+compartment within this range (via heating, cooling, or passive design as appropriate to
+the site and climate) reduces the risk of accelerated degradation and thermal runaway
+associated with both excessively low temperatures (charging risk for Li-ion chemistries)
+and excessively high ambient temperatures (elevated baseline heat load reducing thermal
+runaway margin). Active thermal management systems (HVAC) serving the compartment should
+be designed, monitored, and where relevant interlocked with the battery management system
+so that temperature excursions outside 5-25°C trigger an alarm and, if sustained,
+protective action.
+
+=== PART 6: APPLICABLE PRODUCT AND SYSTEM STANDARDS ===
+
+Estonia has formally adopted the following IEC standards as Estonian national standards
+(EVS-EN prefix), and compliance documentation for these is expected as part of the
+tuleohutus (fire safety) design package for the ehitusluba application:
+
+1. EVS-EN IEC 62619:2022 — "Secondary cells and batteries containing alkaline or other
+   non-acid electrolytes — Safety requirements for secondary lithium cells and batteries,
+   for use in industrial applications." This is the cell/module-level product safety
+   standard; manufacturer test certificates against this standard should be included in
+   the permitting file.
+
+2. EVS-EN IEC 62933-5-1:2024 — "Electrical energy storage (EES) systems — Part 5-1:
+   Safety considerations for grid-integrated EES systems — General specification." This
+   is the system-level safety standard covering the installed BESS as a whole (as
+   distinct from the individual cells), addressing hazards arising from system
+   integration, grid interaction, and installation-level risk.
+
+Both standards should be referenced explicitly in the fire safety design documentation
+alongside the EI 30 tuletõkkesektsioon, fire door, ventilation/smoke extraction, and
+thermal management requirements set out above.
+
+=== PART 7: EU BATTERY REGULATION 2023/1542 ===
+
+As an EU member state, Estonia applies Regulation (EU) 2023/1542 (the EU Battery
+Regulation) to battery energy storage systems placed on the market, covering due
+diligence, carbon footprint declaration, and end-of-life/recycling obligations. This
+regulation operates in parallel with, and independently of, the fire safety requirements
+in Parts 1-6: satisfying EU Battery Regulation 2023/1542 documentation does not remove
+the need for the EI 30 tuletõkkesektsioon, fire door, ventilation, and thermal
+management measures required by the December 2024 Päästeamet guidance, Tuleohutuse
+seadus, Siseministri määrus nr 17 (2021) and EVS 812-7:2018 — both regimes must be
+satisfied for an Estonian BESS installation to proceed to kasutusluba (occupancy/use
+permit).
+
+=== PART 8: PERMITTING SEQUENCE SUMMARY ===
+
+1. Determine nominal battery energy content (kWh) to confirm whether the >5 kWh
+   tuletõkkesektsioon threshold applies (in practice, virtually all utility-scale and
+   most commercial BESS/datakeskus installations exceed this threshold).
+2. Design the EI 30 fire compartment, fire door, and room-use restriction (battery and
+   directly associated electrical equipment only) into the building design.
+3. Select and document natural ventilation or mechanical smoke extraction, referencing
+   EVS 812-7:2018.
+4. Specify thermal management to maintain 5-25°C within the compartment, interlocked
+   with the battery management system.
+5. Compile EVS-EN IEC 62619:2022 (cell/module) and EVS-EN IEC 62933-5-1:2024 (system)
+   compliance documentation.
+6. Confirm EU Battery Regulation 2023/1542 documentation (due diligence, carbon
+   footprint, end-of-life plan) is prepared alongside the fire safety dossier.
+7. Submit the combined fire safety design package with the ehitusluba (building permit)
+   application; obtain Päästeamet sign-off before kasutusluba (occupancy/use permit).
+
+=== PART 9: WORKED EXAMPLES — THRESHOLD APPLICATION ===
+
+- A small residential battery backup system of 4 kWh: below the 5 kWh threshold; general
+  building electrical safety rules apply, no dedicated EI 30 tuletõkkesektsioon is
+  mandated, though good practice (adequate spacing from combustibles, basic ventilation)
+  is still recommended.
+- A commercial rooftop-solar-paired battery system of 30 kWh: above the 5 kWh threshold;
+  full EI 30 tuletõkkesektsioon, fire door, room-use restriction, ventilation/smoke
+  extraction and thermal management requirements of Parts 2-5 apply.
+- A utility-scale, grid-connected BESS installation of several MWh: above the 5 kWh
+  threshold by a wide margin; the same qualitative requirements apply per compartment,
+  but the scale typically requires multiple EI 30 compartments (one per container or
+  per grouped battery room), each independently satisfying the fire door, room-use,
+  ventilation and thermal management requirements, with the overall site design agreed
+  with Päästeamet before ehitusluba is granted.
+
+=== PART 10: RELATIONSHIP BETWEEN THE FOUR SOURCE DOCUMENTS ===
+
+The four source documents operate at different levels and should be read together, not
+as alternatives:
+
+- Tuleohutuse seadus (Fire Safety Act): the primary statute establishing the general
+  legal obligation to ensure fire safety in buildings and installations; it does not
+  itself specify the 5 kWh threshold or the EI 30 compartment requirement.
+- Siseministri määrus nr 17 (2021): the ministerial regulation implementing the Fire
+  Safety Act's essential requirements at building-technical level (compartmentation,
+  fire doors, escape routes) for buildings generally, including those housing battery
+  installations.
+- EVS 812-7:2018: the Estonian fire safety design standard providing the detailed
+  engineering methodology (fire compartment sizing, ventilation/smoke extraction design)
+  referenced when demonstrating compliance with Siseministri määrus nr 17.
+- Päästeamet December 2024 guidance: the document that ties the general framework above
+  specifically to akupangad (battery banks), setting the 5 kWh threshold, the room-use
+  restriction, and the 5-25°C thermal management target that are specific to battery
+  installations and not found in the general building fire safety rules.
+
+=== PART 11: KEY DEFINITIONS ===
+
+- Tuletõkkesektsioon: a fire compartment — a part of a building fire-technically
+  separated so that fire cannot spread beyond it (or into it) within the classified time,
+  expressed as an EI-class (e.g. EI 30 = 30 minutes integrity and insulation).
+- Tuletõkkeuks: a fire-rated door matching the fire compartment's EI classification,
+  required to be self-closing.
+- Päästeamet: the Estonian Rescue Board, the national authority responsible for fire
+  safety guidance, inspection, and enforcement.
+- Ehitusluba: building permit, issued by the local municipality following review of the
+  building design including the fire safety documentation described above.
+- Kasutusluba: occupancy/use permit, issued after Päästeamet inspection confirms the
+  as-built installation satisfies the approved fire safety design.

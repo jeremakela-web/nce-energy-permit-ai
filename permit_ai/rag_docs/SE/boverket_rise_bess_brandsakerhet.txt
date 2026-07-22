@@ -1,0 +1,201 @@
+BESS FIRE SAFETY IN SWEDEN — BOVERKET BFS 2024:7 AND RISE RAPPORT 2023:117
+BATTERIENERGILAGRINGSSYSTEM (BESS) — BRANDSÄKERHETSKRAV
+Source 1: Boverkets föreskrifter BFS 2024:7 (ändring i BBR, avsnitt om brandskydd för
+          energilager), binding from 1 July 2025
+Source 2: RISE Rapport 2023:117 "Brandsäkerhet vid landbaserade battericontainrar och
+          energilager" (RISE Research Institutes of Sweden), published November 2023 —
+          national technical guidance, non-binding but widely referenced by räddningstjänst
+          (fire and rescue services) and insurers when no binding rule applies
+Authority: Boverket (National Board of Housing, Building and Planning), MSB (Myndigheten
+           för samhällsskydd och beredskap), räddningstjänst (local fire authority)
+Language: Swedish (summary in English for RAG indexing)
+
+=== PART 1: REGULATORY STATUS AND TIMELINE ===
+
+Sweden did not have a dedicated, legally binding fire safety standard for battery energy
+storage systems (BESS) until Boverket published BFS 2024:7, an amendment to Boverkets
+byggregler (BBR) that specifically addresses energilager (energy storage). BFS 2024:7
+becomes binding on new applications for bygglov (building permit) and startbesked from
+1 July 2025. Before that date, and for any aspect not covered by BFS 2024:7, the
+non-binding RISE Rapport 2023:117 is the de facto reference used by fire authorities,
+insurers and BESS developers to demonstrate a defensible level of fire safety.
+
+Practical consequence for permitting: projects with bygglov applications submitted before
+1 July 2025 may still be assessed under general BBR brandskydd requirements plus RISE
+2023:117 as best practice; projects applying on or after that date must demonstrate
+compliance with BFS 2024:7's binding rules. Developers are advised to design to the
+BFS 2024:7 thresholds regardless of application date, since räddningstjänst increasingly
+expects the stricter standard as the industry norm.
+
+=== PART 2: BFS 2024:7 — BINDING RULES FOR INSTALLATIONS ABOVE 20 kWh ===
+
+BFS 2024:7 sets binding technical requirements that apply once the nominal energy content
+of a battery installation exceeds 20 kWh. Below this threshold, general BBR brandskydd
+(fire protection) provisions for electrical installations apply without the specific
+energilager clauses. Above 20 kWh, the following binding requirements apply:
+
+1. Brandcell (fire compartment):
+   - The battery installation must be enclosed in its own brandcell, physically and
+     fire-technically separated from adjacent spaces and from other parts of the building
+     or site.
+   - The fire compartment must be dimensioned to contain a fire (including thermal
+     runaway propagation) for a defined period without spreading to neighbouring
+     compartments, in line with BBR's general brandcell classification system (EI-class
+     depends on use and adjacency, typically EI 60 or higher for energilager brandceller).
+
+2. Brandsluss (fire airlock / fire lock):
+   - Access to the brandcell containing the battery installation must go through a
+     brandsluss — an airlock space with self-closing fire doors on both sides — to
+     prevent smoke and fire gases from spreading into adjacent areas or evacuation routes
+     when personnel enter or exit.
+   - The brandsluss also protects the battery compartment from external fire spread and
+     supports safe firefighter access during an incident.
+
+3. Ventilation — 0.5% rule:
+   - Mechanical or natural ventilation of the battery compartment must be dimensioned so
+     that the ventilation rate corresponds to at least 0.5% of the room volume per hour
+     relative to the battery's stored energy content, specifically intended to dilute and
+     safely exhaust flammable and toxic off-gases (hydrogen, VOCs, CO) released during
+     early-stage thermal runaway before ignition.
+   - Ventilation outlets must discharge to a safe location away from air intakes,
+     occupied areas and escape routes.
+
+=== PART 3: RISE RAPPORT 2023:117 — NATIONAL TECHNICAL GUIDANCE ===
+
+RISE 2023:117 supplements BFS 2024:7 with detailed technical recommendations that are not
+themselves legally binding but are treated as the applicable state-of-the-art by
+räddningstjänst when reviewing brandskyddsdokumentation (fire protection documentation)
+for BESS projects, particularly outdoor, containerized installations (battericontainrar):
+
+1. Setback distances (skyddsavstånd):
+   - RISE recommends a setback of 8 to 30 metres between a battery container/enclosure and
+     neighbouring buildings, property boundaries, forest edges or other combustible
+     installations, with the exact distance depending on:
+     - Total energy content of the installation
+     - Cell chemistry (LFP generally permits shorter distances than NMC)
+     - Presence and type of fire suppression system
+     - Whether adjacent structures are combustible or non-combustible
+   - 8 metres is presented as a practical minimum for small, well-protected LFP
+     installations; 30 metres is recommended where no active suppression is installed and
+     /or larger NMC-based systems are involved.
+
+2. Early detection — VOC/CO monitoring:
+   - RISE recommends off-gas detection (VOC and carbon monoxide sensors) inside each
+     battery container/module, as an early warning of thermal runaway that precedes
+     visible flame or smoke, enabling earlier isolation and evacuation than
+     temperature-only or smoke-only detection.
+   - Detection should trigger automatic disconnection of the affected string/module and
+     alert to the site owner and, where applicable, directly to räddningstjänst.
+
+3. Suppression system recommendations:
+   - RISE does not mandate a single suppression technology but recommends that
+     utility-scale installations include either a fixed automatic suppression system
+     (e.g. water mist, aerosol, or clean agent, matched to cell chemistry) or, at minimum,
+     a dedicated external water supply/hydrant connection sized for a sustained
+     firefighting operation, since Li-ion thermal runaway fires typically require large
+     volumes of water for cooling rather than conventional flame suppression.
+   - Passive strategies (compartmentalisation, thermal barriers between racks/modules) are
+     recommended in combination with, not instead of, active detection.
+
+=== PART 4: APPLICABLE STANDARDS ===
+
+SS-EN IEC 62619:2022 — "Secondary cells and batteries containing alkaline or other
+non-acid electrolytes — Safety requirements for secondary lithium cells and batteries, for
+use in industrial applications" is the primary product safety standard referenced for the
+battery cells/modules themselves in both BFS 2024:7 and RISE 2023:117. Compliance
+documentation (test certificates) for the specific cell/module product is expected as
+part of the brandskyddsdokumentation submitted with the bygglov application.
+
+Svensk Solenergi SSE.R8 v1.2 — the Swedish solar energy industry association's technical
+recommendation for BESS ("Rekommendation för brandskydd vid batterilager", v1.2) defines
+a tiered risk categorisation. Category 3 in SSE.R8 applies to large-scale, utility/grid-
+connected BESS installations (as distinct from Category 1 residential and Category 2
+small commercial systems) and imposes the most stringent combination of setback,
+detection, suppression and documentation requirements — in practice aligning closely with
+the RISE 2023:117 recommendations above. Developers of grid-scale BESS in Sweden should
+design to SSE.R8 Category 3 from the outset.
+
+=== PART 5: GAP NOTE — NO UNIFIED MANDATORY STANDARD FOR OUTDOOR BESS PARKS ===
+
+Honest limitation: as of mid-2025, Sweden still has no single, unified, legally binding
+national standard specifically governing large outdoor BESS parks (multi-container,
+utility-scale installations sited outside building envelopes, e.g. co-located with wind
+or solar parks). BFS 2024:7 is formulated primarily around the traditional building-permit
+model (brandcell, brandsluss, ventilation within a defined enclosure) and RISE 2023:117
+and SSE.R8 are guidance/industry-recommendation documents, not statute. In practice this
+means:
+
+- Large outdoor BESS park developers must construct a bespoke brandskyddsdokumentation
+  combining BFS 2024:7's binding compartment/ventilation logic (applied per container or
+  per grouped enclosure), RISE 2023:117's setback and detection recommendations, and
+  SSE.R8 Category 3, and agree the resulting design directly with the local
+  räddningstjänst and Boverket-certified brandskyddskonsult (fire safety consultant),
+  since no single checklist covers the full outdoor-park configuration.
+- This should be flagged transparently in any permitting report for Swedish BESS projects:
+  "No single mandatory national standard governs outdoor, multi-container BESS parks;
+  compliance is assembled from BFS 2024:7 (binding, per-compartment), RISE 2023:117 and
+  SSE.R8 Category 3 (non-binding guidance), agreed case-by-case with local
+  räddningstjänst."
+- Developers should engage räddningstjänst and a certified brandskyddskonsult early in
+  the design phase, well before the bygglov application, to avoid late-stage redesign.
+
+=== PART 6: DOCUMENTATION CHECKLIST FOR BYGGLOV APPLICATION ===
+
+A brandskyddsdokumentation (fire protection documentation) package for a Swedish BESS
+project submitted on or after 1 July 2025 should demonstrate, item by item:
+
+1. Nominal energy content (kWh) of the installation and confirmation of whether the
+   20 kWh BFS 2024:7 threshold is exceeded (in practice, essentially all utility-scale
+   and most commercial BESS installations exceed this threshold, so the binding rules
+   apply as the default case).
+2. Brandcell classification and EI-rating of the enclosure, with structural drawings
+   showing the fire compartment boundary.
+3. Brandsluss design drawings showing the airlock, self-closing fire doors, and their
+   EI-rating, consistent with the surrounding brandcell.
+4. Ventilation calculation demonstrating the 0.5% rule is met, including discharge point
+   location relative to air intakes, occupied areas and escape routes.
+5. RISE 2023:117 setback distance justification (8-30 m), referencing cell chemistry,
+   suppression system (if any), and combustibility of neighbouring structures.
+6. VOC/CO detection system specification and its interlock with automatic disconnection.
+7. Suppression system specification, or documented external water supply/hydrant
+   capacity where suppression is not installed.
+8. SS-EN IEC 62619:2022 test certificates for the specific cell/module product.
+9. For utility-scale projects: confirmation of design against Svensk Solenergi SSE.R8
+   v1.2 Category 3.
+10. Sign-off record from the local räddningstjänst confirming the case-by-case
+    outdoor-park design has been reviewed and accepted, given the absence of a single
+    unified mandatory standard for that configuration (Part 5).
+
+=== PART 7: COMPARISON — RESIDENTIAL/SMALL COMMERCIAL VS. UTILITY-SCALE ===
+
+Svensk Solenergi SSE.R8 v1.2 distinguishes three categories, which is useful context for
+understanding why utility-scale (Category 3) projects face materially higher requirements
+than smaller systems:
+
+- Category 1 (residential): small battery systems, typically indoors or in a domestic
+  garage/utility space; minimal additional fire safety measures beyond standard
+  electrical installation rules and product certification.
+- Category 2 (small commercial): larger than residential but below utility scale;
+  intermediate requirements, often satisfied by a subset of the BFS 2024:7/RISE 2023:117
+  measures depending on exact capacity and location.
+- Category 3 (large-scale/utility BESS): the full combination of BFS 2024:7 binding
+  compartment/ventilation rules, RISE 2023:117 setback/detection/suppression
+  recommendations, and SSE.R8's own Category 3-specific documentation requirements
+  apply. Grid-connected, multi-container BESS parks should be designed to Category 3
+  from the outset, since retrofitting Category 3 measures after a Category 2 design has
+  been agreed with räddningstjänst requires costly structural rework of the
+  brandcell/brandsluss.
+
+=== PART 8: KEY DEFINITIONS ===
+
+- Brandcell: a fire compartment — a part of a building fire-technically separated from
+  the rest of the building so that a fire within it cannot spread beyond it (or into it
+  from outside) within a defined time, expressed as an EI-class (e.g. EI 60).
+- Brandsluss: a fire airlock — an intermediate space with self-closing fire doors at each
+  end, used where direct access between a fire compartment and an adjoining space would
+  otherwise compromise the fire compartment's integrity.
+- Räddningstjänst: the Swedish municipal fire and rescue service, responsible for
+  reviewing and approving brandskyddsdokumentation and for emergency response.
+- Brandskyddskonsult: a certified fire safety consultant engaged by the developer to
+  prepare the brandskyddsdokumentation and liaise with räddningstjänst and Boverket
+  requirements throughout the bygglov process.

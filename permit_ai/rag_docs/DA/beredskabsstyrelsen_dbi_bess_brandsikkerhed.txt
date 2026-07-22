@@ -1,0 +1,197 @@
+BESS FIRE SAFETY IN DENMARK — BEREDSKABSSTYRELSEN VEJLEDNING AND DBI GAP ANALYSIS
+BATTERIENERGILAGRINGSANLÆG (BESS) — BRANDSIKKERHEDSKRAV
+Source 1: Beredskabsstyrelsen vejledning om brandsikkerhed ved battericontainere og
+          energilagringsanlæg, June 2023 — primary regulatory guidance
+Source 2: DBI (Dansk Brand- og sikringsteknisk Institut) "Gap-analyse: Brandsikkerhed for
+          BESS-anlæg i Danmark", February 2025 — technical gap analysis
+Authority: Beredskabsstyrelsen (Danish Emergency Management Agency), local
+           redningsberedskab (municipal fire and rescue service), DBI (technical/insurance
+           standards body)
+Language: Danish (summary in English for RAG indexing)
+
+=== PART 1: LEGAL BASIS — BEREDSKABSLOVEN §34 STK. 2 ===
+
+Danish BESS fire safety obligations are anchored in Beredskabsloven (the Emergency
+Preparedness Act) §34, stk. 2, which empowers Beredskabsstyrelsen to set requirements for
+installations presenting a special fire or explosion hazard. Beredskabsstyrelsen's June
+2023 vejledning translates this into concrete capacity-based thresholds for battery
+energy storage installations:
+
+- Installations with a nominal energy content exceeding 1,000 kWh (1 MWh): trigger the
+  vejledning's baseline set of mandatory fire safety measures (see Part 2).
+- Installations exceeding 2,000 kWh (2 MWh): trigger an additional, stricter tier of
+  requirements, including the formal risk assessment described in Part 3.
+
+These thresholds apply per battery installation/enclosure grouping as assessed by the
+local redningsberedskab, not necessarily per individual container, so multi-container
+sites must be evaluated in aggregate where containers are close enough to constitute a
+single fire risk unit.
+
+=== PART 2: MANDATORY REQUIREMENTS ABOVE THE THRESHOLDS ===
+
+1. Brandmeldingsanlæg (fire detection and alarm system):
+   - Mandatory in all closed/enclosed containers housing battery modules, regardless of
+     which threshold tier applies, once the 1,000 kWh baseline is exceeded.
+   - Must provide automatic detection with signal transmission to a permanently staffed
+     location (site operator or, for larger sites, directly to redningsberedskab via an
+     automatic fire alarm transmission, ABA-forbindelse).
+
+2. Fire suppression or water connection (one of the two required):
+   - Either a fixed automatic suppression system appropriate to the cell chemistry
+     (e.g. water mist, or a clean-agent/aerosol system compatible with Li-ion thermal
+     runaway behaviour), OR
+   - A dedicated water connection (brandhane/vandforsyning) sized and positioned to allow
+     the redningsberedskab to conduct sustained external cooling/firefighting operations,
+     recognising that Li-ion battery fires typically require prolonged water application
+     rather than being extinguishable by conventional means.
+   - The vejledning leaves the choice between these two options to the developer, subject
+     to sign-off by the local redningsberedskab as part of site approval.
+
+3. Setback distance:
+   - A minimum setback of 10 metres is required between battery containers/enclosures and
+     neighbouring buildings, property boundaries, or other fire-hazard installations,
+     unless a documented risk assessment justifies and is approved with a different
+     distance.
+
+4. Formal risk assessment (required above 2,000 kWh, and recommended as good practice
+   above 1,000 kWh):
+   - A documented, site-specific risk assessment referencing DS/EN IEC 61936-1 ("Power
+     installations exceeding 1 kV AC — Common rules") must be prepared and submitted to
+     the local redningsberedskab.
+   - The assessment must address thermal runaway propagation, gas venting/explosion risk
+     within enclosures, access and egress for emergency responders, and coordination with
+     the site's electrical safety design under DS/EN IEC 61936-1.
+
+=== PART 3: DBI GAP ANALYSIS (FEBRUARY 2025) — DOCUMENTED SHORTFALLS ===
+
+DBI's February 2025 gap analysis was commissioned to assess whether the June 2023
+Beredskabsstyrelsen vejledning, built primarily around fire brigade access and
+suppression, adequately covers the full range of BESS-specific fire risks recognised
+internationally (e.g. in NFPA 855 and UL 9540A testing regimes). DBI's findings, which
+should be read as an honest account of the current Danish regulatory gap rather than as
+additional binding requirements, include:
+
+1. No mandatory Battery Management System (BMS) requirement:
+   - The vejledning does not require a certified or independently verified BMS with
+     cell-level voltage/temperature monitoring and automatic isolation, even though a
+     properly functioning BMS is widely regarded (including by DBI) as the primary line
+     of defence against thermal runaway. Developers are left to rely on manufacturer BMS
+     specification without a Danish regulatory floor.
+
+2. No mandatory ventilation requirement:
+   - Unlike some other jurisdictions (e.g. Sweden's BFS 2024:7 0.5% ventilation rule),
+     Danish rules do not prescribe a minimum ventilation rate for off-gas (hydrogen, VOC,
+     CO) dilution and safe exhaust inside battery enclosures. DBI flags this as a
+     significant gap, particularly for enclosed containers with fixed suppression but no
+     forced ventilation.
+
+3. No UL 9540A large-scale fire test requirement:
+   - Denmark does not require UL 9540A ("Test Method for Evaluating Thermal Runaway Fire
+     Propagation in Battery Energy Storage Systems") testing or equivalent large-scale
+     fire propagation testing as a condition of approval, in contrast to jurisdictions
+     that reference NFPA 855. DBI recommends that developers voluntarily obtain UL 9540A
+     test data for their specific container/module configuration to support the risk
+     assessment required under Part 2.4, since this materially strengthens the
+     evidentiary basis presented to redningsberedskab.
+
+DBI's overall conclusion is that the June 2023 vejledning provides a workable baseline
+for fire brigade access and initial response, but leaves prevention-side technical
+requirements (BMS certification, ventilation, propagation testing) to market practice
+and insurer requirements rather than regulation. This gap should be disclosed transparently
+in permitting reports for Danish BESS projects.
+
+=== PART 4: EU BATTERY REGULATION 2023/1542 ===
+
+Independently of national fire safety rules, all battery energy storage systems placed
+on the Danish/EU market must comply with Regulation (EU) 2023/1542 (the EU Battery
+Regulation), which introduces due-diligence, carbon footprint declaration, and
+end-of-life/recycling obligations that apply in parallel with — not instead of — the
+Beredskabsstyrelsen fire safety requirements described above. Compliance with 2023/1542
+does not substitute for the fire safety risk assessment, brandmeldingsanlæg, or setback
+requirements; both regimes must be satisfied independently for a Danish BESS project to
+proceed to commissioning.
+
+=== PART 5: PRACTICAL PERMITTING SEQUENCE ===
+
+1. Determine aggregate energy content of the installation (kWh) to identify which
+   threshold tier (1,000 kWh / 2,000 kWh) applies.
+2. Engage the local redningsberedskab early to agree the suppression-vs-water-connection
+   choice and confirm the setback distance.
+3. Prepare the DS/EN IEC 61936-1-referenced risk assessment (mandatory above 2,000 kWh).
+4. Voluntarily address the DBI-identified gaps (BMS specification, ventilation design,
+   UL 9540A test data) to strengthen the application and reduce redningsberedskab
+   queries during review.
+5. Confirm EU Battery Regulation 2023/1542 documentation (due diligence, carbon footprint,
+   end-of-life plan) is in place alongside the fire safety dossier.
+
+=== PART 6: WHICH THRESHOLD TIER APPLIES — WORKED EXAMPLES ===
+
+To avoid ambiguity when scoping a project's obligations under Beredskabsloven §34 stk. 2:
+
+- A single container or grouped installation with 600 kWh nominal capacity: below the
+  1,000 kWh baseline threshold; general electrical safety rules and DS/EN IEC 61936-1
+  design practice apply, but the specific brandmeldingsanlæg/suppression/setback package
+  in Part 2 is not formally triggered, though redningsberedskab may still request
+  equivalent measures depending on siting.
+- A site with 1,500 kWh nominal capacity: baseline tier applies in full — mandatory
+  brandmeldingsanlæg, suppression-or-water-connection choice, and 10 m setback (Part 2,
+  items 1-3); formal risk assessment is recommended but not strictly mandatory at this
+  tier.
+- A site with 2,500 kWh nominal capacity: full tier applies — all of Part 2's
+  requirements plus the mandatory DS/EN IEC 61936-1-referenced risk assessment (Part 2,
+  item 4).
+- Multi-container sites: redningsberedskab assesses aggregate energy content across
+  containers sited close enough together to constitute a single fire risk unit (i.e. a
+  fire in one container could plausibly propagate to or affect an adjacent one within the
+  assessed timeframe). Developers should not assume that splitting capacity across many
+  small containers avoids the higher tier if the containers are not adequately separated.
+
+=== PART 7: WHY THE DBI GAPS MATTER IN PRACTICE ===
+
+The three gaps DBI identified in February 2025 are not merely theoretical — each maps to
+a documented BESS incident pattern internationally:
+
+1. No mandatory BMS requirement: without independently verified cell-level monitoring,
+   early-stage cell defects or imbalance can progress to thermal runaway before the
+   brandmeldingsanlæg (which typically detects smoke/heat, a later-stage signal) responds.
+   DBI recommends developers specify a BMS meeting at minimum the monitoring/protection
+   functions described in IEC 62619 and IEC 62933-5-2, even though Denmark does not
+   mandate this by name.
+2. No mandatory ventilation requirement: enclosed containers with fixed suppression but
+   no forced ventilation can experience gas accumulation (hydrogen, VOCs) from
+   off-gassing before any fire is detected, creating an explosion risk independent of the
+   fire risk the suppression system addresses. DBI recommends voluntary ventilation
+   design referencing the same 0.5%-of-volume-per-hour logic used in Sweden's BFS 2024:7,
+   pending any future Danish rule-making.
+3. No UL 9540A requirement: without large-scale fire propagation test data for the
+   specific container/module configuration, the risk assessment required under Part 2
+   item 4 must rely on generic chemistry-level assumptions rather than configuration-
+   specific evidence. DBI recommends developers obtain UL 9540A (or equivalent) test data
+   voluntarily, particularly for novel or high-density module configurations.
+
+=== PART 8: PERMITTING DOCUMENTATION CHECKLIST ===
+
+1. Nominal energy content (kWh) and threshold tier determination (Part 6).
+2. Brandmeldingsanlæg specification and, for larger sites, confirmation of ABA-forbindelse
+   to redningsberedskab.
+3. Suppression system specification, or water connection design and hydraulic capacity,
+   whichever option is chosen.
+4. Setback distance drawing (≥10 m, or documented justification for an alternative
+   distance agreed with redningsberedskab).
+5. DS/EN IEC 61936-1-referenced risk assessment (mandatory above 2,000 kWh).
+6. Voluntary supporting documentation addressing the DBI gaps: BMS specification,
+   ventilation design, and UL 9540A (or equivalent) test data.
+7. EU Battery Regulation 2023/1542 documentation (due diligence, carbon footprint,
+   end-of-life plan).
+8. Sign-off record from the local redningsberedskab.
+
+=== PART 9: KEY DEFINITIONS ===
+
+- Redningsberedskab: the Danish municipal fire and rescue service responsible for
+  reviewing site-specific fire safety measures and responding to incidents.
+- Brandmeldingsanlæg: an automatic fire detection and alarm system.
+- ABA-forbindelse: an automatic fire alarm transmission connection from a site's
+  brandmeldingsanlæg directly to the redningsberedskab control centre.
+- DS/EN IEC 61936-1: the Danish-adopted standard for power installations exceeding 1 kV
+  AC, covering common electrical safety rules referenced in the mandatory risk
+  assessment.
