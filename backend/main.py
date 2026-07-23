@@ -2201,7 +2201,7 @@ async def admin_ingest(request: Request):
     except Exception:
         pass
 
-    _valid = {"SE", "DA", "NO", "PL", "LV"}
+    _valid = {"SE", "DA", "NO", "PL", "LV", "EE", "DE"}
     raw_countries = body.get("countries", list(_valid))
     countries = [c.upper() for c in raw_countries if c.upper() in _valid]
     if not countries:
