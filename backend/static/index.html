@@ -4767,8 +4767,7 @@ const TRANSLATIONS = {
 };
 
 function t(key) {
-  const lang = TRANSLATIONS[activeLang] || TRANSLATIONS.FI;
-  return lang[key] ?? (TRANSLATIONS.FI[key] ?? key);
+  return TRANSLATIONS[activeLang]?.[key] || TRANSLATIONS.EN?.[key] || TRANSLATIONS.FI?.[key] || key;
 }
 
 const LANG_META = {
@@ -4810,7 +4809,8 @@ const LUPA_I18N = {
 
 function tLupa(fi) {
   if (activeLang === 'FI') return fi;
-  return (LUPA_I18N[fi] && LUPA_I18N[fi][activeLang]) || fi;
+  const entry = LUPA_I18N[fi];
+  return (entry && (entry[activeLang] || entry.EN)) || fi;
 }
 
 function _saveFormValues() {
@@ -5044,12 +5044,12 @@ const PROJECT_TYPES = [
 function ptName(pt) {
   const n = (pt || {}).name;
   if (!n) return '';
-  return typeof n === 'object' ? (n[activeLang] || n.FI) : n;
+  return typeof n === 'object' ? (n[activeLang] || n.EN || n.FI) : n;
 }
 function ptSub(pt) {
   const s = (pt || {}).sub;
   if (!s) return '';
-  return typeof s === 'object' ? (s[activeLang] || s.FI) : s;
+  return typeof s === 'object' ? (s[activeLang] || s.EN || s.FI) : s;
 }
 
 // Form field definitions per project type
