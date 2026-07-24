@@ -3012,6 +3012,7 @@ async def admin_rag_check_all(secret: str = ""):
         ("EE", "BESS"),
         ("DE", "BESS"),
         ("LV", "BESS"),
+        ("LT", "BESS"),
     ]
     MIN_SCORE_FI     = 0.65
     MIN_SCORE_NON_FI = 0.60
