@@ -1316,6 +1316,7 @@
           <button class="lang-dropdown-item" id="lang-item-ET" onclick="setLang('ET');closeLangMenu();">🇪🇪 Eesti</button>
           <button class="lang-dropdown-item" id="lang-item-PL" onclick="setLang('PL');closeLangMenu();">🇵🇱 Polski</button>
           <button class="lang-dropdown-item" id="lang-item-DE" onclick="setLang('DE');closeLangMenu();">🇩🇪 Deutsch</button>
+          <button class="lang-dropdown-item" id="lang-item-LV" onclick="setLang('LV');closeLangMenu();">🇱🇻 Latviešu</button>
           <button class="lang-dropdown-item" id="lang-item-LT" onclick="setLang('LT');closeLangMenu();">🇱🇹 Lietuvių</button>
         </div>
       </div>
@@ -8097,7 +8098,7 @@ async function sendPermitMessage() {
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const savedLang = localStorage.getItem('nce_lang');
-    if (savedLang && ['FI', 'EN', 'SE', 'DA', 'NO', 'PL', 'LT'].includes(savedLang)) setLang(savedLang);
+    if (savedLang && ['FI', 'EN', 'SE', 'DA', 'NO', 'PL', 'LT', 'LV', 'ET', 'DE'].includes(savedLang)) setLang(savedLang);
   } catch (_) {}
 
   try {
