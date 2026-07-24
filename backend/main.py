@@ -2077,8 +2077,8 @@ async def parse_ifc(
             status_code=400,
             detail=f"project_type oltava: {', '.join(sorted(allowed_project_types))}",
         )
-    if country not in {"FI", "SE", "DA", "NO", "PL", "DE", "LV"}:
-        raise HTTPException(status_code=400, detail="country oltava: FI, SE, DA, NO, PL, DE, LV")
+    if country not in {"FI", "SE", "DA", "NO", "PL", "DE", "LV", "EE"}:
+        raise HTTPException(status_code=400, detail="country oltava: FI, SE, DA, NO, PL, DE, LV, EE")
 
     ifc_data = _extract_ifc_data(content)
     permit_map = _map_to_permit(ifc_data, project_type=project_type, country=country)
