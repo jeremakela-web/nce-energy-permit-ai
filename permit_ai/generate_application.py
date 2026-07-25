@@ -485,6 +485,13 @@ def _get_chroma_col():
 import threading as _threading
 _RAG_LOCK = _threading.Lock()
 
+# TEMPORARY diagnostic instrumentation (2026-07-25) — investigating the recurring
+# ~350-380s "Claude API -aikakatkaisu (>120s)" timeout. Records wall-clock checkpoints
+# for the single most recent generate_application_draft() call. Not job_id-keyed —
+# only meaningful when tested one generation at a time. Remove once root-caused.
+import time as _time
+_LAST_TIMING: dict = {}
+
 
 def activate_v2() -> None:
     """Switch permit application RAG to permit_docs_v2 + mpnet."""
@@ -6116,6 +6123,9 @@ def _generate_sections(
     )
 
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=120.0)
+    _LAST_TIMING["t3a_claude_call_start"] = _time.monotonic()
+    _LAST_TIMING["prompt_context_chars"] = len(prompt_context)
+    _LAST_TIMING["prompt_task_chars"] = len(prompt_task)
     try:
         resp = claude.messages.create(
             model=_MODEL_ID,
@@ -6142,11 +6152,13 @@ def _generate_sections(
             )
         raise RuntimeError(f"Anthropic API virhe ({_ae.status_code}): {_ae.message}")
     except anthropic.APITimeoutError:
+        _LAST_TIMING["t3b_claude_call_TIMED_OUT"] = _time.monotonic()
         raise RuntimeError(
             "Claude API -aikakatkaisu (>120s) — palvelin ei vastannut, yritä uudelleen"
         )
     except anthropic.APIConnectionError as _ae:
         raise RuntimeError(f"Anthropic yhteysvirhe: {_ae}")
+    _LAST_TIMING["t3c_claude_call_succeeded"] = _time.monotonic()
     raw = unicodedata.normalize("NFC", resp.content[0].text)
     _u = resp.usage
     logger.warning(
@@ -7549,13 +7561,29 @@ def generate_pdf(
 
 def generate_application_draft(inp: ApplicationInput) -> tuple:
     """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
+    _LAST_TIMING.clear()
+    _LAST_TIMING["hanketyyppi"] = inp.hanketyyppi
+    _LAST_TIMING["country"] = inp.country
+    _LAST_TIMING["t0_start"] = _time.monotonic()
+    _LAST_TIMING["t0a_rag_lock_wait_start"] = _time.monotonic()
     with _RAG_LOCK:
+        _LAST_TIMING["t1_rag_lock_acquired"] = _time.monotonic()
         rag_ctx, sources, warning_flag, prec_chunks, prec_sources, _ = \
             _rag_context(inp.hanketyyppi, inp.country or "FI")
-    sections = _generate_sections(inp, rag_ctx, prec_chunks, prec_sources)
+        _LAST_TIMING["t2_rag_context_done"] = _time.monotonic()
+    _LAST_TIMING["t3_before_generate_sections"] = _time.monotonic()
+    try:
+        sections = _generate_sections(inp, rag_ctx, prec_chunks, prec_sources)
+    except Exception as exc:
+        _LAST_TIMING["t4_generate_sections_FAILED"] = _time.monotonic()
+        _LAST_TIMING["error"] = f"{type(exc).__name__}: {exc}"
+        raise
+    _LAST_TIMING["t4_generate_sections_done"] = _time.monotonic()
     _lang = inp.lang or "FI"
     sections = _final_polish(sections, _lang)
+    _LAST_TIMING["t5_final_polish_done"] = _time.monotonic()
     pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources)
+    _LAST_TIMING["t6_pdf_done"] = _time.monotonic()
     return pdf_bytes, sections, sources
 
 

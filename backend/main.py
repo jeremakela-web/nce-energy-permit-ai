@@ -3029,6 +3029,27 @@ async def admin_rag_test(country: str = "FI", hanketyyppi: str = "BESS", secret:
     return {"status": "ping", "country": country, "hanketyyppi": hanketyyppi}
 
 
+@app.get("/api/admin/last-generation-timing")
+async def admin_last_generation_timing(secret: str = ""):
+    """
+    TEMPORARY diagnostic (2026-07-25) — investigating the recurring ~350-380s
+    Claude API timeout. Returns wall-clock checkpoints (seconds since job start)
+    for the single most recent generate_application_draft() call. Only meaningful
+    when tested one generation at a time (not job_id-keyed). Remove once root-caused.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    t = dict(_gen_app_module._LAST_TIMING)
+    base = t.get("t0_start")
+    if base is not None:
+        for k, v in list(t.items()):
+            if isinstance(v, float) and k != "t0_start":
+                t[k] = round(v - base, 2)
+            elif k == "t0_start":
+                t[k] = 0.0
+    return t
+
+
 @app.get("/api/admin/rag-check-all")
 async def admin_rag_check_all(secret: str = ""):
     """
