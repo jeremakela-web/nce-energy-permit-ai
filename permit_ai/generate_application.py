@@ -2210,12 +2210,8 @@ def _rag_context(
                 pass  # maakohtaisia dokumentteja ei vielä indeksoitu
 
         # Step 2: Finnish cfg queries for base context; post-filter enforces country scope.
-        first_emb = None
         for q in cfg["rag_queries"]:
             emb = embed_model.encode([q]).tolist()
-            if first_emb is None:
-                first_emb = emb
-
             try:
                 _collect(
                     col.query(query_embeddings=emb, n_results=_n_oversample),
@@ -2265,43 +2261,39 @@ def _rag_context(
             warning_flag = False
 
         # ── Task 3: Precedent retrieval ───────────────────────────────────────
-        # Primary: filter by doc_type="case_law". All current v2 chunks have doc_type='?'
-        # so this returns 0. Fallback: drop the doc_type filter and return top-5 by
-        # semantic similarity — closest regulatory chunks serve as de-facto precedent.
+        # Oversample + Python post-filter (same pattern as _collect(), commit 3b486dab)
+        # instead of where= — this block was the one place left still using ChromaDB's
+        # where= operator directly after 3b486dab migrated Steps 1/2 off it.
+        # Query with _country_queries[0] (native-language, country-aware — same list
+        # used in Step 1) instead of a Finnish-only query, so non-FI precedent retrieval
+        # doesn't pay the cross-lingual penalty against a foreign-language pool.
+        # Primary: doc_type="case_law" chunks in the allowed country pool. Fallback:
+        # no case_law content for this country yet — closest regulatory chunks in the
+        # same pool serve as de-facto precedent.
         precedent_chunks:  list[str] = []
         precedent_sources: list[str] = []
-        if first_emb:
+        if _country_queries:
             try:
-                prec_results = col.query(
-                    query_embeddings=first_emb,
-                    n_results=5,
-                    where={"$and": [
-                        {"country": {"$in": [country, "EU"]}},
-                        {"doc_type": "case_law"},
-                    ]},
-                )
+                prec_emb = embed_model.encode([_country_queries[0]]).tolist()
+                prec_results = col.query(query_embeddings=prec_emb, n_results=_n_oversample)
                 prec_docs  = prec_results["documents"][0] if prec_results["documents"] else []
                 prec_metas = (prec_results.get("metadatas") or [[]])[0]
+                if not prec_metas:
+                    prec_metas = [{}] * len(prec_docs)
+
+                pool = [
+                    (doc, meta or {}) for doc, meta in zip(prec_docs, prec_metas)
+                    if (meta or {}).get("country", "") in _allowed_countries
+                ]
+                picked = [p for p in pool if p[1].get("doc_type") == "case_law"][:5]
+                if not picked:
+                    picked = pool[:5]
+
+                for doc, meta in picked:
+                    precedent_chunks.append(doc)
+                    precedent_sources.append(meta.get("source", "Viranomainen"))
             except Exception:
-                prec_docs, prec_metas = [], []
-
-            # Fallback: no case_law docs found — query without doc_type filter
-            if not prec_docs:
-                try:
-                    prec_results = col.query(
-                        query_embeddings=first_emb,
-                        n_results=5,
-                        where={"country": {"$in": [country, "EU"]}},
-                    )
-                    prec_docs  = prec_results["documents"][0] if prec_results["documents"] else []
-                    prec_metas = (prec_results.get("metadatas") or [[]])[0]
-                except Exception:
-                    prec_docs, prec_metas = [], []
-
-            for doc, meta in zip(prec_docs, prec_metas):
-                meta = meta or {}
-                precedent_chunks.append(doc)
-                precedent_sources.append(meta.get("source", "Viranomainen"))
+                pass
 
         context = "\n\n---\n\n".join(all_docs)
         sources = [{"id": sid, **info} for sid, info in sorted(all_source_meta.items())]
