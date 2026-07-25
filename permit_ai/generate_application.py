@@ -988,6 +988,7 @@ _HANKE_CFG = {
             "Verkkoliityntälaskelma (tehonlaatuanalyysi)",
             "Maanomistaja- ja sopimustiedot",
             "Lentoestekartoitus (Traficom/Finavia)",
+            "Jäähavainnointijärjestelmän kuvaus",
         ],
         "context_extra": (
             "TUULIVOIMA (MAA) — NELJÄKERROSRAKENNE:\n\n"
@@ -1003,7 +1004,13 @@ _HANKE_CFG = {
             "rajoittaa varjostuksen enintään 8 h/v tai 30 min/d per kohde.\n"
             "- Standardit: IEC 61400-1 (rakenteen kuormitukset) ja IEC 61400-11 (äänitehotaso).\n"
             "- Luontoselvitykset: pesimälinnusto, muuttolinnusto, lepakoiden lentoaktiviteetti "
-            "— tehdään ennen YVA-ohjelman jättämistä.\n\n"
+            "— tehdään ennen YVA-ohjelman jättämistä.\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'jäähavainnointi': kylmän ilmaston tuulivoimaloissa lapoihin voi kertyä jäätä "
+            "(icing), joka aiheuttaa jään sinkoutumisriskin (ice throw) ympäristöön; "
+            "hankkeeseen sisällytetään jäähavainnointi- ja tunnistusjärjestelmä (ice detection) "
+            "sekä automaattinen pysäytys jään kertyessä, kansainvälisen IEA Wind Task 19 "
+            "-ohjeistuksen (Wind Energy in Cold Climates) mukaisesti.\n\n"
 
             "KERROS 2 — YMPÄRISTÖ + YVA [YVA-laki 252/2017, Luonnonsuojelulaki 9/2023]:\n"
             "Käytä osiossa '2. Perustelut'.\n"
@@ -1015,7 +1022,20 @@ _HANKE_CFG = {
             "jos hanke sijoittuu Natura-alueen läheisyyteen.\n"
             "- Linnusto: merikotkalle ≥2 km suojeluetäisyys (FI); DE-hankkeissa "
             "TAK-etäisyydet: Rotmilan ≥1500 m, Seeadler ≥3000 m [Helgoland-Papier].\n"
-            "- Maisemavaikutukset: valokuvasovitteet ja näkyvyysanalyysi liitteiksi.\n\n"
+            "- Maisemavaikutukset: valokuvasovitteet ja näkyvyysanalyysi liitteiksi.\n"
+            "- Jääriskin ympäristö- ja turvallisuusvaikutukset: jään sinkoutumisen "
+            "turvaetäisyydet yleisiin teihin, kulkuväyliin ja rakennuksiin arvioidaan osana "
+            "turvallisuusselvitystä; riskialueet merkitään varoituskyltein jääkaudella.\n"
+            "- FI-erityinen: erillistä jäähavainnointia koskevaa lakipykälää ei ole — vaatimus "
+            "asetetaan tyypillisesti rakennusluvan ehdoissa ja teknisenä turvallisuusvaatimuksena; "
+            "Ilmatieteen laitoksen ja VTT:n jäätämistutkimusta voidaan käyttää tausta-aineistona.\n"
+            "- SE-erityinen: erityistä isbildning-lainsäädäntöä ei ole tunnistettu; "
+            "turvaetäisyydet ja jäähavainnointivaatimukset asetetaan yleensä osana bygglov- ja "
+            "miljötillstånd-ehtoja, erityisesti teiden ja asutuksen läheisyydessä "
+            "[Vaatii tarkistuksen].\n"
+            "- LT-erityinen: ei tunnistettua erillistä jää-/icing-säädöstä; vaatimus "
+            "todennäköisesti sisältyy statybos leidimas -ehtoihin "
+            "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n\n"
 
             "KERROS 3 — LUPAPROSESSI [MRL 132/1999 § 77a, YVA-laki 252/2017, Ilmailulaki 864/2014]:\n"
             "Käytä osiossa '3. Luvat'.\n"
@@ -1028,6 +1048,9 @@ _HANKE_CFG = {
             "Traficom myöntää lentoestevaloluvan [Ilmailulaki 864/2014]; haettava ennen "
             "rakentamista — Finavia lausunto tarvittaessa.\n"
             "- Fingrid verkkoliityntä: SJV-liittymäpyyntö (≥5 MW) / VJV (<5 MW).\n"
+            "- Jäähavainnointijärjestelmän kuvaus ja pysäytyslogiikka liitetään "
+            "rakentamislupahakemukseen turvallisuusselvityksenä; vaatimus perustuu "
+            "lupaehtoihin, ei erillisenä lakisääteisenä velvoitteena.\n"
             "- DE-erityinen: BImSchG-lupa Immissionsschutzbehördeltä; WindBG 2 % Flächenziel "
             "valtioiden maapinta-alasta tuulivoimalle.\n"
             "- NO-erityinen: NVE konsesjon [Energiloven § 3-1]; ennakkoneuvottelu NVE:n kanssa.\n\n"
@@ -1078,6 +1101,7 @@ _HANKE_CFG = {
             "Linnusto- ja lepakkoselvitys merialueella",
             "Puolustusvoimien tutkavaikutusarviointi",
             "Verkkoliityntälaskelma ja muuntajamitoitus",
+            "Jäähavainnointijärjestelmän kuvaus",
         ],
         "context_extra": (
             "TUULIVOIMA (MERI/OFFSHORE) — NELJÄKERROSRAKENNE:\n\n"
@@ -1095,7 +1119,14 @@ _HANKE_CFG = {
             "vaikuttaa kalakantoihin ja merinisäkkäisiin — arviointi IEC 62600-sarjan mukaan.\n"
             "- Merikaapelointi: HVAC (< 80 km) tai HVDC (pitkät etäisyydet) — kaapelireitti "
             "vaatii Traficomin ja Puolustusvoimien lausunnon.\n"
-            "- Standardit: IEC 61400-3-1 (kiinteät rakenteet), IEC 61400-3-2 (kelluvat rakenteet).\n\n"
+            "- Standardit: IEC 61400-3-1 (kiinteät rakenteet), IEC 61400-3-2 (kelluvat rakenteet).\n"
+            "- PAKOLLINEN osiossa '1. Hankkeen kuvaus' — kirjoita tekstiin pakollisesti sanat "
+            "'jäähavainnointi': kylmän ilmaston merituulivoimaloissa lapoihin voi kertyä jäätä "
+            "(icing), joka aiheuttaa jään sinkoutumisriskin (ice throw) merenkulkijoille ja "
+            "huoltoliikenteelle; hankkeeseen sisällytetään jäähavainnointi- ja tunnistusjärjestelmä "
+            "(ice detection) sekä automaattinen pysäytys jään kertyessä, kansainvälisen "
+            "IEA Wind Task 19 -ohjeistuksen (Wind Energy in Cold Climates) mukaisesti — koskee "
+            "sekä rakenteiden jääkuormaa (KERROS 1 yllä) että erillistä turvallisuusriskiä.\n\n"
 
             "KERROS 2 — YMPÄRISTÖ + YVA [YVA-laki 252/2017, Luonnonsuojelulaki 9/2023]:\n"
             "Käytä osiossa '2. Perustelut'.\n"
@@ -1110,7 +1141,19 @@ _HANKE_CFG = {
             "YVA-kynnyksen; YVA-ohjelma jätettävä ELY-keskukselle ennen suunnittelun aloittamista.\n"
             "- Merialuesuunnitelma: tarkista onko alue osoitettu tuulivoima-alueeksi "
             "[Laki merialuesuunnittelusta 905/2016].\n"
-            "- Puolustusvoimien tutkavaikutusarviointi: tehtävä ennen lupaprosessin aloittamista.\n\n"
+            "- Puolustusvoimien tutkavaikutusarviointi: tehtävä ennen lupaprosessin aloittamista.\n"
+            "- Jääriskin meriturvallisuusvaikutukset: jään sinkoutumisen turvaetäisyydet "
+            "merikulkuväyliin ja huoltoreitteihin arvioidaan osana turvallisuusselvitystä; "
+            "riskialueet merkitään merikarttaan ja varoitusjärjestelmällä jääkaudella.\n"
+            "- FI-erityinen: erillistä jäähavainnointia koskevaa lakipykälää ei ole — vaatimus "
+            "asetetaan tyypillisesti rakennus- ja vesiluvan ehdoissa; Ilmatieteen laitoksen "
+            "merijäätietoa voidaan käyttää tausta-aineistona.\n"
+            "- SE-erityinen: erityistä isbildning-lainsäädäntöä ei ole tunnistettu; "
+            "turvaetäisyydet ja jäähavainnointivaatimukset asetetaan yleensä osana "
+            "vattenverksamhet- ja miljötillstånd-ehtoja [Vaatii tarkistuksen].\n"
+            "- LT-erityinen: ei tunnistettua erillistä jää-/icing-säädöstä merituulivoimalle; "
+            "vaatimus todennäköisesti sisältyy statybos leidimas- ja PAV-ehtoihin "
+            "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n\n"
 
             "KERROS 3 — LUPAPROSESSI [Vesilaki 587/2011, Merilaki 674/1994]:\n"
             "Käytä osiossa '3. Luvat'.\n"
@@ -1170,6 +1213,7 @@ _HANKE_CFG = {
             "Maaperä- ja hulevesiselvitys (suuri-alainen asennus)",
             "Luontoselvitys (ekologiset yhteydet, mahdollinen Natura)",
             "Asukasosallistumisen asiakirjat (suunnittelutarveratkaisussa)",
+            "Purkusuunnitelma ja maisemointivelvoite",
             "Hakijan rekisteriote",
         ],
         "context_extra": (
@@ -1186,7 +1230,11 @@ _HANKE_CFG = {
             "751/2023, 44 §].\n"
             "- Maankäyttö: noin 1–1,5 ha/MW; agri-PV mahdollistaa maataloustoiminnan "
             "aurinkopaneelien alla.\n"
-            "- Seurantajärjestelmä (tracker): yksiakselinen +15–25 %, kaksiakselinen +25–35 %.\n\n"
+            "- Seurantajärjestelmä (tracker): yksiakselinen +15–25 %, kaksiakselinen +25–35 %.\n"
+            "- Hankkeen elinkaari ja purku: aurinkovoimalan tekninen käyttöikä on tyypillisesti "
+            "25–30 vuotta, jonka jälkeen laitteisto puretaan ja alue maisemoidaan ennalleen tai "
+            "sovitun jälkikäytön mukaisesti. Purkusuunnitelma ja maisemointivelvoite kirjataan "
+            "maanvuokrasopimukseen tai lupaehtoihin.\n\n"
 
             "KERROS 2 — YMPÄRISTÖ + YVA [YVA-laki 252/2017, YSL 527/2014]:\n"
             "Käytä osiossa '2. Perustelut'.\n"
@@ -1196,8 +1244,25 @@ _HANKE_CFG = {
             "tapauskohtainen harkinta ELY-keskuksessa.\n"
             "- Maisema- ja kulttuuriympäristövaikutukset: ELY-lausunto [MRL 197 §].\n"
             "- Luontoarvot: ekologiset yhteydet, mahdollinen Natura 2000 -arviointi.\n"
-            "- DE-erityinen: EEG Ausschreibung (EEG 2023) — tarjouskilpailu syöttötariffeista.\n"
-            "- SE-erityinen: Energimyndigheten nätkoncessionsansökan suurille laitoksille.\n\n"
+            "- PAKOLLINEN osiossa '2. Perustelut' — kirjoita tekstiin pakollisesti sanat "
+            "'purkuvelvoite': hankkeen purkuvelvoite ja alueen maisemointi hankkeen päättyessä "
+            "on keskeinen ympäristöperuste — purkukustannuksiin varaudutaan taloudellisella "
+            "vakuudella (purkuvakuus), joka turvaa alueen ennallistamisen jos toiminnanharjoittaja "
+            "ei täytä velvoitettaan.\n"
+            "- FI-erityinen: Rakentamislaki 751/2023 ja maanvuokrasopimus määrittävät "
+            "purkuvelvoitteen yksityiskohdat; erillistä valtakunnallista aurinkovoimalan "
+            "purkulakia ei ole, joten velvoite perustuu sopimusehtoihin ja kunnan lupaehtoihin.\n"
+            "- SE-erityinen: Miljöbalken (MB 1998:808) 2 kap. 8 § asettaa toiminnanharjoittajalle "
+            "efterbehandlingsansvar (jälkihoitovelvollisuus) — alue on palautettava ennalleen "
+            "toiminnan päätyttyä; suurempien laitosten kohdalla Länsstyrelsen voi vaatia "
+            "taloudellisen vakuuden (ekonomisk säkerhet, MB 16 kap. 3 §) purkukustannusten "
+            "kattamiseksi [Vaatii tarkistuksen tarkkojen pykälänumeroiden osalta]. "
+            "Energimyndigheten nätkoncessionsansökan suurille laitoksille.\n"
+            "- LT-erityinen: Liettuan lainsäädännössä ei ole tunnistettu erillistä "
+            "aurinkovoimalan purku- tai maisemointisäädöstä — velvoite perustunee "
+            "maanvuokrasopimukseen ja PAV-menettelyn (Poveikio aplinkai vertinimas) ehtoihin "
+            "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n"
+            "- DE-erityinen: EEG Ausschreibung (EEG 2023) — tarjouskilpailu syöttötariffeista.\n\n"
 
             "KERROS 3 — LUPAPROSESSI [MRL 132/1999 § 137, YSL 527/2014]:\n"
             "Käytä osiossa '3. Luvat'.\n"
@@ -1207,7 +1272,10 @@ _HANKE_CFG = {
             "käsittely kunnassa, naapurikuuleminen pakollinen.\n"
             "- Ympäristölupa: tarvitaan ≥1 ha tai pohjavesialueelle [YSL 527/2014].\n"
             "- Maisema- tai kulttuuriympäristölausunto: ELY-keskus, 30 pv.\n"
-            "- Verkkoliityntäsopimus: jakeluverkkoyhtiö (DSO), käsittelyaika 3–6 kk.\n\n"
+            "- Verkkoliityntäsopimus: jakeluverkkoyhtiö (DSO), käsittelyaika 3–6 kk.\n"
+            "- Purkusuunnitelma ja maisemointivelvoite: liitetään hakemukseen alustava purku- "
+            "ja maisemointisuunnitelma sekä selvitys taloudellisesta vakuudesta (purkuvakuus), "
+            "erityisesti pitkäaikaisilla maanvuokrasopimuksilla (20–30 v).\n\n"
 
             "KERROS 4 — VIRANOMAISLIITE [aikataulut, kontaktit]:\n"
             "Käytä osiossa '3. Luvat' ja '6. Seuraavat toimenpiteet'.\n"
