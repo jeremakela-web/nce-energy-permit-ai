@@ -2386,65 +2386,96 @@ _COUNTRY_CONFIG: dict[str, dict] = {
     },
     "SE": {
         "name": "Sweden / Sverige",
-        "authorities": ["Länsstyrelsen", "Energimyndigheten", "Boverket", "Mark- och miljödomstolen", "Naturvårdsverket"],
+        "authorities": ["Länsstyrelsen", "Energimyndigheten", "Boverket", "Mark- och miljödomstolen", "Naturvårdsverket",
+                         "Svenska kraftnät (TSO — transmission grid connection, equivalent to Finnish Fingrid)",
+                         "Elsäkerhetsverket (Swedish National Electrical Safety Board — electrical installation safety, equivalent to Finnish Tukes)"],
         "key_laws": ["Plan- och bygglagen (PBL 2010:900)", "Miljöbalken (MB 1998:808)", "Ellagen (1997:857)", "Miljöprövningsförordningen (2013:251)"],
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in SWEDEN. Apply Swedish regulatory framework:\n"
             "Key authorities: Länsstyrelsen (county board), Energimyndigheten (energy agency), "
             "Boverket (building standards), Mark- och miljödomstolen (environmental court), "
-            "Naturvårdsverket (environmental protection).\n"
+            "Naturvårdsverket (environmental protection), "
+            "Svenska kraftnät (TSO — transmission grid connection = nätanslutningsavtal; "
+            "equivalent to Finnish Fingrid), "
+            "Elsäkerhetsverket (electrical installation safety authority; equivalent to Finnish Tukes).\n"
             "Key laws: Plan- och bygglagen PBL 2010:900 (building permits = Bygglov), "
             "Miljöbalken MB 1998:808 (environmental permits = Miljötillstånd), "
             "Ellagen 1997:857 (grid connection), Miljöprövningsförordningen 2013:251 (EIA = MKB).\n"
-            "Replace all Finnish law references (MRL, YSL, YVA-laki) with Swedish equivalents. "
+            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Fingrid) "
+            "with the Swedish equivalents listed above (Länsstyrelsen, Elsäkerhetsverket, Svenska kraftnät). "
             "If a Swedish equivalent is uncertain, mark it: [Requires verification against Swedish regulations].\n\n"
         ),
     },
     "DA": {
         "name": "Denmark / Danmark",
-        "authorities": ["Energistyrelsen", "Miljøstyrelsen", "kommunalbestyrelse", "Planklagenævnet", "Kystdirektoratet"],
+        "authorities": ["Energistyrelsen", "Miljøstyrelsen", "kommunalbestyrelse", "Planklagenævnet", "Kystdirektoratet",
+                         "Energinet (TSO — transmission grid connection, equivalent to Finnish Fingrid)",
+                         "Sikkerhedsstyrelsen (Danish Safety Technology Authority — electrical installation safety, equivalent to Finnish Tukes)"],
         "key_laws": ["Planloven (LBK nr 1157/2022)", "Miljøvurderingsloven (LOV nr 973/2023)", "Elforsyningsloven (LBK nr 1255/2021)", "Naturbeskyttelsesloven"],
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in DENMARK. Apply Danish regulatory framework:\n"
             "Key authorities: Energistyrelsen (Danish Energy Agency), Miljøstyrelsen (EPA), "
             "kommunalbestyrelse (municipal council), Planklagenævnet (planning appeals board), "
-            "Kystdirektoratet (coastal authority for offshore).\n"
+            "Kystdirektoratet (coastal authority for offshore), "
+            "Energinet (TSO — transmission grid connection = nettilslutningsaftale; "
+            "equivalent to Finnish Fingrid), "
+            "Sikkerhedsstyrelsen (electrical installation safety authority; equivalent to Finnish Tukes).\n"
             "Key laws: Planloven for land use planning (building permit = Byggetilladelse), "
             "Miljøvurderingsloven for EIA (= Miljøkonsekvensvurdering / MKV), "
             "Elforsyningsloven for electricity supply, Naturbeskyttelsesloven for nature protection.\n"
-            "Replace Finnish law references with Danish equivalents. "
+            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Fingrid) "
+            "with the Danish equivalents listed above (Miljøstyrelsen, Sikkerhedsstyrelsen, Energinet). "
             "Mark uncertain items: [Requires verification against Danish regulations].\n\n"
         ),
     },
     "NO": {
         "name": "Norway / Norge",
-        "authorities": ["NVE (Norges vassdrags- og energidirektorat)", "Statsforvalteren", "DSB", "Kommunen", "Miljødirektoratet"],
+        "authorities": ["NVE (Norges vassdrags- og energidirektorat)", "Statsforvalteren", "DSB", "Kommunen", "Miljødirektoratet",
+                         "Statnett (TSO — transmission grid connection, equivalent to Finnish Fingrid)"],
         "key_laws": ["Plan- og bygningsloven (PBL 2008)", "Energiloven (1990)", "Forurensningsloven (1981)", "Naturmangfoldloven (2009)"],
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in NORWAY. Apply Norwegian regulatory framework:\n"
-            "Key authorities: NVE (Norwegian Water Resources and Energy Directorate), "
-            "Statsforvalteren (county governor), DSB (civil protection), Kommunen (municipality), "
-            "Miljødirektoratet (Environment Agency).\n"
+            "Key authorities: NVE (Norwegian Water Resources and Energy Directorate — concessions), "
+            "Statsforvalteren (county governor), "
+            "DSB (Direktoratet for samfunnssikkerhet og beredskap — civil protection, incl. electrical "
+            "installation safety; equivalent to Finnish Tukes), "
+            "Kommunen (municipality), Miljødirektoratet (Environment Agency), "
+            "Statnett (TSO — transmission grid connection = nettilknytningsavtale; "
+            "equivalent to Finnish Fingrid).\n"
             "Key laws: Plan- og bygningsloven PBL 2008 (building permit = Byggetillatelse), "
             "Energiloven 1990 (energy facilities), Forurensningsloven 1981 (pollution/environmental), "
             "Naturmangfoldloven 2009 (biodiversity). EIA = Konsekvensutredning (KU).\n"
-            "Replace Finnish law references with Norwegian equivalents. "
+            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Fingrid) "
+            "with the Norwegian equivalents listed above (Statsforvalteren, DSB, Statnett). "
             "Mark uncertain items: [Requires verification against Norwegian regulations].\n\n"
         ),
     },
     "PL": {
         "name": "Poland / Polska",
-        "authorities": ["PAA (Państwowa Agencja Atomistyki)", "URE (Urząd Regulacji Energetyki)", "RDOŚ", "Starosta (building authority)", "GDOŚ"],
+        "authorities": ["PAA (Państwowa Agencja Atomistyki)",
+                         "URE (Urząd Regulacji Energetyki — energy market regulator, licensing)",
+                         "PSE S.A. (Polskie Sieci Elektroenergetyckie — TSO, transmission grid operator; "
+                         "equivalent to Finnish Fingrid)",
+                         "RDOŚ", "Starosta (building authority)", "GDOŚ",
+                         "UDT (Urząd Dozoru Technicznego — Technical Inspection Authority; closest Polish "
+                         "equivalent to Finnish Tukes for technical/electrical equipment safety)"],
         "key_laws": ["Prawo atomowe (Ustawa z 29.11.2000)", "Prawo budowlane (Ustawa z 7.07.1994)", "Ustawa o OZE (20.02.2015)", "Ustawa o udostępnianiu informacji o środowisku"],
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in POLAND. Apply Polish regulatory framework:\n"
             "Key authorities: PAA (State Nuclear Agency, for nuclear projects), "
-            "URE (Energy Regulatory Office), RDOŚ (Regional Environmental Directorate), "
+            "URE (Energy Regulatory Office — market regulator and licensing, NOT the grid operator itself), "
+            "PSE S.A. (Polskie Sieci Elektroenergetyckie — the actual transmission grid operator/TSO; "
+            "grid connection = umowa przyłączeniowa; equivalent to Finnish Fingrid), "
+            "RDOŚ (Regional Environmental Directorate), "
             "Starosta (poviat/district authority for building permits = Pozwolenie na budowę), "
-            "GDOŚ (General Directorate for Environmental Protection).\n"
+            "GDOŚ (General Directorate for Environmental Protection), "
+            "UDT (Urząd Dozoru Technicznego — technical/electrical equipment safety inspection; "
+            "closest Polish equivalent to Finnish Tukes).\n"
             "Key laws: Prawo budowlane 1994 (building permits), Ustawa o OZE 2015 (renewables), "
             "Prawo atomowe 2000 (nuclear), Ustawa o udostępnianiu informacji o środowisku (EIA = OOŚ).\n"
-            "Replace Finnish law references with Polish equivalents. "
+            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Fingrid) "
+            "with the Polish equivalents listed above (RDOŚ, UDT, PSE S.A. — not URE, which is the "
+            "regulator rather than the grid operator). "
             "Mark uncertain items: [Requires verification against Polish regulations].\n\n"
         ),
     },
@@ -2459,6 +2490,8 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Kaitseministeerium (Ministry of Defence — wind radar clearance)",
             "Terviseamet (Health Board — radiation, nuclear)",
             "Transpordiamet (Transport Administration — aviation, maritime)",
+            "TTJA (Tehnilise Järelevalve Amet — Technical Regulatory Authority; "
+            "electrical/technical equipment safety, equivalent to Finnish Tukes)",
         ],
         "key_laws": [
             "Elektrituruseadus (ETS, RT I 2012) — electricity market, production license",
@@ -2478,7 +2511,9 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "elektrienergia tootmise luba), "
             "Elering AS (TSO, equivalent to Fingrid — transmission grid connection = liitumisleping), "
             "Elektrilevi OÜ (DSO — distribution grid connection for smaller projects), "
-            "Kaitseministeerium (Ministry of Defence — mandatory military radar clearance for wind).\n"
+            "Kaitseministeerium (Ministry of Defence — mandatory military radar clearance for wind), "
+            "TTJA (Tehnilise Järelevalve Amet — technical/electrical equipment safety; "
+            "equivalent to Finnish Tukes).\n"
             "Key laws: Elektrituruseadus ETS (electricity market + production license), "
             "KMH-KSH seadus (EIA = Keskkonnamõju hindamine / KMH), "
             "Ehitusseadustik EhS (building permit = ehitusluba), "
@@ -2494,7 +2529,8 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "BESS: no dedicated BESS regulation — general ETS framework applies. "
             "SMR: no nuclear power law yet (draft Tuumaenergia seadus under development) — "
             "regWarning status, fundamental legislative gap.\n"
-            "Replace Finnish law references (MRL, YSL, YVA-laki) with Estonian equivalents. "
+            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Fingrid) "
+            "with the Estonian equivalents listed above (Keskkonnaamet, TTJA, Elering AS). "
             "Mark uncertain items: [Requires verification against Estonian regulations].\n\n"
         ),
     },
@@ -2676,8 +2712,12 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "8. Radar- und Richtfunkprüfung (radar / microwave link clearance, Bundeswehr / Bundesnetzagentur), "
             "9. Standsicherheitsnachweis (structural safety certificate, Bauordnungsrecht), "
             "10. Brandschutzkonzept (fire safety concept).\n"
-            "Replace ALL Finnish law references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Finavia) "
-            "with the German equivalents listed above. "
+            "Replace ALL Finnish law references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Finavia, "
+            "Fingrid) with the German equivalents listed above (Fingrid → Bundesnetzagentur/BNetzA for "
+            "grid connection). Note: Germany has no single federal equivalent to Tukes (technical/electrical "
+            "safety oversight is split between Länder-level Gewerbeaufsichtsämter and certified inspection "
+            "bodies such as TÜV/DEKRA) — mark any Tukes-context item [Requires verification against "
+            "applicable Landesrecht] rather than inventing a specific authority name. "
             "Mark items requiring local Land-level verification: "
             "[Requires verification against applicable Landesrecht].\n\n"
         ),
@@ -3568,6 +3608,20 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Detaljplan / kommunal markanvändningsplan",
             "Bolagsregistreringsutdrag (Bolagsverket)",
         ],
+        "datakeskus": [
+            "Lägeskarta (skala 1:20 000 eller vidare)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Situationsplan och baskarta (skala 1:500)",
+            "Byggnadsritningar (tekniskt utrymme, kylsystem)",
+            "Bullerutredning (kyl- och aggregatbuller)",
+            "Värmelastutredning för kylning",
+            "Elsystemplan (UPS, reservkraft, anslutning)",
+            "Brandsläcknings- och brandsäkerhetsplan",
+            "Nätanslutningsberäkning (Svenska kraftnät kapacitetsutredning)",
+            "Miljökonsekvensbedömning (vid behov)",
+            "PUE- och energieffektivitetsutredning",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+        ],
     },
     "DA": {
         "SMR": [
@@ -3589,6 +3643,20 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Brandsikkerhedsrapport BESS (NFPA 855 / EN 50604-1)",
             "Nettilslutningsplan (Energinet)",
             "Lokalplan / kommuneplanramme",
+            "Virksomhedsregistreringsudskrift (CVR)",
+        ],
+        "datakeskus": [
+            "Beliggenhedskort (1:20.000 eller bredere)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Situationsplan og grundkort (1:500)",
+            "Byggetegninger (teknikrum, kølesystemer)",
+            "Støjundersøgelse (køle- og aggregatstøj)",
+            "Varmelastundersøgelse for køling",
+            "Elsystemplan (UPS, nødstrøm, tilslutning)",
+            "Brandslukning- og brandsikkerhedsplan",
+            "Nettilslutningsberegning (Energinet kapacitetsundersøgelse)",
+            "Miljøkonsekvensvurdering (hvis relevant)",
+            "PUE- og energieffektivitetsundersøgelse",
             "Virksomhedsregistreringsudskrift (CVR)",
         ],
     },
@@ -3614,6 +3682,20 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Reguleringsplan / kommuneplan",
             "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
         ],
+        "datakeskus": [
+            "Kart / Stedsbeskrivelse (1:20 000 eller bredere)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Situasjonsplan og grunnkart (1:500)",
+            "Byggetegninger (teknisk rom, kjølesystemer)",
+            "Støyutredning (kjøle- og aggregatstøy)",
+            "Varmelastutredning for kjøling",
+            "Elsystemplan (UPS, reservekraft, tilknytning)",
+            "Brannslukking- og brannsikkerhetsplan",
+            "Nettilknytningsberegning (Statnett kapasitetsutredning)",
+            "Konsekvensutredning (ved behov)",
+            "PUE- og energieffektivitetsutredning",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+        ],
     },
     "PL": {
         "SMR": [
@@ -3635,6 +3717,20 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Raport bezpieczeństwa pożarowego BESS (NFPA 855 / EN 50604-1)",
             "Plan przyłączenia do sieci (PSE S.A.)",
             "Miejscowy plan zagospodarowania przestrzennego (MPZP)",
+            "Odpis z KRS / CEIDG",
+        ],
+        "datakeskus": [
+            "Mapa lokalizacyjna (skala 1:20 000 lub większa)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Plan sytuacyjny i mapa zasadnicza (skala 1:500)",
+            "Projekty budowlane (pomieszczenie techniczne, systemy chłodzenia)",
+            "Raport hałasowy (hałas chłodzenia i agregatów)",
+            "Analiza obciążenia cieplnego chłodzenia",
+            "Plan systemu elektrycznego (UPS, zasilanie awaryjne, przyłącze)",
+            "Plan gaszenia pożaru i bezpieczeństwa pożarowego",
+            "Plan przyłączenia do sieci (PSE S.A. — analiza zdolności przyłączeniowej)",
+            "Ocena oddziaływania na środowisko (w razie potrzeby)",
+            "Raport PUE i efektywności energetycznej",
             "Odpis z KRS / CEIDG",
         ],
     },
@@ -3683,6 +3779,20 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Liitumisleping Elering AS-iga (grid connection agreement)",
             "Kalandusuuringute mõjuhinnang (fisheries impact assessment)",
             "Meresõiduohutuse hinnang (maritime navigation safety — Transpordiamet)",
+            "Äriregistri väljavõte (Company Registry extract)",
+        ],
+        "datakeskus": [
+            "Asukohakaart (mõõtkava 1:20 000 või laiem)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Situatsiooniplaan ja põhikaart (mõõtkava 1:500)",
+            "Ehitusprojektid (tehniline ruum, jahutussüsteemid)",
+            "Müraraport (jahutus- ja generaatorimüra)",
+            "Jahutuse soojuskoormuse analüüs",
+            "Elektrisüsteemi plaan (UPS, reservtoide, liitumine)",
+            "Tuletõrje- ja tuleohutusplaan",
+            "Liitumisleping Elering AS-iga (võimsusuuring)",
+            "Keskkonnamõju hindamine (vajadusel)",
+            "PUE ja energiatõhususe aruanne",
             "Äriregistri väljavõte (Company Registry extract)",
         ],
     },
@@ -3757,6 +3867,20 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Brandschutzkonzept BESS (NFPA 855 / VdS 3500)",
             "UVP-Bericht (UVPG)",
             "Netzanschlussplanung (Übertragungsnetzbetreiber — EnWG)",
+            "Handelsregisterauszug des Antragstellers",
+        ],
+        "datakeskus": [
+            "Lageplan (Maßstab 1:20 000 oder weiter)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Lageplan und Katasterkarte (Maßstab 1:500)",
+            "Baupläne (Technikraum, Kühlsysteme)",
+            "Schallimmissionsprognose (Kühl- und Aggregatlärm)",
+            "Wärmelastuntersuchung für Kühlung",
+            "Elektrosystemplan (USV, Notstrom, Netzanschluss)",
+            "Brandbekämpfungs- und Brandschutzkonzept",
+            "Netzanschlussbegehren (BNetzA / Netzbetreiber — Kapazitätsnachweis, EnWG § 5)",
+            "UVP-Bericht (falls erforderlich)",
+            "PUE- und Energieeffizienznachweis",
             "Handelsregisterauszug des Antragstellers",
         ],
     },
