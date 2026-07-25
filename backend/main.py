@@ -2793,7 +2793,10 @@ async def admin_ingest_playwright():
     """
     try:
         from ingest_playwright import ingest_playwright, SOURCES
-        summary = ingest_playwright(SOURCES)
+        # ingest_playwright() calls asyncio.run() internally (Playwright needs
+        # its own event loop) — cannot be called directly from this already-
+        # running async endpoint. Run it in a worker thread instead.
+        summary = await asyncio.to_thread(ingest_playwright, SOURCES)
         count = sum(row.get("chunks_added", 0) for row in summary)
         return {"status": "ok", "chunks_indexed": count, "summary": summary}
     except Exception as exc:
