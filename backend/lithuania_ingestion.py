@@ -128,6 +128,13 @@ LITHUANIA_SOURCES: list[dict] = [
     {
         "name": "lt_pav_istatymas",
         "url": "https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.40705",
+        # e-seimas.lrs.lt blocks automated fetches (see manual sourcing backlog).
+        # Static copy below is the officially consolidated text (redakcija nuo
+        # 2026-02-21), manually sourced, including Annexes 1 and 2 with the
+        # project-type-specific PAV/atranka thresholds.
+        "local_path": str(
+            Path(__file__).parent.parent / "permit_ai" / "rag_docs" / "LT" / "lt_pav_istatymas.txt"
+        ),
         "type": "html",
         "category": "eia_law",
         "description": (
@@ -564,26 +571,41 @@ def ingest_lithuania_sources(sources: list[dict] | None = None) -> int:
         print(f"  URL: {url[:80]}")
         print(f"  hanketyyppi_tag: {ht_tag}")
 
-        # Download
-        try:
-            raw = _download(url)
-            print(f"  Downloaded {len(raw):,} bytes")
-        except Exception as exc:
-            msg = f"download failed: {exc}"
-            log.warning("[lithuania] %s: %s", name, msg)
-            print(f"  WARN: {msg} — skipping")
-            summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg})
-            continue
+        local_path = src.get("local_path")
+        if local_path:
+            # Static source file — bypasses the network fetch entirely (e.g. for
+            # domains that block automated requests). Mirrors the static-file
+            # pattern used by ingest_countries.py for SE/DA/NO/EE/PL/DE.
+            try:
+                text = Path(local_path).read_text(encoding="utf-8")
+                print(f"  Read {len(text):,} chars from local file: {local_path}")
+            except Exception as exc:
+                msg = f"local file read failed: {exc}"
+                log.warning("[lithuania] %s: %s", name, msg)
+                print(f"  WARN: {msg} — skipping")
+                summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg})
+                continue
+        else:
+            # Download
+            try:
+                raw = _download(url)
+                print(f"  Downloaded {len(raw):,} bytes")
+            except Exception as exc:
+                msg = f"download failed: {exc}"
+                log.warning("[lithuania] %s: %s", name, msg)
+                print(f"  WARN: {msg} — skipping")
+                summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg})
+                continue
 
-        # Extract text
-        try:
-            text = _extract_pdf(raw) if kind == "pdf" else _extract_html(raw)
-        except Exception as exc:
-            msg = f"text extraction failed: {exc}"
-            log.warning("[lithuania] %s: %s", name, msg)
-            print(f"  WARN: {msg} — skipping")
-            summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg})
-            continue
+            # Extract text
+            try:
+                text = _extract_pdf(raw) if kind == "pdf" else _extract_html(raw)
+            except Exception as exc:
+                msg = f"text extraction failed: {exc}"
+                log.warning("[lithuania] %s: %s", name, msg)
+                print(f"  WARN: {msg} — skipping")
+                summary.append({"source": name, "status": "FAIL", "chunks": 0, "reason": msg})
+                continue
 
         if len(text.split()) < 200:
             msg = f"too short ({len(text.split())} words) — possible 404 or redirect"
