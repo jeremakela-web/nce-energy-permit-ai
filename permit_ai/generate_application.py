@@ -733,13 +733,25 @@ def _proofread_sections(sections: dict) -> dict:
         "diakriittimerkki- ja kielioppivirheiden osalta. Palauta teksti täsmälleen samassa "
         "rakenteessa kuin sait sen."
     )
+    # Streaming, same reasoning and pattern as the main generation call in
+    # _generate_sections(): a blocking call with timeout=120.0 can trigger the
+    # SDK's default retry on a call that's merely slow, cascading into a
+    # multi-minute wait before finally hitting this function's own fallback.
+    # timeout=600.0 is safe here specifically because the fallback-on-genuine-
+    # timeout behavior below is unchanged — a real stall still degrades
+    # gracefully to the original text, it just won't be mistaken for a stall
+    # after 120s of ordinary (if slow) progress.
+    _LAST_TIMING["t7_proofread_start"] = _time.monotonic()
     try:
-        resp = anthropic.Anthropic(timeout=120.0).messages.create(
+        with anthropic.Anthropic(timeout=600.0).messages.stream(
             model=_MODEL_ID,
             max_tokens=6000,
             system=[{"type": "text", "text": _PROOF_SYSTEM, "cache_control": {"type": "ephemeral"}}],
             messages=[{"role": "user", "content": prompt}],
-        )
+        ) as stream:
+            raw_parts = [text for text in stream.text_stream]
+            resp = stream.get_final_message()
+        _LAST_TIMING["t7c_proofread_succeeded"] = _time.monotonic()
         _pu = resp.usage
         logger.warning(
             "[cache/proof] creation=%s read=%s input=%s output=%s",
@@ -747,7 +759,7 @@ def _proofread_sections(sections: dict) -> dict:
             getattr(_pu, "cache_read_input_tokens", 0),
             _pu.input_tokens, _pu.output_tokens,
         )
-        corrected = unicodedata.normalize("NFC", resp.content[0].text)
+        corrected = unicodedata.normalize("NFC", "".join(raw_parts))
         result = dict(sections)
         for block in corrected.split("===OSIO:"):
             block = block.strip()
@@ -767,12 +779,18 @@ def _proofread_sections(sections: dict) -> dict:
             if _ae.status_code == 402
             else f"Anthropic API virhe {_ae.status_code}"
         )
+        _LAST_TIMING["t7b_proofread_FALLBACK"] = _time.monotonic()
+        _LAST_TIMING["proofread_fallback_reason"] = _msg
         print(f"[oikoluku] Varoitus: {_msg} — käytetään alkuperäistä tekstiä")
         return sections
     except anthropic.APITimeoutError:
-        print("[oikoluku] Varoitus: aikakatkaisu (>120s) — käytetään alkuperäistä tekstiä")
+        _LAST_TIMING["t7b_proofread_FALLBACK"] = _time.monotonic()
+        _LAST_TIMING["proofread_fallback_reason"] = "aikakatkaisu (>600s)"
+        print("[oikoluku] Varoitus: aikakatkaisu (>600s) — käytetään alkuperäistä tekstiä")
         return sections
     except Exception as exc:
+        _LAST_TIMING["t7b_proofread_FALLBACK"] = _time.monotonic()
+        _LAST_TIMING["proofread_fallback_reason"] = str(exc)
         print(f"[oikoluku] Varoitus: {exc} — käytetään alkuperäistä tekstiä")
         return sections
 
