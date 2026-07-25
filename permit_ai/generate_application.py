@@ -6122,12 +6122,23 @@ def _generate_sections(
         f"## {ph['toimenpiteet']}\n{toim_inst}"
     )
 
-    claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=120.0)
+    # Streaming, not a blocking create(): this prompt is ~30K+ input tokens with
+    # max_tokens=8000 output, and a non-streaming call can legitimately run past
+    # a per-call timeout while still making progress (confirmed via instrumented
+    # reproduction 2026-07-25 — httpx measures time between chunks on a stream,
+    # not total call duration). timeout=600.0 is generous because it now only
+    # matters as a stall detector. The SDK's default retry (max_retries=2, not
+    # overridden here) is kept deliberately: with streaming, a retry now only
+    # triggers on a genuine multi-second stall, which is exactly the case
+    # retries should handle — before this change, retries were instead
+    # multiplying a single slow-but-fine ~120-200s call into a cascading
+    # 2-3x wait that occasionally exhausted all attempts as a hard failure.
+    claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
     _LAST_TIMING["t3a_claude_call_start"] = _time.monotonic()
     _LAST_TIMING["prompt_context_chars"] = len(prompt_context)
     _LAST_TIMING["prompt_task_chars"] = len(prompt_task)
     try:
-        resp = claude.messages.create(
+        with claude.messages.stream(
             model=_MODEL_ID,
             max_tokens=8000,
             system=[{"type": "text", "text": _SYSTEM, "cache_control": {"type": "ephemeral"}}],
@@ -6135,7 +6146,9 @@ def _generate_sections(
                 {"type": "text", "text": prompt_context, "cache_control": {"type": "ephemeral"}},
                 {"type": "text", "text": prompt_task},
             ]}],
-        )
+        ) as stream:
+            raw_parts = [text for text in stream.text_stream]
+            resp = stream.get_final_message()
     except anthropic.RateLimitError:
         raise RuntimeError(
             "API rate limit (429) — pyyntöjä liikaa, yritä hetken kuluttua"
@@ -6154,12 +6167,12 @@ def _generate_sections(
     except anthropic.APITimeoutError:
         _LAST_TIMING["t3b_claude_call_TIMED_OUT"] = _time.monotonic()
         raise RuntimeError(
-            "Claude API -aikakatkaisu (>120s) — palvelin ei vastannut, yritä uudelleen"
+            "Claude API -aikakatkaisu (>600s) — palvelin ei vastannut, yritä uudelleen"
         )
     except anthropic.APIConnectionError as _ae:
         raise RuntimeError(f"Anthropic yhteysvirhe: {_ae}")
     _LAST_TIMING["t3c_claude_call_succeeded"] = _time.monotonic()
-    raw = unicodedata.normalize("NFC", resp.content[0].text)
+    raw = unicodedata.normalize("NFC", "".join(raw_parts))
     _u = resp.usage
     logger.warning(
         "[cache] creation=%s read=%s input=%s output=%s stop=%s raw_len=%d",
