@@ -2781,6 +2781,44 @@ async def admin_ingest_caruna():
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.post("/api/admin/ingest-playwright", dependencies=[Depends(_require_admin)])
+async def admin_ingest_playwright():
+    """
+    Re-run the Playwright headless ingest (JS-rendered SPA sources, incl. EU
+    BAT-conclusions / EIA-directive content) into permit_docs_v2. Admin only.
+
+    Previously CLI-only (permit_ai/ingest_playwright.py), no admin endpoint —
+    its content was never re-ingested after the mpnet v2 embedding migration,
+    unlike every other country's ingestion path. This endpoint closes that gap.
+    """
+    try:
+        from ingest_playwright import ingest_playwright, SOURCES
+        summary = ingest_playwright(SOURCES)
+        count = sum(row.get("chunks_added", 0) for row in summary)
+        return {"status": "ok", "chunks_indexed": count, "summary": summary}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/admin/ingest-precedent", dependencies=[Depends(_require_admin)])
+async def admin_ingest_precedent():
+    """
+    Re-run the precedent/case-law ingest (incl. EU BAT-conclusions, EIA
+    directive, EU BIM content) into permit_docs_v2. Admin only.
+
+    Previously CLI-only (permit_ai/ingest_precedent.py), no admin endpoint —
+    its content was never re-ingested after the mpnet v2 embedding migration,
+    unlike every other country's ingestion path. This endpoint closes that gap.
+    """
+    try:
+        from ingest_precedent import ingest_precedent, SOURCES
+        summary = ingest_precedent(SOURCES)
+        count = sum(row.get("chunks_added", 0) for row in summary)
+        return {"status": "ok", "chunks_indexed": count, "summary": summary}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 @app.post("/api/admin/reindex-ee-v2", dependencies=[Depends(_require_admin)])
 async def admin_reindex_ee_v2():
     """
