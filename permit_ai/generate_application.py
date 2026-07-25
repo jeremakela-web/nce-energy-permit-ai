@@ -7407,6 +7407,119 @@ def generate_pdf(
             story.append(Spacer(1, 2*mm))
         story.append(Spacer(1, 4*mm))
 
+    # ── Kannattavuusarvio (kannattavuuslaskenta v1, permit_ai/feasibility.py) ──
+    from feasibility import calculate_feasibility as _calc_feasibility
+    from xml.sax.saxutils import escape as _xml_escape
+    _feas = _calc_feasibility(
+        inp.hanketyyppi, inp.teho_mw, inp.kapasiteetti_mwh, getattr(inp, "country", "FI") or "FI"
+    )
+    if _feas:
+        # feasibility.py's strings are plain text (may contain "&") — escape before
+        # handing to Paragraph, which parses its content as a small XML-like markup.
+        _feas = {k: (_xml_escape(v) if isinstance(v, str) else v) for k, v in _feas.items()}
+        _feas_h = {
+            "FI": "Alustava kannattavuusarvio",
+            "EN": "Indicative Feasibility Estimate",
+            "SE": "Preliminär lönsamhetsbedömning",
+            "DA": "Foreløbig rentabilitetsvurdering",
+            "NO": "Foreløpig lønnsomhetsvurdering",
+            "PL": "Wstępna ocena opłacalności",
+            "DE": "Vorläufige Wirtschaftlichkeitsschätzung",
+        }.get(lang, "Alustava kannattavuusarvio")
+        story.append(PageBreak())
+        story.append(KeepTogether([
+            Paragraph(_feas_h, st["h2"]),
+            _hr(),
+        ]))
+        _feas_note_en = (
+            "INDICATIVE ONLY — NOT INVESTMENT-GRADE. Derived from public benchmark ranges "
+            "(IRENA, NREL ATB, BloombergNEF, Ember), not project-specific quotes, grid-"
+            "connection assessments, or market forecasts. Actual project economics depend on "
+            "site-specific factors not captured here. Do not use for investment decisions "
+            "without professional financial due diligence."
+        )
+        _feas_note = {"FI": _feas["disclaimer"], "EN": _feas_note_en}.get(lang, _feas["disclaimer"])
+        story.append(Paragraph(
+            _feas_note,
+            ParagraphStyle("feas_disclaimer", fontSize=8, leading=11.5, textColor=C_RED,
+                           fontName=PDF_FONT_BOLD, spaceAfter=6),
+        ))
+
+        def _fmt_eur(v) -> str:
+            return f"{v:,.0f}".replace(",", " ") + " €"
+
+        def _fmt_range_eur(lo, hi) -> str:
+            return _fmt_eur(lo) if lo == hi else f"{_fmt_eur(lo)} – {_fmt_eur(hi)}"
+
+        _feas_th = ParagraphStyle("feas_th", fontSize=8.5, fontName=PDF_FONT_BOLD, textColor=C_WHITE)
+        _feas_td = ParagraphStyle("feas_td", fontSize=8.5, leading=12)
+        _feas_src = ParagraphStyle("feas_src", fontSize=7.5, leading=10, textColor=C_GRAY)
+
+        _item_h    = {"FI": "Erä", "EN": "Item"}.get(lang, "Erä")
+        _est_h     = {"FI": "Arvio", "EN": "Estimate"}.get(lang, "Arvio")
+        _src_h     = {"FI": "Lähde", "EN": "Source"}.get(lang, "Lähde")
+        _capex_h   = {"FI": "Investointikustannus (capex)", "EN": "Capital cost (capex)"}.get(lang, "Investointikustannus (capex)")
+        _opex_h    = {"FI": "Käyttökustannus (opex, €/v)", "EN": "Operating cost (opex, €/yr)"}.get(lang, "Käyttökustannus (opex, €/v)")
+        _price_h   = {"FI": "Sähkön hinta (historiallinen, €/MWh)", "EN": "Electricity price (historical, €/MWh)"}.get(lang, "Sähkön hinta (historiallinen, €/MWh)")
+        _payback_h = {"FI": "Takaisinmaksuaika (arvio)", "EN": "Payback period (estimate)"}.get(lang, "Takaisinmaksuaika (arvio)")
+        _yr        = {"FI": "v", "EN": "yr"}.get(lang, "v")
+        _not_est   = {"FI": "Ei arvioitu (katso huomautus alla)", "EN": "Not estimated (see note below)"}.get(lang, "Ei arvioitu (katso huomautus alla)")
+
+        capex_lo, capex_hi = _feas["capex_eur"]
+        opex_lo, opex_hi = _feas["opex_eur_per_year"]
+
+        _feas_rows = [
+            [Paragraph(_item_h, _feas_th), Paragraph(_est_h, _feas_th), Paragraph(_src_h, _feas_th)],
+            [Paragraph(_capex_h, _feas_td), Paragraph(_fmt_range_eur(capex_lo, capex_hi), _feas_td),
+             Paragraph(_feas["capex_source"], _feas_src)],
+            [Paragraph(_opex_h, _feas_td), Paragraph(_fmt_range_eur(opex_lo, opex_hi), _feas_td),
+             Paragraph(_feas["opex_source"], _feas_src)],
+        ]
+
+        if _feas.get("payback_years") is not None:
+            price_lo, price_hi = _feas["electricity_price_eur_mwh"]
+            payback_fast, payback_slow = _feas["payback_years"]
+            _payback_txt = (
+                f"{payback_fast}–{payback_slow} {_yr}"
+                if payback_fast is not None and payback_slow is not None
+                else _feas.get("payback_note", "—")
+            )
+            _feas_rows.append([
+                Paragraph(_price_h, _feas_td),
+                Paragraph(f"{price_lo:.0f} – {price_hi:.0f} €/MWh", _feas_td),
+                Paragraph(_feas["electricity_price_source"], _feas_src),
+            ])
+            _feas_rows.append([
+                Paragraph(_payback_h, _feas_td),
+                Paragraph(_payback_txt, _feas_td),
+                Paragraph(_feas.get("fx_rate_note", ""), _feas_src),
+            ])
+        else:
+            _feas_rows.append([
+                Paragraph(_payback_h, _feas_td),
+                Paragraph(_not_est, _feas_td),
+                Paragraph(_feas.get("fx_rate_note", ""), _feas_src),
+            ])
+
+        _feas_tbl = Table(_feas_rows, colWidths=[5.5*cm, 4.5*cm, 6.5*cm], repeatRows=1)
+        _feas_tbl.setStyle(TableStyle([
+            ("BACKGROUND",    (0, 0), (-1, 0), C_NAVY),
+            ("TEXTCOLOR",     (0, 0), (-1, 0), C_WHITE),
+            ("ROWBACKGROUNDS",(0, 1), (-1, -1), [C_WHITE, C_LGRAY]),
+            ("GRID",          (0, 0), (-1, -1), 0.4, C_DGRAY),
+            ("PADDING",       (0, 0), (-1, -1), 6),
+            ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+        ]))
+        story.append(_feas_tbl)
+
+        if _feas.get("payback_years") is None and _feas.get("payback_note"):
+            story.append(Spacer(1, 2*mm))
+            story.append(Paragraph(
+                _feas["payback_note"],
+                ParagraphStyle("feas_note2", fontSize=7.5, leading=10.5, textColor=C_GRAY, fontName=PDF_FONT),
+            ))
+        story.append(Spacer(1, 4*mm))
+
     # ── NCE Permit AI -infolaatikko ───────────────────────────────────────────
     _nce_desc = _s(lang, "nce_info_desc") or (
         "NCE Permit AI on tekoälypohjainen työkalu energia-alan lupahakemusten "
