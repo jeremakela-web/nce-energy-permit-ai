@@ -3966,6 +3966,7 @@ _COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
         "BESS": [
             "Batterilagringssystem BESS tilladelse byggetilladelse Danmark",
             "Energilagring VVM-screening Energistyrelsen Energinet nettilslutning",
+            "Litiumbatteri brandsikkerhed sikkerhedskrav BESS Beredskabsstyrelsen",
         ],
         "tuulivoima_maa": [
             "Vindmølle landvindmølle tilladelse VVM Energistyrelsen arealtilladelse",
@@ -3981,6 +3982,7 @@ _COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
         "BESS": [
             "Batterilagring energilagring konsesjon NVE Norge plan bygningsloven",
             "Nettilknytning Statnett energiloven lagringsanlegg",
+            "Litiumbatteri brannsikkerhet sikkerhetskrav BESS DSB",
         ],
         "tuulivoima_maa": [
             "Vindkraft landbasert konsesjon NVE energiloven arealplan",
