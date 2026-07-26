@@ -1060,7 +1060,29 @@ _HANKE_CFG = {
             "[Vaatii tarkistuksen].\n"
             "- LT-erityinen: ei tunnistettua erillistä jää-/icing-säädöstä; vaatimus "
             "todennäköisesti sisältyy statybos leidimas -ehtoihin "
-            "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n\n"
+            "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n"
+            "- DA-erityinen: erityistä jäähavainnointilainsäädäntöä ei ole tunnistettu; "
+            "tekniset turvallisuusvaatimukset asetetaan tyypillisesti rakennusluvan ja "
+            "sähköntuotantoluvan ehdoissa. Sikkerhedsstyrelsen (sähköturvallisuusviranomainen) "
+            "voidaan käyttää tausta-auktoriteettina [Vaatii tarkistuksen].\n"
+            "- NO-erityinen: DSB kattaa myös sähköturvallisuuden osana laajempaa "
+            "siviiliturvallisuusmandaattiaan; jäähavainnointivaatimukset asetetaan "
+            "tyypillisesti NVE:n konsesjonin lupaehdoissa.\n"
+            "- PL-erityinen: UDT (Urząd Dozoru Technicznego) on lähin puolalainen vastine "
+            "Tukesille teknisen/sähköturvallisuuden osalta; jäähavainnointivaatimukset "
+            "asetetaan tyypillisesti rakennusluvan turvallisuusehdoissa "
+            "[Vaatii tarkistuksen].\n"
+            "- EE-erityinen: TTJA (Tehnilise Järelevalve Amet) on Viron tekninen "
+            "valvontaviranomainen sähkö-/laiteturvallisuudessa; jäähavainnointivaatimukset "
+            "asetetaan tyypillisesti ehitusluba-lupaehtoina [Vaatii tarkistuksen].\n"
+            "- DE-erityinen: Saksassa ei ole yhtä keskitettyä Tukesia vastaavaa "
+            "liittovaltiotason viranomaista — valvonta jakautuu osavaltiotason "
+            "Gewerbeaufsichtsamt-viranomaisille ja sertifioiduille tarkastuslaitoksille "
+            "(TÜV/DEKRA) [Vaatii tarkistuksen osavaltiotason Landesrechtin osalta].\n"
+            "- LV-erityinen: VUGD on lähin Latvian turvallisuusviranomainen mutta painottuu "
+            "paloturvallisuuteen, ei erityisesti jään sinkoutumisriskiin; erillistä "
+            "jäähavainnointisäädöstä ei ole tunnistettu "
+            "[Vaatii tarkistuksen Latvian lainsäädännön osalta].\n\n"
 
             "KERROS 3 — LUPAPROSESSI [MRL 132/1999 § 77a, YVA-laki 252/2017, Ilmailulaki 864/2014]:\n"
             "Käytä osiossa '3. Luvat'.\n"
@@ -1178,7 +1200,31 @@ _HANKE_CFG = {
             "vattenverksamhet- ja miljötillstånd-ehtoja [Vaatii tarkistuksen].\n"
             "- LT-erityinen: ei tunnistettua erillistä jää-/icing-säädöstä merituulivoimalle; "
             "vaatimus todennäköisesti sisältyy statybos leidimas- ja PAV-ehtoihin "
-            "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n\n"
+            "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n"
+            "- DA-erityinen: erityistä jäähavainnointilainsäädäntöä ei ole tunnistettu "
+            "merituulivoimalle; tekniset turvallisuusvaatimukset asetetaan tyypillisesti "
+            "vesilupa- ja sähköntuotantoluvan ehdoissa. Sikkerhedsstyrelsen "
+            "(sähköturvallisuusviranomainen) voidaan käyttää tausta-auktoriteettina "
+            "[Vaatii tarkistuksen].\n"
+            "- NO-erityinen: DSB kattaa myös sähköturvallisuuden osana laajempaa "
+            "siviiliturvallisuusmandaattiaan; jäähavainnointivaatimukset asetetaan "
+            "tyypillisesti NVE:n konsesjonin lupaehdoissa (koskee myös offshore-hankkeita).\n"
+            "- PL-erityinen: UDT (Urząd Dozoru Technicznego) on lähin puolalainen vastine "
+            "Tukesille teknisen/sähköturvallisuuden osalta; jäähavainnointivaatimukset "
+            "asetetaan tyypillisesti rakennusluvan turvallisuusehdoissa "
+            "[Vaatii tarkistuksen].\n"
+            "- EE-erityinen: TTJA (Tehnilise Järelevalve Amet) on Viron tekninen "
+            "valvontaviranomainen sähkö-/laiteturvallisuudessa; jäähavainnointivaatimukset "
+            "asetetaan tyypillisesti ehitusluba-lupaehtoina merituulivoimallekin "
+            "[Vaatii tarkistuksen].\n"
+            "- DE-erityinen: Saksassa ei ole yhtä keskitettyä Tukesia vastaavaa "
+            "liittovaltiotason viranomaista — valvonta jakautuu osavaltiotason "
+            "Gewerbeaufsichtsamt-viranomaisille ja sertifioiduille tarkastuslaitoksille "
+            "(TÜV/DEKRA) [Vaatii tarkistuksen osavaltiotason Landesrechtin osalta].\n"
+            "- LV-erityinen: VUGD on lähin Latvian turvallisuusviranomainen mutta painottuu "
+            "paloturvallisuuteen, ei erityisesti jään sinkoutumisriskiin; erillistä "
+            "jäähavainnointisäädöstä ei ole tunnistettu "
+            "[Vaatii tarkistuksen Latvian lainsäädännön osalta].\n\n"
 
             "KERROS 3 — LUPAPROSESSI [Vesilaki 587/2011, Merilaki 674/1994]:\n"
             "Käytä osiossa '3. Luvat'.\n"
@@ -1287,6 +1333,32 @@ _HANKE_CFG = {
             "aurinkovoimalan purku- tai maisemointisäädöstä — velvoite perustunee "
             "maanvuokrasopimukseen ja PAV-menettelyn (Poveikio aplinkai vertinimas) ehtoihin "
             "[Vaatii tarkistuksen Liettuan lainsäädännön osalta].\n"
+            "- DA-erityinen: Miljøbeskyttelsesloven antaa Miljøstyrelselle valtuudet määrätä "
+            "ennallistamisesta; rakennuslupa ja sähköntuotantolupa (Energistyrelsen) "
+            "sisältävät tyypillisesti toiminnanharjoittajan kustannuksella tehtävän alueen "
+            "ennallistamisvelvoitteen sekä Energistyrelsenin hyväksymän purkusuunnitelman "
+            "vaatimuksen.\n"
+            "- NO-erityinen: NVE:n myöntämä energialupa (konsesjon) sisältää vakiomuotoisen "
+            "purkuvelvoitteen kehittäjälle; velvoite kytkeytyy maankäyttösuunnitteluun "
+            "[Plan- og bygningsloven] ja Statsforvalterenin ympäristövalvontaan.\n"
+            "- PL-erityinen: Purku- ja ennallistamisvelvoite on vakiokäytäntö lupaehdoissa ja "
+            "maanvuokrasopimuksissa; sähköntuotantokonsession haltijan on toimitettava URE:lle "
+            "tekninen, taloudellinen ja ympäristövaikutusraportti 18 kk ennen konsession "
+            "päättymistä (kansainvälisesti ns. ARO, Asset Retirement Obligation).\n"
+            "- EE-erityinen: Ei tunnistettua erillistä aurinkovoimalan purku- tai "
+            "ennallistamissäädöstä — velvoite perustunee maanvuokrasopimukseen ja "
+            "Keskkonnaameti valvomiin lupaehtoihin "
+            "[Vaatii tarkistuksen Viron lainsäädännön osalta].\n"
+            "- DE-erityinen: Rückbauverpflichtung (purkuvelvoite) on vakiintunut käytäntö — "
+            "kunnat sääntelevät purkua, ennallistamista ja jatkokäyttöä "
+            "kaupunkikehityssopimuksin (städtebaulicher Vertrag) osana Bebauungsplan-"
+            "menettelyä; velvoite turvataan taloudellisella vakuudella (Rückbaubürgschaft). "
+            "Yhtenäistä valtakunnallista standardia vakuuden tasolle ei toistaiseksi ole "
+            "(Umweltbundesamt suosittelee yhtenäistämistä).\n"
+            "- LV-erityinen: Ei tunnistettua erillistä aurinkovoimalan purku- tai "
+            "ennallistamissäädöstä — velvoite perustunee maanvuokrasopimukseen ja "
+            "VPVB/Valsts vides dienesta valvomiin lupaehtoihin "
+            "[Vaatii tarkistuksen Latvian lainsäädännön osalta].\n"
             "- DE-erityinen: EEG Ausschreibung (EEG 2023) — tarjouskilpailu syöttötariffeista.\n\n"
 
             "KERROS 3 — LUPAPROSESSI [MRL 132/1999 § 137, YSL 527/2014]:\n"
@@ -3862,6 +3934,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Liitumisleping Elering AS-iga (grid connection agreement)",
             "Ehitusprojekt (construction project, licensed architect/engineer)",
             "Äriregistri väljavõte (Company Registry extract)",
+            "Jäähavainnointisüsteemi kirjeldus (ice detection system description)",
         ],
         "tuulivoima_meri": [
             "Ühisluba taotlus (combined offshore permit application — MKM)",
@@ -3873,6 +3946,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Kalandusuuringute mõjuhinnang (fisheries impact assessment)",
             "Meresõiduohutuse hinnang (maritime navigation safety — Transpordiamet)",
             "Äriregistri väljavõte (Company Registry extract)",
+            "Jäähavainnointisüsteemi kirjeldus (ice detection system description)",
         ],
         "datakeskus": [
             "Asukohakaart (mõõtkava 1:20 000 või laiem)",
@@ -3905,6 +3979,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Netzanschlussbegehren (BNetzA / Netzbetreiber — EnWG § 5)",
             "Handelsregisterauszug des Antragstellers",
             "Vollmacht (sofern ein Bevollmächtigter den Antragsteller vertritt)",
+            "Eiserkennungssystem-Beschreibung (Vereisungsrisiko / Eiswurf)",
         ],
         "tuulivoima_meri": [
             "Übersichtslageplan Offshore (M 1:50 000)",
@@ -3917,6 +3992,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Meeresökologisches Fachgutachten (Benthos, Fische, Meeressäuger — BNatSchG)",
             "Handelsregisterauszug des Antragstellers",
             "Vollmacht (sofern ein Bevollmächtigter den Antragsteller vertritt)",
+            "Eiserkennungssystem-Beschreibung (Vereisungsrisiko / Eiswurf)",
         ],
         "BESS": [
             "Übersichtslageplan und Detaillageplan (M 1:25 000 / 1:5 000)",
@@ -3939,6 +4015,7 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Netzanschlussbegehren (BNetzA / Netzbetreiber — EnWG § 5)",
             "Handelsregisterauszug des Antragstellers",
             "Vollmacht (sofern ein Bevollmächtigter den Antragsteller vertritt)",
+            "Rückbauplan und Rekultivierungsverpflichtung (Rückbaubürgschaft)",
         ],
         "SMR": [
             "Übersichtslageplan (M 1:25 000)",
