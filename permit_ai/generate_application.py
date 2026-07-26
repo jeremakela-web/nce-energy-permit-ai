@@ -4410,7 +4410,10 @@ _HANKE_CFG["smr_de"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_ee"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["smr_lv"]       = _HANKE_CFG["SMR"]
 _HANKE_CFG["offshore_wind"] = _HANKE_CFG["tuulivoima_meri"]
-_HANKE_CFG["egs"]           = _HANKE_CFG["aurinkovoima"]
+# egs (Enhanced Geothermal System) intentionally has no alias — the aurinkovoima
+# placeholder it used to point to would serve wrong content to users, worse than
+# an error. Frontend marks egs comingSoon so this is never reached. Real EGS
+# content is a separate future task.
 
 
 _WRITE_INSTRUCTION: dict[str, str] = {
