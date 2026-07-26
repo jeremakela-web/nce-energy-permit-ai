@@ -5802,6 +5802,10 @@ const PROJECT_TYPES = [
     icon: '☀️',
     name: { FI: 'Aurinkovoima',        EN: 'Solar Power',          SE: 'Solenergi',          DA: 'Solenergi',           NO: 'Solkraft',          PL: 'Energia słoneczna',   DE: 'Solarenergie',          ET: 'Päikeseenergia',       LV: 'Saules enerģija', LT: 'Saulės energija' },
     sub:  { FI: 'Aurinkopaneelihanke', EN: 'Solar panel project',  SE: 'Solpanelsprojekt',   DA: 'Solpanelsprojekt',    NO: 'Solpanelprosjekt',  PL: 'Projekt fotowoltaiczny', DE: 'Solarprojekt',         ET: 'Päikesepaneelide projekt', LV: 'Saules paneļu projekts', LT: 'Saulės skydelių projektas' } },
+  { id: 'hybridi',
+    icon: '⚡',
+    name: { FI: 'Hybridivoimala',        EN: 'Hybrid Power Plant',       SE: 'Hybridkraftverk',        DA: 'Hybridkraftværk',        NO: 'Hybridkraftverk',        PL: 'Elektrownia hybrydowa',      DE: 'Hybridkraftwerk',              ET: 'Hübriidelektrijaam',                 LV: 'Hibrīdelektrostacija', LT: 'Hibridinė elektrinė' },
+    sub:  { FI: 'BESS + tuuli/aurinko -yhdistelmähanke', EN: 'BESS + wind/solar combined project', SE: 'BESS + vind/sol-kombinationsprojekt', DA: 'BESS + vind/sol-kombinationsprojekt', NO: 'BESS + vind/sol-kombinasjonsprosjekt', PL: 'Projekt łączony BESS + wiatr/słońce', DE: 'BESS + Wind/Solar-Kombinationsprojekt', ET: 'BESS + tuule/päikese kombineeritud projekt', LV: 'BESS + vēja/saules kombinētais projekts', LT: 'BESS + vėjo/saulės kombinuotas projektas' } },
   { id: 'smr',
     icon: '⚛️',
     name: { FI: 'SMR',                   EN: 'SMR',                           SE: 'SMR',                           DA: 'SMR',                           NO: 'SMR',                           PL: 'SMR',                           DE: 'SMR',                            ET: 'SMR',                               LV: 'SMR', LT: 'SMR' },
@@ -6080,6 +6084,20 @@ const HANKE_FIELDS = {
       { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',label: 'Kohdeviranomainen',     type: 'select', options: _VIRANOMAINEN_OPTS },
     ]
   },
+  hybridi: {
+    title: 'Hybridivoimala — BESS + tuuli/aurinko',
+    fields: [
+      { id: 'gf-hakija',       apiKey: 'hakija',           label: 'Hakija (yritys)',       type: 'text',   placeholder: 'Yrityksen nimi', required: true },
+      { id: 'gf-kt',           apiKey: 'kiinteistotunnus', label: 'Kiinteistötunnus',      type: 'text',   placeholder: 'esim. 091-001-0001-0001', required: true },
+      { id: 'gf-kunta',        apiKey: 'kunta',            label: 'Sijaintikunta',         type: 'text',   placeholder: 'Kunta', required: true },
+      { id: 'gf-teho',         apiKey: 'teho_mw',          label: 'Teho (MW)',             type: 'number', min: '0.1', step: '0.1', required: true },
+      { id: 'gf-kap',          apiKey: 'kapasiteetti_mwh', label: 'Kapasiteetti (MWh)',    type: 'number', min: '0.1', step: '0.1' },
+      { id: 'gf-verkko',       apiKey: null,               label: 'Verkkoliityntä',        type: 'select', options: _VERKKO_OPTS },
+      { id: 'gf-sijainti',     apiKey: 'sijainti_ymparistovaikutukset', label: 'Sijainti / ympäristövaikutukset', type: 'text', placeholder: 'Lyhyt kuvaus sijainnista ja ympäristövaikutuksista', full: true },
+      { id: 'gf-vaihe',        apiKey: 'hankkeen_vaihe',   label: 'Hankkeen vaihe',        type: 'select', options: _VAIHE_OPTS },
+      { id: 'gf-viranomainen', apiKey: 'kohdeviranomainen',label: 'Kohdeviranomainen',     type: 'select', options: _VIRANOMAINEN_OPTS },
+    ]
+  },
   tuulivoima_maa: {
     title: 'Tuulivoima (maa) — Maalle sijoitettava tuulivoimahanke',
     fields: [
@@ -6222,6 +6240,9 @@ const HANKE_FIELDS = {
     ]
   },
 };
+// offshore_wind (floating offshore wind) reuses tuulivoima_meri's config, mirroring the
+// same alias already used in the backend (_HANKE_CFG["offshore_wind"] = _HANKE_CFG["tuulivoima_meri"]).
+HANKE_FIELDS.offshore_wind = HANKE_FIELDS.tuulivoima_meri;
 
 // ─────────────────────────────────────────────
 // HANKETYYPIT — lupatyypit + autoFields per type
@@ -6241,6 +6262,12 @@ const HANKETYYPIT = {
   ymparistolupa:  { autoFields: { kohdeviranomainen: 'Luova (ympäristölupa/vesilupa)' }, lupatyypit: ['Ympäristölupa (YSL 527/2014)', 'YVA (tarvittaessa)', 'Vesilupa (tarvittaessa)'] },
   datakeskus:     { autoFields: { kohdeviranomainen: 'Kunta (rakentamislupa)' },        lupatyypit: ['Rakentamislupa', 'Asemakaavanmuutos (tarvitt.)', 'YVA-harkinta (tapauskohtainen)', 'Ympäristölupa (jäähdytys/melu)', 'Verkkoliityntä Turku Energia (DSO)', 'Verkkoliityntä Fingrid (TSO)'] },
 };
+HANKETYYPIT.offshore_wind = HANKETYYPIT.tuulivoima_meri;
+// hybridi (BESS + tuuli/aurinko) has no direct equivalent to alias to — reuses bess,
+// matching this file's own existing fallback convention for unmapped types (see
+// MAANK_SCORE_CFG / MAP_TYPE_UI below, which already default to .bess when a type
+// isn't found).
+HANKETYYPIT.hybridi = HANKETYYPIT.bess;
 
 // Inject y_tunnus and osoite fields after hakija in every HANKE_FIELDS entry
 Object.values(HANKE_FIELDS).forEach(cfg => {
@@ -6303,6 +6330,8 @@ const MAANK_SCORE_CFG = {
   ymparistolupa:  { settlement_min: 300,  weights: { grid:  0, groundwater: 30, natura: 25, zoning: 15, settlement: 15, heritage:  5, road:  0, flood: 10, soil:  0 } },
   datakeskus:     { settlement_min: 300,  weights: { grid: 25, groundwater: 15, natura: 10, zoning: 25, settlement: 10, heritage:  5, road: 10, flood:  5, soil:  0 } },
 };
+MAANK_SCORE_CFG.offshore_wind = MAANK_SCORE_CFG.tuulivoima_meri;
+MAANK_SCORE_CFG.hybridi = MAANK_SCORE_CFG.bess;
 
 // UI metadata: which sidebar fields show for each type
 const MAP_TYPE_UI = {
@@ -6320,6 +6349,8 @@ const MAP_TYPE_UI = {
   ymparistolupa:  { powerLabelKey: '',                       showGrid: false, showMarket: false, criteriaKey: 'crit_ymparistolupa' },
   datakeskus:     { powerLabelKey: 'gf_lbl_teho',            showGrid: true,  showMarket: false, criteriaKey: 'crit_datakeskus' },
 };
+MAP_TYPE_UI.offshore_wind = MAP_TYPE_UI.tuulivoima_meri;
+MAP_TYPE_UI.hybridi = MAP_TYPE_UI.bess;
 
 // ─────────────────────────────────────────────
 // Render project type cards
