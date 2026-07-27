@@ -158,7 +158,13 @@ SOURCES: list[dict] = [
          urls=["https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0052"]),
     dict(country="EU", language="en", source="EU_BIM",
          doc_type="bim_standard", permit_phase="rakentaminen", project_types="all",
-         urls=["https://www.eubim.eu/"]),
+         # Was the bare eubim.eu homepage — too thin to yield chunks. Replaced with
+         # the actual "Handbook for the introduction of Building Information
+         # Modelling by the European Public Sector" (EU BIM Task Group, EU
+         # Commission co-funded, 21-country collaboration) — real substantive
+         # content, confirmed fetchable (no WAF, unlike eur-lex.europa.eu). Served
+         # as application/pdf, not HTML — see _fetch()'s PDF branch below.
+         urls=["https://eubim.eu/downloads/EU_BIM_Task_Group_Handbook_FINAL.PDF"]),
 ]
 
 
@@ -166,19 +172,36 @@ SOURCES: list[dict] = [
 # Web fetching helpers (shared with ingest_web.py)
 # ---------------------------------------------------------------------------
 
-def _fetch(url: str, session) -> str | None:
+def _fetch(url: str, session) -> tuple[str, str | bytes] | tuple[None, None]:
+    """Returns (kind, content) where kind is "html" (content=str) or "pdf"
+    (content=bytes), or (None, None) on failure/unsupported content-type."""
     try:
-        r = session.get(url, headers=HEADERS, timeout=15, allow_redirects=True)
+        r = session.get(url, headers=HEADERS, timeout=30, allow_redirects=True)
         if r.status_code == 200:
             ct = r.headers.get("content-type", "")
             if "html" in ct:
-                return r.text
+                return "html", r.text
+            if "pdf" in ct:
+                return "pdf", r.content
             print(f"    skip (content-type={ct}): {url}")
         else:
             print(f"    HTTP {r.status_code}: {url}")
     except Exception as exc:
         print(f"    error ({exc.__class__.__name__}): {url}")
-    return None
+    return None, None
+
+
+def _extract_text_pdf(data: bytes) -> str:
+    """Extract text from PDF bytes, same pattern as ingest_iaea.py's PdfReader use."""
+    import io
+    from pypdf import PdfReader
+    reader = PdfReader(io.BytesIO(data))
+    pages = []
+    for page in reader.pages:
+        text = (page.extract_text() or "").strip()
+        if text:
+            pages.append(text)
+    return "\n\n".join(pages)
 
 
 def _extract_text(html: str) -> str:
@@ -317,13 +340,14 @@ def ingest_precedent(
                 if page_count > 0:
                     time.sleep(DELAY_S)
 
-                html = _fetch(url, session)
+                kind, content = _fetch(url, session)
                 page_count += 1
 
-                if not html:
+                if kind is None:
                     continue
 
-                text   = _extract_text(html)
+                html = content if kind == "html" else None
+                text = _extract_text(html) if kind == "html" else _extract_text_pdf(content)
                 chunks = _chunk(text)
                 added  = 0
 
@@ -350,7 +374,7 @@ def ingest_precedent(
                 short = url.replace("https://", "").replace("http://", "")[:70]
                 print(f"    [{page_count:2d}] {short}  →  {len(chunks)} chunks, {added} new")
 
-                if not no_crawl and CRAWL_DEPTH >= 1 and page_count < MAX_PAGES:
+                if html and not no_crawl and CRAWL_DEPTH >= 1 and page_count < MAX_PAGES:
                     for link in _collect_links(html, start_url):
                         if link not in visited and link not in to_visit:
                             to_visit.append(link)
