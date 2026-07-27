@@ -146,7 +146,13 @@ SOURCES: list[dict] = [
     # ── EU ──────────────────────────────────────────────────────────────────
     dict(country="EU", language="en", source="EUR_Lex_BAT",
          doc_type="bat_principles", permit_phase="lupavaihe", project_types="all",
-         urls=["https://eur-lex.europa.eu/search.html?qid=&text=BAT+conclusions+energy"]),
+         # Was a JS-rendered EUR-Lex search-results page (never yielded static content,
+         # confirmed 2026-07-25). Replaced with a direct CELEX document for the EU
+         # Battery Regulation (EU) 2023/1542 — same static-document pattern already
+         # proven to work for EIA_Directive below, and directly matches the existing
+         # _COUNTRY_RAG_QUERIES["EU"]["BESS"] term "EU Battery Regulation 2023
+         # stationary storage lifecycle".
+         urls=["https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023R1542"]),
     dict(country="EU", language="en", source="EIA_Directive",
          doc_type="eia_guidance", permit_phase="esiselvitys", project_types="all",
          urls=["https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0052"]),
