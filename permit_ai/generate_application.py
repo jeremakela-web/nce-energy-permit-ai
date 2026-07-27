@@ -559,6 +559,35 @@ _POSTPROCESS_RULES_FI: list[tuple[str, str]] = [
     (r'\brakennus(lu[pv]\w*)\b', r'rakentamis\1'),
 ]
 
+# Deterministic backstop for the tuulivoima_maa Traficom hardcoding (PR #36/#37):
+# prompt-level instructions alone aren't reliable here, because RAG-retrieved
+# Finnish source chunks can surface the literal word "Traficom" regardless of
+# what the prompt says — confirmed live (PR #37 deployed, DA/NO/PL all still
+# showed the leak in the same generated text as the correct new authority).
+# This guarantees the wrong Finnish entity never reaches the final PDF for
+# non-FI countries, independent of what the LLM actually wrote.
+_TRAFICOM_REPLACEMENT: dict[str, str] = {
+    "SE": "Transportstyrelsen",
+    "DA": "Trafikstyrelsen",
+    "NO": "Luftfartstilsynet",
+    "PL": "ULC (Urząd Lotnictwa Cywilnego)",
+    "EE": "Transpordiamet",
+    "DE": "Luftfahrtbundesamt",
+    "LV": "LGS (Latvijas gaisa satiksme)",
+    "LT": "ANCO / Civilinės aviacijos administracija",
+}
+_TRAFICOM_RE = re.compile(r'\bTraficom\w*')
+
+
+def _fix_hardcoded_traficom(text: str, country: str) -> str:
+    """Replace any literal 'Traficom' mention with the correct national aviation
+    authority for non-FI countries. See _TRAFICOM_REPLACEMENT comment above."""
+    auth = _TRAFICOM_REPLACEMENT.get(country)
+    if not auth:
+        return text
+    return _TRAFICOM_RE.sub(auth, text)
+
+
 # Rules that apply to ALL languages (symbol/emoji cleanup)
 _POSTPROCESS_RULES_ALL: list[tuple[str, str]] = [
     (r'■■\s*', ''),
@@ -612,12 +641,13 @@ def _limit_expert_reviews(text: str, max_count: int = 3) -> str:
     return result
 
 
-def _final_polish(sections: dict, lang: str) -> dict:
+def _final_polish(sections: dict, lang: str, country: str = "FI", hanketyyppi: str = "") -> dict:
     """Loppu-oikoluku — suoritetaan AINA viimeisenä ennen PDF-rakennusta.
 
     1. Deterministinen diakriittikorjaus (ä/ö) kaikille suomenkielisille kentille.
     2. Viranomaistermien ja lakiviitteiden korjaus (_postprocess_text).
-    3. Asiantuntijatarkistus-merkintöjen karsinta enintään 3 kappaleeseen.
+    3. tuulivoima_maa: pakollinen Traficom-korvaus muille kuin FI-hankkeille.
+    4. Asiantuntijatarkistus-merkintöjen karsinta enintään 3 kappaleeseen.
     """
     result = {}
     for k, v in sections.items():
@@ -626,6 +656,8 @@ def _final_polish(sections: dict, lang: str) -> dict:
             continue
         v = _fix_fi_diacritics(v)
         v = _postprocess_text(v, lang)
+        if hanketyyppi == "tuulivoima_maa":
+            v = _fix_hardcoded_traficom(v, country)
         result[k] = v
 
     # Globaali rajoitin: VAIN sisältöosiot (ei kansilehti/disclaimer/footer)
@@ -8045,7 +8077,7 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
         raise
     _LAST_TIMING["t4_generate_sections_done"] = _time.monotonic()
     _lang = inp.lang or "FI"
-    sections = _final_polish(sections, _lang)
+    sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
     _LAST_TIMING["t5_final_polish_done"] = _time.monotonic()
     pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources)
     _LAST_TIMING["t6_pdf_done"] = _time.monotonic()
@@ -8063,7 +8095,7 @@ def apply_proofread_to_pdf(
     """Oikolue sections Claudella ja rakenna lopullinen PDF."""
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections)
-    sections = _final_polish(sections, _lang)
+    sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
     return generate_pdf(
         inp, sections, sources,
         warning_flag, prec_chunks or [], prec_sources or [],
@@ -8089,7 +8121,7 @@ def generate_application(inp: ApplicationInput) -> str:
     print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections)
-    sections = _final_polish(sections, _lang)
+    sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
 
     print("[4/4] Rakennetaan PDF…")
     pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources)
