@@ -5322,8 +5322,13 @@ def _t_lupa(lang: str, fi: str) -> str:
 def _t_law(lang: str, fi: str) -> str:
     return _t_str(lang, fi, _LAW_TRANS)
 
-def _t_liite(lang: str, fi: str) -> str:
-    return _t_str(lang, fi, _LIITE_TRANS)
+def _t_liite(lang: str, fi: str, country: str = "FI") -> str:
+    """Liitteen nimen käännös. Ajaa myös Traficom-korvauksen (ks. _fix_hardcoded_traficom) —
+    _LIITE_TRANS-taulukon "(Traficom/Finavia)" on kiinteä joka kielessä, koska
+    _t_liite ei aiemmin saanut maatietoa lainkaan; sama pysyvä ongelma kuin
+    context_extra-tekstissä, mutta eri koodipolku (staattinen käännöstaulukko,
+    ei Claude-generoitu proosa) — ei siis liity RAG-kontekstiin lainkaan."""
+    return _fix_hardcoded_traficom(_t_str(lang, fi, _LIITE_TRANS), country)
 
 
 # Hankkeen vaiheen käännökset (FI-avain → muut kielet)
@@ -6733,7 +6738,7 @@ def _liitteet_table(hanketyyppi: str, lang: str = "FI", country: str = "FI") -> 
     for i, liite in enumerate(liitteet, start=1):
         rows.append([
             Paragraph(str(i), ParagraphStyle("tn", fontSize=8.5, alignment=TA_CENTER)),
-            Paragraph(_t_liite(lang, liite), ParagraphStyle("tl", fontSize=8.5, leading=12)),
+            Paragraph(_t_liite(lang, liite, country), ParagraphStyle("tl", fontSize=8.5, leading=12)),
             Paragraph(_s(lang, "liite_toimitettu"),
                       ParagraphStyle("tc", fontSize=7.5, textColor=C_GRAY, alignment=TA_CENTER)),
         ])
