@@ -4186,6 +4186,24 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
         "nagu linnanimed, firmade nimed ja ametite lühendid (ELY, STUK, Luova, Fingrid, Traficom) "
         "on aktsepteeritavad ainult pärisnimede kujul.\n\n"
     ),
+    "DE": (
+        "KRITISCHE SPRACHANFORDERUNG: Sie MÜSSEN JEDES Wort dieses Genehmigungsantrags auf Deutsch "
+        "verfassen. ALLE Überschriften, Absätze, Aufzählungspunkte, Fußnoten und Anmerkungen müssen "
+        "auf Deutsch sein. Fügen Sie KEINE finnischen Wörter oder Sätze in die Ausgabe ein. "
+        "Finnische Gesetzesnummern (z. B. YSL 527/2014, MRL 132/1999) dürfen als juristische "
+        "Kennungen erscheinen — fügen Sie stets den deutschen Gesetzesnamen daneben hinzu. Finnische "
+        "Eigennamen wie Stadtnamen, Firmennamen und Behördenabkürzungen (ELY, STUK, Luova, Fingrid, "
+        "Traficom) sind ausschließlich als Eigennamen zulässig.\n\n"
+    ),
+    "LV": (
+        "KRITISKA VALODAS PRASĪBA: Jums IR JĀRAKSTA KATRS šī atļaujas pieteikuma vārds latviešu valodā. "
+        "VISIEM virsrakstiem, rindkopām, saraksta punktiem, zemsvītras piezīmēm un piezīmēm ir jābūt "
+        "latviešu valodā. NEIEKĻAUJIET somu vārdus vai teikumus izvadē. "
+        "Somu likumu numuri (piem., YSL 527/2014, MRL 132/1999) drīkst parādīties kā juridiski "
+        "identifikatori — vienmēr pievienojiet tiem blakus latviešu likuma nosaukumu. Somu īpašvārdi, "
+        "piemēram, pilsētu nosaukumi, uzņēmumu nosaukumi un iestāžu saīsinājumi (ELY, STUK, Luova, "
+        "Fingrid, Traficom) ir pieņemami tikai kā īpašvārdi.\n\n"
+    ),
 }
 
 _PHASE_INSTRUCTIONS: dict[str, str] = {
@@ -4480,6 +4498,37 @@ _WRITE_INSTRUCTION: dict[str, str] = {
            "pobranych źródłach regulacyjnych i sprawach precedensowych w tym kontekście. "
            "Jeśli informacje dla jakiegokolwiek kroku rozumowania są niedostępne, explicite podaj co brakuje. "
            "Nigdy nie generuj treści, która nie jest oparta na pobranych źródłach:"),
+    "ET": ("Kirjutage järgmised neli osa eesti keeles, selgelt pealkirjadega eraldatuna. "
+           "Iga osa sisaldab mõttekäigu etappe nähtavate alapealkirjadena (### ANALÜÜSI, ### HANGI jne.). "
+           "Lisage seadusviited nurksulgudes, nt [Ehitusseadustik EhS] või [KMH-KSH seadus]. "
+           "Kui mõni teave on ebakindel, puudub või nõuab eriteadmisi, "
+           "lisage märgis '⚠️ Soovitatav ekspertiisi ülevaatus' kohe selle koha järel — "
+           "ärge spekuleerige ega täitke teadmislünki oletustega. "
+           "OLULINE: Rajage iga soovitus, riskihinnang ja elutsükli laiendus rangelt käesolevas kontekstis "
+           "leiduvatele hangitud regulatiivsetele allikatele ja pretsedentidele. "
+           "Kui mõne mõttekäigu sammu jaoks teave puudub, märkige selgesõnaliselt, mis puudub. "
+           "Ärge kunagi looge sisu, mis ei põhine hangitud allikatel:"),
+    "DE": ("Schreiben Sie die folgenden vier Abschnitte auf Deutsch, klar durch Überschriften getrennt. "
+           "Jeder Abschnitt enthält die Schritte der Argumentationskette als sichtbare Unterüberschriften "
+           "(### ANALYSIEREN, ### ABRUFEN usw.). "
+           "Fügen Sie Gesetzeszitate in eckigen Klammern ein, z. B. [BImSchG] oder [BauGB]. "
+           "Wenn eine Information unsicher ist, fehlt oder Fachwissen erfordert, "
+           "fügen Sie unmittelbar danach die Markierung '⚠️ Fachliche Überprüfung empfohlen' hinzu — "
+           "spekulieren Sie nicht und füllen Sie Wissenslücken nicht mit Annahmen. "
+           "WICHTIG: Stützen Sie jede Empfehlung, Risikobewertung und Lebenszyklus-Erweiterung ausschließlich auf "
+           "die in diesem Kontext gefundenen abgerufenen regulatorischen Quellen und Präzedenzfälle. "
+           "Wenn für einen Argumentationsschritt Informationen fehlen, geben Sie explizit an, was fehlt. "
+           "Erzeugen Sie niemals Inhalte, die nicht auf den abgerufenen Quellen basieren:"),
+    "LV": ("Rakstiet šādas četras sadaļas latviešu valodā, skaidri atdalot ar virsrakstiem. "
+           "Katra sadaļa satur argumentācijas ķēdes soļus kā redzamas apakšvirsraksti (### ANALIZĒT, ### IEGŪT utt.). "
+           "Iekļaujiet likumu citātus kvadrātiekavās, piem., [Būvniecības likums] vai [IVN likums]. "
+           "Ja kāda informācija ir nenoteikta, trūkst vai prasa specializētas zināšanas, "
+           "pievienojiet atzīmi '⚠️ Ieteicama ekspertu pārbaude' tieši aiz attiecīgās vietas — "
+           "nespekulējiet un neaizpildiet zināšanu robus ar pieņēmumiem. "
+           "SVARĪGI: Balstiet katru ieteikumu, riska novērtējumu un dzīves cikla paplašinājumu stingri uz "
+           "šajā kontekstā iegūtajiem regulatīvajiem avotiem un precedentu lietām. "
+           "Ja informācija kādam argumentācijas solim trūkst, skaidri norādiet, kas trūkst. "
+           "Nekad neģenerējiet saturu, kas nav pamatots ar iegūtajiem avotiem:"),
 }
 
 # Hanketyypit joissa epävarmuusmerkintä on erityisen kriittinen
@@ -4839,6 +4888,159 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "viranomainen_ohje":  ("WAŻNE: Wniosek jest skierowany do organu '{auth}'. "
                                "Dostosuj treść, strukturę i język do jego wymagań. "
                                "Odwołaj się do wytycznych, formularzy i wymagań tego organu."),
+    },
+    "ET": {
+        "intro":        "Koostage loataotluse mustand järgmise projekti jaoks:",
+        "rag_intro":    "Allpool on asjakohane dokumentatsioon (Fingrid, Tukes, Keskkonnaministeerium):",
+        "kuvaus":       "PROJEKTI KIRJELDUS",
+        "perustelut":   "PÕHJENDUS JA VAJADUS",
+        "luvat":        "LOAMENETLUSTE KIRJELDUS",
+        "toimenpiteet": "JÄRGMISED SAMMUD",
+        "kuvaus_inst":  ("Kirjutage see osa kahes nähtavas etapis:\n\n"
+                         "### ANALÜÜSI\n"
+                         "Tuvastage projekti peamised omadused ja riskitegurid: tüüp, asukoht, suurus, "
+                         "riik ja asjakohased ametiasutused. Lisage sellele projekti tüübile tüüpilised tehnilised parameetrid.\n\n"
+                         "### HANGI\n"
+                         "Tuvastage RAG-kontekstist selle projektiprofiili jaoks kõige asjakohasemad regulatiivsed "
+                         "nõuded ja pretsedenditud juhtumid. Kirjutage 3–4 lõiguline kirjeldus: eesmärk, tehnilised "
+                         "üksikasjad, asukoht, võrguühendus ja keskkonnamõjud. Osa peab olema piisavalt "
+                         "põhjalik eelkonsultatsiooniks."),
+        "kuvaus_extra": " Võtke arvesse esitatud asukoha- ja keskkonnamõju teavet.",
+        "perustelut_inst": ("Kirjutage see osa kahes nähtavas etapis:\n\n"
+                            "### VÕRDLE\n"
+                            "Võrrelge seda projekti RAG-konteksti pretsedenditud juhtumitega: millised riskid olid "
+                            "olemas, kuidas need lahendati, mis muutis projektid edukaks või ebaõnnestunuks.\n\n"
+                            "### HINDA\n"
+                            "Määrake, millised riskid on heakskiitmise tõenäosuse jaoks kõige kriitilisemad. "
+                            "Kirjutage 2–3 lõiguline põhjendus selle kohta, miks projekt on vajalik "
+                            "(energiasüsteemi vaatenurgast, Soome kliimaeesmärgid, "
+                            "regionaalsed majanduslikud mõjud) ja nimetage suurim üksik heakskiitmisrisk."),
+        "luvat_inst":   ("### HANGI — LOAD\n"
+                         "Selgitage lühidalt (1–2 lauset loa kohta), mida iga vajalik luba hõlmab, "
+                         "miks see on selle projekti jaoks vajalik ja milline ametiasutus seda menetleb. "
+                         "Viidake vajadusel asjakohastele pretsedentidele või erinõuetele."),
+        "luvat_extra":  " Viidake eelkõige sihtasutuse {auth} protsessidele ja nõuetele.",
+        "toimenpiteet_first": ("Eelkonsultatsioon valla/linna ehitusjärelevalvega + planeeringu ülevaatus — "
+                               "Taotleja / {kunta} ehitusjärelevalve — 1–2 nädala jooksul"),
+        "toimenpiteet_inst": ("Kirjutage see osa kahes nähtavas etapis:\n\n"
+                              "### SOOVITA\n"
+                              "Esimene samm on ALATI: \"{first}\".\n"
+                              "Seejärel loetlege täpselt 4 konkreetset meedet, mis parandavad heakskiitmise "
+                              "tõenäosust (uuringud, arvamused, projektimuudatused, dokumendid). "
+                              "Vorming: number. Meede – Vastutav pool – Ajakava\n\n"
+                              "### ELUTSÜKKEL\n"
+                              "Samm 6: Laiendage soovitusi projekti järgmisele elutsükli etapile "
+                              "AINULT SIIS, KUI hangitud kontekst sisaldab piisavalt andmeid selle etapi kohta. "
+                              "Kui allikad ei kata hilisemaid etappe, märkige selgesõnaliselt: "
+                              "'Hangitud lähteandmed ei ole hilisema etapi soovitusteks piisavad.' "
+                              "Vorming: 6. Meede – Vastutav pool – Ajakava"),
+        "toimenpiteet_vaihe": " Võtke arvesse projekti praegust etappi: {vaihe}.",
+        "phase_label":        "Projekti etapp",
+        "viranomainen_ohje":  ("OLULINE: Taotlus on adresseeritud ametiasutusele '{auth}'. "
+                               "Kohandage sisu, struktuur ja keel vastavalt selle nõuetele. "
+                               "Viidake selle ametiasutuse juhistele, vormidele ja nõuetele."),
+    },
+    "DE": {
+        "intro":        "Erstellen Sie einen Genehmigungsantragsentwurf für das folgende Projekt:",
+        "rag_intro":    "Nachfolgend finden Sie relevante Dokumentation (Fingrid, Tukes, Umweltministerium):",
+        "kuvaus":       "PROJEKTBESCHREIBUNG",
+        "perustelut":   "BEGRÜNDUNG UND BEDARF",
+        "luvat":        "BESCHREIBUNG DER GENEHMIGUNGSVERFAHREN",
+        "toimenpiteet": "NÄCHSTE SCHRITTE",
+        "kuvaus_inst":  ("Schreiben Sie diesen Abschnitt in zwei sichtbaren Schritten:\n\n"
+                         "### ANALYSIEREN\n"
+                         "Identifizieren Sie die wichtigsten Merkmale und Risikofaktoren des Projekts: Typ, Standort, "
+                         "Größe, Land und relevante Behörden. Nennen Sie typische technische Parameter für diesen Projekttyp.\n\n"
+                         "### ABRUFEN\n"
+                         "Identifizieren Sie die relevantesten regulatorischen Anforderungen und Präzedenzfälle für dieses "
+                         "Projektprofil aus dem RAG-Kontext. Schreiben Sie eine 3–4-Absatz-Beschreibung: Zweck, technische "
+                         "Details, Standort, Netzanschluss und Umweltauswirkungen. Der Abschnitt muss für eine "
+                         "Vorabkonsultation ausreichend umfassend sein."),
+        "kuvaus_extra": " Berücksichtigen Sie die angegebenen Standort- und Umweltauswirkungsinformationen.",
+        "perustelut_inst": ("Schreiben Sie diesen Abschnitt in zwei sichtbaren Schritten:\n\n"
+                            "### VERGLEICHEN\n"
+                            "Vergleichen Sie dieses Projekt mit Präzedenzfällen aus dem RAG-Kontext: welche Risiken "
+                            "vorhanden waren, wie sie gelöst wurden, was Projekte erfolgreich oder erfolglos machte.\n\n"
+                            "### BEWERTEN\n"
+                            "Bestimmen Sie, welche Risiken für die Genehmigungswahrscheinlichkeit am kritischsten sind. "
+                            "Schreiben Sie eine 2–3-Absatz-Begründung, warum das Projekt notwendig ist "
+                            "(Perspektive des Energiesystems, Finnlands Klimaziele, "
+                            "regionale wirtschaftliche Auswirkungen) und benennen Sie das größte Einzelrisiko."),
+        "luvat_inst":   ("### ABRUFEN — GENEHMIGUNGEN\n"
+                         "Erklären Sie kurz (1–2 Sätze pro Genehmigung), was jede erforderliche Genehmigung abdeckt, "
+                         "warum sie für dieses Projekt erforderlich ist und welche Behörde sie bearbeitet. "
+                         "Verweisen Sie bei Bedarf auf relevante Präzedenzfälle oder besondere Anforderungen."),
+        "luvat_extra":  " Verweisen Sie insbesondere auf die Prozesse und Anforderungen der Zielbehörde {auth}.",
+        "toimenpiteet_first": ("Vorabkonsultation mit der kommunalen Bauaufsicht + Bebauungsplanprüfung — "
+                               "Antragsteller / Bauaufsicht {kunta} — innerhalb von 1–2 Wochen"),
+        "toimenpiteet_inst": ("Schreiben Sie diesen Abschnitt in zwei sichtbaren Schritten:\n\n"
+                              "### EMPFEHLEN\n"
+                              "Der erste Schritt ist IMMER: \"{first}\".\n"
+                              "Listen Sie anschließend genau 4 konkrete Maßnahmen auf, die die "
+                              "Genehmigungswahrscheinlichkeit verbessern (Untersuchungen, Stellungnahmen, "
+                              "Planänderungen, Dokumente). "
+                              "Format: Nummer. Maßnahme – Verantwortliche Partei – Zeitplan\n\n"
+                              "### LEBENSZYKLUS\n"
+                              "Schritt 6: Erweitern Sie die Empfehlungen auf die nächste Lebenszyklusphase des Projekts "
+                              "NUR WENN der abgerufene Kontext ausreichende Daten zu dieser Phase enthält. "
+                              "Wenn die Quellen spätere Phasen nicht abdecken, geben Sie explizit an: "
+                              "'Abgerufene Quelldaten reichen für Empfehlungen zu späteren Phasen nicht aus.' "
+                              "Format: 6. Maßnahme – Verantwortliche Partei – Zeitplan"),
+        "toimenpiteet_vaihe": " Berücksichtigen Sie die aktuelle Projektphase: {vaihe}.",
+        "phase_label":        "Projektphase",
+        "viranomainen_ohje":  ("WICHTIG: Der Antrag richtet sich an die Behörde '{auth}'. "
+                               "Passen Sie Inhalt, Struktur und Sprache an deren Anforderungen an. "
+                               "Verweisen Sie auf die Richtlinien, Formulare und Anforderungen dieser Behörde."),
+    },
+    "LV": {
+        "intro":        "Sagatavojiet atļaujas pieteikuma projektu šādam projektam:",
+        "rag_intro":    "Zemāk ir attiecīgā dokumentācija (Fingrid, Tukes, Vides ministrija):",
+        "kuvaus":       "PROJEKTA APRAKSTS",
+        "perustelut":   "PAMATOJUMS UN NEPIECIEŠAMĪBA",
+        "luvat":        "ATĻAUJU PROCEDŪRU APRAKSTS",
+        "toimenpiteet": "NĀKAMIE SOĻI",
+        "kuvaus_inst":  ("Rakstiet šo sadaļu divos redzamos soļos:\n\n"
+                         "### ANALIZĒT\n"
+                         "Identificējiet projekta galvenās īpašības un riska faktorus: tips, atrašanās vieta, izmērs, "
+                         "valsts un attiecīgās iestādes. Iekļaujiet šim projekta tipam raksturīgos tehniskos parametrus.\n\n"
+                         "### IEGŪT\n"
+                         "Identificējiet no RAG konteksta šim projekta profilam visatbilstošākās regulatīvās prasības un "
+                         "precedentu lietas. Uzrakstiet 3–4 rindkopu aprakstu: mērķis, tehniskā informācija, atrašanās "
+                         "vieta, tīkla pieslēgums un ietekme uz vidi. Sadaļai jābūt pietiekami izvērstai priekšapspriedei."),
+        "kuvaus_extra": " Ņemiet vērā sniegto informāciju par atrašanās vietu un ietekmi uz vidi.",
+        "perustelut_inst": ("Rakstiet šo sadaļu divos redzamos soļos:\n\n"
+                            "### SALĪDZINĀT\n"
+                            "Salīdziniet šo projektu ar precedentu lietām no RAG konteksta: kādi riski bija klātesoši, "
+                            "kā tie tika atrisināti, kas padarīja projektus veiksmīgus vai neveiksmīgus.\n\n"
+                            "### NOVĒRTĒT\n"
+                            "Nosakiet, kuri riski ir vissvarīgākie apstiprināšanas varbūtībai. "
+                            "Uzrakstiet 2–3 rindkopu pamatojumu, kāpēc projekts ir nepieciešams "
+                            "(no enerģētikas sistēmas viedokļa, Somijas klimata mērķi, "
+                            "reģionālā ekonomiskā ietekme) un nosauciet lielāko atsevišķo apstiprināšanas risku."),
+        "luvat_inst":   ("### IEGŪT — ATĻAUJAS\n"
+                         "Īsi paskaidrojiet (1–2 teikumi par atļauju), ko aptver katra nepieciešamā atļauja, "
+                         "kāpēc tā ir nepieciešama šim projektam un kura iestāde to izskata. "
+                         "Ja nepieciešams, atsaucieties uz attiecīgiem precedentiem vai īpašām prasībām."),
+        "luvat_extra":  " Īpaši atsaucieties uz mērķa iestādes {auth} procesiem un prasībām.",
+        "toimenpiteet_first": ("Priekšapspriede ar pašvaldības būvvaldi + teritorijas plānojuma pārskatīšana — "
+                               "Pieteicējs / {kunta} būvvalde — 1–2 nedēļu laikā"),
+        "toimenpiteet_inst": ("Rakstiet šo sadaļu divos redzamos soļos:\n\n"
+                              "### IESAKĀT\n"
+                              "Pirmais solis VIENMĒR ir: \"{first}\".\n"
+                              "Pēc tam uzskaitiet tieši 4 konkrētas darbības, kas uzlabo apstiprināšanas varbūtību "
+                              "(izpētes, atzinumi, projekta izmaiņas, dokumenti). "
+                              "Formāts: numurs. Darbība – Atbildīgā puse – Grafiks\n\n"
+                              "### DZĪVES CIKLS\n"
+                              "6. solis: Paplašiniet ieteikumus uz nākamo projekta dzīves cikla posmu "
+                              "TIKAI TAD, JA iegūtais konteksts satur pietiekamus datus par šo posmu. "
+                              "Ja avoti neaptver vēlākos posmus, skaidri norādiet: "
+                              "'Iegūtie avotu dati nav pietiekami vēlāka posma ieteikumiem.' "
+                              "Formāts: 6. Darbība – Atbildīgā puse – Grafiks"),
+        "toimenpiteet_vaihe": " Ņemiet vērā pašreizējo projekta posmu: {vaihe}.",
+        "phase_label":        "Projekta posms",
+        "viranomainen_ohje":  ("SVARĪGI: Pieteikums ir adresēts iestādei '{auth}'. "
+                               "Pielāgojiet saturu, struktūru un valodu tās prasībām. "
+                               "Atsaucieties uz šīs iestādes vadlīnijām, veidlapām un prasībām."),
     },
 }
 
