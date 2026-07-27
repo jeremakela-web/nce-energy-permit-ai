@@ -4320,6 +4320,10 @@ _COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
         "SMR": [
             "EU nuclear safety directive Euratom SMR regulation licensing",
         ],
+        "datakeskus": [
+            "EU BIM Building Information Modelling construction data centre",
+            "EU data centre energy efficiency directive construction permitting",
+        ],
     },
     "DE": {
         "tuulivoima_maa": [

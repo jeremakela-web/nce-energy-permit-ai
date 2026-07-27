@@ -3071,6 +3071,7 @@ async def admin_rag_check_all(secret: str = ""):
         ("NO", "BESS"),
         ("PL", "BESS"),
         ("EU", "BESS"),
+        ("EU", "datakeskus"),
         ("EE", "BESS"),
         ("DE", "BESS"),
         ("LV", "BESS"),
