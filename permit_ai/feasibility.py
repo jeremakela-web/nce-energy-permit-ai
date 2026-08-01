@@ -102,6 +102,77 @@ _ELECTRICITY_PRICE_FALLBACK: tuple[tuple[float, float], str] = (
     "Needs a dedicated per-country data pass before this should be trusted.",
 )
 
+# ── Ancillary/balancing-market revenue benchmarks (EUR/MW/year) ─────────
+# Phase 1 of the BESS ancillary-revenue sourcing effort — replaces the
+# Clean Horizon Storage Index (third-party commercial index) with official/
+# primary TSO and ENTSO-E-family data. Covers FI, DA, DE only; SE, NO, PL,
+# EE, LV, LT are deliberately absent (Phase 2/3) — no fabricated entries.
+#
+# METHODOLOGY (read before adding countries or using these numbers
+# elsewhere — this is the single most important decision in this table):
+#
+# - Product: aFRR (automatic Frequency Restoration Reserve) CAPACITY
+#   market, UP and DOWN directions summed. Chosen because it is the one
+#   product with genuinely accessible, no-registration-barrier official
+#   data across all three Phase-1 countries via one consistent
+#   methodology — not because it is necessarily the single largest real
+#   BESS revenue stream in any of these markets.
+# - FI was originally planned as FCR-N (the Nordic-specific reserve
+#   product, and historically the more commonly cited BESS revenue
+#   reference in Finland specifically) but Fingrid's Open Data API
+#   requires a free, self-service API key (email registration) that
+#   wasn't available for this pass. FI uses the same aFRR product as
+#   DA/DE instead, sourced from the pan-Nordic Energinet dataset (which
+#   happens to also publish FI's aFRR capacity prices). Revisit with a
+#   real FCR-N figure once a Fingrid key exists — FCR-N and aFRR are
+#   different markets and are NOT expected to give the same number.
+# - This is ONE product's capacity revenue, NOT full BESS revenue. Real
+#   BESS assets typically stack multiple products (FCR + aFRR + mFRR +
+#   arbitrage) simultaneously and dynamically. This figure is what a
+#   battery bidding symmetric aFRR capacity year-round would earn from
+#   THAT product alone. This data existing does not, by itself, make a
+#   BESS payback estimate defensible — see BESS_PAYBACK_NOTE, whose
+#   reasoning still applies: adding this one product isn't the same as
+#   having genuine revenue-stacked BESS economics. Not wired into
+#   calculate_feasibility() in this phase — data structure only.
+# - Annualization: raw hourly (Energinet) or 4-hour-block
+#   (regelleistung.net) capacity clearing prices, averaged over the
+#   sourced period, multiplied by 8760 h/year. Assumes constant
+#   year-round capacity commitment; real-world availability/eligibility
+#   varies and isn't modeled here.
+_ANCILLARY_REVENUE_EUR_MW_YEAR: dict[str, tuple[tuple[float, float], str]] = {
+    "FI": (
+        (113800, 113800),
+        "aFRR capacity market (UP+DOWN summed), 2025-08-01 to 2026-08-01, "
+        "Energinet Energi Data Service 'AfrrReservesNordic' dataset (FI price "
+        "area) — computed 2026-08-01. NOT FCR-N (the originally-planned "
+        "Nordic product); substituted because Fingrid's own API requires a "
+        "registration key unavailable for this pass — see methodology note "
+        "above. Nordic aFRR capacity market is a relatively young product "
+        "(live since ~2024) — moderate maturity, not a multi-year track record.",
+    ),
+    "DA": (
+        (129700, 155900),
+        "aFRR capacity market (UP+DOWN summed), 2025-08-01 to 2026-08-01, "
+        "Energinet Energi Data Service 'AfrrReservesNordic' dataset — "
+        "computed 2026-08-01. Range reflects Denmark's two price zones "
+        "(DK2 129,700 / DK1 155,900 EUR/MW/year) — NOT a confidence range. "
+        "DK1 is continental-synchronous, DK2 is Nordic-synchronous — "
+        "genuinely different markets under one country code. Denmark's aFRR "
+        "capacity market has several years of history — moderate-to-high "
+        "maturity (DK1's local capacity market specifically only launched "
+        "Oct 2024, so DK1's figure carries less history than DK2's).",
+    ),
+    "DE": (
+        (257300, 257300),
+        "aFRR capacity market (UP+DOWN summed), 2025-08-01 to 2026-08-01, "
+        "365/365 days of daily auction data from regelleistung.net (joint "
+        "50Hertz/Amprion/TenneT/TransnetBW platform), no gaps — computed "
+        "2026-08-01. Germany's aFRR market has 5+ years of history — the "
+        "most stable and best-established of the three Phase-1 countries.",
+    ),
+}
+
 # ── Typical capacity factors (generation techs only — indicative) ────────
 _CAPACITY_FACTOR: dict[str, float] = {
     "solar_pv":      0.12,  # Nordic/Baltic-latitude solar — not a Southern-Europe figure
