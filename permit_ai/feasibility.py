@@ -26,6 +26,12 @@ from __future__ import annotations
 USD_TO_EUR = 0.92
 USD_TO_EUR_ASOF = "2026-07-25"  # update this line periodically; not live-fetched
 
+# Poland's PSE ancillary-market data (see _ANCILLARY_REVENUE_EUR_MW_YEAR, "PL")
+# is published in PLN, the only entry in that table needing FX conversion —
+# same "separate visible approximation" principle as USD_TO_EUR above.
+PLN_TO_EUR = 1 / 4.3135
+PLN_TO_EUR_ASOF = "2026-07-31"  # Frankfurter/ECB reference rate; not live-fetched
+
 # ── hanketyyppi → technology category ───────────────────────────────────
 # Hanketyyppis with no renewable-generation cost profile (datakeskus,
 # asuinrakennus, ...) are intentionally absent from this map.
@@ -108,8 +114,9 @@ _ELECTRICITY_PRICE_FALLBACK: tuple[tuple[float, float], str] = (
 # ── Ancillary/balancing-market revenue benchmarks (EUR/MW/year) ─────────
 # BESS ancillary-revenue sourcing effort — replaces the Clean Horizon
 # Storage Index (third-party commercial index) with official/primary TSO
-# and ENTSO-E-family data. Phase 1: FI, DA, DE. Phase 2: EE, LV, LT (this
-# batch). SE, NO, PL deliberately absent (Phase 3) — no fabricated entries.
+# and ENTSO-E-family data. Phase 1: FI, DA, DE. Phase 2: EE, LV, LT.
+# Phase 3: SE, NO, PL (this batch) — table is now complete for all ten
+# countries in scope; no fabricated entries were ever added.
 #
 # METHODOLOGY (read before adding countries or using these numbers
 # elsewhere — this is the single most important decision in this table):
@@ -155,11 +162,42 @@ _ELECTRICITY_PRICE_FALLBACK: tuple[tuple[float, float], str] = (
 #   BESS payback estimate defensible — see BESS_PAYBACK_NOTE for
 #   countries without an entry here, and the mandatory payback_note text
 #   built in calculate_feasibility() for countries with one.
+# - SE/NO (Phase 3): sourced from the same Energinet 'AfrrReservesNordic'
+#   dataset already used for FI/DA — it covers all Nordic price zones, so
+#   no new data source or registration was needed (Mimer/eSett and
+#   Statnett's own portal, both originally flagged as unknowns, turned out
+#   to be unnecessary). Like DA, both are genuine multi-zone markets — SE
+#   has 4 zones (SE1-SE4), NO has 5 (NO1-NO5). Same "don't average
+#   distinct zones into a false single number" principle as DA: reported
+#   as (lowest zone, highest zone), NOT a confidence range, with the
+#   BESS payback calculation defaulting to the lower/conservative zone
+#   (see _ZONE_NOTE_BY_COUNTRY below). SE's spread (~19%) and NO's
+#   (~64%) are materially different in character — SE's zones sit
+#   moderately apart, NO's reflect a genuine outlier (NO5) rather than a
+#   tight cluster; each entry's source string says so explicitly rather
+#   than presenting both spreads the same way.
+# - PL (Phase 3): sourced from PSE's (Polskie Sieci Elektroenergetyczne,
+#   the Polish TSO) public raporty.pse.pl API, report 'cmbp-tp' (base-mode
+#   procured balancing capacity prices). CORRECTION to this project's own
+#   prior investigation-phase finding: a small sample had suggested
+#   afrr_d (down) and afrr_g (up) price identically, which would have
+#   allowed a single figure with no UP/DOWN summing. A full check across
+#   the entire 12-month, 8,784-hour pull found they match on only 5 rows
+#   (0.06%) — genuinely asymmetric, same UP+DOWN-summed treatment as
+#   every other country in this table. Published in PLN — the only
+#   country here needing FX conversion (see PLN_TO_EUR). A second
+#   'uzupełniający' (supplementary) procurement mode exists as a
+#   separate product (report 'cmbu-tu') and is deliberately NOT included,
+#   same single-market discipline as elsewhere in this table. Poland's
+#   figure is notably higher than every other country here — plausibly
+#   real reserve scarcity (a documented characteristic of Poland's grid),
+#   not a data error, but treated as less certain than the mature
+#   markets' figures precisely because it's an outlier.
 # - Annualization: raw 15-minute (Baltic Transparency Dashboard), hourly
-#   (Energinet), or 4-hour-block (regelleistung.net) capacity clearing
-#   prices, averaged over the sourced period, multiplied by 8760 h/year.
-#   Assumes constant year-round capacity commitment; real-world
-#   availability/eligibility varies and isn't modeled here.
+#   (Energinet, PSE), or 4-hour-block (regelleistung.net) capacity
+#   clearing prices, averaged over the sourced period, multiplied by
+#   8760 h/year. Assumes constant year-round capacity commitment;
+#   real-world availability/eligibility varies and isn't modeled here.
 _ANCILLARY_REVENUE_EUR_MW_YEAR: dict[str, tuple[tuple[float, float], str]] = {
     "FI": (
         (113800, 113800),
@@ -235,6 +273,94 @@ _ANCILLARY_REVENUE_EUR_MW_YEAR: dict[str, tuple[tuple[float, float], str]] = {
         "this figure as substantially more likely to shift than the Phase-1 "
         "countries' figures. LV and LT cleared at near-identical prices for "
         "most of the period (joint Baltic auction, not a data error).",
+    ),
+    "SE": (
+        (192500, 229900),
+        "aFRR capacity market (UP+DOWN summed), 2025-08-01 to 2026-08-01, "
+        "Energinet Energi Data Service 'AfrrReservesNordic' dataset — "
+        "computed 2026-08-01. Range reflects Sweden's four price zones "
+        "(SE1 192,500 low / SE3 229,900 high EUR/MW/year; SE2 210,800 and "
+        "SE4 216,800 fall in between) — NOT a confidence range. Spread is "
+        "~19% low-to-high — moderately, not tightly, clustered (above the "
+        "~10-15% threshold that would justify treating this as one "
+        "number), so presented as a genuine zone range. Sweden's aFRR "
+        "capacity market has several years of history — mature, "
+        "comparable to FI/DA/DE.",
+    ),
+    "NO": (
+        (116700, 191700),
+        "aFRR capacity market (UP+DOWN summed), 2025-08-01 to 2026-08-01, "
+        "Energinet Energi Data Service 'AfrrReservesNordic' dataset — "
+        "computed 2026-08-01. Range reflects Norway's five price zones "
+        "(NO5 116,700 low / NO3 191,700 high EUR/MW/year; NO1 160,500, "
+        "NO2 173,900, NO4 184,900 fall in between) — NOT a confidence "
+        "range. Spread is ~64% low-to-high — genuinely wide, not "
+        "clustered: NO5 (Bergen area, hydro-dominated, historically "
+        "prone to decoupling from the rest of Norway's grid) clears "
+        "notably lower than the other four zones, which sit closer "
+        "together. Norway's aFRR capacity market has several years of "
+        "history — mature, comparable to FI/DA/DE.",
+    ),
+    "PL": (
+        (664600, 664600),
+        "aFRR capacity market (UP+DOWN summed), 2025-08-01 to 2026-08-01, "
+        "PSE (Polskie Sieci Elektroenergetyczne) public raporty.pse.pl "
+        "API, 'cmbp-tp' report (base-mode procured balancing capacity "
+        "prices) — computed 2026-08-01. CORRECTION to this project's own "
+        "investigation-phase finding: afrr_d/afrr_g were assumed to "
+        "price symmetrically from a small sample; a full check of all "
+        "8,784 hourly rows found only 5 matches (0.06%) — genuinely "
+        "asymmetric, so this figure sums UP+DOWN like every other "
+        "country here, not a shared single-direction number. Published "
+        "in PLN, converted at 1 EUR ≈ 4.3135 PLN (Frankfurter/ECB "
+        "reference rate, 2026-07-31) — the only country in this table "
+        "needing FX conversion (see PLN_TO_EUR), kept as a separate "
+        "visible approximation rather than folded into the benchmark "
+        "number. A second 'uzupełniający' (supplementary) "
+        "procurement mode exists as a separate product and is "
+        "deliberately excluded — single-market discipline, same as "
+        "elsewhere in this table. Poland's capacity market has ~14 "
+        "months of history (from 2024-06-14) as of this pass — a "
+        "genuine intermediate maturity tier, more established than the "
+        "Baltic states' ~10 months but well short of FI/DA/DE/SE/NO's "
+        "multi-year track record. Notably higher than every other "
+        "country in this table (~2.6x DE's rate) — plausibly reflects "
+        "real reserve scarcity, a widely-documented characteristic of "
+        "Poland's balancing market, but treat this as more likely to "
+        "shift than the mature markets' figures.",
+    ),
+}
+
+# Per-country zone_note text for the BESS payback calculation below — only
+# for countries whose _ANCILLARY_REVENUE_EUR_MW_YEAR entry is a genuine
+# multi-zone range (rev_lo != rev_hi), not a confidence interval. Absent
+# entries (single-point countries) get no zone_note, since there's no zone
+# choice to explain.
+_ZONE_NOTE_BY_COUNTRY: dict[str, str] = {
+    "DA": (
+        " Uses the DK2 (Nordic-synchronous) price zone — the lower and "
+        "more conservative of Denmark's two aFRR markets. DK1 "
+        "(continental-synchronous) is higher; no per-project zone "
+        "selector exists yet, so this is a conservative default, not a "
+        "determination of which zone this specific project is in. A "
+        "proper zone selector is a future improvement."
+    ),
+    "SE": (
+        " Uses the SE1 (northernmost) price zone — the lower and more "
+        "conservative of Sweden's four aFRR zones (SE1-SE4). SE3 is "
+        "highest; no per-project zone selector exists yet, so this is a "
+        "conservative default, not a determination of which zone this "
+        "specific project is in. A proper zone selector is a future "
+        "improvement."
+    ),
+    "NO": (
+        " Uses the NO5 (Bergen area, hydro-dominated) price zone — the "
+        "lower and by far the most conservative of Norway's five aFRR "
+        "zones (NO1-NO5); NO5 clears notably lower than the other four. "
+        "NO3 is highest; no per-project zone selector exists yet, so "
+        "this is a conservative default, not a determination of which "
+        "zone this specific project is in. A proper zone selector is a "
+        "future improvement."
     ),
 }
 
@@ -340,24 +466,15 @@ def calculate_feasibility(
             return result
 
         (rev_lo, rev_hi), ancillary_source = ancillary
-        zone_note = ""
-        if country == "DA":
-            # DK1 and DK2 are two genuinely different markets (continental- vs
-            # Nordic-synchronous), not a confidence range — see the dict's own
-            # source comment. No per-project zone input exists yet, so default
-            # to DK2 (the lower, more conservative of the two) rather than
-            # averaging, which would misrepresent both zones.
-            annual_revenue_eur_mw = rev_lo  # DK2
-            zone_note = (
-                " Uses the DK2 (Nordic-synchronous) price zone — the lower and "
-                "more conservative of Denmark's two aFRR markets. DK1 "
-                "(continental-synchronous) is higher; no per-project zone "
-                "selector exists yet, so this is a conservative default, not a "
-                "determination of which zone this specific project is in. A "
-                "proper zone selector is a future improvement."
-            )
-        else:
-            annual_revenue_eur_mw = rev_lo  # FI/DE: single-point estimate, rev_lo == rev_hi
+        # DA/SE/NO are genuine multi-zone markets (rev_lo != rev_hi is a real
+        # zone split, not a confidence range — see the dict's own source
+        # comment for each). No per-project zone input exists yet, so every
+        # country here defaults to rev_lo — the lower, more conservative zone
+        # — rather than averaging, which would misrepresent both/all zones.
+        # For FI/DE/EE/LV/LT/PL, rev_lo == rev_hi (single-point estimate) so
+        # this is a no-op.
+        annual_revenue_eur_mw = rev_lo
+        zone_note = _ZONE_NOTE_BY_COUNTRY.get(country, "")
 
         annual_revenue_eur = teho_mw * annual_revenue_eur_mw
         result["ancillary_revenue_eur_mw_year"] = (rev_lo, rev_hi)
