@@ -106,20 +106,22 @@ _ELECTRICITY_PRICE_FALLBACK: tuple[tuple[float, float], str] = (
 )
 
 # ── Ancillary/balancing-market revenue benchmarks (EUR/MW/year) ─────────
-# Phase 1 of the BESS ancillary-revenue sourcing effort — replaces the
-# Clean Horizon Storage Index (third-party commercial index) with official/
-# primary TSO and ENTSO-E-family data. Covers FI, DA, DE only; SE, NO, PL,
-# EE, LV, LT are deliberately absent (Phase 2/3) — no fabricated entries.
+# BESS ancillary-revenue sourcing effort — replaces the Clean Horizon
+# Storage Index (third-party commercial index) with official/primary TSO
+# and ENTSO-E-family data. Phase 1: FI, DA, DE. Phase 2: EE, LV, LT (this
+# batch). SE, NO, PL deliberately absent (Phase 3) — no fabricated entries.
 #
 # METHODOLOGY (read before adding countries or using these numbers
 # elsewhere — this is the single most important decision in this table):
 #
 # - Product: aFRR (automatic Frequency Restoration Reserve) CAPACITY
-#   market, UP and DOWN directions summed. Chosen because it is the one
-#   product with genuinely accessible, no-registration-barrier official
-#   data across all three Phase-1 countries via one consistent
-#   methodology — not because it is necessarily the single largest real
-#   BESS revenue stream in any of these markets.
+#   market, UP and DOWN directions summed, for every country in this
+#   table — including EE/LV/LT (Phase 2), for consistency with the
+#   FI/DA/DE (Phase 1) methodology. Chosen because it is the one product
+#   with genuinely accessible, no-registration-barrier official data
+#   across all six countries so far via one consistent methodology — not
+#   because it is necessarily the single largest real BESS revenue
+#   stream in any of these markets.
 # - FI was originally planned as FCR-N (the Nordic-specific reserve
 #   product, and historically the more commonly cited BESS revenue
 #   reference in Finland specifically) but Fingrid's Open Data API
@@ -129,20 +131,35 @@ _ELECTRICITY_PRICE_FALLBACK: tuple[tuple[float, float], str] = (
 #   happens to also publish FI's aFRR capacity prices). Revisit with a
 #   real FCR-N figure once a Fingrid key exists — FCR-N and aFRR are
 #   different markets and are NOT expected to give the same number.
+# - EE/LV/LT (Phase 2): sourced from the joint Baltic Transparency
+#   Dashboard (api-baltic.transparency-dashboard.eu), which covers all
+#   three countries from one API — treated as one combined effort, per
+#   the original sourcing investigation's recommendation. The Baltic
+#   states adopted the continental aFRR/mFRR capacity-market structure
+#   only in 2025, after leaving BRELL — this is a genuinely young market
+#   and each entry below carries an explicit, stronger maturity caveat
+#   than FI/DA/DE. The series' actual first valid data point is
+#   2025-09-29, not the Baltic Balancing Capacity Market's nominal
+#   4-Feb-2025 FCR+mFRR launch or its 15-Apr-2025 aFRR-specific launch —
+#   real usable history is ~10 months as of this pass, even less than
+#   the ~18 months a naive launch-date estimate would suggest. Note also
+#   that LV and LT cleared at (near-)identical marginal prices for most
+#   of the period — the joint Baltic auction mechanism optimises across
+#   all three countries simultaneously, so this is expected, not a
+#   data error.
 # - This is ONE product's capacity revenue, NOT full BESS revenue. Real
 #   BESS assets typically stack multiple products (FCR + aFRR + mFRR +
 #   arbitrage) simultaneously and dynamically. This figure is what a
 #   battery bidding symmetric aFRR capacity year-round would earn from
 #   THAT product alone. This data existing does not, by itself, make a
-#   BESS payback estimate defensible — see BESS_PAYBACK_NOTE, whose
-#   reasoning still applies: adding this one product isn't the same as
-#   having genuine revenue-stacked BESS economics. Not wired into
-#   calculate_feasibility() in this phase — data structure only.
-# - Annualization: raw hourly (Energinet) or 4-hour-block
-#   (regelleistung.net) capacity clearing prices, averaged over the
-#   sourced period, multiplied by 8760 h/year. Assumes constant
-#   year-round capacity commitment; real-world availability/eligibility
-#   varies and isn't modeled here.
+#   BESS payback estimate defensible — see BESS_PAYBACK_NOTE for
+#   countries without an entry here, and the mandatory payback_note text
+#   built in calculate_feasibility() for countries with one.
+# - Annualization: raw 15-minute (Baltic Transparency Dashboard), hourly
+#   (Energinet), or 4-hour-block (regelleistung.net) capacity clearing
+#   prices, averaged over the sourced period, multiplied by 8760 h/year.
+#   Assumes constant year-round capacity commitment; real-world
+#   availability/eligibility varies and isn't modeled here.
 _ANCILLARY_REVENUE_EUR_MW_YEAR: dict[str, tuple[tuple[float, float], str]] = {
     "FI": (
         (113800, 113800),
@@ -173,6 +190,51 @@ _ANCILLARY_REVENUE_EUR_MW_YEAR: dict[str, tuple[tuple[float, float], str]] = {
         "50Hertz/Amprion/TenneT/TransnetBW platform), no gaps — computed "
         "2026-08-01. Germany's aFRR market has 5+ years of history — the "
         "most stable and best-established of the three Phase-1 countries.",
+    ),
+    "EE": (
+        (200800, 200800),
+        "aFRR capacity market (UP+DOWN summed), joint Baltic Transparency "
+        "Dashboard (api-baltic.transparency-dashboard.eu), 'price_procured_"
+        "reserves' series — computed 2026-08-01. Data period used: "
+        "2025-09-29 to 2026-07-31 (~10 months) — this is the series' actual "
+        "first valid data point, not the Baltic capacity market's nominal "
+        "Feb/Apr-2025 launch dates. NEW MARKET (~10 months of history as of "
+        "2026-08-01, post-BRELL 2025) — moderate-to-low confidence, NOT "
+        "comparable to FI/DA/DE's multi-year track record. Treat this figure "
+        "as substantially more likely to shift as the market matures than "
+        "the Phase-1 countries' figures.",
+    ),
+    "LV": (
+        (322300, 322300),
+        "aFRR capacity market (UP+DOWN summed), joint Baltic Transparency "
+        "Dashboard (api-baltic.transparency-dashboard.eu), 'price_procured_"
+        "reserves' series — computed 2026-08-01. Data period used: "
+        "2025-09-29 to 2026-07-31 (~10 months) — this is the series' actual "
+        "first valid data point, not the Baltic capacity market's nominal "
+        "Feb/Apr-2025 launch dates. NEW MARKET (~10 months of history as of "
+        "2026-08-01, post-BRELL 2025) — moderate-to-low confidence, NOT "
+        "comparable to FI/DA/DE's multi-year track record. Notably higher "
+        "than FI/DA/DE — plausibly reflects genuine scarcity in a young, "
+        "still-forming market rather than a stable long-run price; treat "
+        "this figure as substantially more likely to shift than the Phase-1 "
+        "countries' figures. LV and LT cleared at near-identical prices for "
+        "most of the period (joint Baltic auction, not a data error).",
+    ),
+    "LT": (
+        (322600, 322600),
+        "aFRR capacity market (UP+DOWN summed), joint Baltic Transparency "
+        "Dashboard (api-baltic.transparency-dashboard.eu), 'price_procured_"
+        "reserves' series — computed 2026-08-01. Data period used: "
+        "2025-09-29 to 2026-07-31 (~10 months) — this is the series' actual "
+        "first valid data point, not the Baltic capacity market's nominal "
+        "Feb/Apr-2025 launch dates. NEW MARKET (~10 months of history as of "
+        "2026-08-01, post-BRELL 2025) — moderate-to-low confidence, NOT "
+        "comparable to FI/DA/DE's multi-year track record. Notably higher "
+        "than FI/DA/DE — plausibly reflects genuine scarcity in a young, "
+        "still-forming market rather than a stable long-run price; treat "
+        "this figure as substantially more likely to shift than the Phase-1 "
+        "countries' figures. LV and LT cleared at near-identical prices for "
+        "most of the period (joint Baltic auction, not a data error).",
     ),
 }
 
