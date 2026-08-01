@@ -8,9 +8,12 @@ professional financial due diligence or a site-specific grid-connection quote.
 All benchmark figures are public-source ranges (IRENA, NREL ATB, BloombergNEF,
 Ember), not project-specific data. See DISCLAIMER, returned in every result.
 
-Not wired into report generation yet — this module is calculation logic only,
-tested in isolation. Integration (PDF section vs. separate output) is a
-separate, not-yet-decided step.
+Wired into the PDF report as an optional "Kannattavuusarvio" section (see
+generate_application.py). BESS gets a computed payback estimate only for
+countries with real sourced ancillary-market revenue data (FI/DA/DE as of
+Phase 1b, see _ANCILLARY_REVENUE_EUR_MW_YEAR) — everywhere else keeps the
+original v1 "not provided" behaviour (BESS_PAYBACK_NOTE), same as generation
+techs without a sourced electricity price.
 """
 from __future__ import annotations
 
@@ -254,10 +257,78 @@ def calculate_feasibility(
     result["opex_source"] = opex_source
     result["sources"].append(opex_source)
 
-    # ── Payback (generation techs only — see BESS_PAYBACK_NOTE for why not BESS) ──
+    # ── Payback ──
     if tech == "battery_storage":
-        result["payback_years"] = None
-        result["payback_note"] = BESS_PAYBACK_NOTE
+        # Only countries with a real, sourced _ANCILLARY_REVENUE_EUR_MW_YEAR
+        # entry get a computed payback (FI/DA/DE as of Phase 1b). Everyone
+        # else keeps the original v1 behaviour unchanged — no fabricated
+        # numbers, same BESS_PAYBACK_NOTE as before.
+        ancillary = _ANCILLARY_REVENUE_EUR_MW_YEAR.get(country)
+        if ancillary is None or not teho_mw or teho_mw <= 0:
+            result["payback_years"] = None
+            result["payback_note"] = BESS_PAYBACK_NOTE
+            if ancillary is not None and (not teho_mw or teho_mw <= 0):
+                # Ancillary data exists for this country but we can't use it —
+                # power rating (teho_mw) is required and wasn't provided.
+                result["payback_note"] += (
+                    " (Ancillary-revenue data is available for this country, but "
+                    "computing a payback estimate from it requires the project's "
+                    "power rating (teho_mw), which was not provided for this request.)"
+                )
+            return result
+
+        (rev_lo, rev_hi), ancillary_source = ancillary
+        zone_note = ""
+        if country == "DA":
+            # DK1 and DK2 are two genuinely different markets (continental- vs
+            # Nordic-synchronous), not a confidence range — see the dict's own
+            # source comment. No per-project zone input exists yet, so default
+            # to DK2 (the lower, more conservative of the two) rather than
+            # averaging, which would misrepresent both zones.
+            annual_revenue_eur_mw = rev_lo  # DK2
+            zone_note = (
+                " Uses the DK2 (Nordic-synchronous) price zone — the lower and "
+                "more conservative of Denmark's two aFRR markets. DK1 "
+                "(continental-synchronous) is higher; no per-project zone "
+                "selector exists yet, so this is a conservative default, not a "
+                "determination of which zone this specific project is in. A "
+                "proper zone selector is a future improvement."
+            )
+        else:
+            annual_revenue_eur_mw = rev_lo  # FI/DE: single-point estimate, rev_lo == rev_hi
+
+        annual_revenue_eur = teho_mw * annual_revenue_eur_mw
+        result["ancillary_revenue_eur_mw_year"] = (rev_lo, rev_hi)
+        result["ancillary_revenue_source"] = ancillary_source
+        result["sources"].append(ancillary_source)
+
+        # Revenue is a single figure (no sourced range) — capex/opex ranges
+        # (a real range for BESS, unlike generation capex) still give a
+        # fast/slow spread. Fast: cheap capex + cheap opex. Slow: opposite.
+        net_cf_fast = annual_revenue_eur - opex_lo_eur
+        net_cf_slow = annual_revenue_eur - opex_hi_eur
+        payback_fast = (capex_lo_eur / net_cf_fast) if net_cf_fast > 0 else None
+        payback_slow = (capex_hi_eur / net_cf_slow) if net_cf_slow > 0 else None
+        result["payback_years"] = (
+            round(payback_fast, 1) if payback_fast is not None else None,
+            round(payback_slow, 1) if payback_slow is not None else None,
+        )
+
+        result["payback_note"] = (
+            "BESS payback estimate reflects ONLY aFRR capacity-market revenue "
+            "(UP+DOWN summed) — NOT energy arbitrage, NOT FCR or mFRR, NOT any "
+            "other stacked revenue stream. Real BESS assets typically combine "
+            "multiple revenue streams simultaneously and dynamically; this is a "
+            "single-market estimate, not full project economics." + zone_note +
+            f" Source: {ancillary_source}"
+        )
+        if payback_fast is None or payback_slow is None:
+            result["payback_note"] += (
+                " Net cash flow was negative in at least one scenario (opex "
+                "exceeding ancillary revenue at these assumptions) — payback not "
+                "computable for that scenario; treat as a signal the assumptions "
+                "need review, not a literal 'never pays back' claim."
+            )
         return result
 
     price_range, price_source = _ELECTRICITY_PRICE_EUR_MWH.get(country, _ELECTRICITY_PRICE_FALLBACK)
