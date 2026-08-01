@@ -7835,18 +7835,34 @@ def generate_pdf(
         ]
 
         if _feas.get("payback_years") is not None:
-            price_lo, price_hi = _feas["electricity_price_eur_mwh"]
             payback_fast, payback_slow = _feas["payback_years"]
             _payback_txt = (
                 f"{payback_fast}–{payback_slow} {_yr}"
                 if payback_fast is not None and payback_slow is not None
                 else _feas.get("payback_note", "—")
             )
-            _feas_rows.append([
-                Paragraph(_price_h, _feas_td),
-                Paragraph(f"{price_lo:.0f} – {price_hi:.0f} €/MWh", _feas_td),
-                Paragraph(_feas["electricity_price_source"], _feas_src),
-            ])
+            if _feas.get("technology") == "battery_storage":
+                # BESS payback (FI/DA/DE only, Phase 1b) is driven by
+                # ancillary-market revenue, not a flat electricity price —
+                # different supporting field, different row, no
+                # electricity_price_eur_mwh key exists in this branch.
+                rev_lo, rev_hi = _feas["ancillary_revenue_eur_mw_year"]
+                _rev_h = {
+                    "FI": "Verkkopalveluiden tuotto (aFRR, arvio, €/MW/v)",
+                    "EN": "Ancillary-market revenue (aFRR, estimate, €/MW/yr)",
+                }.get(lang, "Verkkopalveluiden tuotto (aFRR, arvio, €/MW/v)")
+                _feas_rows.append([
+                    Paragraph(_rev_h, _feas_td),
+                    Paragraph(_fmt_range_eur(rev_lo, rev_hi), _feas_td),
+                    Paragraph(_feas["ancillary_revenue_source"], _feas_src),
+                ])
+            else:
+                price_lo, price_hi = _feas["electricity_price_eur_mwh"]
+                _feas_rows.append([
+                    Paragraph(_price_h, _feas_td),
+                    Paragraph(f"{price_lo:.0f} – {price_hi:.0f} €/MWh", _feas_td),
+                    Paragraph(_feas["electricity_price_source"], _feas_src),
+                ])
             _feas_rows.append([
                 Paragraph(_payback_h, _feas_td),
                 Paragraph(_payback_txt, _feas_td),
@@ -7870,7 +7886,15 @@ def generate_pdf(
         ]))
         story.append(_feas_tbl)
 
-        if _feas.get("payback_years") is None and _feas.get("payback_note"):
+        # BESS's payback_note is a MANDATORY disclaimer (aFRR-only scope, source
+        # + computation date, DA zone caveat, revenue-stacking caveat) even when
+        # payback_years computed successfully — unlike generation techs, where
+        # the note only exists for the negative-cash-flow edge case and is
+        # otherwise absent, so "payback_years is None" isn't a safe proxy here.
+        _feas_show_note = (
+            _feas.get("payback_years") is None or _feas.get("technology") == "battery_storage"
+        ) and _feas.get("payback_note")
+        if _feas_show_note:
             story.append(Spacer(1, 2*mm))
             story.append(Paragraph(
                 _feas["payback_note"],
