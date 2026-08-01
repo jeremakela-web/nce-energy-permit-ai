@@ -7842,9 +7842,11 @@ def generate_pdf(
                 else _feas.get("payback_note", "—")
             )
             if _feas.get("technology") == "battery_storage":
-                # BESS payback (FI/DA/DE only, Phase 1b) is driven by
-                # ancillary-market revenue, not a flat electricity price —
-                # different supporting field, different row, no
+                # BESS payback (countries with a real
+                # _ANCILLARY_REVENUE_EUR_MW_YEAR entry — FI/DA/DE/EE/LV/LT/
+                # SE/NO/PL as of Phase 3) is driven by ancillary-market
+                # revenue, not a flat electricity price — different
+                # supporting field, different row, no
                 # electricity_price_eur_mwh key exists in this branch.
                 rev_lo, rev_hi = _feas["ancillary_revenue_eur_mw_year"]
                 _rev_h = {
