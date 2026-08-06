@@ -333,42 +333,114 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 # ── ARQ job queue (Redis-backed, single-service) ──────────────────────────────
-_ARQ_POOL = None   # arq.ArqRedis | None — None = Redis unavailable, fall back to Thread
+_ARQ_POOL = None          # arq.ArqRedis | None — None = Redis unavailable, fall back to Thread
+_ARQ_WORKER_TASK = None   # asyncio.Task | None — the supervisor task, tracked for clean shutdown
+
+
+def _build_arq_worker(redis_settings):
+    from arq import cron
+    from arq.worker import Worker
+
+    return Worker(
+        functions=[arq_task_generate_permit],
+        # Daily ENTSO-E day-ahead price refresh — see
+        # arq_task_refresh_entsoe_prices above and permit_ai/entsoe_prices.py.
+        # 03:00 UTC: off-peak, well clear of the ~00:00 CET SDAC market close
+        # that publishes next-day prices, and clear of typical daytime PDF-
+        # generation load on this single-service instance.
+        cron_jobs=[cron(arq_task_refresh_entsoe_prices, hour={3}, minute={0})],
+        redis_settings=redis_settings,
+        max_jobs=2,           # max 2 concurrent permit generations
+        handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
+        poll_delay=0.5,
+        job_timeout=900,       # 15 min — covers RAG+Claude+proofread+PDF
+    )
+
+
+async def _arq_worker_supervisor(redis_settings) -> None:
+    """
+    Runs the ARQ worker with automatic restart-on-crash.
+
+    Worker.main() runs an infinite poll loop and is never expected to
+    return on its own; ANY unhandled exception inside it (a transient
+    Redis network blip, anything) currently propagates straight out of
+    the fire-and-forget asyncio.create_task() this used to be wrapped in,
+    which kills the task silently — job processing then stays dead for
+    the rest of the process's life. That's a real, standing gap
+    independent of any specific change to this file: nothing here
+    supervises or restarts a dead worker task. This wraps main() in a
+    restart loop with exponential backoff so a single crash, from
+    whatever cause, is self-healing instead of a silent, indefinite
+    outage — the failure mode that matters here is "job processing never
+    resumes until the next full deploy," and this directly prevents that,
+    regardless of what actually triggers a given crash.
+    """
+    backoff = 2.0
+    while True:
+        worker = _build_arq_worker(redis_settings)
+        try:
+            print("[arq] Worker (re)started", flush=True)
+            backoff = 2.0  # reset after a clean (re)start
+            await worker.main()
+            # main() returning at all (not raising) is unexpected in normal
+            # operation (burst=False here) — treat it the same as a crash.
+            print("[arq] Worker.main() returned unexpectedly — restarting", flush=True)
+        except asyncio.CancelledError:
+            print("[arq] Worker supervisor cancelled — shutting down cleanly", flush=True)
+            raise
+        except Exception as exc:
+            import traceback as _tb
+            print(f"[arq] WORKER CRASHED: {exc!r} — restarting in {backoff:.0f}s", flush=True)
+            print(_tb.format_exc(), flush=True)
+        finally:
+            try:
+                await worker.close()
+            except Exception:
+                pass
+        await asyncio.sleep(backoff)
+        backoff = min(backoff * 2, 60.0)  # exponential backoff, capped at 60s
+
 
 @app.on_event("startup")
 async def _arq_startup() -> None:
-    global _ARQ_POOL
+    global _ARQ_POOL, _ARQ_WORKER_TASK
     _redis_url = os.getenv("REDIS_URL", "")
     if not _redis_url:
         print("[arq] REDIS_URL not set — job queue disabled, fallback to daemon threads")
         return
     try:
-        from arq import create_pool, cron
+        from arq import create_pool
         from arq.connections import RedisSettings
-        from arq.worker import Worker
 
         _rs = RedisSettings.from_dsn(_redis_url)
         _ARQ_POOL = await create_pool(_rs)
-
-        _worker = Worker(
-            functions=[arq_task_generate_permit],
-            # Daily ENTSO-E day-ahead price refresh — see
-            # arq_task_refresh_entsoe_prices above and permit_ai/entsoe_prices.py.
-            # 03:00 UTC: off-peak, well clear of the ~00:00 CET SDAC market close
-            # that publishes next-day prices, and clear of typical daytime PDF-
-            # generation load on this single-service instance.
-            cron_jobs=[cron(arq_task_refresh_entsoe_prices, hour={3}, minute={0})],
-            redis_settings=_rs,
-            max_jobs=2,           # max 2 concurrent permit generations
-            handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
-            poll_delay=0.5,
-            job_timeout=900,       # 15 min — covers RAG+Claude+proofread+PDF
+        _ARQ_WORKER_TASK = asyncio.create_task(
+            _arq_worker_supervisor(_rs), name="arq-worker-supervisor"
         )
-        asyncio.create_task(_worker.main(), name="arq-worker")
-        print(f"[arq] Worker started — max_jobs=2  redis={_redis_url[:40]}")
+        print(f"[arq] Worker supervisor started — max_jobs=2  redis={_redis_url[:40]}")
     except Exception as _exc:
         print(f"[arq] Startup failed ({_exc}) — fallback to daemon threads")
         _ARQ_POOL = None
+
+
+@app.on_event("shutdown")
+async def _arq_shutdown() -> None:
+    """
+    Cancel the worker supervisor cleanly on process shutdown. Prevents
+    "Task was destroyed but it is pending!" noise on every deploy restart —
+    harmless on its own, but exactly the kind of log line that's easy to
+    mistake for a startup crash when read in isolation (as happened during
+    the 2026-08-06 incident investigation this supervisor was added for);
+    worth cleaning up regardless of whether it was ever the actual cause
+    of anything.
+    """
+    global _ARQ_WORKER_TASK
+    if _ARQ_WORKER_TASK is not None:
+        _ARQ_WORKER_TASK.cancel()
+        try:
+            await _ARQ_WORKER_TASK
+        except (asyncio.CancelledError, Exception):
+            pass
 
 
 @app.middleware("http")
