@@ -588,6 +588,35 @@ def _fix_hardcoded_traficom(text: str, country: str) -> str:
     return _TRAFICOM_RE.sub(auth, text)
 
 
+# Same class of bug as Traficom above, found via the 2026-07-28 translation-table
+# audit: SMR/smr_bess's base liitteet list includes "Alustava turvallisuusseloste
+# (STUK YVL A.1 mukainen)" (STUK = Finnish nuclear safety regulator). SE/DA/NO/PL/
+# EE/DE all have full _COUNTRY_LIITTEET overrides for SMR+smr_bess with zero STUK
+# mentions (verified) — this is a no-op backstop for them. LV and LT have no
+# override at all, so this item falls through to the base Finnish list unchanged.
+# LT has a real, well-documented nuclear safety regulator (VATESI). Latvia has no
+# nuclear power plants and no nuclear regulatory framework at all (established
+# elsewhere in this file's LV country config) — a real authority name would be
+# fabricated, so LV gets an explicit verification hedge instead, matching the
+# "[Vaatii tarkistuksen...]" pattern already used throughout this file for cases
+# with no identified equivalent.
+_STUK_REPLACEMENT: dict[str, str] = {
+    "LT": "VATESI (Valstybinė atominės energetikos saugos inspekcija)",
+    "LV": "[Vaatii tarkistuksen — Latvialla ei ole omaa ydinturvallisuusviranomaista]",
+}
+_STUK_RE = re.compile(r'\bSTUK\w*')
+
+
+def _fix_hardcoded_stuk(text: str, country: str) -> str:
+    """Replace any literal 'STUK' mention with the correct national nuclear safety
+    authority (or a verification hedge) for non-FI countries. See
+    _STUK_REPLACEMENT comment above."""
+    auth = _STUK_REPLACEMENT.get(country)
+    if not auth:
+        return text
+    return _STUK_RE.sub(auth, text)
+
+
 # Rules that apply to ALL languages (symbol/emoji cleanup)
 _POSTPROCESS_RULES_ALL: list[tuple[str, str]] = [
     (r'■■\s*', ''),
@@ -5323,12 +5352,16 @@ def _t_law(lang: str, fi: str) -> str:
     return _t_str(lang, fi, _LAW_TRANS)
 
 def _t_liite(lang: str, fi: str, country: str = "FI") -> str:
-    """Liitteen nimen käännös. Ajaa myös Traficom-korvauksen (ks. _fix_hardcoded_traficom) —
-    _LIITE_TRANS-taulukon "(Traficom/Finavia)" on kiinteä joka kielessä, koska
-    _t_liite ei aiemmin saanut maatietoa lainkaan; sama pysyvä ongelma kuin
+    """Liitteen nimen käännös. Ajaa myös Traficom- ja STUK-korvaukset (ks.
+    _fix_hardcoded_traficom, _fix_hardcoded_stuk) — _LIITE_TRANS-taulukon
+    kiinteät viranomaismaininnat ovat samat joka kielessä, koska _t_liite ei
+    aiemmin saanut maatietoa lainkaan; sama pysyvä ongelma kuin
     context_extra-tekstissä, mutta eri koodipolku (staattinen käännöstaulukko,
     ei Claude-generoitu proosa) — ei siis liity RAG-kontekstiin lainkaan."""
-    return _fix_hardcoded_traficom(_t_str(lang, fi, _LIITE_TRANS), country)
+    text = _t_str(lang, fi, _LIITE_TRANS)
+    text = _fix_hardcoded_traficom(text, country)
+    text = _fix_hardcoded_stuk(text, country)
+    return text
 
 
 # Hankkeen vaiheen käännökset (FI-avain → muut kielet)
