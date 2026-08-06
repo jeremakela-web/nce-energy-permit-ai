@@ -7902,6 +7902,19 @@ def generate_pdf(
                 _feas["payback_note"],
                 ParagraphStyle("feas_note2", fontSize=7.5, leading=10.5, textColor=C_GRAY, fontName=PDF_FONT),
             ))
+
+        # ENTSO-E cannibalization disclaimer — MANDATORY whenever the price row
+        # above came from real day-ahead market data rather than the static
+        # benchmark table (electricity_price_note is only ever set in that
+        # case, see feasibility.py). Independent of payback_note/_feas_show_note
+        # above — solar/wind can carry both notes at once (a negative-cashflow
+        # payback_note AND the cannibalization caveat aren't mutually exclusive).
+        if _feas.get("electricity_price_note"):
+            story.append(Spacer(1, 2*mm))
+            story.append(Paragraph(
+                _feas["electricity_price_note"],
+                ParagraphStyle("feas_note3", fontSize=7.5, leading=10.5, textColor=C_GRAY, fontName=PDF_FONT),
+            ))
         story.append(Spacer(1, 4*mm))
 
     # ── NCE Permit AI -infolaatikko ───────────────────────────────────────────

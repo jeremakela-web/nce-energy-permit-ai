@@ -18,14 +18,16 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "permit_ai"))
 
+from arq import cron
 from arq.connections import RedisSettings
-from main import arq_task_generate_permit
+from main import arq_task_generate_permit, arq_task_refresh_entsoe_prices
 
 _REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
 
 class WorkerSettings:
     functions  = [arq_task_generate_permit]
+    cron_jobs  = [cron(arq_task_refresh_entsoe_prices, hour={3}, minute={0})]
     redis_settings = RedisSettings.from_dsn(_REDIS_URL)
     max_jobs   = 2
     handle_signals = True

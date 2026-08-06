@@ -18,6 +18,13 @@ services:
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
+      - key: ENTSOE_API_TOKEN
+        sync: false  # ENTSO-E Transparency Platform RESTful API security token —
+                     # see permit_ai/entsoe_prices.py. Registration is two-step:
+                     # self-service account at transparency.entsoe.eu, THEN a
+                     # manual email to transparency@entsoe.eu ("Restful API
+                     # access" in the subject) before a token can be generated —
+                     # not instant self-service like the other keys here.
       - key: PYTHONPATH
         value: /opt/render/project/src
       - key: SENTENCE_TRANSFORMERS_HOME

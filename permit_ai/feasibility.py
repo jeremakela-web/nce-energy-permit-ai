@@ -389,6 +389,32 @@ BESS_PAYBACK_NOTE = (
     "than just imprecise, so it's omitted rather than guessed."
 )
 
+# Mandatory whenever electricity_price_source comes from ENTSO-E (real day-ahead
+# market data, see entsoe_prices.py) rather than the static IRENA/NREL/BloombergNEF
+# benchmark table. Solar/wind generation clusters when many producers generate
+# simultaneously — exactly when day-ahead prices tend to be lowest ("cannibalization
+# effect", well-documented and worsening with rising renewable penetration). A flat
+# average price systematically OVERSTATES achievable revenue. For solar, this figure
+# already uses a daylight-hours proxy (see entsoe_prices.daylight_hours_average) as a
+# partial, honestly-bounded mitigation — a real time-of-day filter computed from real
+# fetched data, NOT a true generation-weighted curve (that needs irradiance data this
+# project doesn't have). Wind gets no such proxy — there is no defensible time-of-day
+# window for wind's generation pattern, and inventing one would be worse than not
+# having it.
+ENTSOE_CANNIBALIZATION_NOTE = (
+    "This price is real historical day-ahead market data (ENTSO-E Transparency "
+    "Platform), not a static benchmark — but it is still a FLAT AVERAGE price, and "
+    "solar/wind revenue in practice is affected by the 'cannibalization effect': "
+    "generation clusters exactly when many other solar/wind producers are also "
+    "generating, which is typically when prices are lowest. A flat-average estimate "
+    "therefore tends to OVERSTATE achievable revenue, more so for solar than wind and "
+    "more so in markets with high renewable penetration. For solar, this figure uses "
+    "a daylight-hours-only average as a partial mitigation (a simplified time-of-day "
+    "proxy, not a true generation-weighted curve — see methodology). For wind, no "
+    "such adjustment is applied. Treat this as a better-than-static-benchmark "
+    "estimate, not a precise revenue forecast."
+)
+
 
 def calculate_feasibility(
     hanketyyppi: str,
@@ -510,7 +536,25 @@ def calculate_feasibility(
             )
         return result
 
-    price_range, price_source = _ELECTRICITY_PRICE_EUR_MWH.get(country, _ELECTRICITY_PRICE_FALLBACK)
+    # Three-tier price lookup: real ENTSO-E day-ahead data (if a fresh cache
+    # entry exists — see entsoe_prices.py) > static per-country benchmark >
+    # generic wide placeholder. Lazy, try/except import: feasibility.py stays
+    # usable with zero dependencies (no Redis needed) when the ENTSO-E cache
+    # simply isn't populated yet or Redis is unreachable — same "never let an
+    # optional data source break the whole calculation" discipline as the
+    # BESS ancillary-revenue lookup above.
+    _entsoe_result = None
+    try:
+        from entsoe_prices import get_cached_price_eur_mwh as _get_entsoe_price
+        _entsoe_result = _get_entsoe_price(country, tech=tech)
+    except Exception:
+        _entsoe_result = None
+
+    if _entsoe_result is not None:
+        price_range, price_source = _entsoe_result
+        result["electricity_price_note"] = ENTSOE_CANNIBALIZATION_NOTE
+    else:
+        price_range, price_source = _ELECTRICITY_PRICE_EUR_MWH.get(country, _ELECTRICITY_PRICE_FALLBACK)
     price_lo, price_hi = price_range
     result["electricity_price_eur_mwh"] = price_range
     result["electricity_price_source"] = price_source

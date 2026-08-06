@@ -73,6 +73,8 @@ except ImportError:
     _OPTIMIZER_OK = False
     print("[startup] optimizer.py ei löydy — /api/optimize-bess palauttaa 501")
 
+from entsoe_prices import refresh_all_prices as _refresh_entsoe_prices
+
 # ── V2 re-index constants ──────────────────────────────────────────────────────
 _V2_COL        = "permit_docs_v2"
 _V2_MODEL      = "paraphrase-multilingual-mpnet-base-v2"
@@ -341,7 +343,7 @@ async def _arq_startup() -> None:
         print("[arq] REDIS_URL not set — job queue disabled, fallback to daemon threads")
         return
     try:
-        from arq import create_pool
+        from arq import create_pool, cron
         from arq.connections import RedisSettings
         from arq.worker import Worker
 
@@ -350,6 +352,12 @@ async def _arq_startup() -> None:
 
         _worker = Worker(
             functions=[arq_task_generate_permit],
+            # Daily ENTSO-E day-ahead price refresh — see
+            # arq_task_refresh_entsoe_prices above and permit_ai/entsoe_prices.py.
+            # 03:00 UTC: off-peak, well clear of the ~00:00 CET SDAC market close
+            # that publishes next-day prices, and clear of typical daytime PDF-
+            # generation load on this single-service instance.
+            cron_jobs=[cron(arq_task_refresh_entsoe_prices, hour={3}, minute={0})],
             redis_settings=_rs,
             max_jobs=2,           # max 2 concurrent permit generations
             handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
@@ -1222,6 +1230,30 @@ async def arq_task_generate_permit(
         _proofread_store[job_id]["status"] = "error"
         _proofread_store[job_id]["error"] = _err
         raise  # re-raise so ARQ marks the job as failed
+
+
+async def arq_task_refresh_entsoe_prices(ctx: dict) -> None:
+    """
+    ARQ daily cron job (see cron_jobs= in _arq_startup below) — refreshes the
+    ENTSO-E day-ahead price cache in Redis for all 9 countries. See
+    permit_ai/entsoe_prices.py for the full fetch/aggregate/cache design.
+
+    Failure here (including ENTSOE_API_TOKEN simply not being set yet) is
+    logged, never fatal — feasibility.py's calculate_feasibility() falls
+    back to the static IRENA/NREL/BloombergNEF benchmark table whenever the
+    Redis cache has no fresh entry, so a skipped or failed refresh degrades
+    solar/wind pricing accuracy, not availability.
+    """
+    token = os.getenv("ENTSOE_API_TOKEN", "")
+    if not token:
+        print("[arq] entsoe-price-refresh SKIPPED — ENTSOE_API_TOKEN not set", flush=True)
+        return
+    try:
+        summary = await _refresh_entsoe_prices(token=token)
+        ok = [c for c, v in summary["countries"].items() if v.get("lo_avg_eur_mwh") is not None]
+        print(f"[arq] entsoe-price-refresh OK — {len(ok)}/{len(summary['countries'])} countries refreshed: {ok}", flush=True)
+    except Exception as exc:
+        print(f"[arq] entsoe-price-refresh FAILED: {exc}", flush=True)
 
 
 @app.get("/api/proofread/{job_id}")
@@ -2744,6 +2776,28 @@ async def admin_ingest_poland_full():
         from poland_rag_full import ingest_poland_sources as _ingest
         count = _ingest()
         return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/admin/refresh-entsoe-prices", dependencies=[Depends(_require_admin)])
+async def admin_refresh_entsoe_prices():
+    """
+    Manually trigger the ENTSO-E day-ahead price refresh (normally runs
+    automatically via the 03:00 UTC ARQ cron job — see
+    arq_task_refresh_entsoe_prices / _arq_startup above). Admin only.
+    Useful for an immediate first population of the Redis cache without
+    waiting for the next scheduled run, and for verifying ENTSOE_API_TOKEN
+    is actually valid after it's set.
+    """
+    token = os.getenv("ENTSOE_API_TOKEN", "")
+    if not token:
+        raise HTTPException(status_code=503, detail="ENTSOE_API_TOKEN not set")
+    try:
+        summary = await _refresh_entsoe_prices(token=token)
+        ok = {c: v for c, v in summary["countries"].items() if v.get("lo_avg_eur_mwh") is not None}
+        failed = {c: v for c, v in summary["countries"].items() if v.get("lo_avg_eur_mwh") is None}
+        return {"status": "ok", "refreshed": list(ok.keys()), "failed": list(failed.keys()), "detail": summary}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
