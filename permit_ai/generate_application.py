@@ -885,6 +885,10 @@ class ApplicationInput:
     # White-label branding (B2B — None means use NCE defaults)
     logo_path:                    Optional[str] = None
     footer_name:                  Optional[str] = None
+    # Retrieval-tracing key (see retrieval_trace.py) — links this generation's
+    # RAG retrievals + RAQS outcome for later lookup. Caller sets this to the
+    # same job_id used for status polling; empty string disables tracing.
+    generation_id:                str = ""
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Hanketyyppikohtaiset asetukset
@@ -2367,11 +2371,13 @@ _HANKE_CFG = {
 # RAG-haku
 # ─────────────────────────────────────────────────────────────────────────────
 from source_policy import is_chunk_relevant as _is_chunk_relevant
+import retrieval_trace as _retrieval_trace
 
 def _rag_context(
     hanketyyppi: str,
     country: str = "FI",
     n_per_query: int = 2,
+    generation_id: str = "",
 ) -> tuple[str, list[dict], bool, list[str], list[str]]:
     """Hae relevantit dokumenttichunkit.
 
@@ -2381,6 +2387,10 @@ def _rag_context(
 
     Palauttaa (context_text, sources, warning_flag, precedent_chunks, precedent_sources).
     Nostaa InsufficientSourcesError jos RAG-laatu on riittämätön (hard stop).
+
+    `generation_id`, if given, links this call to a `retrieval_trace` row (see
+    retrieval_trace.py) — purely additive logging, does not change retrieval
+    behaviour. Empty string (default) disables tracing.
     """
     cfg = _HANKE_CFG[hanketyyppi]
     try:
@@ -2390,6 +2400,8 @@ def _rag_context(
         seen_ids:        set[str]        = set()
         all_docs:        list[str]       = []
         all_distances:   list[float]     = []
+        all_chunk_ids:   list[str]       = []
+        all_source_types: list[str]      = []
         all_source_meta: dict[str, dict] = {}  # src_id → {display, url}
 
         def _collect(results: dict, allowed_countries=None) -> None:
@@ -2414,6 +2426,8 @@ def _rag_context(
                     seen_ids.add(id_)
                     all_docs.append(doc)
                     all_distances.append(dist)
+                    all_chunk_ids.append(id_)
+                    all_source_types.append(meta.get("source_type") or "unknown")
                     # Use meta["source"] as dedup key so all chunks from the same
                     # document collapse into one source entry (fixes caruna repeating)
                     src_id = _src_name or re.sub(r"[_-]\d+$", "", id_)
@@ -2471,9 +2485,14 @@ def _rag_context(
         # Top-50 keeps the most relevant subset, matching what Claude can attend to effectively.
         _top_n_ctx = max(50, n_per_query * 20)
         if len(all_docs) > _top_n_ctx:
-            _dist_doc = sorted(zip(all_distances, all_docs), key=lambda x: x[0])
-            all_distances = [p[0] for p in _dist_doc[:_top_n_ctx]]
-            all_docs      = [p[1] for p in _dist_doc[:_top_n_ctx]]
+            _dist_doc = sorted(
+                zip(all_distances, all_docs, all_chunk_ids, all_source_types),
+                key=lambda x: x[0],
+            )
+            all_distances    = [p[0] for p in _dist_doc[:_top_n_ctx]]
+            all_docs         = [p[1] for p in _dist_doc[:_top_n_ctx]]
+            all_chunk_ids    = [p[2] for p in _dist_doc[:_top_n_ctx]]
+            all_source_types = [p[3] for p in _dist_doc[:_top_n_ctx]]
 
         # ── Task 2: RAG confidence check ─────────────────────────────────────
         chunks_returned = len(all_docs)
@@ -2490,6 +2509,27 @@ def _rag_context(
         # LV exception: Latvian text scores ~0.05 lower than other non-FI languages with mpnet
         # (BESS avg=0.51, aurinkovoima avg=0.49 on 157 genuine LV chunks). Use 0.46 floor for LV.
         _min_score = 0.46 if country == "LV" else (0.52 if country != "FI" else 0.65)
+
+        # ── Retrieval trace (TASO 1, purely additive) — log what was retrieved for
+        # this call regardless of pass/fail, so a RAG_FAIL is debuggable too. Never
+        # raises and never blocks generation; see retrieval_trace.py.
+        try:
+            _all_queries_used = list(dict.fromkeys(list(_country_queries) + list(cfg["rag_queries"])))
+            _retrieval_trace.log_retrieval(
+                generation_id=generation_id,
+                query_text=" || ".join(_all_queries_used),
+                country=country,
+                hanketyyppi_tag=hanketyyppi,
+                chunks=[
+                    {"chunk_id": cid, "score": sc, "source_type": st}
+                    for cid, sc, st in zip(all_chunk_ids, relevance_scores if all_distances else [], all_source_types)
+                ],
+                avg_score=avg_score,
+                min_score_threshold=_min_score,
+            )
+        except Exception:
+            pass
+
         if chunks_returned < 5 or avg_score < _min_score:
             logger.warning(
                 "RAG_FAIL: %s %s chunks=%d avg_score=%.2f",
@@ -7314,6 +7354,26 @@ def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
             return None
         result = _json.loads(raw)
         _raqs_store(result, inp)
+        # Retrieval trace (TASO 1, purely additive) — record the final RAQS outcome
+        # against this generation's trace, if a generation_id was set. "flagged" =
+        # the criteria RAQS itself scored <=2 (its own low-confidence signal, e.g.
+        # the "PUNAINEN LIPPU" uncited-external-figure rule for 'epävarmuus') —
+        # RAQS reviews generated text sections, not individual chunks, so there is
+        # no chunk-ID-level flag to log; this is the closest honest equivalent.
+        try:
+            _flagged = [
+                {"criterion": k, "pisteet": v.get("pisteet"), "perustelu": v.get("perustelu", "")}
+                for k, v in result.items()
+                if isinstance(v, dict) and isinstance(v.get("pisteet"), (int, float)) and v["pisteet"] <= 2
+            ]
+            _retrieval_trace.log_raqs_outcome(
+                generation_id=getattr(inp, "generation_id", "") or "",
+                review=result,
+                raqs_order=_RAQS_ORDER,
+                flagged=_flagged,
+            )
+        except Exception:
+            pass
         result["_lang"] = lang  # carry lang through to _raqs_page
         return result
     except Exception:
@@ -8143,7 +8203,7 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
     with _RAG_LOCK:
         _LAST_TIMING["t1_rag_lock_acquired"] = _time.monotonic()
         rag_ctx, sources, warning_flag, prec_chunks, prec_sources, _ = \
-            _rag_context(inp.hanketyyppi, inp.country or "FI")
+            _rag_context(inp.hanketyyppi, inp.country or "FI", generation_id=inp.generation_id)
         _LAST_TIMING["t2_rag_context_done"] = _time.monotonic()
     _LAST_TIMING["t3_before_generate_sections"] = _time.monotonic()
     try:
@@ -8186,7 +8246,7 @@ def generate_application(inp: ApplicationInput) -> str:
 
     print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi}, maa={inp.country or 'FI'})…")
     rag_ctx, sources, warning_flag, prec_chunks, prec_sources, _ = \
-        _rag_context(inp.hanketyyppi, inp.country or "FI")
+        _rag_context(inp.hanketyyppi, inp.country or "FI", generation_id=inp.generation_id)
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {[s['display'] for s in sources]}")
     if warning_flag:
         print("      ⚠️  RAG_WARN: rajallinen lähdeaineisto")
@@ -8221,12 +8281,15 @@ def generate_application(inp: ApplicationInput) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    import uuid as _uuid
     test_inp = ApplicationInput(
         hanketyyppi      = "BESS",
         kiinteistotunnus = "636-439-4-711",
         teho_mw          = 1.0,
         kunta            = "Pöytyä",
         hakija           = "Carbon Zero Finland Oy",
+        generation_id    = _uuid.uuid4().hex[:10],
     )
+    print(f"[trace] generation_id = {test_inp.generation_id}")
     path = generate_application(test_inp)
     os.system(f"open '{path}'")

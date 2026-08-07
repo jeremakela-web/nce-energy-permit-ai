@@ -66,6 +66,7 @@ from generate_application import (
     InsufficientSourcesError,
 )
 import generate_application as _gen_app_module
+import retrieval_trace as _retrieval_trace
 try:
     from optimizer import NCEOptimizer, EnergySite
     _OPTIMIZER_OK = True
@@ -1100,6 +1101,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
     inp.logo_path = _NCE_LOGO
 
     job_id = uuid.uuid4().hex[:10]
+    inp.generation_id = job_id  # links this generation's retrieval_trace rows (see retrieval_trace.py)
     _proofread_store[job_id] = {
         "status": "pending", "pdf_bytes": None, "error": None,
         "lang":          req.lang or "FI",
@@ -2533,6 +2535,7 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
         ifc_materials                 = ", ".join(approved.get("materials") or []),
         ifc_storeys                   = len(approved.get("storeys") or []),
         ifc_compliance_flags          = "\n".join(approved.get("compliance_flags") or []),
+        generation_id                 = uuid.uuid4().hex[:10],
     )
 
     # Generoi PDF taustasäikeessä (blocking — approve on harvinainen operaatio)
@@ -2763,6 +2766,7 @@ async def b2b_generate_report(
         osoite                        = req.osoite,
         logo_path                     = logo_path,
         footer_name                   = footer_name or None,
+        generation_id                 = uuid.uuid4().hex[:10],
     )
 
     try:
@@ -3174,6 +3178,19 @@ async def admin_last_generation_timing(secret: str = ""):
             elif k == "t0_start":
                 t[k] = 0.0
     return t
+
+
+@app.get("/api/admin/retrieval-trace/{generation_id}")
+async def admin_retrieval_trace(generation_id: str, secret: str = ""):
+    """
+    Internal debugging only — NOT user-facing. Read-only fetch of a generation's
+    retrieval trace: retrieved chunk IDs + similarity scores + source_type per RAG
+    call, and the final RAQS outcome (5 criteria + overall + any low-confidence
+    flags). No full chunk text is stored or returned — see retrieval_trace.py.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return _retrieval_trace.get_trace(generation_id)
 
 
 @app.get("/api/admin/rag-check-all")
