@@ -63,7 +63,7 @@ _sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from generate_application import (
     generate_application, generate_application_draft, apply_proofread_to_pdf,
     ApplicationInput, _get_embed_model, _get_chroma_col,
-    InsufficientSourcesError,
+    InsufficientSourcesError, GenerationCapError,
 )
 import generate_application as _gen_app_module
 import retrieval_trace as _retrieval_trace
@@ -1162,6 +1162,17 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             _proofread_store[job_id]["avg_relevance"] = round(exc.avg_relevance, 2)
             _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
                        req.hankkeen_vaihe or "", job_id, f"RAG_FAIL:chunks={exc.chunks_found}")
+        except GenerationCapError as exc:
+            # TASO 1 cost & resource guardrail — a per-generation cap tripped.
+            # Already logged to guardrail_log (retrieval_trace.py) with generation_id
+            # by the raising code; surface it here as a distinct, clean status too.
+            _proofread_store[job_id]["status"] = "cap_exceeded"
+            _proofread_store[job_id]["error"] = str(exc)
+            _proofread_store[job_id]["cap_kind"] = exc.kind
+            _proofread_store[job_id]["cap_count"] = exc.count
+            _proofread_store[job_id]["cap_limit"] = exc.cap
+            _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
+                       req.hankkeen_vaihe or "", job_id, f"CAP_HIT:{exc.kind}={exc.count}/{exc.cap}")
         except Exception as exc:
             import traceback as _tb
             _err = f"{type(exc).__name__}: {exc}"
@@ -1287,6 +1298,18 @@ async def arq_task_generate_permit(
         _proofread_store[job_id]["avg_relevance"] = round(exc.avg_relevance, 2)
         _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id,
                    f"RAG_FAIL:chunks={exc.chunks_found}")
+
+    except GenerationCapError as exc:
+        # TASO 1 cost & resource guardrail — a per-generation cap tripped. Already
+        # logged to guardrail_log (retrieval_trace.py) with generation_id by the
+        # raising code; surface it here as a distinct, clean status too.
+        _proofread_store[job_id]["status"] = "cap_exceeded"
+        _proofread_store[job_id]["error"] = str(exc)
+        _proofread_store[job_id]["cap_kind"] = exc.kind
+        _proofread_store[job_id]["cap_count"] = exc.count
+        _proofread_store[job_id]["cap_limit"] = exc.cap
+        _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id,
+                   f"CAP_HIT:{exc.kind}={exc.count}/{exc.cap}")
 
     except Exception as exc:
         import traceback as _tb
@@ -3185,12 +3208,26 @@ async def admin_retrieval_trace(generation_id: str, secret: str = ""):
     """
     Internal debugging only — NOT user-facing. Read-only fetch of a generation's
     retrieval trace: retrieved chunk IDs + similarity scores + source_type per RAG
-    call, and the final RAQS outcome (5 criteria + overall + any low-confidence
-    flags). No full chunk text is stored or returned — see retrieval_trace.py.
+    call, the final RAQS outcome (5 criteria + overall + any low-confidence flags),
+    estimated cost per Claude API call, and any guardrail cap trips. No full chunk
+    text is stored or returned — see retrieval_trace.py.
     """
     if not secret or secret != _ADMIN_SECRET:
         raise HTTPException(status_code=403, detail="Forbidden")
     return _retrieval_trace.get_trace(generation_id)
+
+
+@app.get("/api/admin/generation-cost")
+async def admin_generation_cost(date: str, end_date: str = "", secret: str = ""):
+    """
+    Internal debugging only — NOT user-facing. Read-only total estimated Claude
+    API cost for a day (`date`, YYYY-MM-DD) or an inclusive date range (`date` to
+    `end_date`, both YYYY-MM-DD). TASO 1 cost & resource guardrail — visibility
+    only, see retrieval_trace.py's generation_cost table.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return _retrieval_trace.get_cost_for_range(date, end_date or None)
 
 
 @app.get("/api/admin/rag-check-all")
