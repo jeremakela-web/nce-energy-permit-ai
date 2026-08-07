@@ -359,6 +359,12 @@ def ingest() -> None:
     new_metas: list[dict] = []
 
     # ── 1. Inline-lakitekstit ──────────────────────────────────────────────
+    # This whole block IS the manual-sourcing path — see the module docstring:
+    # Finlex is fully JS-rendered, so this text is a human-curated compilation
+    # typed directly into this file, not fetched. source_type:"manual" +
+    # last_verified (this run's date) let a future freshness check find it —
+    # never auto-refreshable since there is no fetch path for it at all.
+    _verified_today = time.strftime("%Y-%m-%d", time.gmtime())
     print("\n[1/2] Inline-lakitekstit (YSL 527/2014, YVA-laki 252/2017)…")
     for doc_id, source_label, text in _FI_ENV_LAW_DOCS:
         chunks = _chunk(text)
@@ -372,7 +378,8 @@ def ingest() -> None:
                 "country":         "FI",
                 "lang":            "fi",
                 "source":          source_label,
-                "source_type":     "inline_law",
+                "source_type":     "manual",
+                "last_verified":   _verified_today,
                 "hanketyyppi_tag": "general",
             })
         print(f"  {doc_id}: {len(chunks)} chunkkia")
