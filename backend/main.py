@@ -3209,12 +3209,33 @@ async def admin_retrieval_trace(generation_id: str, secret: str = ""):
     Internal debugging only — NOT user-facing. Read-only fetch of a generation's
     retrieval trace: retrieved chunk IDs + similarity scores + source_type per RAG
     call, the final RAQS outcome (5 criteria + overall + any low-confidence flags),
-    estimated cost per Claude API call, and any guardrail cap trips. No full chunk
-    text is stored or returned — see retrieval_trace.py.
+    estimated cost per Claude API call, any guardrail cap trips, and rollback
+    checkpoints (retrieval / draft / proofread / raqs_final, each valid or
+    discarded) — see retrieval_trace.py.
     """
     if not secret or secret != _ADMIN_SECRET:
         raise HTTPException(status_code=403, detail="Forbidden")
     return _retrieval_trace.get_trace(generation_id)
+
+
+@app.post("/api/admin/discard-checkpoint/{checkpoint_id}")
+async def admin_discard_checkpoint(checkpoint_id: int, reason: str = "", secret: str = ""):
+    """
+    Internal debugging only — NOT user-facing. Explicitly discard (soft-mark
+    invalid, never delete) one rollback checkpoint by id, e.g. after a human
+    reviewing /api/admin/retrieval-trace spots a bad retrieval or draft. The row
+    is kept forever with status=discarded for audit — see retrieval_trace.py's
+    discard_checkpoint(). Does not touch any other checkpoint. Does not trigger
+    any re-run — no automated resume engine exists yet (out of scope for TASO 1).
+    checkpoint_id comes from GET /api/admin/retrieval-trace/{generation_id}'s
+    "checkpoints" list.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    ok = _retrieval_trace.discard_checkpoint(checkpoint_id, reason)
+    if not ok:
+        raise HTTPException(status_code=404, detail="No such valid checkpoint id")
+    return {"checkpoint_id": checkpoint_id, "status": "discarded", "reason": reason}
 
 
 @app.get("/api/admin/generation-cost")

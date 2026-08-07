@@ -2656,6 +2656,25 @@ def _rag_context(
 
         context = "\n\n---\n\n".join(all_docs)
         sources = [{"id": sid, **info} for sid, info in sorted(all_source_meta.items())]
+
+        # Rollback checkpoint (TASO 1): only on the success path — a RAG_FAIL
+        # already halts the pipeline via InsufficientSourcesError, so there is
+        # nothing to checkpoint/resume for a failed retrieval. Chunk IDs only,
+        # same "no full text" rule as log_retrieval() — a resume would re-fetch
+        # from ChromaDB by id, not from a duplicated text copy here.
+        if generation_id:
+            _retrieval_trace.save_checkpoint(
+                generation_id=generation_id,
+                step="retrieval",
+                state={
+                    "chunk_ids":  all_chunk_ids,
+                    "source_types": all_source_types,
+                    "avg_score":  round(avg_score, 4),
+                    "country":    country,
+                    "hanketyyppi_tag": hanketyyppi,
+                },
+            )
+
         return context, sources, warning_flag, precedent_chunks, precedent_sources, round(avg_score, 3)
 
     except InsufficientSourcesError:
@@ -7619,8 +7638,18 @@ def generate_pdf(
     prec_sources: Optional[list] = None,
     logo_path: Optional[str] = None,
     footer_name: Optional[str] = None,
+    is_final: bool = True,
 ) -> bytes:
-    """Rakenna PDF ja palauta bytes."""
+    """Rakenna PDF ja palauta bytes.
+
+    `is_final`: whether this is the human-facing deliverable PDF (default True —
+    the only caller that passes False is generate_application_draft()'s draft-PDF
+    build, whose bytes are discarded by every caller and whose RAQS pass feeds
+    nothing downstream). Controls whether the RAQS outcome gets a "raqs_final"
+    rollback checkpoint (TASO 1) — checkpointing the discarded draft pass would
+    give nothing to resume/discard into, per the investigation in the rollback
+    task.
+    """
     prec_chunks  = prec_chunks  or []
     prec_sources = prec_sources or []
 
@@ -8301,6 +8330,16 @@ def generate_pdf(
 
     # ── RAQS: reviewing agent — Haiku-arvio sisällön laadusta ────────────────
     _raqs_result = _raqs_review(sections, inp)
+    if _raqs_result and is_final and getattr(inp, "generation_id", ""):
+        # Rollback checkpoint (TASO 1): only the final, human-facing RAQS pass —
+        # this is the terminal step before the human approval gate (see the
+        # rollback task's investigation; the draft-PDF RAQS pass is excluded,
+        # is_final=False there).
+        _retrieval_trace.save_checkpoint(
+            generation_id=inp.generation_id,
+            step="raqs_final",
+            state={k: v for k, v in _raqs_result.items() if k != "_lang"},
+        )
     if _raqs_result:
         _raqs_lang = _raqs_result.pop("_lang", lang)
         for _elem in _raqs_page(_raqs_result, st, _raqs_lang):
@@ -8344,7 +8383,16 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
     _lang = inp.lang or "FI"
     sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
     _LAST_TIMING["t5_final_polish_done"] = _time.monotonic()
-    pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources)
+    if inp.generation_id:
+        # Rollback checkpoint (TASO 1): the exact `sections` state that feeds
+        # proofread next — post-final_polish, since that's what actually
+        # propagates forward (not the raw _generate_sections() output).
+        _retrieval_trace.save_checkpoint(
+            generation_id=inp.generation_id, step="draft", state={"sections": sections},
+        )
+    # is_final=False: this draft PDF's bytes are discarded by every caller (see
+    # the rollback task's investigation) — its RAQS pass gets no checkpoint.
+    pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources, is_final=False)
     _LAST_TIMING["t6_pdf_done"] = _time.monotonic()
     return pdf_bytes, sections, sources
 
@@ -8361,9 +8409,16 @@ def apply_proofread_to_pdf(
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections, generation_id=inp.generation_id)
     sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
+    if inp.generation_id:
+        # Rollback checkpoint (TASO 1): the exact `sections` state that feeds
+        # the final PDF next.
+        _retrieval_trace.save_checkpoint(
+            generation_id=inp.generation_id, step="proofread", state={"sections": sections},
+        )
     return generate_pdf(
         inp, sections, sources,
         warning_flag, prec_chunks or [], prec_sources or [],
+        # is_final defaults to True — this is the human-facing deliverable PDF.
     )
 
 
@@ -8382,14 +8437,26 @@ def generate_application(inp: ApplicationInput) -> str:
     print("[2/4] Generoidaan hakemusteksti (Claude)…")
     sections = _generate_sections(inp, rag_ctx, prec_chunks, prec_sources)
     print(f"      Osiot: {list(sections.keys())}")
+    if inp.generation_id:
+        # Rollback checkpoint (TASO 1): this single-pass path has no _final_polish
+        # between draft generation and proofread, unlike generate_application_draft()
+        # — checkpoint whatever state actually feeds proofread next in this path.
+        _retrieval_trace.save_checkpoint(
+            generation_id=inp.generation_id, step="draft", state={"sections": sections},
+        )
 
     print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections, generation_id=inp.generation_id)
     sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
+    if inp.generation_id:
+        _retrieval_trace.save_checkpoint(
+            generation_id=inp.generation_id, step="proofread", state={"sections": sections},
+        )
 
     print("[4/4] Rakennetaan PDF…")
     pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources)
+    # is_final defaults to True — this single-pass function's PDF is the deliverable.
 
     _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
                      "DA": "ansøgning", "NO": "søknad", "PL": "wniosek"}
