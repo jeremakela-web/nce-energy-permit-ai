@@ -72,11 +72,40 @@ class InsufficientSourcesError(Exception):
         )
 
 
+class GenerationCapError(RuntimeError):
+    """Raised when a single generation exceeds its per-generation_id ceiling on
+    RAG retrieval calls or Claude API calls (see retrieval_trace.py's
+    count_retrieval_calls()/count_claude_calls()). TASO 1 cost & resource
+    guardrail — a hard, visibility-only ceiling; NOT throttling or rate limiting
+    (see the task's explicit out-of-scope note). Today's pipeline always makes
+    exactly 1 RAG retrieval call and 4 Claude API calls per generation with zero
+    variance, so this is a forward-looking safety net (e.g. for a future
+    Autonomous RAG Agent's retry/iterate loop), not a response to any observed
+    runaway behavior. Caps confirmed with the user 2026-08-07 before being
+    hardcoded, per the task's explicit instruction.
+    """
+    def __init__(self, kind: str, generation_id: str, count: int, cap: int):
+        self.kind          = kind           # "retrieval_iteration" | "claude_call"
+        self.generation_id = generation_id
+        self.count         = count
+        self.cap           = cap
+        super().__init__(
+            f"GENERATION_CAP_HIT: {kind} cap exceeded for generation_id={generation_id} "
+            f"({count}/{cap}) — stopping to avoid an uncontrolled cost/resource loop"
+        )
+
+
 # TODO: domain muutos ncepermit.ai kun NCE Global perustettu
 _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _RAQS_DB     = os.path.join(_DB_DIR, "raqs_reviews.db")
+# TASO 1 cost & resource guardrail (confirmed with user 2026-08-07). Current fixed
+# pipeline usage is always 1 RAG retrieval call + 4 Claude API calls per generation
+# (draft + proofread + RAQS×2) — these caps give headroom (3x / 1.5x) over that
+# fixed baseline rather than reacting to any observed runaway today.
+_RAG_ITERATION_CAP = 3
+_CLAUDE_CALL_CAP    = 6
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
 _MODEL_ID      = "claude-sonnet-4-5"
 _MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
@@ -759,7 +788,7 @@ def _limit_huom_markers(sections: dict, lang: str, max_count: int = 4) -> dict:
 # TASO 2 — AI-oikoluku
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _proofread_sections(sections: dict) -> dict:
+def _proofread_sections(sections: dict, generation_id: str = "") -> dict:
     """Tarkistuta osiot Claudella ennen PDF-rakennusta."""
     combined = ""
     for key, text in sections.items():
@@ -803,6 +832,22 @@ def _proofread_sections(sections: dict) -> dict:
     # gracefully to the original text, it just won't be mistaken for a stall
     # after 120s of ordinary (if slow) progress.
     _LAST_TIMING["t7_proofread_start"] = _time.monotonic()
+    # Cost & resource guardrail (TASO 1): checked outside the try/except below —
+    # this function's broad `except Exception: return sections` fallback exists
+    # for genuine proofread hiccups (degrade to unproofread text, never block the
+    # PDF); a cap hit is different and must fail cleanly, not be swallowed into
+    # that same silent-degradation path. See GenerationCapError.
+    if generation_id:
+        _n_calls = _retrieval_trace.count_claude_calls(generation_id)
+        if _n_calls >= _CLAUDE_CALL_CAP:
+            _retrieval_trace.log_guardrail_hit(
+                generation_id=generation_id,
+                guard_type="claude_call_cap",
+                count_at_trip=_n_calls,
+                cap=_CLAUDE_CALL_CAP,
+                detail="call_type=proofread",
+            )
+            raise GenerationCapError("claude_call", generation_id, _n_calls, _CLAUDE_CALL_CAP)
     try:
         with anthropic.Anthropic(timeout=600.0).messages.stream(
             model=_MODEL_ID,
@@ -820,6 +865,16 @@ def _proofread_sections(sections: dict) -> dict:
             getattr(_pu, "cache_read_input_tokens", 0),
             _pu.input_tokens, _pu.output_tokens,
         )
+        if generation_id:
+            _retrieval_trace.log_api_call(
+                generation_id=generation_id,
+                call_type="proofread",
+                model=_MODEL_ID,
+                input_tokens=_pu.input_tokens,
+                cache_creation_input_tokens=getattr(_pu, "cache_creation_input_tokens", 0) or 0,
+                cache_read_input_tokens=getattr(_pu, "cache_read_input_tokens", 0) or 0,
+                output_tokens=_pu.output_tokens,
+            )
         corrected = unicodedata.normalize("NFC", "".join(raw_parts))
         result = dict(sections)
         for block in corrected.split("===OSIO:"):
@@ -2391,7 +2446,26 @@ def _rag_context(
     `generation_id`, if given, links this call to a `retrieval_trace` row (see
     retrieval_trace.py) — purely additive logging, does not change retrieval
     behaviour. Empty string (default) disables tracing.
+
+    Cost & resource guardrail (TASO 1): raises GenerationCapError if this
+    generation_id has already made `_RAG_ITERATION_CAP` retrieval calls — checked
+    outside the try/except below so it can never be silently swallowed into an
+    empty-context fallback (that would let generation continue with zero RAG
+    content, exactly the "silently return wrong output" this guardrail exists
+    to prevent).
     """
+    if generation_id:
+        _n_retr = _retrieval_trace.count_retrieval_calls(generation_id)
+        if _n_retr >= _RAG_ITERATION_CAP:
+            _retrieval_trace.log_guardrail_hit(
+                generation_id=generation_id,
+                guard_type="retrieval_iteration_cap",
+                count_at_trip=_n_retr,
+                cap=_RAG_ITERATION_CAP,
+                detail=f"hanketyyppi={hanketyyppi} country={country}",
+            )
+            raise GenerationCapError("retrieval_iteration", generation_id, _n_retr, _RAG_ITERATION_CAP)
+
     cfg = _HANKE_CFG[hanketyyppi]
     try:
         embed_model = _get_embed_model()
@@ -6582,6 +6656,21 @@ def _generate_sections(
     # retries should handle — before this change, retries were instead
     # multiplying a single slow-but-fine ~120-200s call into a cascading
     # 2-3x wait that occasionally exhausted all attempts as a hard failure.
+    # Cost & resource guardrail (TASO 1): fail cleanly before spending on a Claude
+    # call this generation has no budget left for. See GenerationCapError.
+    _generation_id = getattr(inp, "generation_id", "") or ""
+    if _generation_id:
+        _n_calls = _retrieval_trace.count_claude_calls(_generation_id)
+        if _n_calls >= _CLAUDE_CALL_CAP:
+            _retrieval_trace.log_guardrail_hit(
+                generation_id=_generation_id,
+                guard_type="claude_call_cap",
+                count_at_trip=_n_calls,
+                cap=_CLAUDE_CALL_CAP,
+                detail="call_type=draft",
+            )
+            raise GenerationCapError("claude_call", _generation_id, _n_calls, _CLAUDE_CALL_CAP)
+
     claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
     _LAST_TIMING["t3a_claude_call_start"] = _time.monotonic()
     _LAST_TIMING["prompt_context_chars"] = len(prompt_context)
@@ -6629,6 +6718,16 @@ def _generate_sections(
         getattr(_u, "cache_read_input_tokens", 0),
         _u.input_tokens, _u.output_tokens, resp.stop_reason, len(raw),
     )
+    if _generation_id:
+        _retrieval_trace.log_api_call(
+            generation_id=_generation_id,
+            call_type="draft",
+            model=_MODEL_ID,
+            input_tokens=_u.input_tokens,
+            cache_creation_input_tokens=getattr(_u, "cache_creation_input_tokens", 0) or 0,
+            cache_read_input_tokens=getattr(_u, "cache_read_input_tokens", 0) or 0,
+            output_tokens=_u.output_tokens,
+        )
     # Write raw to /tmp for debug endpoint
     try:
         with open("/tmp/debug_raw_claude.txt", "w", encoding="utf-8") as _f:
@@ -7334,6 +7433,24 @@ def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
         f"LUONNOKSEN SISÄLTÖ:\n{sections_text}"
     )
 
+    # Cost & resource guardrail (TASO 1): checked outside the try/except below.
+    # _raqs_review()'s own `except Exception: return None` exists so an ordinary
+    # RAQS hiccup degrades gracefully (PDF still builds, just without the RAQS
+    # page) — a cap hit must not be swallowed into that same silent-degradation
+    # path, so it must fail the whole generation cleanly. See GenerationCapError.
+    _generation_id = getattr(inp, "generation_id", "") or ""
+    if _generation_id:
+        _n_calls = _retrieval_trace.count_claude_calls(_generation_id)
+        if _n_calls >= _CLAUDE_CALL_CAP:
+            _retrieval_trace.log_guardrail_hit(
+                generation_id=_generation_id,
+                guard_type="claude_call_cap",
+                count_at_trip=_n_calls,
+                cap=_CLAUDE_CALL_CAP,
+                detail="call_type=raqs",
+            )
+            raise GenerationCapError("claude_call", _generation_id, _n_calls, _CLAUDE_CALL_CAP)
+
     try:
         client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=30.0)
         resp = client.messages.create(
@@ -7346,6 +7463,17 @@ def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
             }],
             messages=[{"role": "user", "content": prompt}],
         )
+        _ru = resp.usage
+        if _generation_id:
+            _retrieval_trace.log_api_call(
+                generation_id=_generation_id,
+                call_type="raqs",
+                model=_MODEL_ID_FAST,
+                input_tokens=_ru.input_tokens,
+                cache_creation_input_tokens=getattr(_ru, "cache_creation_input_tokens", 0) or 0,
+                cache_read_input_tokens=getattr(_ru, "cache_read_input_tokens", 0) or 0,
+                output_tokens=_ru.output_tokens,
+            )
         raw = resp.content[0].text.strip()
         # strip optional markdown code fences
         raw = re.sub(r"^```[a-z]*\s*", "", raw)
@@ -8231,7 +8359,7 @@ def apply_proofread_to_pdf(
 ) -> bytes:
     """Oikolue sections Claudella ja rakenna lopullinen PDF."""
     _lang = inp.lang or "FI"
-    sections = _proofread_sections(sections)
+    sections = _proofread_sections(sections, generation_id=inp.generation_id)
     sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
     return generate_pdf(
         inp, sections, sources,
@@ -8257,7 +8385,7 @@ def generate_application(inp: ApplicationInput) -> str:
 
     print("[3/4] Oikoluku ja tekstikorjaus (Claude + säännöt)…")
     _lang = inp.lang or "FI"
-    sections = _proofread_sections(sections)
+    sections = _proofread_sections(sections, generation_id=inp.generation_id)
     sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
 
     print("[4/4] Rakennetaan PDF…")
