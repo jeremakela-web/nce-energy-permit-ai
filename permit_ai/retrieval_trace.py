@@ -13,13 +13,16 @@ no new dependency is added here; sqlite3 is stdlib). File lives on the same
 persistent-disk directory as the ChromaDB index / raqs_reviews.db, so it survives
 Render deploys.
 
-Four tables:
+Five tables:
   retrieval_trace       — one row per `_rag_context()` call (chunk-level detail as JSON)
   retrieval_trace_raqs  — one row per RAQS review, linked by generation_id
   generation_cost       — one row per Claude API call (draft / proofread / RAQS),
                            with token usage + an estimated USD cost
   guardrail_log         — one row per time a per-generation cap (see generate_
                            application.py's GenerationCapError) actually tripped
+  generation_checkpoint — one row per major pipeline step (retrieval / draft /
+                           proofread / raqs_final), enough state to resume from
+                           or discard that step before the human approval gate
 
 `generation_cost` and `guardrail_log` are new tables rather than reuse of
 `retrieval_trace`/`retrieval_trace_raqs` — their natural grain is "one row per
@@ -27,6 +30,19 @@ Claude API call" / "one row per cap trip", neither of which matches "one row per
 RAG retrieval" or "one row per RAQS outcome". They share this module and this
 DB file (not a separate module) because they're keyed by the same generation_id
 and read together via get_trace() / the same CLI.
+
+`generation_checkpoint` is likewise a new table rather than an ALTER TABLE on
+`retrieval_trace`/`retrieval_trace_raqs` — those tables already ship in
+production and adding a status column would be a schema migration on live data
+for no real benefit. There is deliberate small redundancy: the retrieval and
+raqs_final checkpoints re-log state that `retrieval_trace`/`retrieval_trace_raqs`
+already capture (chunk IDs/scores, RAQS scores) — cheap (a few KB), and the two
+copies serve different consumers (provenance/audit vs. rollback state with a
+discard verb). Draft/proofread checkpoints store the actual generated section
+text, which has no other persistent home anywhere in this codebase today (not
+even the final PDF bytes are stored outside an in-memory job dict) — this is
+NOT the same "never store full text" rule as chunk text: that rule exists to
+avoid duplicating ChromaDB, which has no equivalent for generated output.
 
 IMPORTANT: full chunk text is never stored here — only chunk IDs, similarity scores,
 and lightweight metadata (source_type). Full chunk text stays in ChromaDB, referenced
@@ -141,6 +157,18 @@ def _init_db(conn: sqlite3.Connection) -> None:
             detail         TEXT
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS generation_checkpoint (
+            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            generation_id   TEXT    NOT NULL,
+            step            TEXT    NOT NULL,  -- retrieval | draft | proofread | raqs_final
+            created_at      TEXT    NOT NULL,
+            status          TEXT    NOT NULL DEFAULT 'valid',  -- valid | discarded
+            discarded_at    TEXT,
+            discard_reason  TEXT,
+            state_json      TEXT    NOT NULL
+        )
+    """)
     conn.execute(
         "CREATE INDEX IF NOT EXISTS idx_retrieval_trace_gen ON retrieval_trace(generation_id)"
     )
@@ -155,6 +183,9 @@ def _init_db(conn: sqlite3.Connection) -> None:
     )
     conn.execute(
         "CREATE INDEX IF NOT EXISTS idx_guardrail_log_gen ON guardrail_log(generation_id)"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_generation_checkpoint_gen ON generation_checkpoint(generation_id)"
     )
 
 
@@ -356,6 +387,99 @@ def log_guardrail_hit(
         pass  # never block generation
 
 
+_CHECKPOINT_STEPS = ("retrieval", "draft", "proofread", "raqs_final")
+
+
+def save_checkpoint(
+    *,
+    generation_id: str,
+    step: str,
+    state: dict,
+) -> Optional[int]:
+    """Record a checkpoint for one pipeline step, valid by default. Never raises
+    — a checkpointing failure must never block report generation.
+
+    `step` must be one of _CHECKPOINT_STEPS — the four steps where a bad state
+    can propagate forward into the next computation (confirmed by investigation:
+    the draft-PDF RAQS pass is NOT one of these — it feeds nothing downstream).
+    `state` is step-shaped: retrieval -> chunk IDs + metadata (no chunk text,
+    same rule as log_retrieval); draft/proofread -> the actual sections dict
+    (no other persistent copy exists anywhere); raqs_final -> the scores dict.
+
+    Returns the new row's id (needed for discard_checkpoint), or None if nothing
+    was written (empty generation_id, unknown step, or any failure).
+    """
+    if not generation_id or step not in _CHECKPOINT_STEPS:
+        return None
+    try:
+        with _lock, _connect() as conn:
+            cur = conn.execute(
+                "INSERT INTO generation_checkpoint "
+                "(generation_id, step, created_at, status, state_json) VALUES (?,?,?,?,?)",
+                (
+                    generation_id,
+                    step,
+                    datetime.now(timezone.utc).isoformat(),
+                    "valid",
+                    json.dumps(state, ensure_ascii=False),
+                ),
+            )
+            return cur.lastrowid
+    except Exception:
+        return None
+
+
+def get_checkpoints(generation_id: str) -> list[dict]:
+    """Read-only: every checkpoint (valid or discarded) for one generation_id,
+    step order (retrieval -> draft -> proofread -> raqs_final), each with its
+    parsed state.
+    """
+    if not generation_id:
+        return []
+    try:
+        conn = _connect()
+        try:
+            conn.row_factory = sqlite3.Row
+            rows = [
+                dict(row) for row in conn.execute(
+                    "SELECT * FROM generation_checkpoint WHERE generation_id = ? ORDER BY id",
+                    (generation_id,),
+                )
+            ]
+            for r in rows:
+                r["state"] = json.loads(r.pop("state_json") or "{}")
+            return rows
+        finally:
+            conn.close()
+    except Exception:
+        return []
+
+
+def discard_checkpoint(checkpoint_id: int, reason: str = "") -> bool:
+    """Explicitly discard one checkpoint by id (soft mark only — the row is never
+    deleted, so a future audit can still see a bad step was caught and flagged;
+    see the module docstring's rationale). Does not touch any other checkpoint,
+    for this generation_id or any other. Never raises — returns True if a row
+    was actually updated, False otherwise (no such id, already discarded, or
+    any failure).
+
+    This flips status only — it does not trigger any re-run. No automated
+    re-run/resume engine exists yet (deliberately out of scope here); discard is
+    a signal for a human or a future agent that this step's state should not be
+    trusted, not an executable action.
+    """
+    try:
+        with _lock, _connect() as conn:
+            cur = conn.execute(
+                "UPDATE generation_checkpoint SET status = 'discarded', discarded_at = ?, "
+                "discard_reason = ? WHERE id = ? AND status = 'valid'",
+                (datetime.now(timezone.utc).isoformat(), reason or "", int(checkpoint_id)),
+            )
+            return cur.rowcount > 0
+    except Exception:
+        return False
+
+
 def count_claude_calls(generation_id: str) -> int:
     """How many Claude API calls (draft + proofread + raqs) already logged for
     this generation_id. Used by generate_application.py's cap check — pure read,
@@ -507,6 +631,7 @@ def get_trace(generation_id: str) -> dict:
             "raqs": raqs,
             "cost": get_generation_cost(generation_id),
             "guardrail_hits": guardrail_hits,
+            "checkpoints": get_checkpoints(generation_id),
         }
     finally:
         conn.close()
@@ -563,6 +688,18 @@ def _print_trace(generation_id: str) -> None:
         for g in trace["guardrail_hits"]:
             print(f"  {g['created_at']}  {g['guard_type']}: {g['count_at_trip']}/{g['cap']}  {g['detail']}")
 
+    if trace["checkpoints"]:
+        print(f"\n--- Checkpoints ({len(trace['checkpoints'])}) ---")
+        for c in trace["checkpoints"]:
+            tag = f"[{c['status'].upper()}]"
+            print(f"  id={c['id']}  {tag}  step={c['step']}  ({c['created_at']})")
+            if c["status"] == "discarded":
+                print(f"      discarded_at={c['discarded_at']}  reason={c['discard_reason']!r}")
+            state_preview = json.dumps(c["state"], ensure_ascii=False)
+            if len(state_preview) > 200:
+                state_preview = state_preview[:200] + "…"
+            print(f"      state: {state_preview}")
+
 
 def _print_cost_range(start_date: str, end_date: Optional[str]) -> None:
     """CLI helper: print a human-readable cost summary for a date range."""
@@ -597,8 +734,15 @@ if __name__ == "__main__":
     p_cost.add_argument("start_date", help="YYYY-MM-DD")
     p_cost.add_argument("end_date", nargs="?", default=None, help="YYYY-MM-DD (defaults to start_date)")
 
+    p_discard = sub.add_parser("discard", help="Discard (soft-mark invalid) one checkpoint by id.")
+    p_discard.add_argument("checkpoint_id", type=int)
+    p_discard.add_argument("reason", nargs="?", default="", help="Why this checkpoint is being discarded")
+
     args = parser.parse_args()
     if args.cmd == "trace":
         _print_trace(args.generation_id)
     elif args.cmd == "cost":
         _print_cost_range(args.start_date, args.end_date)
+    elif args.cmd == "discard":
+        ok = discard_checkpoint(args.checkpoint_id, args.reason)
+        print(f"discarded checkpoint id={args.checkpoint_id}: {'OK' if ok else 'FAILED (no such valid checkpoint id?)'}")
