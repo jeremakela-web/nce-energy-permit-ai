@@ -67,6 +67,7 @@ from generate_application import (
 )
 import generate_application as _gen_app_module
 import retrieval_trace as _retrieval_trace
+import manual_source_freshness as _manual_source_freshness
 try:
     from optimizer import NCEOptimizer, EnergySite
     _OPTIMIZER_OK = True
@@ -3249,6 +3250,21 @@ async def admin_generation_cost(date: str, end_date: str = "", secret: str = "")
     if not secret or secret != _ADMIN_SECRET:
         raise HTTPException(status_code=403, detail="Forbidden")
     return _retrieval_trace.get_cost_for_range(date, end_date or None)
+
+
+@app.get("/api/admin/manual-source-freshness")
+async def admin_manual_source_freshness(secret: str = ""):
+    """
+    Internal debugging only — NOT user-facing. Read-only staleness report over
+    the source_type:"manual" + last_verified chunk metadata added by PR #50 —
+    grouped by country and source, bucketed overdue (>365 days) / due_soon
+    (270-365 days) / fresh (<=270 days). Visibility only: acting on a reminder
+    means a human re-runs the normal tagging scripts, not anything this endpoint
+    does — see permit_ai/manual_source_freshness.py.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return _manual_source_freshness.get_manual_source_report()
 
 
 @app.get("/api/admin/rag-check-all")
