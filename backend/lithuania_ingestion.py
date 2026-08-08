@@ -617,6 +617,14 @@ def ingest_lithuania_sources(sources: list[dict] | None = None) -> int:
         chunks = _chunk_text(text)
         print(f"  {len(text.split()):,} words → {len(chunks)} chunks")
 
+        # A local_path source bypassed the network fetch entirely (see the comment
+        # on that source's dict above) — that IS this project's definition of
+        # manually-sourced content: a human had to obtain and place the text
+        # because automated fetching doesn't work for it. Tag it accordingly so a
+        # future freshness check can find it. Every other source here was fetched
+        # live this run and is not manual, regardless of past fetch failures for
+        # other sources (a fetch failure just skips the source — see above —
+        # it never produces a chunk to mistag).
         ids   = [_chunk_id(name, i) for i in range(len(chunks))]
         metas = [
             {
@@ -627,7 +635,8 @@ def ingest_lithuania_sources(sources: list[dict] | None = None) -> int:
                 "lang":            "lt",
                 "description":     src["description"],
                 "ingested_at":     ingested_at,
-                "source_type":     kind,
+                "source_type":     "manual" if local_path else kind,
+                **({"last_verified": ingested_at[:10]} if local_path else {}),
                 "hanketyyppi_tag": ht_tag,
             }
             for _ in chunks

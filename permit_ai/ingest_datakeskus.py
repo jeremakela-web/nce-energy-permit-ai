@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import sys
+import time
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -69,6 +70,10 @@ def ingest(dry_run: bool = False) -> None:
     print()
 
     grand_new = 0
+    # Every file this script ingests is human-extracted content (see the SOURCE:
+    # header each .txt file carries), added specifically to unblock a RAG_FAIL —
+    # not a live fetch, so it can't auto-refresh. Tag it manual + this run's date.
+    _verified_today = time.strftime("%Y-%m-%d", time.gmtime())
 
     for path in TARGET_FILES:
         if not path.exists():
@@ -97,7 +102,8 @@ def ingest(dry_run: bool = False) -> None:
                 "country":         "FI",
                 "lang":            "fi",
                 "source":          stem,
-                "source_type":     "text",
+                "source_type":     "manual",
+                "last_verified":   _verified_today,
                 "hanketyyppi_tag": "datakeskus",
             })
 
