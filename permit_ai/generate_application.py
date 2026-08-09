@@ -101,9 +101,12 @@ _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _RAQS_DB     = os.path.join(_DB_DIR, "raqs_reviews.db")
 # TASO 1 cost & resource guardrail (confirmed with user 2026-08-07). Current fixed
-# pipeline usage is always 1 RAG retrieval call + 4 Claude API calls per generation
-# (draft + proofread + RAQS×2) — these caps give headroom (3x / 1.5x) over that
-# fixed baseline rather than reacting to any observed runaway today.
+# pipeline usage was 1 RAG retrieval call + 4 Claude API calls per generation
+# (draft + proofread + RAQS×2); the RAQS-removal task (2026-08-09) cut the
+# dead draft-PDF RAQS call, so it's now 3 (draft + proofread + RAQS×1). Caps
+# left as-is (now ~2x / 3x headroom instead of 1.5x / 3x) rather than
+# retuned down — still reacting to an observed runaway, not the fixed
+# baseline itself, so tighter caps aren't a goal of this task.
 _RAG_ITERATION_CAP = 3
 _CLAUDE_CALL_CAP    = 6
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
@@ -7642,13 +7645,15 @@ def generate_pdf(
 ) -> bytes:
     """Rakenna PDF ja palauta bytes.
 
-    `is_final`: whether this is the human-facing deliverable PDF (default True —
-    the only caller that passes False is generate_application_draft()'s draft-PDF
-    build, whose bytes are discarded by every caller and whose RAQS pass feeds
-    nothing downstream). Controls whether the RAQS outcome gets a "raqs_final"
-    rollback checkpoint (TASO 1) — checkpointing the discarded draft pass would
-    give nothing to resume/discard into, per the investigation in the rollback
-    task.
+    `is_final`: whether this is the human-facing deliverable PDF (default True).
+    Controls whether the RAQS outcome gets a "raqs_final" rollback checkpoint
+    (TASO 1). Historically also had an is_final=False caller — the old
+    generate_application_draft() draft-PDF build, whose bytes were discarded by
+    every caller and whose RAQS pass fed nothing downstream — removed in the
+    RAQS-removal task (2026-08-09); no caller currently passes False, but the
+    parameter and this gating are kept since is_final's meaning (and the
+    checkpoint-vs-no-checkpoint distinction) still applies to this function on
+    its own terms.
     """
     prec_chunks  = prec_chunks  or []
     prec_sources = prec_sources or []
@@ -8361,7 +8366,19 @@ def generate_pdf(
 # ─────────────────────────────────────────────────────────────────────────────
 
 def generate_application_draft(inp: ApplicationInput) -> tuple:
-    """Generoi luonnos-PDF ilman oikolukua. Palauttaa (pdf_bytes, sections, sources)."""
+    """Generoi luonnos (sections + sources) ilman oikolukua. Palauttaa
+    (None, sections, sources).
+
+    RAQS-removal task (2026-08-09): this used to also render a draft PDF (via
+    generate_pdf(..., is_final=False)) and run a RAQS review on it, purely so
+    the first tuple element could hold pdf_bytes. Confirmed via grep that no
+    caller — backend/main.py's four call sites or test_cot_validation.py —
+    ever reads that first element; only `sections`/`sources` propagate forward
+    into apply_proofread_to_pdf(). That made the draft-PDF render and its RAQS
+    pass (a Haiku call) pure dead work every generation paid for. Removed;
+    first element is now always None but kept so every caller's existing
+    `pdf_bytes, sections, sources = ...`-style unpack still works unchanged.
+    """
     _LAST_TIMING.clear()
     _LAST_TIMING["hanketyyppi"] = inp.hanketyyppi
     _LAST_TIMING["country"] = inp.country
@@ -8390,11 +8407,7 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
         _retrieval_trace.save_checkpoint(
             generation_id=inp.generation_id, step="draft", state={"sections": sections},
         )
-    # is_final=False: this draft PDF's bytes are discarded by every caller (see
-    # the rollback task's investigation) — its RAQS pass gets no checkpoint.
-    pdf_bytes = generate_pdf(inp, sections, sources, warning_flag, prec_chunks, prec_sources, is_final=False)
-    _LAST_TIMING["t6_pdf_done"] = _time.monotonic()
-    return pdf_bytes, sections, sources
+    return None, sections, sources
 
 
 def apply_proofread_to_pdf(
