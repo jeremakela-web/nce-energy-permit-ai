@@ -68,6 +68,7 @@ from generate_application import (
 import generate_application as _gen_app_module
 import retrieval_trace as _retrieval_trace
 import manual_source_freshness as _manual_source_freshness
+import source_drift as _source_drift
 try:
     from optimizer import NCEOptimizer, EnergySite
     _OPTIMIZER_OK = True
@@ -3265,6 +3266,38 @@ async def admin_manual_source_freshness(secret: str = ""):
     if not secret or secret != _ADMIN_SECRET:
         raise HTTPException(status_code=403, detail="Forbidden")
     return _manual_source_freshness.get_manual_source_report()
+
+
+@app.get("/api/admin/source-drift")
+async def admin_source_drift_status(secret: str = ""):
+    """
+    Internal debugging only — NOT user-facing. Read-only: the most recent
+    drift-check result per source, from history only — does NOT fetch anything
+    or re-scan ChromaDB for new targets (cheap, safe to call often). Use
+    POST /api/admin/source-drift to actually run checks. See
+    permit_ai/source_drift.py.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return _source_drift.get_latest_drift_status()
+
+
+@app.post("/api/admin/source-drift")
+async def admin_source_drift_run(secret: str = "", source: str = ""):
+    """
+    Internal debugging only — NOT user-facing. Fetches each checkable source's
+    live URL, hashes the content, and compares it against the last stored hash
+    for that source (three-state: changed / unchanged / check_failed — a
+    blocked fetch, e.g. Finlex's JS-rendered pages or e-seimas.lrs.lt's bot
+    blocking, reports check_failed, never a false changed/unchanged). Admin-
+    triggered only — no cron/scheduler in this deployment calls this (see
+    permit_ai/source_drift.py's module docstring for why). Pass `source` to
+    check a single source by exact name instead of the full ~100-URL sweep.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    sources = [source] if source else None
+    return await _source_drift.check_all_sources(sources=sources)
 
 
 @app.get("/api/admin/rag-check-all")
