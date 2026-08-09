@@ -1157,6 +1157,18 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
 
     job_id = uuid.uuid4().hex[:10]
     inp.generation_id = job_id  # links this generation's retrieval_trace rows (see retrieval_trace.py)
+
+    # PR B (tenant architecture, 2026-08-09): best-effort Layer 1 tracking,
+    # inert unless TENANT_TRACKING_ENABLED=true AND a tenant session cookie
+    # is present — neither is true for any real traffic yet (Basic Auth
+    # still gates this route entirely; see tenant_db/layer1.py's docstring).
+    from tenant_db.layer1 import record_generation_start as _record_gen_start
+    _tenant_id = request.session.get("tenant_id")
+    _project_id = _record_gen_start(
+        _tenant_id, hanketyyppi=req.hanketyyppi, country=req.country or "FI",
+        phase=req.hankkeen_vaihe or "",
+    )
+
     _proofread_store[job_id] = {
         "status": "pending", "pdf_bytes": None, "error": None,
         "lang":          req.lang or "FI",
@@ -1183,6 +1195,18 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             _proofread_store[job_id]["status"] = "done"
             _log_usage(_client_ip, req.hanketyyppi, req.country or "FI",
                        req.hankkeen_vaihe or "", job_id, "done")
+            # PR B: best-effort Layer 1 tracking (see the note above where
+            # _project_id was created) — pdf_url/raqs_score are None: no
+            # durable PDF storage/URL exists yet (bytes live only in
+            # _proofread_store, served on demand) and RAQS scores aren't
+            # currently returned out of generate_application.py to here.
+            # Recorded as None rather than invented, honestly reflecting
+            # what this pipeline actually exposes today.
+            from tenant_db.layer1 import record_report as _record_report
+            _record_report(
+                _tenant_id, _project_id, phase=req.hankkeen_vaihe or "",
+                pdf_url=None, raqs_score=None,
+            )
             # Auto-complete phase when PDF is generated (no user click required)
             if _PHASE_LOCK_OK and req.session_id and req.hankkeen_vaihe:
                 _phase_num = {"esiselvitys": 1, "lupavaihe": 2, "rakentaminen": 3,
@@ -1259,6 +1283,8 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             hankkeen_vaihe = req.hankkeen_vaihe or "",
             hanketyyppi   = req.hanketyyppi or "",
             country       = req.country or "FI",
+            tenant_id     = _tenant_id or "",   # PR B — see the note above
+            project_id    = _project_id or "",  # this function, same reasoning
         )
     else:
         Thread(target=_bg_generate, daemon=True).start()
@@ -1285,6 +1311,8 @@ async def arq_task_generate_permit(
     hankkeen_vaihe: str,
     hanketyyppi: str,
     country: str,
+    tenant_id: str = "",
+    project_id: str = "",
 ) -> None:
     """
     ARQ task — runs permit generation concurrently without blocking the event loop.
@@ -1314,6 +1342,15 @@ async def arq_task_generate_permit(
         _proofread_store[job_id]["pdf_bytes"] = pdf
         _proofread_store[job_id]["status"] = "done"
         _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id, "done")
+
+        # PR B: best-effort Layer 1 tracking — same reasoning as
+        # _bg_generate()'s equivalent call (Thread-dispatch path above);
+        # this is the ARQ-dispatch path's counterpart.
+        from tenant_db.layer1 import record_report as _record_report
+        _record_report(
+            tenant_id or None, project_id or None, phase=hankkeen_vaihe or "",
+            pdf_url=None, raqs_score=None,
+        )
 
         # Auto-complete phase
         if _PHASE_LOCK_OK and session_id and hankkeen_vaihe:
@@ -2616,6 +2653,15 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
         generation_id                 = uuid.uuid4().hex[:10],
     )
 
+    # PR B (tenant architecture, 2026-08-09): best-effort Layer 1 tracking,
+    # inert unless TENANT_TRACKING_ENABLED=true AND a tenant session cookie
+    # is present — see tenant_db/layer1.py's docstring.
+    from tenant_db.layer1 import record_generation_start as _record_gen_start, record_report as _record_report
+    _tenant_id = request.session.get("tenant_id")
+    _project_id = _record_gen_start(
+        _tenant_id, hanketyyppi=req.hanketyyppi, country=req.country, phase=req.hankkeen_vaihe,
+    )
+
     # Generoi PDF taustasäikeessä (blocking — approve on harvinainen operaatio)
     loop = asyncio.get_event_loop()
     try:
@@ -2627,6 +2673,11 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {e}")
+
+    # PR B: same call as above, now that pdf_bytes succeeded — pdf_url/
+    # raqs_score are None for the same reason noted at the other call sites
+    # (tenant_db/layer1.py's docstring / the /api/generate-application site).
+    _record_report(_tenant_id, _project_id, phase=req.hankkeen_vaihe, pdf_url=None, raqs_score=None)
 
     # Audit trail — lisätään PDF:n metatietoihin (ei sisältöön)
     timestamp = datetime.datetime.utcnow().isoformat() + "Z"

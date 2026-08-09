@@ -24,12 +24,29 @@ approves it (mirrors this codebase's RAQS philosophy: AI/system drafts,
 human approves, nothing auto-publishes). Login (magic-link) is unrelated to
 that gate -- it only works once an account is already active.
 
-RLS is intentionally NOT enabled on these tables in PR A -- deferred to
-PR B per the approved 6-PR sequence, alongside the Layer 1 tables
-(projects/reports/rag_queries) it was designed for. Every endpoint touching
-these tables in PR A is either admin-gated (inherently cross-tenant, RLS
-would not apply the same way) or session-scoped to exactly one row (a user's
-own tenant_id, enforced in application code, not yet at the DB layer).
+RLS: enabled in PR B on tenants, users, and the three Layer 1 tables below
+(projects, reports, rag_queries) -- policies live in the PR B migration, not
+here (SQLAlchemy's model layer doesn't express RLS policies; they're raw DDL
+in the Alembic migration). See tenant_db/scoped.py for the connection-safety
+mechanism (SET LOCAL per transaction, via a separate low-privilege DB role
+-- Postgres RLS does not apply to a table's OWNING role by default, and
+nce_tenant_db_user owns every table here, so a second role was required for
+RLS to mean anything for real, not just exist unenforced).
+
+PR B additions -- three new tables, all with tenant_id AND project_id
+directly on every row (per the master plan's own "Perusrakenne" base
+pattern -- tenant_id/project_id/created_at[/updated_at] always present --
+not just the plan's compact per-table listing, which omitted tenant_id from
+reports/rag_queries for brevity, not by design; confirmed by re-reading the
+plan's base-pattern section before adding it here):
+  - projects     an individual project/hanke under a tenant. Mutable
+                  (status changes over its lifecycle) -- has updated_at.
+  - reports      one row per generated report/PDF. Write-once -- correcting
+                  a report means generating a new one, not editing this
+                  row -- no updated_at, matching the plan's own literal
+                  column list for this table specifically (unlike projects).
+  - rag_queries  one row per RAG retrieval made during a generation.
+                  Write-once, same reasoning as reports.
 """
 from __future__ import annotations
 
@@ -38,7 +55,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import DateTime, ForeignKey, Text, func
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -192,3 +209,54 @@ class MagicLinkToken(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     used_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+
+
+class Project(Base):
+    """Layer 1 (PR B): an individual project/hanke under a tenant. RLS-
+    protected — see this module's docstring and tenant_db/scoped.py."""
+    __tablename__ = "projects"
+
+    project_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), primary_key=True, default=_new_uuid)
+    tenant_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), ForeignKey("tenants.tenant_id"), nullable=False)
+    type: Mapped[str] = mapped_column(Text, nullable=False)            # hanketyyppi, e.g. 'BESS'
+    country: Mapped[str] = mapped_column(Text, nullable=False, default="FI")
+    phase: Mapped[str] = mapped_column(Text, nullable=False, default="esiselvitys")
+    status: Mapped[str] = mapped_column(Text, nullable=False, default="active")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+
+class Report(Base):
+    """Layer 1 (PR B): one row per generated report/PDF. Write-once. RLS-
+    protected. raqs_score is JSONB, not a single number — real RAQS output
+    (permit_ai/generate_application.py's _raqs_review) is 5 criteria scored
+    1-5 each, not one aggregate figure; kept structured/queryable rather
+    than flattened into a single value that would lose that shape."""
+    __tablename__ = "reports"
+
+    report_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), primary_key=True, default=_new_uuid)
+    tenant_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), ForeignKey("tenants.tenant_id"), nullable=False)
+    project_id: Mapped[str] = mapped_column(
+        PG_UUID(as_uuid=False), ForeignKey("projects.project_id"), nullable=False
+    )
+    phase: Mapped[str] = mapped_column(Text, nullable=False)
+    pdf_url: Mapped[Optional[str]] = mapped_column(Text)
+    raqs_score: Mapped[Optional[dict]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class RagQuery(Base):
+    """Layer 1 (PR B): one row per RAG retrieval made during a generation.
+    Write-once. RLS-protected."""
+    __tablename__ = "rag_queries"
+
+    query_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), primary_key=True, default=_new_uuid)
+    tenant_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), ForeignKey("tenants.tenant_id"), nullable=False)
+    project_id: Mapped[str] = mapped_column(
+        PG_UUID(as_uuid=False), ForeignKey("projects.project_id"), nullable=False
+    )
+    query: Mapped[str] = mapped_column(Text, nullable=False)
+    sources_used: Mapped[Optional[list]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
