@@ -1,3 +1,27 @@
+# NOTE (2026-08-09, PR 0 of the tenant-architecture build): this file has
+# drifted from the live Render services and is NOT under active Blueprint
+# auto-sync — confirmed via the Render API: the live redis service is named
+# "nce-redis" (not "permit-ai-redis" below), the live web service's plan is
+# "pro" (not "standard"), and its startCommand is "cd backend && uvicorn
+# main:app ..." (not "uvicorn backend.main:app ..."). Editing this file alone
+# does not provision or change anything live — treat it as documentation of
+# intent, and make any real infra change directly (Render dashboard or API),
+# then update this file to match, not the other way around.
+databases:
+  - name: nce-tenant-db
+    databaseName: nce_tenant_db
+    plan: basic_256mb
+    region: frankfurt
+    postgresMajorVersion: "16"
+    # Provisioned directly via the Render API on 2026-08-09 (id
+    # dpg-d9s78sv40ujc73co6550-a) — real company/user data (PII), so NOT the
+    # free tier (which expires). Scoped narrowly per the tenant-architecture
+    # design report: this is a SEPARATE database from ChromaDB and every
+    # existing SQLite file (retrieval_trace.db, raqs_reviews.db, payments.db)
+    # — none of that moves here. RLS policies land in PR B, once real tables
+    # exist (PR A). Empty baseline Alembic migration applied and verified
+    # (upgrade/downgrade round-trip) against the live database in PR 0.
+
 services:
   - type: redis
     name: permit-ai-redis
@@ -34,6 +58,17 @@ services:
           type: redis
           name: permit-ai-redis
           property: connectionString
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nce-tenant-db
+          property: connectionString
+        # NOT YET set on the live web service as of 2026-08-09 — that write
+        # was blocked by the permission classifier (a mutation to production
+        # service env vars) and needs explicit human action: either the user
+        # sets it via the Render dashboard, or explicitly authorizes the API
+        # call. Internal connection string (same pattern as REDIS_URL above),
+        # since this file isn't under active Blueprint sync — see the note
+        # at the top of this file.
     healthCheckPath: /api/health
     # NOTE: ARQ worker runs in-process (see _arq_startup in main.py).
     # A separate type:worker service is blocked until ChromaDB moves to server
