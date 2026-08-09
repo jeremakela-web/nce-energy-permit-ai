@@ -47,6 +47,19 @@ plan's base-pattern section before adding it here):
                   column list for this table specifically (unlike projects).
   - rag_queries  one row per RAG retrieval made during a generation.
                   Write-once, same reasoning as reports.
+
+PR C addition -- one new table, RLS-protected same pattern as PR B:
+  - user_events  general lifecycle audit log. Scope approved 2026-08-09:
+                  ONLY login success (/api/auth/verify) and IFC file
+                  upload (/api/parse-ifc) -- explicitly NOT consent
+                  acceptance (consent_records already covers that, with
+                  proper document versioning; a second log entry there
+                  would be redundant, not complementary). Correlation with
+                  permit_ai/retrieval_trace.py's SQLite-side generation_id
+                  is via a plain value inside `detail` (JSONB) when
+                  relevant -- confirmed: no schema merge, no cross-database
+                  FK, retrieval_trace.py stays entirely outside RLS's scope
+                  exactly as it already was.
 """
 from __future__ import annotations
 
@@ -259,4 +272,20 @@ class RagQuery(Base):
     )
     query: Mapped[str] = mapped_column(Text, nullable=False)
     sources_used: Mapped[Optional[list]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class UserEvent(Base):
+    """PR C: general lifecycle audit log. RLS-protected. event_type is
+    scoped to exactly 'login' and 'ifc_upload' by application logic (see
+    tenant_db/events.py) — not a DB CHECK constraint, same reasoning as
+    Tenant.request_source in PR A: room to add event types later without a
+    schema change, but the CURRENT approved scope is exactly these two."""
+    __tablename__ = "user_events"
+
+    event_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), primary_key=True, default=_new_uuid)
+    tenant_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), ForeignKey("tenants.tenant_id"), nullable=False)
+    user_id: Mapped[str] = mapped_column(PG_UUID(as_uuid=False), ForeignKey("users.user_id"), nullable=False)
+    event_type: Mapped[str] = mapped_column(Text, nullable=False)
+    detail: Mapped[Optional[dict]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

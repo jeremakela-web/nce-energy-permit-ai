@@ -2304,6 +2304,19 @@ async def parse_ifc(
     ifc_data = _extract_ifc_data(content)
     permit_map = _map_to_permit(ifc_data, project_type=project_type, country=country)
 
+    # PR C (tenant architecture, 2026-08-09): best-effort lifecycle
+    # logging, inert unless TENANT_TRACKING_ENABLED=true AND a tenant
+    # session cookie is present — same reasoning as PR B's tenant_db/
+    # layer1.py wiring. detail carries the filename/project_type/country
+    # for context; no generation_id exists at this point in the flow (IFC
+    # parsing happens before, not during, a generation).
+    from tenant_db.events import record_user_event
+    record_user_event(
+        request.session.get("tenant_id"), request.session.get("user_id"),
+        event_type="ifc_upload",
+        detail={"filename": file.filename, "project_type": project_type, "country": country},
+    )
+
     # Add confidence score per field to response
     prefilled_with_conf = {
         field: {
