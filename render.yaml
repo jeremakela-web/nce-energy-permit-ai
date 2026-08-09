@@ -71,11 +71,34 @@ services:
       - key: SESSION_SECRET_KEY
         sync: false
         # PR A — signs the magic-link-auth session cookie (starlette
-        # SessionMiddleware). NOT YET set as of 2026-08-09: main.py falls
-        # back to a random per-process key with a logged warning when this
-        # is absent, which is fine for local dev but means every session
-        # invalidates on each production restart/redeploy until a real,
-        # stable value is set here.
+        # SessionMiddleware). Confirmed set and live as of 2026-08-09 —
+        # verified via the running process, not just the dashboard (same
+        # redeploy-required lesson as DATABASE_URL above).
+      - key: TENANT_SCOPED_DATABASE_URL
+        sync: false
+        # PR B — the RLS-restricted connection (role nce_app_scoped, NOT
+        # the table owner nce_tenant_db_user that DATABASE_URL above
+        # points to) used for Layer 1 tenant-scoped queries (projects/
+        # reports/rag_queries). Cannot be expressed as fromDatabase like
+        # DATABASE_URL — Render's database resource only exposes a
+        # connection string for its one provisioned owner user; this role
+        # was created by hand via SQL (see the PR B migration's docstring)
+        # specifically so RLS actually restricts it (Postgres RLS never
+        # restricts a table's owning role by default). NOT YET set on the
+        # live web service as of PR B being written — same as
+        # DATABASE_URL/SESSION_SECRET_KEY before them, needs an explicit
+        # human action (dashboard, or authorize the API call) plus a
+        # redeploy, not just a restart.
+      - key: TENANT_TRACKING_ENABLED
+        value: "false"
+        # PR B — gates whether the 3 tenant-tracking call sites in
+        # backend/main.py (see backend/tenant_db/layer1.py) do anything at
+        # all. Defaults false/off: the existing Basic-Auth-gated generation
+        # flow is completely unaffected either way, and no real tenant-
+        # authenticated traffic reaches these routes yet regardless of this
+        # flag's value (PR A's magic-link session system doesn't gate them
+        # — a future PR decides if/when it does). Flip to "true" only once
+        # TENANT_SCOPED_DATABASE_URL above is actually set.
     healthCheckPath: /api/health
     # NOTE: ARQ worker runs in-process (see _arq_startup in main.py).
     # A separate type:worker service is blocked until ChromaDB moves to server
