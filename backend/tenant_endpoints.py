@@ -180,6 +180,10 @@ async def auth_verify(request: Request, token: str = ""):
             raise HTTPException(status_code=401, detail="Invalid, expired, or already-used link")
         request.session["user_id"] = user.user_id
         request.session["tenant_id"] = user.tenant_id
+        # PR C: best-effort lifecycle logging, inert unless
+        # TENANT_TRACKING_ENABLED=true (see tenant_db/events.py).
+        from tenant_db.events import record_user_event
+        record_user_event(user.tenant_id, user.user_id, event_type="login")
         return {"ok": True, "user": _user_out(user)}
     finally:
         session.close()
