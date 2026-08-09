@@ -16,11 +16,12 @@ already-approved sequence).
 """
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
 
 from tenant_db.base import get_session
 import tenant_auth as ta
 from tenant_db.models import Tenant, User
+from tenant_db import gdpr_export
 # Import style matches main.py's runtime root (backend/) — see the note in
 # tenant_auth.py.
 
@@ -148,6 +149,25 @@ async def admin_remove_user(user_id: str, request: Request, secret: str = ""):
         return _user_out(user)
     finally:
         session.close()
+
+
+@router.get("/api/admin/tenants/{tenant_id}/gdpr-export")
+async def admin_gdpr_export(tenant_id: str, request: Request, secret: str = "", actor: str = ""):
+    """PR D: admin-triggered GDPR export ZIP for one tenant. Read-only —
+    see tenant_db/gdpr_export.py's docstring for exact table scope and
+    reasoning. Streamed directly in the response body; nothing is written
+    to disk, so there is no cleanup step."""
+    _require_admin(request, secret)
+    if not actor:
+        raise HTTPException(status_code=400, detail="actor (admin email) is required for the audit trail")
+    zip_bytes = gdpr_export.build_export_zip(tenant_id, actor=actor)
+    if zip_bytes is None:
+        raise HTTPException(status_code=404, detail="No such tenant")
+    return Response(
+        content=zip_bytes,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="tenant_{tenant_id}_gdpr_export.zip"'},
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
