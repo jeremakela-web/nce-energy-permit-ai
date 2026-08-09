@@ -69,6 +69,7 @@ import generate_application as _gen_app_module
 import retrieval_trace as _retrieval_trace
 import manual_source_freshness as _manual_source_freshness
 import source_drift as _source_drift
+from tenant_endpoints import router as _tenant_router
 try:
     from optimizer import NCEOptimizer, EnergySite
     _OPTIMIZER_OK = True
@@ -334,6 +335,35 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# PR A (tenant architecture) — session cookies for the new magic-link auth
+# surface. NOTE: CORS above is wildcard-origin with no allow_credentials, so
+# per the CORS spec a browser will only actually deliver this session cookie
+# on SAME-origin requests (the app's own frontend calling its own API on
+# ai.ncenergy.fi) — cross-origin API consumers won't get a working session
+# here. That's an existing CORS posture, not something changed by this PR;
+# flagged for awareness, not fixed as part of it.
+_SESSION_SECRET_KEY = os.getenv("SESSION_SECRET_KEY", "")
+if not _SESSION_SECRET_KEY:
+    import secrets as _secrets_mod
+    _SESSION_SECRET_KEY = _secrets_mod.token_urlsafe(32)
+    logging.getLogger("tenant_auth").warning(
+        "[session] SESSION_SECRET_KEY not set — using a random per-process key "
+        "(all sessions invalidate on restart). Fine for local dev; set a real "
+        "value in production so sessions survive a redeploy."
+    )
+from starlette.middleware.sessions import SessionMiddleware
+app.add_middleware(
+    SessionMiddleware, secret_key=_SESSION_SECRET_KEY,
+    session_cookie="nce_session", same_site="lax",
+    # Render sets RENDER=true on every service automatically — reused here
+    # rather than inventing a new env var, same reasoning as _AUTH_PASS
+    # being empty = local dev elsewhere in this file. https_only=True would
+    # silently drop the cookie over plain http:// (local dev), so it's only
+    # enabled where we're actually confirmed to be running on Render.
+    https_only=bool(os.getenv("RENDER")),
+)
+app.include_router(_tenant_router)
 
 # ── ARQ job queue (Redis-backed, single-service) ──────────────────────────────
 _ARQ_POOL = None          # arq.ArqRedis | None — None = Redis unavailable, fall back to Thread
@@ -785,6 +815,29 @@ async def rag_status():
 
 @app.post("/api/access-request")
 async def access_request(req: AccessRequestModel):
+    # PR A (tenant architecture, 2026-08-09): this endpoint used to be pure
+    # email-and-forget — nothing survived if the email was missed or SMTP
+    # failed. Now it ALSO auto-drafts a tenant + owner user (both
+    # pending_approval — admin-gated, see tenant_auth.py) so the request is
+    # durable and shows up in GET /api/admin/tenants?status=pending_approval
+    # even if the notification email below never arrives. Wrapped in
+    # try/except and logged-not-raised: a DB outage must not take down
+    # request intake entirely — the email channel below still works as a
+    # fallback either way, matching this endpoint's original behavior.
+    try:
+        from tenant_db.base import get_session
+        import tenant_auth as _ta
+        _session = get_session()
+        try:
+            _ta.create_access_request_and_draft(
+                _session, company_name=req.yritys, contact_name=req.yhteyshenkilo,
+                email=req.sahkoposti, phone=req.puhelin, description=req.kuvaus,
+            )
+        finally:
+            _session.close()
+    except Exception as exc:
+        logging.getLogger("usage").error("[ACCESS-REQUEST] tenant draft creation failed: %s", exc)
+
     def _send():
         msg = email.mime.multipart.MIMEMultipart()
         msg["From"]    = SMTP_USER or "info@ncenergy.fi"
