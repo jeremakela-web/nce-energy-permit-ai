@@ -24,6 +24,25 @@ This is visibility only. Acting on a reminder means a human re-runs the normal
 tagging (lithuania_ingestion.py / ingest_fi_env.py / ingest_datakeskus.py /
 backfill_manual_source_tags.py, per PR #50) — no automated re-fetch mechanism
 exists or is added here.
+
+PR B (2026-08-09): each source row is additionally enriched with its latest
+domain-drift status from source_drift.py (PR A) — drift_status (changed /
+unchanged / check_failed / baseline / never_checked), drift_checked_at,
+drift_url, drift_error. This is the "one dashboard, richer data" integration
+approved over building a second, competing report. The lookup is a cheap
+SQLite history read (source_drift.get_latest_drift_status()) — it does NOT
+trigger a corpus scan or any fetch; staleness (last_verified-based) and drift
+(live-page-based) are two independent signals about the same source, shown
+side by side. A source that source_drift has never checked (or has no
+checkable URL for) shows drift_status="never_checked" — that is a real,
+distinct state, not an error: most PR #50 sources ARE checkable (they carry
+a url or an inline "SOURCE: <url>" line), but the 4 inline FI law-text
+sources (YSL/YVA-laki, typed directly into ingest_fi_env.py — Finlex is
+fully JS-rendered, no fetch path exists) are not, and will always show
+never_checked here. The drift-check subsystem failing to import or query is
+swallowed to drift_status=None per source rather than breaking this report —
+staleness data must stay available even if the newer, additive layer has a
+problem.
 """
 from __future__ import annotations
 
@@ -120,12 +139,30 @@ def get_manual_source_report(*, today: Optional[date] = None) -> dict:
             if lv is None:
                 unknown_date_chunks += 1
 
+    # PR B: latest drift status per source, from source_drift.py's own history
+    # (a cheap SQLite read — no corpus scan, no fetching). Never lets a problem
+    # in the newer drift subsystem break this report: any failure here just
+    # means every source falls back to drift_status=None below.
+    drift_by_source: dict[str, dict] = {}
+    try:
+        from source_drift import get_latest_drift_status
+        for row in get_latest_drift_status()["sources"]:
+            drift_by_source[row["source"]] = row
+    except Exception:
+        pass
+
     buckets: dict[str, list[dict]] = {"overdue": [], "due_soon": [], "fresh": [], "unknown": []}
     by_country: dict[str, dict[str, list[dict]]] = {}
+    drift_summary: dict[str, int] = {}
 
     for (country, source), row in sorted(by_source.items()):
         days_since = _days_since(row["last_verified"], today)
         bucket = "unknown" if days_since is None else _bucket(days_since)
+
+        drift = drift_by_source.get(source)
+        drift_status = drift["status"] if drift else "never_checked"
+        drift_summary[drift_status] = drift_summary.get(drift_status, 0) + 1
+
         entry = {
             "country": row["country"],
             "source": row["source"],
@@ -135,6 +172,10 @@ def get_manual_source_report(*, today: Optional[date] = None) -> dict:
             "bucket": bucket,
             "collections": sorted(row["collections"]),
             "last_verified_inconsistent": row["last_verified_inconsistent"],
+            "drift_status": drift_status,
+            "drift_checked_at": drift["checked_at"] if drift else None,
+            "drift_url": drift["url"] if drift else None,
+            "drift_error": drift["error"] if drift else None,
         }
         buckets[bucket].append(entry)
         by_country.setdefault(country, {"overdue": [], "due_soon": [], "fresh": [], "unknown": []})
@@ -153,6 +194,7 @@ def get_manual_source_report(*, today: Optional[date] = None) -> dict:
             b: {"sources": len(entries), "chunks": sum(e["chunk_count"] for e in entries)}
             for b, entries in buckets.items()
         },
+        "drift_summary": drift_summary,
         "by_bucket": buckets,
         "by_country": by_country,
     }
@@ -173,6 +215,12 @@ def _print_report(report: dict) -> None:
         if s["sources"]:
             print(f"  {b:<9}: {s['sources']} source(s), {s['chunks']} chunk(s)")
 
+    print("\n--- Drift summary (from source_drift.py, PR A) ---")
+    for status in ["changed", "unchanged", "check_failed", "baseline", "never_checked"]:
+        n = report["drift_summary"].get(status, 0)
+        if n:
+            print(f"  {status:<13}: {n} source(s)")
+
     print("\n--- By country ---")
     for country, buckets in sorted(report["by_country"].items()):
         counts = {b: len(entries) for b, entries in buckets.items() if entries}
@@ -184,9 +232,14 @@ def _print_report(report: dict) -> None:
             print(f"  {b} ({len(entries)} source(s)):")
             for e in entries:
                 flag = "  ⚠ inconsistent last_verified across chunks" if e["last_verified_inconsistent"] else ""
+                drift_note = f", drift={e['drift_status']}"
+                if e["drift_status"] == "check_failed" and e["drift_error"]:
+                    drift_note += f" ({e['drift_error']})"
+                elif e["drift_status"] == "changed":
+                    drift_note += "  ⚠ live source content differs from last check"
                 print(f"    {e['source']}: {e['chunk_count']} chunks, "
                       f"last_verified={e['last_verified']} "
-                      f"({e['days_since_verified']} days ago){flag}")
+                      f"({e['days_since_verified']} days ago){drift_note}{flag}")
 
 
 if __name__ == "__main__":
