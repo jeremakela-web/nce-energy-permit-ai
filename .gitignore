@@ -13,6 +13,7 @@ dist/
 build/
 .venv/
 venv/
+venv312/
 
 # Generoidut PDF-raportit
 permit_ai/output/
