@@ -30,12 +30,14 @@ if _database_url.startswith("postgres://"):
     _database_url = _database_url.replace("postgres://", "postgresql://", 1)
 config.set_main_option("sqlalchemy.url", _database_url)
 
-# Import Base.metadata for 'autogenerate' support. PR 0 defines no tables
-# yet (see backend/tenant_db/base.py) — this wiring exists so PR A's models
-# are picked up automatically once they're added, without touching env.py
-# again.
+# Import Base.metadata for 'autogenerate' support — and, critically, import
+# models too: SQLAlchemy's declarative registry only populates Base.metadata
+# with tables from model classes that have actually been imported somewhere.
+# Importing only Base (as PR 0 did, when no models existed yet) would make
+# autogenerate see an empty schema even with real models defined elsewhere.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from backend.tenant_db.base import Base  # noqa: E402
+import backend.tenant_db.models  # noqa: E402,F401 -- import for side effect: registers tables onto Base.metadata
 
 target_metadata = Base.metadata
 

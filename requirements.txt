@@ -21,7 +21,10 @@ pdfplumber>=0.10.0
 psutil>=5.9.0
 arq>=0.26.0
 redis>=5.0.0
-# Tenant/user Postgres layer (PR 0 — infra only, no tables defined yet)
+# Tenant/user Postgres layer (PR 0)
 sqlalchemy>=2.0.0
 alembic>=1.13.0
 psycopg2-binary>=2.9.0
+itsdangerous>=2.1.0  # PR A — starlette.middleware.sessions.SessionMiddleware's actual dependency;
+                     # NOT bundled with FastAPI/Starlette itself despite being in the stdlib-adjacent
+                     # docs examples — confirmed missing via a real ImportError before adding this

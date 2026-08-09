@@ -62,13 +62,20 @@ services:
         fromDatabase:
           name: nce-tenant-db
           property: connectionString
-        # NOT YET set on the live web service as of 2026-08-09 — that write
-        # was blocked by the permission classifier (a mutation to production
-        # service env vars) and needs explicit human action: either the user
-        # sets it via the Render dashboard, or explicitly authorizes the API
-        # call. Internal connection string (same pattern as REDIS_URL above),
-        # since this file isn't under active Blueprint sync — see the note
-        # at the top of this file.
+        # Confirmed set and live on the web service as of 2026-08-09 (PR 0) —
+        # required an explicit redeploy after setting it; a plain /restart
+        # does not pick up new env vars, only a fresh build does. Internal
+        # connection string (same pattern as REDIS_URL above), set via the
+        # Render API directly since this file isn't under active Blueprint
+        # sync — see the note at the top of this file.
+      - key: SESSION_SECRET_KEY
+        sync: false
+        # PR A — signs the magic-link-auth session cookie (starlette
+        # SessionMiddleware). NOT YET set as of 2026-08-09: main.py falls
+        # back to a random per-process key with a logged warning when this
+        # is absent, which is fine for local dev but means every session
+        # invalidates on each production restart/redeploy until a real,
+        # stable value is set here.
     healthCheckPath: /api/health
     # NOTE: ARQ worker runs in-process (see _arq_startup in main.py).
     # A separate type:worker service is blocked until ChromaDB moves to server
