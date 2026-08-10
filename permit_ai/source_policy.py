@@ -516,6 +516,53 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "poland_ure_bess_register_guide_2025":     "none",  # confirmed wrong-page scraper content (gas-market data, not the storage register guide)
     "poland_ure_bess_register_przewodnik":     "none",  # confirmed wrong-page scraper content (same gas-market data as above)
     "poland_ure_bess_wytyczne":                "none",  # confirmed wrong-page scraper content (economic-summit event listing, not URE storage guidelines)
+    # PL — PR-TAG-7c mistagging fix (2026-08-10), FINAL batch of 3 Poland
+    # sub-batches (7a nuclear, 7b BESS/energy, 7c other: offshore/onshore
+    # wind, hydro, EIA, grid connection, general energy law) -- this
+    # closes the entire 9-PR Priority 1 mistagging sequence.
+    "poland_offshorewind_regulacje":           "tuulivoima_meri",
+    # Filename says "offshorewind" but the actual article content is
+    # entirely about ONSHORE wind farm modernization ("modernizację
+    # lądowych farm wiatrowych") -- tagged by real content, not the
+    # misleading filename.
+    "poland_offshorewind_repowering_2025":     "tuulivoima_maa",
+    "poland_repowering_exemption_dus_2025":    "tuulivoima_maa",  # exact-content duplicate of the source above -- logged in manual-sourcing-backlog memory, not deduplicated here
+    "poland_ustawa_10h_2016":                  "tuulivoima_maa",  # the "10H" turbine-to-building minimum-distance law, onshore-only throughout
+    "udt_ure_datacenter_pozwolenia":           "datakeskus",
+    "wody_polskie_hydropower_pozwolenie":      "vesivoima",
+    # sCO2 pressure-vessel content -- same convention as every other
+    # country's sCO2 source (DA sik_sco2_tryk_modulaert_kraftanlaeg, NO
+    # dsb_sco2_trykkpaavirket_modulaert, SE av_sco2_tryckkarlstillstyrning,
+    # FI tukes_painelaitteet_sco2 -- all SMR,smr_bess).
+    "udt_sco2_urzadzenia_cisnieniowe":         "SMR,smr_bess",
+    # Left general (confirmed genuinely broad/thin by reading real chunk
+    # text, not assumed): gdos_oos_environmental_assessment (curated EIA
+    # content, explicitly cross-technology), poland_prawo_energetyczne_1997
+    # (foundational energy law, own text names BESS/OZE/SMR alike),
+    # poland_ustawa_oos_2008 (master EIA procedural law, explicitly covers
+    # nuclear facility investments alongside everything else),
+    # pse_grid_connection (thin PSE homepage -- cookie banner, live
+    # dashboard, news ticker -- but touches wind/PV curtailment
+    # compensation generically), udt_dozor_techniczny (thin UDT homepage
+    # nav, on-topic but not substantive enough to narrow-tag),
+    # wody_polskie_pozwolenia_wodnoprawne (generic "types of water permit"
+    # portal nav, not hydropower-specific despite sharing a URL with the
+    # curated wody_polskie_hydropower_pozwolenie above -- see manual-
+    # sourcing-backlog memory for that same-URL/different-content anomaly).
+    #
+    # "none" -- same wrong-content failure mode as PR-TAG-7b, two variants:
+    "gdos_informacje_dla_przedsiebiorcow":     "none",  # URL promises business/investor info; actual content is a homepage news ticker (kids' events, peatland workshops), unrelated
+    "gdos_oceny_oddzialywania_srodowisko":     "none",  # URL promises environmental impact assessment info; actual content is the IDENTICAL news-ticker junk as the source above
+    # NEW variant of the wrong-content bug, worse than 7b's: this is a
+    # wrong PDF fetched at the source, not just a wrong scraped webpage.
+    # URL/description say this is the EIA-thresholds regulation
+    # ("przedsięwzięcia mogące znacząco oddziaływać na środowisko"), but
+    # the downloaded ISAP PDF is a Ministry of Finance excise-tax (akcyza)
+    # declaration-form regulation entirely. Flagged in the manual-
+    # sourcing-backlog memory: the ISAP download URL itself needs manual
+    # re-verification before any future re-fetch attempt -- simply
+    # re-running the same URL would reproduce the same wrong PDF.
+    "poland_rozp_przedsiewziecia_2019":        "none",  # confirmed wrong PDF entirely (excise-tax form, not the EIA-thresholds regulation)
 }
 
 
