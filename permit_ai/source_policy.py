@@ -185,6 +185,50 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # exclusion used for Germany; unlike EEG, ETS's own licensing threshold
     # language doesn't hinge on "renewable" status the way EEG's does.
     "elektrituruseadus_electricity_market_act":      "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # DA — PR-TAG-3 mistagging fix (2026-08-10). 11 of 14 previously-
+    # untagged DA sources tagged here; 3 (bygningsreglementet,
+    # ens_energilagring, mst_miljoevurdering) confirmed boilerplate/
+    # navigation content with no real regulatory substance and deliberately
+    # left general -- same treatment as rakentamislaki_751_2023.
+    # Type-specific (bucket a):
+    "ens_middelgrunden_vindmoellepark":              "tuulivoima_meri,hybridi",
+    "ens_vejledning_vindmoeller_2":                  "tuulivoima_meri,hybridi",
+    "ens_vejledning_vindmoeller_3":                  "tuulivoima_meri,hybridi",
+    "ens_anmeldelse_skift_ejer_vindmoelle":          "tuulivoima_maa,tuulivoima_meri,hybridi",
+    "mst_vandkraft_vandloebstilladelse":             "vesivoima",
+    # Lillebælt Syd Vindmøllepark -- confirmed via external research
+    # (user, 2026-08-10) as an officially-designated "kystnær
+    # havvindmøllepark" (nearshore/coastal OFFSHORE wind farm; 11
+    # turbines, 165MW, ~3km off Als, permitted by Energistyrelsen's
+    # offshore-wind authority, not Miljøstyrelsen) -- offshore only,
+    # not dual-tagged onshore despite the ambiguous filename/text.
+    "ens_vejledning_vindmoeller_tilladelse":         "tuulivoima_meri,hybridi",
+    # Broad/technology-neutral rules (bucket b), confirmed by reading
+    # actual chunk text, not filenames:
+    # Explicitly states the >25MW electricity-production-permit rule
+    # "means a BESS... requires the SAME... permit as solar or wind
+    # installations" -- not BESS-exclusive despite the source name. SMR
+    # excluded -- nuclear has its own dedicated licensing pathway, this
+    # generic electricity-market threshold rule doesn't apply to it.
+    "ens_bess_elproduktion_over25mw":                "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,vesivoima,hybridi",
+    # Also broader than the filename suggests -- general VE (renewable
+    # energy) installation permit process (VE-tilladelsesprocesbekendt-
+    # gørelsen), not solar-specific. BESS/SMR excluded, same
+    # renewables-only-by-definition reasoning as Germany's EEG.
+    "ens_sol_ve_tilladelse":                         "tuulivoima_maa,tuulivoima_meri,aurinkovoima,vesivoima,hybridi",
+    # Offshore renewable-energy tender permit process -- technology-neutral
+    # wording ("vedvarende energi-anlæg på havet") but Denmark's actual
+    # offshore tender program has been wind-only in practice to date;
+    # aurinkovoima deliberately excluded until the program expands
+    # (user decision, 2026-08-10 -- don't tag ahead of actual practice).
+    "ens_tilladelsesprocessen_vedvarende_energi_hav": "tuulivoima_meri,hybridi",
+    # General Danish EIA framework (Miljøvurdering/VVM) -- same broad
+    # energy-facility pattern as DE/EE's EIA docs.
+    "sgav_vvm_miljoevurdering":                      "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # General pressure-equipment product-safety page -- distinct from the
+    # already-tagged sik_sco2_tryk_modulaert_kraftanlaeg (SMR-specific
+    # sCO2 equipment).
+    "sik_trykbaerende_udstyr":                       "BESS,SMR,smr_bess,teollisuus",
     # Priority-2 (2026-08-10): maatalous + vesivoima previously had ZERO
     # dedicated content -- see permit_ai/ingest_maatalous_vesivoima.py.
     # No hybridi inheritance here -- hybridi is defined as BESS+wind/solar
