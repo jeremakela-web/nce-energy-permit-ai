@@ -229,6 +229,56 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # already-tagged sik_sco2_tryk_modulaert_kraftanlaeg (SMR-specific
     # sCO2 equipment).
     "sik_trykbaerende_udstyr":                       "BESS,SMR,smr_bess,teollisuus",
+    # FI — PR-TAG-4 mistagging fix (2026-08-10). 14 of 18 previously-
+    # untagged FI sources tagged here (the largest single batch so far,
+    # 718 chunks); 4 (rakentamislaki_751_2023, pelastuslaki_379_2011,
+    # energiavirasto_energiatehokkuus, lvv.fi) confirmed genuinely broad
+    # national policy/law content and deliberately left general.
+    # NOTE (flagged as a future follow-up, not acted on here): 3 of these
+    # keys are full descriptive strings, not stems -- ingest_fi_env.py's
+    # own deliberate design choice (human-readable citation labels), but
+    # fragile as a SOURCE_HANKETYYPPI_TAG lookup key -- any future
+    # relabeling of that source string silently breaks the tag mapping
+    # with no error, just a quiet fallback to unfiltered/general. Worth
+    # normalizing ingest_fi_env.py to stems like every other ingest
+    # script, in a separate PR.
+    # Type-specific (bucket a):
+    "lion_2025_bess":                                "BESS,hybridi",
+    # SJV = Fingrid's STORAGE-specific grid code (Sähkövarastojen
+    # järjestelmätekniset vaatimukset) -- deliberate counterpart to
+    # VJV below, which covers generation instead.
+    "sjv2024_fingrid":                                "BESS,smr_bess,hybridi",
+    "tukes_painelaitteet_sco2":                       "SMR,smr_bess",
+    "YSL 527/2014 — Akkuvarasto (BESS) ja energiantuotanto: ympäristölupatarve": "BESS,hybridi",
+    # Broad/technology-neutral or explicitly-scoped rules (bucket b),
+    # confirmed by reading actual chunk text, not filenames:
+    # VJV = Fingrid's POWER-PLANT (generation) grid code -- "Voimalaitosten
+    # järjestelmätekniset vaatimukset". Bare BESS deliberately EXCLUDED --
+    # that's what SJV (above) covers instead; the two documents are a
+    # deliberate pair, confirmed by their own titles/scope.
+    "vjv2024_fingrid":                                "tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # Explicitly scoped in its own text to "ammattikäytössä oleviin
+    # teollisuusakuiksi luokiteltaviin Li-akkuihin" (professional-use,
+    # industrial-classified Li-ion batteries) -- distinct from
+    # lion_2025_bess's grid-storage scope, same reasoning for both:
+    "lion_teollisuus_2025":                           "teollisuus,datakeskus",
+    "tukes_liion_opas":                                "teollisuus,datakeskus",
+    "kemikaaliturvallisuuslaki_390_2005":             "BESS,teollisuus,datakeskus,hybridi",
+    "tukes_painelaitteet":                            "BESS,SMR,smr_bess,teollisuus",
+    "YVA-laki 252/2017 — Ympäristövaikutusten arviointi": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi,teollisuus,datakeskus",
+    # General YSL trigger-law overview (SS27 permit requirement, SS29
+    # registration-only tier) -- confirmed genuinely broad by content,
+    # not narrowed to a couple of types.
+    "YSL 527/2014 — Ympäristölupa: luvantarve":       "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi,datakeskus,teollisuus,maatalous,ymparistolupa",
+    # Purely procedural (application process/timelines/appeals) -- applies
+    # to any hanketyyppi that ever needs a YSL permit, same breadth as
+    # above.
+    "YSL 527/2014 — Ympäristöluvan hakeminen: prosessi ja liitteet": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi,datakeskus,teollisuus,maatalous,ymparistolupa",
+    # Caruna distribution-grid (jakeluverkko) family -- matches the
+    # existing fingrid_liittyminen_kantaverkkoon comment's own note that
+    # BESS/aurinkovoima use distribution grid, not kantaverkko.
+    "caruna_network_development_plan_2026":          "BESS,aurinkovoima,hybridi,datakeskus,teollisuus",
+    "caruna_high_voltage_capacity_2025":              "BESS,aurinkovoima,hybridi,datakeskus,teollisuus",
     # Priority-2 (2026-08-10): maatalous + vesivoima previously had ZERO
     # dedicated content -- see permit_ai/ingest_maatalous_vesivoima.py.
     # No hybridi inheritance here -- hybridi is defined as BESS+wind/solar
