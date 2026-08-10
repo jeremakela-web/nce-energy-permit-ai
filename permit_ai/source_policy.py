@@ -491,6 +491,31 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # "Sidan kan inte hittas" (page not found) text, zero informational
     # value for any hanketyyppi.
     "ssm_karnkraft_tillstand_reglering": "none",  # confirmed dead 404 link
+    # PL — PR-TAG-7b mistagging fix (2026-08-10), second of 3 Poland
+    # sub-batches (7a nuclear, 7b BESS/energy, 7c other). Genuine BESS
+    # content, confirmed by reading actual chunk text and URLs:
+    "poland_building_law_amendment_2026_bess": "BESS,hybridi",
+    "poland_gramwzielone_bess_2026":           "BESS,hybridi",  # exact-content duplicate of the above -- logged in manual-sourcing-backlog memory, not deduplicated here
+    "poland_bess_permitting_guide_2025":       "BESS,hybridi",
+    "poland_dudkowiak_bess_legal_2025":        "BESS,hybridi",  # exact-content duplicate of the above -- logged in manual-sourcing-backlog memory, not deduplicated here
+    "ure_bess_energy_storage_licensing":       "BESS,hybridi",
+    # ure_aktualnosci_magazyny_energii deliberately NOT tagged -- confirmed
+    # genuine but mixed/generic URE energy-sector news, not BESS-specific
+    # enough to narrow-tag despite the name. Stays general.
+    #
+    # "none" -- DIFFERENT reason than the medical/dead-link exclusions
+    # above: these 3 have correct, BESS-relevant URLs (confirmed real
+    # pages about the energy-storage register / URE storage guidelines)
+    # but the actual scraped chunk content is the WRONG page entirely
+    # (wholesale natural-gas-market monitoring data, and an unrelated
+    # economic-summit patronage-events listing) -- a scraper/redirect
+    # glitch at ingestion time, not a domain mismatch. The real content
+    # these sources were meant to capture still doesn't exist in the
+    # corpus at all -- tracked as a re-ingestion task in the manual-
+    # sourcing-backlog memory, not just a tagging fix.
+    "poland_ure_bess_register_guide_2025":     "none",  # confirmed wrong-page scraper content (gas-market data, not the storage register guide)
+    "poland_ure_bess_register_przewodnik":     "none",  # confirmed wrong-page scraper content (same gas-market data as above)
+    "poland_ure_bess_wytyczne":                "none",  # confirmed wrong-page scraper content (economic-summit event listing, not URE storage guidelines)
 }
 
 
