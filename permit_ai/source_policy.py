@@ -57,6 +57,21 @@ DOC_TYPE_MAP: dict[str, str] = {
 # Maps source stem → comma-separated list of project types that may use it.
 # "general" (default when not in this map) = unrestricted, all project types.
 # Use comma-separated values when a source is relevant for multiple but not all types.
+#
+# "none" (2026-08-10) = excluded from EVERY hanketyyppi, including any added
+# in the future -- a stronger statement than "general" (visible to all) and
+# the opposite of a comma-list (visible to specific ones). Use only for
+# content confirmed, by directly reading the actual chunk text (never the
+# filename alone), to be irrelevant to every current use of this platform --
+# e.g. content from a different regulatory domain entirely (medical/
+# healthcare radiation rules swept up alongside genuine nuclear-power
+# content because both happen to fall under the same umbrella law), or
+# content that isn't real ("Ingested a dead 404 page as if it were a
+# document"). Always pair a "none" entry with an inline comment stating
+# why -- this is a stronger, easier-to-forget action than any other tag
+# here (it hides content from every hanketyyppi, not just the wrong one),
+# so it gets the same real-content-verification-then-explicit-user-sign-off
+# discipline as every other entry in this file, never added unilaterally.
 SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # Nuclear safety guides — SMR / smr_bess only
     "YVL_A.1":      "SMR,smr_bess",
@@ -448,6 +463,34 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "nitraattiasetus_1250_2014_valvontaohje":   "maatalous",
     "vesilaki_587_2011_kalatalousvelvoite":     "vesivoima",
     "patoturvallisuuslaki_494_2009":            "vesivoima",
+    # "none" exclusions (2026-08-10) -- see the docstring above this dict.
+    # 13 PL sources from PR-TAG-7a: confirmed by direct chunk-text reading
+    # to be Minister-of-Health-issued, healthcare-unit/medical-exposure-
+    # specific regulations (X-ray diagnostics, radiotherapy, nuclear
+    # medicine, clinical audits) -- swept into the corpus alongside genuine
+    # nuclear-power content because both fall under Poland's Atomic Law
+    # umbrella, but not power-plant content. Empirically confirmed to leak
+    # into real SMR-query top-10 results at ranks as high as #3 when left
+    # as unfiltered/general (2026-08-10 retrieval test) -- "none" is the
+    # correct fix, not just "not tagged SMR".
+    "Regulation_reference_procedures_nuclear_medicine_EXTRACT_DzUrzMZ201482": "none",  # confirmed medical, not nuclear-power
+    "Regulation_requirements_heathcare_units_radiotherapy_radiopharmaceutical_products_DzU20211890": "none",  # confirmed medical, not nuclear-power
+    "Regulation_minimum_requirements_healthcare_units_X-ray_diagnostics_DzU20211725": "none",  # confirmed medical, not nuclear-power
+    "B09Regulation_detailed_conditions_safe_use_radiological_equipment_DzU2006_180_1325": "none",  # confirmed medical, not nuclear-power
+    "Regulation_detailed_scope_internal_external_clinical_audits_DzU20222683": "none",  # confirmed medical, not nuclear-power
+    "Regulation_scope_info_contained_Central_Database_Medical_Exposures__DzU20201051": "none",  # confirmed medical, not nuclear-power
+    "Regulation_diagnostic_reference_levels_DzU20222626": "none",  # confirmed medical, not nuclear-power
+    "Regulation_operational_tests_radiological_equipment_auxiliary_devices_pp1-11_56-67_DzU20222759": "none",  # confirmed medical, not nuclear-power
+    "B10Regulation_supervision_control_compliance_conditions_radiation_protection_organisational_units_using_X-ray_equipment_DzU2007111": "none",  # confirmed medical, not nuclear-power
+    "Regulation_categories_eligibility_criteria_unintended_accidental_exposures_DzU20222700": "none",  # confirmed medical, not nuclear-power
+    "Regulation_order_perform_non-medical_exposures_employment_insurance_DzU20201568": "none",  # confirmed medical, not nuclear-power
+    "Regulation_radiation_protection_officer_authoriz_internal_supervision_health__DzU20211908": "none",  # confirmed medical, not nuclear-power
+    "Regulation_info_National_Database_Radiological_Equipment_DzU20211959": "none",  # confirmed medical, not nuclear-power
+    # SE — confirmed dead 404 link ingested as if it were a real document
+    # (PR-TAG-6 finding): the actual chunk content is the literal Swedish
+    # "Sidan kan inte hittas" (page not found) text, zero informational
+    # value for any hanketyyppi.
+    "ssm_karnkraft_tillstand_reglering": "none",  # confirmed dead 404 link
 }
 
 
@@ -468,13 +511,17 @@ def is_chunk_relevant(chunk_meta: dict, current_hanketyyppi: str) -> bool:
     1. chunk_meta["hanketyyppi_tag"]  — set by all new/updated ingestion
     2. chunk_meta["project_types"]    — set by ingest_playwright / ingest_precedent (fallback)
     3. Name-based lookup via SOURCE_HANKETYYPPI_TAG (pre-migration chunks)
-    4. Default True — unknown sources are not filtered out
+    4. tag == "none" — excluded from every hanketyyppi, including future
+       ones (see SOURCE_HANKETYYPPI_TAG's docstring for when this applies)
+    5. Default True — unknown sources are not filtered out
     """
     tag = (
         chunk_meta.get("hanketyyppi_tag")
         or chunk_meta.get("project_types")
         or get_hanketyyppi_tag(chunk_meta.get("source", ""))
     )
+    if tag == "none":
+        return False
     if not tag or tag in ("general", "all"):
         return True
     allowed = {t.strip() for t in tag.split(",")}
