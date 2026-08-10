@@ -35,6 +35,22 @@ DOC_TYPE_MAP: dict[str, str] = {
     "microsoft_espoo_yva_selostus":       "viranomaisohje",
     "rakentamislaki_sijoittamislupa_datakeskus": "viranomaisohje",
     "ymparistolupa_datakeskus_ysl":       "viranomaisohje",
+    # Priority-2 maatalous/vesivoima content (2026-08-10) --
+    # permit_ai/ingest_maatalous_vesivoima.py. "laki" for verbatim/
+    # near-verbatim statutory text pulled from a primary source; asetukset
+    # (ministerial decrees) are classified "laki" too since this map has no
+    # separate "asetus" tier -- they're genuinely binding delegated
+    # legislation, closer to "laki" than to non-binding "viranomaisohje".
+    "ysl_527_2014_liite1_elainsuoja":        "laki",
+    "mmm_610_2023_lypsykarjarakennukset":    "laki",
+    "vesilaki_587_2011_kalatalousvelvoite":  "laki",
+    "patoturvallisuuslaki_494_2009":         "laki",
+    # NOT primary statute text -- see ingest_maatalous_vesivoima.py's
+    # docstring and this PR's commit message. Genuine guidance content,
+    # correctly categorized as viranomaisohje rather than laki so the
+    # distinction stays visible in doc_type, not just the source label.
+    "ruokavirasto_maatalouden_investointituet": "viranomaisohje",
+    "nitraattiasetus_1250_2014_valvontaohje":   "viranomaisohje",
 }
 
 # ── Hanketyyppi tag map ───────────────────────────────────────────────────────
@@ -169,6 +185,16 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # exclusion used for Germany; unlike EEG, ETS's own licensing threshold
     # language doesn't hinge on "renewable" status the way EEG's does.
     "elektrituruseadus_electricity_market_act":      "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # Priority-2 (2026-08-10): maatalous + vesivoima previously had ZERO
+    # dedicated content -- see permit_ai/ingest_maatalous_vesivoima.py.
+    # No hybridi inheritance here -- hybridi is defined as BESS+wind/solar
+    # only, never includes maatalous or vesivoima components.
+    "ysl_527_2014_liite1_elainsuoja":           "maatalous",
+    "ruokavirasto_maatalouden_investointituet": "maatalous",
+    "mmm_610_2023_lypsykarjarakennukset":       "maatalous",
+    "nitraattiasetus_1250_2014_valvontaohje":   "maatalous",
+    "vesilaki_587_2011_kalatalousvelvoite":     "vesivoima",
+    "patoturvallisuuslaki_494_2009":            "vesivoima",
 }
 
 
