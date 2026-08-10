@@ -279,6 +279,54 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # BESS/aurinkovoima use distribution grid, not kantaverkko.
     "caruna_network_development_plan_2026":          "BESS,aurinkovoima,hybridi,datakeskus,teollisuus",
     "caruna_high_voltage_capacity_2025":              "BESS,aurinkovoima,hybridi,datakeskus,teollisuus",
+    # NO — PR-TAG-5 mistagging fix (2026-08-10). 20 of 25 previously-
+    # untagged NO sources tagged here (1,028 chunks, the largest per-
+    # country total in the whole backlog); 5 confirmed thin/general
+    # content deliberately left general; dsa_nve_smr_nuclear_regulatory
+    # already carried an explicit tag and was out of scope.
+    # Type-specific (bucket a):
+    "regjeringen_planlegging_konsesjonsbehandling_vindkraft": "tuulivoima_maa,hybridi",
+    "nve_konsesjonsveileder_vindkraft_land":         "tuulivoima_maa,hybridi",
+    "nve_kommunal_mindre_vindkraftanlegg":           "tuulivoima_maa,hybridi",
+    "nve_mta_vindkraftanlegg_2016":                  "tuulivoima_maa,hybridi",
+    "nve_skyggekast_vindkraftverk_2014":             "tuulivoima_maa,hybridi",
+    "nve_iskast_vindturbiner_2018":                  "tuulivoima_maa,tuulivoima_meri,hybridi",
+    "nve_konsesjon_solkraft":                        "aurinkovoima,hybridi",
+    "nve_konsesjonssoknad_solkraft_guide":           "aurinkovoima,hybridi",
+    "nve_soknadsveileder_batterianlegg":             "BESS,hybridi",
+    "dibk_datasenter_byggetillatelse":               "datakeskus",
+    "dsb_sco2_trykkpaavirket_modulaert":             "SMR,smr_bess",
+    # Broad/technology-neutral rules and confirmed judgment calls
+    # (bucket b), confirmed by reading actual chunk text, not filenames:
+    # Statnett's national grid functional-requirements code -- a single
+    # unified document covering the whole power system, no internal
+    # generation/storage split like Finland's VJV/SJV pair (confirmed by
+    # user via external research, 2026-08-10) -- the largest single
+    # source in the entire mistagging backlog across all countries.
+    "statnett_nvf_2025":                             "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # Onshore-specific -- confirmed via external research (user,
+    # 2026-08-10): NVE maintains a SEPARATE offshore landscape-impact
+    # framework ("Strategisk konsekvensutredning av vindkraft til havs",
+    # veiledere.nve.no/havvind, its own "Landskap og verneområder" page).
+    # This 2015 guide uses the Lista ONSHORE wind farm as its worked
+    # example and is a distinct document from the offshore framework --
+    # not dual-tagged.
+    "nve_landskapsvirkninger_vindkraft_2015":        "tuulivoima_maa,hybridi",
+    "nve_ik_energi_2018":                            "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "nve_personellsikkerhet_kraftforsyning_2024":    "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "nve_terrengbehandling_2021":                    "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "statsforvalteren_konsekvensutredning_energi":   "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "dsb_trykkpaavirket_utstyr":                     "BESS,SMR,smr_bess,teollisuus",
+    # Explicitly enumerated in its own text -- "NVE behandler...konsesjon
+    # til å bygge vindkraftverk, vannkraftverk og nettanlegg" -- kept
+    # deliberately narrower than the broad-energy sets above since the
+    # source names only these three.
+    "nve_konsesjonsprosessen":                       "tuulivoima_maa,tuulivoima_meri,vesivoima,hybridi",
+    # Thin homepage content, but genuinely DSA (Norway's radiation/
+    # nuclear-safety authority)'s own page -- unlike the DA/NO thin-
+    # content examples left general below, this one is topically
+    # correct despite its thinness.
+    "dsa_nuclear_safety":                            "SMR",
     # Priority-2 (2026-08-10): maatalous + vesivoima previously had ZERO
     # dedicated content -- see permit_ai/ingest_maatalous_vesivoima.py.
     # No hybridi inheritance here -- hybridi is defined as BESS+wind/solar
