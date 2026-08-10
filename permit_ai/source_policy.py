@@ -143,6 +143,32 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # here -- hydrogen/Power-to-X has no matching hanketyyppi in _HANKE_CFG.
     # Stays "general" (unchanged from before this fix), flagged to user as
     # a future product-scope question, not guessed at.
+    # EE — PR-TAG-2 mistagging fix (2026-08-10). 7 sources previously
+    # untagged (a further 3 EE sources already carried explicit tags and
+    # were out of scope). Classified from actual chunk content.
+    # Type-specific (bucket a):
+    "offshore_wind_combined_permit_uhlisluba":       "tuulivoima_meri,hybridi",
+    "paikeseenergia_solar_pv_permitting":            "aurinkovoima,hybridi",
+    # Onshore-specific by content (maakonnaplaneering county plans, dwelling-
+    # distance noise modeling, land-based framing) -- offshore is covered by
+    # its own dedicated source above, not double-tagged here.
+    "tuuleenergia_wind_energy_permitting":           "tuulivoima_maa,hybridi",
+    # Broad energy-project law (bucket b), confirmed by reading actual chunk
+    # text, not filenames:
+    # keskkonnaseadustiku_yldosa_seadus_eia's mandatory-EIA threshold list
+    # explicitly names wind/solar/hydro thresholds, "nuclear facilities of
+    # any size", and "large industrial facilities >75MW thermal input"; a
+    # later chunk walks through BESS's own EIA-screening path explicitly.
+    # datakeskus excluded -- no explicit evidence found in any of its 10
+    # chunks, unlike the other 7 types which are all directly named.
+    "keskkonnaseadustiku_yldosa_seadus_eia":         "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi,teollisuus",
+    "elering_grid_connection_requirements":          "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "energiamajanduse_korralduse_seadus_sector_organisation": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # ETS §14 Electricity Production License -- BESS included per explicit
+    # user decision (2026-08-10), overriding the default EEG-style storage
+    # exclusion used for Germany; unlike EEG, ETS's own licensing threshold
+    # language doesn't hinge on "renewable" status the way EEG's does.
+    "elektrituruseadus_electricity_market_act":      "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
 }
 
 
