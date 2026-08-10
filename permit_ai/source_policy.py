@@ -327,6 +327,32 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # content examples left general below, this one is topically
     # correct despite its thinness.
     "dsa_nuclear_safety":                            "SMR",
+    # SE — PR-TAG-6 mistagging fix (2026-08-10). 11 of 20 previously-
+    # untagged SE sources tagged here (1,350 chunks); 9 confirmed thin,
+    # dead, or genuinely cross-sectoral content deliberately left general.
+    # boverket_rise_bess_brandsakerhet already carried an explicit tag and
+    # was out of scope.
+    # Type-specific (bucket a):
+    "energimyndigheten_havsbaserad_vindkraft_potential": "tuulivoima_meri,hybridi",
+    # Explicitly "på land och till havs" (onshore AND offshore) in its
+    # own title -- the source Jere named explicitly.
+    "energimyndigheten_vagledning_nedmontering_vindkraft": "tuulivoima_maa,tuulivoima_meri,hybridi",
+    "energimyndigheten_tillstand_vindkraft_land":    "tuulivoima_maa,hybridi",
+    "av_sco2_tryckkarlstillstyrning":                "SMR,smr_bess",
+    "energimyndigheten_datacenter_rapportering":     "datakeskus",
+    "havochvatten_vattenkraft_tillstand":            "vesivoima",
+    # Broad/technology-neutral rules and confirmed judgment calls
+    # (bucket b), confirmed by reading actual chunk text, not filenames.
+    # regeringen_nationell_energi_klimatplan_2021_2030 (531 chunks, the
+    # largest single SE source) deliberately NOT tagged here -- Sweden's
+    # official EU NECP (Regulation 2018/1999), genuinely cross-sectoral by
+    # design (transport, buildings, industry, agriculture, energy).
+    # Narrowing it to specific hanketyyppi would misrepresent its actual
+    # scope -- confirmed with user, left general.
+    "energimyndigheten_scenarier_energisystem_2023": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "energimyndigheten_nationell_strategi_vindkraft_2021": "tuulivoima_maa,tuulivoima_meri,hybridi",
+    "naturvardsverket_mkb_miljokonsekvensbeskrivning": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "svk_anslutning_inmatning":                      "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
     # Priority-2 (2026-08-10): maatalous + vesivoima previously had ZERO
     # dedicated content -- see permit_ai/ingest_maatalous_vesivoima.py.
     # No hybridi inheritance here -- hybridi is defined as BESS+wind/solar
