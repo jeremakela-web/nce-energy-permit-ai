@@ -117,6 +117,32 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "nek_dsb_bess_brannsikkerhet":                   "BESS,datakeskus",
     # EE — BESS fire safety (Päästeamet Dec 2024 guidance, Tuleohutuse seadus, EVS 812-7)
     "paasteamet_bess_tuleohutus":                    "BESS,datakeskus",
+    # DE — PR-TAG-1 mistagging fix (2026-08-09/10). All 12 DE sources were
+    # previously untagged and fell through to "general" (visible to every
+    # hanketyyppi regardless of relevance) -- see the platform coverage
+    # audit. Classified from actual chunk content, not filenames alone.
+    # Type-specific (bucket a):
+    "bess_stromspeicher_genehmigung":                "BESS,hybridi",
+    "rechenzentrum_datenzentrum_genehmigung":        "datakeskus",
+    "smr_nuclear_regulatory_germany_regwarning":     "SMR",
+    "solar_photovoltaik_genehmigung":                "aurinkovoima,hybridi",
+    "windenergie_offshore_windseeG":                 "tuulivoima_meri,hybridi",
+    "windenergie_onshore_genehmigung":               "tuulivoima_maa,hybridi",
+    # Broad energy-facility-scoped law (bucket b) -- each chunk explicitly
+    # self-scopes to "Energieanlagen"/"Energieprojekte" permitting, not
+    # general-purpose German law, confirmed by reading actual chunk text.
+    "umweltrecht_naturschutz_deutschland":           "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "baugb_planungsrecht_raumordnung":                "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "bimschg_immissionsschutzgesetz":                "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    "bnetza_netzanschluss_anforderungen":            "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # EEG 2023 — renewables-only by legal definition; excludes bare BESS
+    # (standalone storage isn't EEG-eligible without co-located generation)
+    # and SMR (nuclear isn't "erneuerbar").
+    "eeg_2023_erneuerbare_energien_gesetz":          "tuulivoima_maa,tuulivoima_meri,aurinkovoima,vesivoima,hybridi",
+    # wasserstoff_power_to_x_regulierung (bucket c) deliberately NOT tagged
+    # here -- hydrogen/Power-to-X has no matching hanketyyppi in _HANKE_CFG.
+    # Stays "general" (unchanged from before this fix), flagged to user as
+    # a future product-scope question, not guessed at.
 }
 
 
