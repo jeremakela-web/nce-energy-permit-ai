@@ -353,6 +353,91 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "energimyndigheten_nationell_strategi_vindkraft_2021": "tuulivoima_maa,tuulivoima_meri,hybridi",
     "naturvardsverket_mkb_miljokonsekvensbeskrivning": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
     "svk_anslutning_inmatning":                      "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,smr_bess,vesivoima,hybridi",
+    # PL — PR-TAG-7a mistagging fix (2026-08-10), first of 3 Poland sub-
+    # batches (7a nuclear, 7b BESS/energy, 7c other -- PL is too large,
+    # 76 sources, for one PR). 35 of the ~51-source PL nuclear cluster
+    # tagged here as genuinely SMR-relevant, verified by reading actual
+    # chunk text, not filenames. 16 sources deliberately NOT tagged and
+    # left general -- see the precision distinction below, this PR's most
+    # important judgment call.
+    #
+    # MEDICAL EXCLUSION (13 sources): all Minister-of-Health-issued,
+    # healthcare-unit/medical-exposure-specific regulations -- X-ray
+    # diagnostics, radiotherapy, nuclear medicine, clinical audits,
+    # diagnostic reference levels, healthcare radiological-equipment
+    # databases. Confirmed genuinely medical by reading the actual text
+    # (issuing authority, healthcare-unit-specific scope language), not
+    # nuclear-power-plant content. Tagging these SMR would have been a
+    # real retrieval-precision error -- an SMR developer has no use for
+    # hospital X-ray/radiotherapy equipment regulations. Left untagged/
+    # general (there is no "healthcare facility" hanketyyppi in this
+    # platform to tag them to instead): Regulation_reference_procedures_
+    # nuclear_medicine_EXTRACT_DzUrzMZ201482, Regulation_requirements_
+    # heathcare_units_radiotherapy_radiopharmaceutical_products_DzU20211890,
+    # Regulation_minimum_requirements_healthcare_units_X-ray_diagnostics_
+    # DzU20211725, B09Regulation_detailed_conditions_safe_use_
+    # radiological_equipment_DzU2006_180_1325, Regulation_detailed_scope_
+    # internal_external_clinical_audits_DzU20222683, Regulation_scope_
+    # info_contained_Central_Database_Medical_Exposures__DzU20201051,
+    # Regulation_diagnostic_reference_levels_DzU20222626, Regulation_
+    # operational_tests_radiological_equipment_auxiliary_devices_pp1-11_
+    # 56-67_DzU20222759, B10Regulation_supervision_control_compliance_
+    # conditions_radiation_protection_organisational_units_using_X-ray_
+    # equipment_DzU2007111, Regulation_categories_eligibility_criteria_
+    # unintended_accidental_exposures_DzU20222700, Regulation_order_
+    # perform_non-medical_exposures_employment_insurance_DzU20201568,
+    # Regulation_radiation_protection_officer_authoriz_internal_
+    # supervision_health__DzU20211908, Regulation_info_National_Database_
+    # Radiological_Equipment_DzU20211959.
+    #
+    # GENERAL/NOT NUCLEAR-POWER-SPECIFIC (3 sources): Regulation_
+    # building_materials_which_require_determining_activity_concern_
+    # K-40_Ra-226_Th-232_DzU202133 (general construction-material
+    # radioactivity, any building type), Regulation_determination_of_
+    # entities_competent_to_inspect_maximum_permitted_levels_of_
+    # radioactive_contamination_food_and_feed_DzU200498988 (public-health
+    # food-safety emergency response, not facility-specific). B04Ordinance_
+    # MoND_exercising_the_provisions_Atomic_Law_DzUrzMON200315161 --
+    # RECLASSIFIED after direct content verification: confirmed this is a
+    # Ministry of National Defence ordinance on radiation-exposure dose
+    # limits for SOLDIERS/military personnel, not nuclear facility
+    # regulation -- real content, wrong initial guess, caught before
+    # tagging, not after.
+    "NATIONAL_REPORT_OF_POLAND_ON_COMPLIANCE_WITH_THE_OBLIGATIONS_OF_THE_CONVENTION_ON_NUCLEAR_SAFETY": "SMR,smr_bess",
+    "7th_national_report_to_the_Joint_Convention_(2020)": "SMR,smr_bess",
+    "NATIONAL_REPORT_OF_REPUBLIC_OF_POLAND_ON_COMPLIANCE_WITH_OBLIGATIONS_OF_THE_JOINT_CONVENTION_ON_THE_SAFETY": "SMR,smr_bess",
+    "7th_National_Report_of_Poland_for_CNS":         "SMR,smr_bess",
+    "5th_national_report_to_the_Joint_Convention_2014": "SMR,smr_bess",
+    "6th_national_report_to_the_Joint_Convention_2018": "SMR,smr_bess",
+    "6th_national_report_PL":                        "SMR,smr_bess",
+    "raport_NS_2010":                                "SMR,smr_bess",
+    "Regulation_scope_radiat_monitoring_environ_org_entities_cat_I_II_hazards_Appen_1_and_3_DzU20222058": "SMR,smr_bess",
+    "Regulation_documents_application_issuance_license__activity__exposure_ion_radiation_DzU20211667": "SMR,smr_bess",
+    "National_Assessment_Report_Ageing_Management_Poland": "SMR,smr_bess",
+    "raport_NS_EOM_2012":                             "SMR,smr_bess",
+    "Regulation_detailed_conditions_safe_work_with_ionising_radiation_sources_DzU2022967": "SMR,smr_bess",
+    "Regulation_requirements_commissioning_operation_nuclear_facilities_DzU2013281": "SMR,smr_bess",
+    "Questions_and_answers_to_the_7th_National_Report_JC": "SMR,smr_bess",
+    "Regulation_radiation_protection_officers_DzU2021640": "SMR,smr_bess",
+    "Regulation_requirements_individual_dose_registration_DzU20211053": "SMR,smr_bess",
+    "Regulation_nuclear_safety_radiological_protection_requirements_decommissioning_DzU2013270": "SMR,smr_bess",
+    "Regulation_nuclear_regulatory_inspectors_DzU20211577": "SMR,smr_bess",
+    "B02Regulation_stations_for_early_detection_of_radioactive_contamination_and_units_that_conduct_measurements_DzU20022392030": "SMR,smr_bess",
+    "Regulation_physical_protection_nuclear_material_nuclear_facilities_DzU20082071295": "SMR,smr_bess",
+    "Notice_consolidated_text_regulation_basic_requirements_supervised_controlled_areas_DzU_2022_poz_722": "SMR,smr_bess",
+    "Regulation_intervention_levels_for_various_intervention_measures_and_criteria_for_cancelling_intervention_measures_DzU200498987": "SMR,smr_bess",
+    "Regulation_indicators_determination_ionizing_radiation_doses_assessing_exposure_ion_radiat__pages1-5_DzU20211657": "SMR,smr_bess",
+    "Regulation_allocated_special-purpose_subsidy_state-owned_public_utility_company_DzU20201624": "SMR,smr_bess",
+    "Regulation_granting_license_permit_import_export_transit_radioactive_waste_spent_nuclear_fuel_DzU20082191402": "SMR,smr_bess",
+    "B03Regulation_requirements_for_dosimetric_equipment_DzU20022392032": "SMR,smr_bess",
+    "Regulation_prior_information_to_general_public_in_event_of_radiation_emergency_DzU20041021065": "SMR,smr_bess",
+    "Regulation_periodical_safety_assessment_of_nuclear_facility_DzU2012556": "SMR,smr_bess",
+    "Regulation_periodic_safety_review_radioactive_waste_repository_DzU201628": "SMR,smr_bess",
+    "Regulation_psychiatric_psychological_tests_employees_perfm_act_import_nucl_safety_rad_prot_DzU20112201310": "SMR,smr_bess",
+    "Regulation_types_protective_actions_external_zones_DzU20202247": "SMR,smr_bess",
+    "Regulationa_method_carrying_out_supervision_inspection_ISA_FIA_CAB_nuclear_regulatory_authority_DzU2010855": "SMR,smr_bess",
+    "Regulation_template_quarterly_report_decomissioning_fund__DzU2021393": "SMR,smr_bess",
+    "Regulation_amount_contribution_cover_costs_final_management_spent_fuel_radioactive_waste_DzU20121213": "SMR,smr_bess",
     # Priority-2 (2026-08-10): maatalous + vesivoima previously had ZERO
     # dedicated content -- see permit_ai/ingest_maatalous_vesivoima.py.
     # No hybridi inheritance here -- hybridi is defined as BESS+wind/solar
