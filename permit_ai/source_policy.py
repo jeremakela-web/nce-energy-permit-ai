@@ -563,6 +563,16 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     # re-verification before any future re-fetch attempt -- simply
     # re-running the same URL would reproduce the same wrong PDF.
     "poland_rozp_przedsiewziecia_2019":        "none",  # confirmed wrong PDF entirely (excise-tax form, not the EIA-thresholds regulation)
+    # Hybrid co-location sourcing (2026-08-12): real, primary-source content
+    # specifically about combining BESS with wind/solar at ONE shared grid
+    # connection point -- genuinely hybridi-specific, not single-technology
+    # background reading. Ingested via permit_ai/ingest_hybridi_colocation.py.
+    # See that module's docstring for full retrieval/verification detail.
+    "fi_fingrid_hybridivoimalaitos_ohje_2023":       "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,vesivoima,hybridi",
+    "de_eeg_8a_flexible_netzanschluss":              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    "de_baugb_35_batteriespeicher_privilegierung":   "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    "da_energinet_samplacerede_overplantede_krav":   "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    "lv_mk_821_hibridatlauja":                       "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
 }
 
 
