@@ -103,43 +103,61 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "bess_datakeskus_teollisuus_ehitus_permitting":  "BESS,datakeskus,teollisuus",
     # LV — energy-type-specific sources (Latvia has no nuclear)
     # Transmission grid connection (AST) — energy projects only, not housing/agriculture
-    "lv_ast_sistemas_pievienošanas_noteikumi":       "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,teollisuus,SMR",
+    # hybridi backfill (2026-08-11): already carried both BESS and wind/solar
+    # tags before this remediation sequence began -- LV/LT were never part
+    # of the 9-PR mistagging sequence (confirmed genuinely not mistagged),
+    # so the hybridi-inheritance rule approved during PR-TAG-1..7c never
+    # ran here. Mechanical backfill of the already-approved rule, not new
+    # sourcing or a new judgment call -- see this PR's commit message.
+    "lv_ast_sistemas_pievienošanas_noteikumi":       "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,teollisuus,SMR,hybridi",
     # Distribution grid (Sadales tīkls) — smaller energy projects, not SMR/industrial
-    "lv_sadales_tikls_pievienošanas_kārtiba":        "BESS,aurinkovoima,tuulivoima_maa",
+    "lv_sadales_tikls_pievienošanas_kārtiba":        "BESS,aurinkovoima,tuulivoima_maa,hybridi",
     # SPRK licensing — energy generation/storage projects only
-    "lv_sprk_elektroenerģijas_ražošanas_licence":    "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
-    "lv_mk_631_licencesanas_noteikumi":              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,teollisuus",
+    "lv_sprk_elektroenerģijas_ražošanas_licence":    "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    "lv_mk_631_licencesanas_noteikumi":              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,teollisuus,hybridi",
     # Renewables law — only for renewable energy and co-located BESS
-    "lv_atjaunojamas_energijas_likums":              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
-    # BESS market/balancing — BESS only
+    "lv_atjaunojamas_energijas_likums":              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    # BESS market/balancing — BESS only, no wind/solar co-presence -- does NOT qualify for hybridi backfill
     "lv_bess_balansesanas_tirgus_ast":               "BESS",
-    # Wind-specific regulations
+    # Wind-specific regulations — wind only, no BESS -- does NOT qualify
     "lv_veja_energija_buvniecibas_noteikumi":        "tuulivoima_maa,tuulivoima_meri",
-    # BVKB wind turbine regulatory overview — wind only
+    # BVKB wind turbine regulatory overview — wind only, no BESS -- does NOT qualify
     "lv_bvkb_veja_elektrostacija":                  "tuulivoima_maa,tuulivoima_meri",
-    # BESS fire safety — BESS and datakeskus (both use large Li-ion)
+    # BESS fire safety — BESS and datakeskus, no wind/solar -- does NOT qualify
     "lv_ugunsdrošibas_bess_prasibas":               "BESS,datakeskus",
     # LT — energy-type-specific sources (Lithuania has no nuclear power plants)
     # Transmission grid connection (LITGRID) — energy projects only
-    "lt_litgrid_prisijungimo_tvarka":                "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,teollisuus",
+    "lt_litgrid_prisijungimo_tvarka":                "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,teollisuus,hybridi",
     # Distribution grid (ESO) — smaller energy projects, not SMR/industrial
-    "lt_eso_gamintojams_prisijungimas":              "BESS,aurinkovoima,tuulivoima_maa",
-    # VERT generation licensing — energy generation/storage projects only
-    "lt_vert_elektros_gamybos_licencija":            "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
-    # VERT OZE auctions — renewables and co-located BESS
+    "lt_eso_gamintojams_prisijungimas":              "BESS,aurinkovoima,tuulivoima_maa,hybridi",
+    # VERT generation licensing — energy generation/storage projects only.
+    # NOT YET IN PRODUCTION (checked 2026-08-11): defined in
+    # backend/lithuania_ingestion.py's source list but never successfully
+    # ingested -- its URL (vert.lt) is the exact domain already flagged in
+    # the manual-sourcing-backlog memory as WAF-403-blocked for all paths.
+    # Kept here (not deleted) because it's a real, still-intended source
+    # blocked by a known, already-tracked issue, not stale/incorrect
+    # tagging -- the tag is ready for whenever that block is resolved.
+    "lt_vert_elektros_gamybos_licencija":            "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    # VERT OZE auctions — renewables only, no BESS -- does NOT qualify
     "lt_vert_oze_aukcionai_kvota":                   "tuulivoima_maa,tuulivoima_meri,aurinkovoima",
-    # Renewables law — only for renewable energy and co-located BESS
-    "lt_atsinaujinancio_resurso_energetikos_istatymas": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima",
-    # BESS balancing market — BESS only
+    # Renewables law — only for renewable energy and co-located BESS.
+    # NOT YET IN PRODUCTION (checked 2026-08-11): same situation as
+    # lt_vert_elektros_gamybos_licencija above, but its URL is
+    # e-seimas.lrs.lt -- the domain already flagged in the manual-
+    # sourcing-backlog memory as JS-rendered/near-zero-text-extracted.
+    # Kept here for the same reason.
+    "lt_atsinaujinancio_resurso_energetikos_istatymas": "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    # BESS balancing market — BESS only, no wind/solar co-presence -- does NOT qualify
     "lt_litgrid_balansavimo_rinka":                  "BESS",
-    # Wind energy special plan — wind only
+    # Wind energy special plan — wind only, no BESS -- does NOT qualify
     "lt_vejo_energetikos_specialusis_planas":        "tuulivoima_maa,tuulivoima_meri",
     "lt_vert_vejo_energetika":                       "tuulivoima_maa,tuulivoima_meri",
-    # BESS fire safety — BESS and datakeskus (both use large Li-ion batteries)
+    # BESS fire safety — BESS and datakeskus, no wind/solar -- does NOT qualify
     "lt_priesgaisrines_saugos_taisykles":            "BESS,datakeskus",
     # EIA law — all energy projects requiring PAV (BESS, wind, solar, SMR)
-    "lt_pav_istatymas":                              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR",
-    "lt_pav_kategoriju_sarasas":                     "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR",
+    "lt_pav_istatymas":                              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,hybridi",
+    "lt_pav_kategoriju_sarasas":                     "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,hybridi",
     # SE — BESS fire safety (RISE 2023:117 + Boverket BFS 2024:7) — BESS and datakeskus
     "boverket_rise_bess_brandsakerhet":              "BESS,datakeskus",
     # DA — BESS fire safety (Beredskabsstyrelsen 2023 vejledning + DBI gap analysis 2025)
