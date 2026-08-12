@@ -95,6 +95,33 @@ class GenerationCapError(RuntimeError):
         )
 
 
+class PhaseContentNotAvailableError(Exception):
+    """Raised when a hanketyyppi has a real, declared later phase (per
+    _PHASE_RAG_QUERIES[hanketyyppi] — e.g. SMR's kayttolupa/purku) but no
+    _PHASE_INSTRUCTIONS writing-guidance entry for it yet (P3-3b, the
+    content-gated follow-up, is what adds those entries). Hanketyyppi-
+    scoped, not just vaihe-name-scoped — a vaihe name absent from THIS
+    hanketyyppi's own _PHASE_RAG_QUERIES entry (e.g. "kayttolupa" for
+    BESS, which was never declared) does NOT raise this.
+
+    Deliberately distinct from an unrecognized/typo'd hankkeen_vaihe string,
+    which still falls back to esiselvitys's tone unchanged, same as always —
+    this is specifically for phases the platform KNOWS about but has no
+    content for yet, so generation stops cleanly here instead of silently
+    producing an esiselvitys-toned report for what should be an operating-
+    license or decommissioning document. Same reasoning as
+    GenerationCapError's retrieval-iteration check above: never silently
+    swallow this into a wrong-but-plausible-looking fallback.
+    """
+    def __init__(self, hanketyyppi: str, vaihe: str):
+        self.hanketyyppi = hanketyyppi
+        self.vaihe       = vaihe
+        super().__init__(
+            f"PHASE_CONTENT_NOT_AVAILABLE: {hanketyyppi}/{vaihe} — phase "
+            "recognized but writing guidance not yet published (P3-3b pending)"
+        )
+
+
 # TODO: domain muutos ncepermit.ai kun NCE Global perustettu
 _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
@@ -1630,6 +1657,15 @@ _HANKE_CFG = {
             "- Kunta: asemakaavanmuutos ja rakentamislupa 2–3 vuotta.\n"
             "- Kokonaisaikataulu 10–15 vuotta: periaatepäätös → rakentamislupa → käyttölupa."
         ),
+        # Later-lifecycle phases (2026-08-12, P3-3a): structural scaffold only,
+        # matching BESS's context_extra_phases pattern above -- deliberately
+        # empty. Real prose for "kayttolupa"/"purku" is P3-3b, content-gated
+        # (native-Finnish/subject-matter reviewer sign-off required before
+        # it ships, per 2026-08-11 planning). Requesting these phases today
+        # raises PhaseContentNotAvailableError before this dict is ever
+        # consulted -- see _PHASE_RAG_QUERIES["SMR"] above (the declared-
+        # support signal) and that exception's docstring.
+        "context_extra_phases": {},
     },
     "vesivoima": {
         "nimi_fi":    "Vesivoimalahanke",
@@ -2475,12 +2511,20 @@ def _rag_context(
     country: str = "FI",
     n_per_query: int = 2,
     generation_id: str = "",
+    vaihe: str = "",
 ) -> tuple[str, list[dict], bool, list[str], list[str]]:
     """Hae relevantit dokumenttichunkit.
 
     Jos country != 'FI', haetaan ensin maakohtaiset dokumentit ja täydennetään
     FI-dokumenteilla (suomalainen lainsäädäntö on aina relevanttia kontekstia).
     Graceful fallback: jos metadata-suodatus epäonnistuu, haetaan ilman suodatinta.
+
+    `vaihe` (2026-08-12, P3-3a): if _PHASE_RAG_QUERIES has an entry for
+    (hanketyyppi, vaihe.lower()), those queries are collected ADDITIONALLY
+    to the normal Step 1/2 queries below (never a replacement) -- see
+    _PHASE_RAG_QUERIES's own comment. Empty string (default) or any
+    hanketyyppi/vaihe combo not in that dict is a complete no-op, byte-
+    identical to calling this function without the parameter at all.
 
     Palauttaa (context_text, sources, warning_flag, precedent_chunks, precedent_sources).
     Nostaa InsufficientSourcesError jos RAG-laatu on riittämätön (hard stop).
@@ -2585,6 +2629,24 @@ def _rag_context(
                     )
             except Exception:
                 pass  # maakohtaisia dokumentteja ei vielä indeksoitu
+
+        # Step 1.5: phase-aware retrieval (2026-08-12, P3-3a). ADDITIVE to
+        # Step 1/2, not a replacement -- a phase-4/5 request should still
+        # retrieve base pre-license context alongside phase-specific later-
+        # lifecycle content, not lose one for the other. No-op for every
+        # hanketyyppi/vaihe combo not explicitly listed in
+        # _PHASE_RAG_QUERIES (confirmed in this PR's self-test: zero effect
+        # on phases 1-3 or any non-SMR hanketyyppi).
+        _phase_queries = _PHASE_RAG_QUERIES.get(hanketyyppi, {}).get((vaihe or "").lower(), [])
+        for pq in _phase_queries:
+            try:
+                pemb = embed_model.encode([pq]).tolist()
+                _collect(
+                    col.query(query_embeddings=pemb, n_results=_n_oversample),
+                    allowed_countries=_allowed_countries,
+                )
+            except Exception:
+                pass
 
         # Step 2: Finnish cfg queries for base context; post-filter enforces country scope.
         for q in cfg["rag_queries"]:
@@ -4530,6 +4592,42 @@ _PHASE_INSTRUCTIONS["rakentamisvaihe"] = _PHASE_INSTRUCTIONS["rakentaminen"]
 _HANKE_CFG["BESS"]["context_extra_phases"]["rakentamisvaihe"] = (
     _HANKE_CFG["BESS"]["context_extra_phases"]["rakentaminen"]
 )
+
+# Phase-aware retrieval scoping (2026-08-12, P3-3a). Same shape as
+# _COUNTRY_RAG_QUERIES below, keyed hanketyyppi -> vaihe -> query list.
+# ADDITIVE to whatever _rag_context() already collects for that
+# hanketyyppi/country (Step 1/2 below) -- not a replacement -- so a
+# phase-4/5 request retrieves both the base pre-license context AND
+# phase-specific later-lifecycle content, not one or the other. Empty/
+# absent for every hanketyyppi and phase except SMR's kayttolupa/purku
+# today, which makes this a no-op everywhere else (confirmed in this
+# PR's self-test).
+#
+# This dict ALSO doubles as the "declared phase-4/5 support" signal for
+# _generate_sections()'s PhaseContentNotAvailableError guard below --
+# deliberately not a separate structure. A vaihe key present here for a
+# given hanketyyppi means that hanketyyppi has genuinely been engineered
+# for this later phase (SMR/kayttolupa, SMR/purku today); a vaihe key
+# absent means "not recognized for this hanketyyppi," which falls through
+# to the existing esiselvitys-tone fallback completely unchanged, exactly
+# as before this PR -- this is what keeps e.g. a stray
+# hankkeen_vaihe="kayttolupa" for BESS (nonsensical, but nothing currently
+# stops ApplicationInput.hankkeen_vaihe from being any free-text string)
+# from being wrongly treated as "recognized but not ready." Caught by this
+# PR's own self-test before it shipped -- see the commit message.
+_PHASE_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
+    "SMR": {
+        "kayttolupa": [
+            "nuclear power plant operating licence application renewal periodic safety review STUK",
+            "ydinvoimalaitoksen käyttölupa hakemus uusiminen määräaikainen turvallisuusarvio",
+        ],
+        "purku": [
+            "nuclear facility decommissioning low intermediate level radioactive waste management clearance",
+            "ydinlaitoksen käytöstäpoisto matala- ja keskiaktiivinen jäte jätehuolto vapauttaminen valvonnasta",
+        ],
+    },
+}
+
 # Country-specific RAG queries — override Finnish default queries for country chunk retrieval.
 # Used in _rag_context step 1 so cross-lingual embedding similarity stays above threshold.
 _COUNTRY_RAG_QUERIES: dict[str, dict[str, list[str]]] = {
@@ -6633,6 +6731,19 @@ def _generate_sections(
         context_extra_block = "\n\n" + cfg["context_extra"]
 
     _vaihe_key = (inp.hankkeen_vaihe or "esiselvitys").lower()
+    # A phase this SPECIFIC hanketyyppi has declared support for (via
+    # _PHASE_RAG_QUERIES[hanketyyppi]) but has no writing guidance
+    # published yet -- stop cleanly here rather than falling through to
+    # the esiselvitys-tone fallback below, which would silently produce a
+    # pre-study-toned report for what should be an operating-license or
+    # decommissioning document. See PhaseContentNotAvailableError's
+    # docstring. Hanketyyppi-scoped, not just vaihe-name-scoped: a vaihe
+    # name not declared for THIS hanketyyppi (e.g. "kayttolupa" requested
+    # for BESS, which was never declared) falls through to the existing
+    # esiselvitys fallback completely unchanged, same as before this PR --
+    # caught by this PR's own self-test before shipping, see commit message.
+    if _vaihe_key in _PHASE_RAG_QUERIES.get(inp.hanketyyppi, {}) and _vaihe_key not in _PHASE_INSTRUCTIONS:
+        raise PhaseContentNotAvailableError(inp.hanketyyppi, _vaihe_key)
     # Phase-specific context_extra (additive on top of base context_extra)
     _phase_extra = cfg.get("context_extra_phases", {}).get(_vaihe_key, "")
     if _phase_extra:
@@ -8442,7 +8553,7 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
     with _RAG_LOCK:
         _LAST_TIMING["t1_rag_lock_acquired"] = _time.monotonic()
         rag_ctx, sources, warning_flag, prec_chunks, prec_sources, _ = \
-            _rag_context(inp.hanketyyppi, inp.country or "FI", generation_id=inp.generation_id)
+            _rag_context(inp.hanketyyppi, inp.country or "FI", generation_id=inp.generation_id, vaihe=inp.hankkeen_vaihe)
         _LAST_TIMING["t2_rag_context_done"] = _time.monotonic()
     _LAST_TIMING["t3_before_generate_sections"] = _time.monotonic()
     try:
@@ -8497,7 +8608,7 @@ def generate_application(inp: ApplicationInput) -> str:
 
     print(f"[1/3] Haetaan RAG-konteksti ({inp.hanketyyppi}, maa={inp.country or 'FI'})…")
     rag_ctx, sources, warning_flag, prec_chunks, prec_sources, _ = \
-        _rag_context(inp.hanketyyppi, inp.country or "FI", generation_id=inp.generation_id)
+        _rag_context(inp.hanketyyppi, inp.country or "FI", generation_id=inp.generation_id, vaihe=inp.hankkeen_vaihe)
     print(f"      {len(rag_ctx.split())} sanaa, lähteet: {[s['display'] for s in sources]}")
     if warning_flag:
         print("      ⚠️  RAG_WARN: rajallinen lähdeaineisto")
