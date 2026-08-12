@@ -153,9 +153,21 @@ def unlock_next_phase(
     completion_type: "generated" | "skipped"
     Palauttaa päivitetyn phase_status-dictin.
 
-    (Ei muutettu tässä PR:ssä -- ei koskaan sisältänyt kovakoodattua
-    vaihemäärärajaa, joten yleistys ei koskenut tätä funktiota.)
+    completed_phase must be within [1, get_max_phase(hanketyyppi)] to have
+    any effect -- out-of-range values are silently ignored (same no-op
+    convention skip_phases() already uses for its own out-of-range case),
+    not an error. Added 2026-08-12 (P3-2) -- this function previously had
+    no bound at all, flagged during P3-1's self-testing as a pre-existing
+    gap (confirmed identical old-vs-new behaviour at the time, so not fixed
+    there) and closed here per explicit instruction. check_phase_allowed()
+    already blocks *requesting* phase 4/5 for non-SMR hanketyyppi, so this
+    is defense in depth at the data-write layer, not the only thing
+    preventing it.
     """
+    max_phase = get_max_phase(hanketyyppi)
+    if not (1 <= completed_phase <= max_phase):
+        return get_phase_status(session_id, hanketyyppi)
+
     with _lock:
         data = _load()
         if session_id not in data:

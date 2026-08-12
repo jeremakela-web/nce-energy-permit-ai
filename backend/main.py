@@ -2247,6 +2247,8 @@ try:
         get_phase_status as _get_phase_status,
         unlock_next_phase as _unlock_next_phase,
         skip_phases as _skip_phases,
+        get_max_phase as _get_max_phase,
+        PHASE_NAMES as _PHASE_NAMES,
     )
     _PHASE_LOCK_OK = PHASE_LOCK_ENABLED
 except Exception as _pl_err:
@@ -2346,11 +2348,15 @@ async def phase_status(
 ):
     """Palauttaa vaiheen tilan sessiolle ja hanketyypille."""
     if not _PHASE_LOCK_OK:
-        # Phase lock disabled (demo mode) — all phases open, signal frontend to skip locks
+        # Phase lock disabled (demo mode) — all phases open, signal frontend to skip locks.
+        # Derived from phase_lock.py (2026-08-12, P3-2) instead of a hand-copied
+        # literal, so this stays correct per-hanketyyppi instead of silently
+        # capping everyone at 3 regardless of what phase_lock.py now supports.
+        # hanketyyppi is a required Query(...) param, always populated here
+        max_phase = _get_max_phase(hanketyyppi)
         return JSONResponse({"completed_phase": 0, "next_phase": 1, "phase_lock_disabled": True, "phases": [
-            {"name": "esiselvitys",  "phase": 1, "state": "active"},
-            {"name": "lupavaihe",    "phase": 2, "state": "active"},
-            {"name": "rakentaminen", "phase": 3, "state": "active"},
+            {"name": _PHASE_NAMES[n], "phase": n, "state": "active"}
+            for n in range(1, max_phase + 1)
         ]})
     if not session_id or not hanketyyppi:
         raise HTTPException(status_code=400, detail="session_id ja hanketyyppi vaaditaan")
@@ -2360,7 +2366,8 @@ async def phase_status(
 class CompletePhaseRequest(BaseModel):
     session_id:  str
     hanketyyppi: str
-    phase:       int   # 1 | 2 | 3
+    phase:       int   # 1..N, N = phase_lock.get_max_phase(hanketyyppi) — 3 for
+                        # everyone except SMR (5), see phase_lock.py
 
 
 @app.post("/api/complete-phase")
@@ -2369,8 +2376,14 @@ async def complete_phase(request: Request, req: CompletePhaseRequest):
     """Merkitsee vaiheen valmiiksi ja avaa seuraavan."""
     if not _PHASE_LOCK_OK:
         return JSONResponse({"ok": True, "next_phase": req.phase + 1})
-    if req.phase not in (1, 2, 3):
-        raise HTTPException(status_code=400, detail="phase oltava 1, 2 tai 3")
+    # 2026-08-12 (P3-2): generalized from a hardcoded `not in (1, 2, 3)` --
+    # that literal would have silently blocked SMR from ever completing
+    # phase 4/5 through the real API even after phase_lock.py itself (P3-1)
+    # already supports it. Bound is per-hanketyyppi now, same as everywhere
+    # else in this sequence.
+    max_phase = _get_max_phase(req.hanketyyppi)
+    if req.phase < 1 or req.phase > max_phase:
+        raise HTTPException(status_code=400, detail=f"phase oltava 1-{max_phase} tälle hanketyypille")
     status = _unlock_next_phase(req.session_id, req.hanketyyppi, req.phase, "generated")
     return JSONResponse({"ok": True, **status})
 
@@ -2378,7 +2391,8 @@ async def complete_phase(request: Request, req: CompletePhaseRequest):
 class SkipPhaseRequest(BaseModel):
     session_id:         str
     hanketyyppi:        str
-    skip_through_phase: int   # 1 | 2 | 3  — merkitsee vaiheet 1..N ohitetuiksi
+    skip_through_phase: int   # 1..N, N = phase_lock.get_max_phase(hanketyyppi) —
+                               # merkitsee vaiheet 1..N ohitetuiksi
 
 
 @app.post("/api/skip-phase")
@@ -2387,8 +2401,10 @@ async def skip_phase(request: Request, req: SkipPhaseRequest):
     """Merkitsee aiemmat vaiheet 'skipped' (asiakas liittyy kesken matkan)."""
     if not _PHASE_LOCK_OK:
         return JSONResponse({"ok": True, "next_phase": req.skip_through_phase + 1})
-    if req.skip_through_phase not in (1, 2, 3):
-        raise HTTPException(status_code=400, detail="skip_through_phase oltava 1, 2 tai 3")
+    # Same generalization/reasoning as /api/complete-phase above.
+    max_phase = _get_max_phase(req.hanketyyppi)
+    if req.skip_through_phase < 1 or req.skip_through_phase > max_phase:
+        raise HTTPException(status_code=400, detail=f"skip_through_phase oltava 1-{max_phase} tälle hanketyypille")
     status = _skip_phases(req.session_id, req.hanketyyppi, req.skip_through_phase)
     return JSONResponse({"ok": True, **status})
 
