@@ -2431,6 +2431,45 @@ _HANKE_CFG = {
 from source_policy import is_chunk_relevant as _is_chunk_relevant
 import retrieval_trace as _retrieval_trace
 
+def _apply_source_cap(
+    candidates: list[tuple],
+    top_n: int,
+    cap: int,
+) -> list[tuple]:
+    """Per-source cap with backfill (2026-08-12, coverage remediation ranking
+    fix). `candidates` is a list of tuples whose first element is distance
+    (ascending = more relevant) and last element is the source id; any middle
+    elements are carried through unchanged. Returns at most `top_n` tuples.
+
+    See _rag_context()'s call site for the full reasoning on cap=8. Extracted
+    as its own function so it's directly unit-testable, independent of the
+    embedding/ChromaDB machinery around it.
+
+    Fixes crowding-out (one oversized source taking most of the slots), not
+    sparsity (if the candidate pool itself only has a few distinct sources,
+    this cannot manufacture more). A no-op whenever len(candidates) <= top_n.
+    """
+    ordered = sorted(candidates, key=lambda x: x[0])
+    selected: list[tuple] = []
+    per_source_count: dict[str, int] = {}
+    deferred: list[tuple] = []
+    for cand in ordered:
+        if len(selected) >= top_n:
+            break
+        src = cand[-1]
+        if per_source_count.get(src, 0) < cap:
+            selected.append(cand)
+            per_source_count[src] = per_source_count.get(src, 0) + 1
+        else:
+            deferred.append(cand)
+    if len(selected) < top_n:
+        for cand in deferred:
+            if len(selected) >= top_n:
+                break
+            selected.append(cand)
+    return selected
+
+
 def _rag_context(
     hanketyyppi: str,
     country: str = "FI",
@@ -2479,6 +2518,7 @@ def _rag_context(
         all_distances:   list[float]     = []
         all_chunk_ids:   list[str]       = []
         all_source_types: list[str]      = []
+        all_source_ids:  list[str]       = []  # src_id per chunk, parallel to all_docs — used by the per-source cap below
         all_source_meta: dict[str, dict] = {}  # src_id → {display, url}
 
         def _collect(results: dict, allowed_countries=None) -> None:
@@ -2508,6 +2548,7 @@ def _rag_context(
                     # Use meta["source"] as dedup key so all chunks from the same
                     # document collapse into one source entry (fixes caruna repeating)
                     src_id = _src_name or re.sub(r"[_-]\d+$", "", id_)
+                    all_source_ids.append(src_id)
                     if src_id not in all_source_meta:
                         all_source_meta[src_id] = {
                             "display": _src_name or src_id,
@@ -2562,14 +2603,28 @@ def _rag_context(
         # Top-50 keeps the most relevant subset, matching what Claude can attend to effectively.
         _top_n_ctx = max(50, n_per_query * 20)
         if len(all_docs) > _top_n_ctx:
-            _dist_doc = sorted(
-                zip(all_distances, all_docs, all_chunk_ids, all_source_types),
-                key=lambda x: x[0],
+            # Per-source cap (2026-08-12, coverage remediation ranking fix): a
+            # pure global sort let one oversized document (e.g. Poland's
+            # 205-chunk energy-law statute, Norway's 463-chunk statnett_nvf_2025,
+            # Sweden's 531-chunk national energy/climate plan) crowd out
+            # smaller, correctly-tagged, genuinely on-topic sources -- up to
+            # 84% of a real top-50 window from a single document in the worst
+            # cases found. CAP=8 reasoning (real corpus stats, 2026-08-11):
+            # median source size across the whole corpus is 6 chunks, 58.4% of
+            # all 226 sources have <=8 chunks (fully represented, zero
+            # truncation, under this cap) -- cap=8 targets exactly the small
+            # minority of oversized outliers (39 sources >50 chunks, 23 >100)
+            # without touching normally-sized sources at all. See
+            # _apply_source_cap()'s docstring for what this does and doesn't fix.
+            _selected = _apply_source_cap(
+                list(zip(all_distances, all_docs, all_chunk_ids, all_source_types, all_source_ids)),
+                top_n=_top_n_ctx,
+                cap=8,
             )
-            all_distances    = [p[0] for p in _dist_doc[:_top_n_ctx]]
-            all_docs         = [p[1] for p in _dist_doc[:_top_n_ctx]]
-            all_chunk_ids    = [p[2] for p in _dist_doc[:_top_n_ctx]]
-            all_source_types = [p[3] for p in _dist_doc[:_top_n_ctx]]
+            all_distances    = [p[0] for p in _selected]
+            all_docs         = [p[1] for p in _selected]
+            all_chunk_ids    = [p[2] for p in _selected]
+            all_source_types = [p[3] for p in _selected]
 
         # ── Task 2: RAG confidence check ─────────────────────────────────────
         chunks_returned = len(all_docs)
