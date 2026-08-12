@@ -1,7 +1,20 @@
 """
 Phase-Lock logiikka NCE Permit AI:lle.
 
-Järjestys: Esiselvitys (1) → Lupavaihe (2) → Rakentamisvaihe (3)
+Historiallinen (ja edelleen oletusarvoinen) järjestys jokaiselle hanketyypille:
+Esiselvitys (1) -> Lupavaihe (2) -> Rakentamisvaihe (3)
+
+Vaihemäärä on nyt hanketyyppikohtainen ominaisuus (2026-08-12, Priority 3
+-arkkitehtuurityö, Path B hyväksytty) sen sijaan että se olisi kovakoodattu
+kaikille yhteinen luku 3 -- katso HANKETYYPPI_PHASE_COUNT alla. Sama
+periaate/muoto kuin source_policy.py:n SOURCE_HANKETYYPPI_TAG:illa: yksi
+dict, oletusarvo (3) pätee kaikille joita ei ole erikseen listattu, joten
+tämä muutos on puhtaasti additiivinen -- yhdenkään olemassa olevan
+hanketyypin käyttäytyminen ei muutu millään tavalla. Vain SMR saa toistaiseksi
+laajennetun 5-vaiheisen mallin (vaihe 4 = käyttölupa, vaihe 5 = purku); sisältö
+näille uusille vaiheille (generate_application.py:n _PHASE_INSTRUCTIONS) on
+oma, erillinen, sisällöllisesti katselmoitava jatko-PR (P3-3b), ei tässä.
+
 Tallennus: ~/bess_tool/backend/phase_sessions.json
 """
 from __future__ import annotations
@@ -21,14 +34,50 @@ _SESSIONS_FILE = os.path.normpath(_SESSIONS_FILE)
 
 _lock = threading.Lock()
 
+# Hanketyyppikohtainen vaihemäärä. Oletusarvo (DEFAULT_PHASE_COUNT = 3) pätee
+# jokaiselle hanketyypille jota ei ole erikseen listattu tässä -- identtinen
+# käyttäytyminen kuin ennen tätä muutosta. Lisää tähän vain kun kyseiselle
+# hanketyypille on oikeasti olemassa (tai suunnitteilla, hyväksytysti) reaalista
+# sisältöä myöhemmille vaiheille -- ei speksautetusti "koska voisi joskus".
+HANKETYYPPI_PHASE_COUNT: dict[str, int] = {
+    "SMR": 5,
+}
+DEFAULT_PHASE_COUNT = 3
+
+
+def get_max_phase(hanketyyppi: str) -> int:
+    """Palauttaa hanketyypin käytössä olevan vaihemäärän. Oletus 3."""
+    return HANKETYYPPI_PHASE_COUNT.get(hanketyyppi, DEFAULT_PHASE_COUNT)
+
+
 PHASE_ORDER = {
-    "esiselvitys":   1,
-    "lupavaihe":     2,
-    "rakentaminen":  3,
+    "esiselvitys":     1,
+    "lupavaihe":       2,
+    "rakentaminen":    3,
     "rakentamisvaihe": 3,  # alias
+    "kayttolupa":      4,  # käyttölupa -- vain SMR toistaiseksi (ks. HANKETYYPPI_PHASE_COUNT)
+    "purku":           5,  # purku/käytöstäpoisto+jätehuolto -- vain SMR toistaiseksi
 }
 
-PHASE_NAMES = {1: "esiselvitys", 2: "lupavaihe", 3: "rakentaminen"}
+PHASE_NAMES = {
+    1: "esiselvitys",
+    2: "lupavaihe",
+    3: "rakentaminen",
+    4: "kayttolupa",
+    5: "purku",
+}
+
+# Peräkkäisyyden lukitusviestit, avaimena pyydetty vaihenumero. Säilyttää
+# TÄSMÄLLEEN alkuperäisen suomenkielisen sanamuodon vaiheille 2 ja 3 (nämä
+# ovat käsin kirjoitettuja, eivät mekaanisesti PHASE_NAMES:sta johdettavissa
+# olevia partitiivimuotoja) -- vaiheille 4 ja 5 uusi, johdonmukainen
+# sanamuoto, koska näille ei ole aiempaa merkkijonoa säilytettävänä.
+_PHASE_UNLOCK_ERROR: dict[int, str] = {
+    2: "Suorita esiselvitys ensin ennen lupavaihetta.",
+    3: "Suorita lupavaihe ensin ennen rakentamisvaihetta.",
+    4: "Suorita rakentamisvaihe ensin ennen käyttölupavaihetta.",
+    5: "Suorita käyttölupavaihe ensin ennen purkuvaihetta.",
+}
 
 
 def _load() -> dict:
@@ -54,7 +103,8 @@ def get_phase_status(session_id: str, hanketyyppi: str) -> dict:
 
     Palautus:
         {
-            "completed_phase": int,   # 0 = ei mitään, 1 = esiselvitys, 2 = lupavaihe, 3 = rakentaminen
+            "completed_phase": int,   # 0 = ei mitään, 1 = esiselvitys, 2 = lupavaihe,
+                                       # 3 = rakentaminen, (SMR: 4 = kayttolupa, 5 = purku)
             "completed_name":  str,
             "next_phase":      int,
             "phases": [
@@ -70,10 +120,11 @@ def get_phase_status(session_id: str, hanketyyppi: str) -> dict:
     hanke_data = sessions.get(hanketyyppi, {})
     completed = hanke_data.get("completed_phase", 0)
     phase_details = hanke_data.get("phases", {})
-    next_phase = completed + 1 if completed < 3 else 0
+    max_phase = get_max_phase(hanketyyppi)
+    next_phase = completed + 1 if completed < max_phase else 0
 
     phases = []
-    for n in (1, 2, 3):
+    for n in range(1, max_phase + 1):
         if n <= completed:
             state = "done"
         elif n == completed + 1:
@@ -101,6 +152,9 @@ def unlock_next_phase(
     Merkitsee vaiheen valmiiksi. Päivittää vain jos uusi vaihe on suurempi.
     completion_type: "generated" | "skipped"
     Palauttaa päivitetyn phase_status-dictin.
+
+    (Ei muutettu tässä PR:ssä -- ei koskaan sisältänyt kovakoodattua
+    vaihemäärärajaa, joten yleistys ei koskenut tätä funktiota.)
     """
     with _lock:
         data = _load()
@@ -127,7 +181,8 @@ def skip_phases(session_id: str, hanketyyppi: str, skip_through_phase: int) -> d
     Ei ylikirjoita jo 'generated'-tilassa olevia vaiheita.
     Palauttaa päivitetyn phase_status-dictin.
     """
-    if skip_through_phase not in (1, 2, 3):
+    max_phase = get_max_phase(hanketyyppi)
+    if skip_through_phase not in range(1, max_phase + 1):
         return get_phase_status(session_id, hanketyyppi)
 
     with _lock:
@@ -167,11 +222,16 @@ def check_phase_allowed(session_id: str, hanketyyppi: str, requested_vaihe: str)
         # Esiselvitys — aina sallittu
         return True, ""
 
+    max_phase = get_max_phase(hanketyyppi)
+    if requested_n > max_phase:
+        # Vaihe on olemassa PHASE_ORDER:issa (esim. "kayttolupa" jollekin
+        # muulle kuin SMR:lle) mutta ei käytössä tälle hanketyypille --
+        # eri tilanne kuin tuntematon vaihenimi yllä, eri viesti.
+        return False, f"Vaihe '{PHASE_NAMES.get(requested_n, requested_vaihe)}' ei ole käytössä tälle hanketyypille."
+
     status = get_phase_status(session_id, hanketyyppi)
     completed = status["completed_phase"]
 
-    if requested_n == 2 and completed < 1:
-        return False, "Suorita esiselvitys ensin ennen lupavaihetta."
-    if requested_n == 3 and completed < 2:
-        return False, "Suorita lupavaihe ensin ennen rakentamisvaihetta."
+    if completed < requested_n - 1:
+        return False, _PHASE_UNLOCK_ERROR.get(requested_n, "Suorita edellinen vaihe ensin.")
     return True, ""
