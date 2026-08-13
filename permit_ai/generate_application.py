@@ -4586,6 +4586,51 @@ _PHASE_INSTRUCTIONS: dict[str, str] = {
         "- Käytä sävyä: 'toteutetaan', 'tarkastetaan', 'otetaan käyttöön', 'varmistetaan'\n"
         "- Viittaa myönnettyyn rakentamislupaan ja sen ehtoihin"
     ),
+    # SMR later-lifecycle phases (2026-08-12, P3-3b -- CONTENT PENDING
+    # NATIVE-FINNISH/SUBJECT-MATTER REVIEWER SIGN-OFF, per 2026-08-11
+    # planning; NOT yet approved to ship, see this PR's commit message).
+    # Every claim below traces to a specific STUK document/section
+    # actually verified this session (real fetch of stuklex.fi and
+    # ohjeisto.stuk.fi, real chunk sampling of the already-ingested
+    # YVL_A.1 -- see the TASO-2 coverage report, 2026-08-11/12) --
+    # deliberately hedged everywhere the real source coverage is thin or
+    # SMR-specific detail doesn't exist yet, matching the same honest-
+    # flagging discipline as every prior sourcing round this remediation
+    # (maatalous/vesivoima, hybrid co-location).
+    "kayttolupa": (
+        "VAIHEEN KIRJOITUSOHJE — KÄYTTÖLUPAVAIHE (SMR):\n"
+        "- Rakentamislupa [YEL 990/1987 § 18] on jo myönnetty; kyse on käyttöluvasta [YEL § 20]\n"
+        "- Käytä sävyä: 'haetaan käyttölupaa', 'osoitetaan', 'todennetaan', 'raportoidaan'\n"
+        "- Mainitse STUK YVL A.1 luku 3.9 (käyttöluvan uusiminen, määräaikainen "
+        "turvallisuusarvio) ja luku 4.4 (käyttölupahakemuksen käsittely STUK:ssa)\n"
+        "- Mainitse koekäyttövaihe (commissioning) ennen kaupallista tuotantoa\n"
+        "- Älä väitä käyttöluvan olevan jo myönnetty ellei hankekohtaisesti vahvistettu — "
+        "käytä muotoa '[TÄYDENNETTÄVÄ – käyttöluvan myöntämispäivämäärä]'\n"
+        "- Älä väitä SMR-erityisiä (esim. porrastettuja) käyttölupavaatimuksia olevan "
+        "olemassa ellei RAG-lähteistössä nimenomaisesti mainita — STUK ei ole toistaiseksi "
+        "julkaissut erillistä SMR-kohtaista ohjetta tälle vaiheelle"
+    ),
+    "purku": (
+        "VAIHEEN KIRJOITUSOHJE — PURKUVAIHE (KÄYTÖSTÄPOISTO + JÄTEHUOLTO, SMR):\n"
+        "- Kyse on ydinlaitoksen käytöstäpoistosta ja jätehuollosta [YVL A.1 luku 3.10; YVL D.4]\n"
+        "- Käytä sävyä: 'puretaan', 'käsitellään', 'luokitellaan', 'vapautetaan valvonnasta'\n"
+        "- Mainitse STUK YVL D.4 (matala- ja keskiaktiivisten ydinjätteiden käsittely ja "
+        "käytöstäpoisto, 15.12.2019) — annosrajat 0,1 mSv/v normaalikäytössä, "
+        "0,01 mSv/v purkutilanteessa\n"
+        "- Käytetyn ydinpolttoaineen loppusijoitus ON ERI ASIA kuin matala-/keskiaktiivisen "
+        "jätteen käsittely — älä sekoita näitä; viittaa YVL D.5:een (loppusijoitus) ja "
+        "YVL D.7:ään (vapautumisesteet) vain nimellä, älä keksi niiden sisältöä yksityis"
+        "kohtaisesti — RAG-lähteistössä ei toistaiseksi ole näiden ohjeiden tekstiä\n"
+        "- POSIVA: vastaa TÄLLÄ HETKELLÄ vain Loviisan ja Olkiluodon voimalaitosten "
+        "käytetystä polttoaineesta (Fortumin ja TVO:n omistama yhtiö) — ÄLÄ VÄITÄ Posivan "
+        "automaattisesti vastaavan tämän hankkeen jätehuollosta; SMR-hankkeen pääsy Posivan "
+        "loppusijoituslaitokseen ei ole vahvistettu — käytä muotoa "
+        "'[TÄYDENNETTÄVÄ – jätehuoltoratkaisu, mahdollinen Posiva-yhteistyö tai erillinen "
+        "ratkaisu]'\n"
+        "- IAEA SSR-5 (Disposal of Radioactive Waste) on kansainvälinen taustastandardi "
+        "jonka periaatteet STUK:n YVL D -sarja toteuttaa Suomen lainsäädännössä — älä "
+        "esitä SSR-5:ttä itsenäisenä Suomessa sitovana säädöksenä"
+    ),
 }
 # Alias so both "Rakentaminen" and "Rakentamisvaihe" (frontend values) resolve correctly
 _PHASE_INSTRUCTIONS["rakentamisvaihe"] = _PHASE_INSTRUCTIONS["rakentaminen"]
