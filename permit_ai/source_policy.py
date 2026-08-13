@@ -51,6 +51,13 @@ DOC_TYPE_MAP: dict[str, str] = {
     # distinction stays visible in doc_type, not just the source label.
     "ruokavirasto_maatalouden_investointituet": "viranomaisohje",
     "nitraattiasetus_1250_2014_valvontaohje":   "viranomaisohje",
+    # Added 2026-08-13: the two sources previously logged as "permanently
+    # unlocated" (search rounds 2026-08-10), located by the user directly
+    # on Finlex, retrieved via Finlex's own Open Data API. Both are
+    # ministerial/government asetukset -- "laki" per the same convention
+    # as every other decree in this block.
+    "mmm_606_2023_ymparistonsuojeluvaatimukset": "laki",
+    "vna_319_2010_patoturvallisuudesta":         "laki",
 }
 
 # ── Hanketyyppi tag map ───────────────────────────────────────────────────────
@@ -591,6 +598,20 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "de_baugb_35_batteriespeicher_privilegierung":   "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
     "da_energinet_samplacerede_overplantede_krav":   "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
     "lv_mk_821_hibridatlauja":                       "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,hybridi",
+    # Priority-2 closing sources (2026-08-13): the two regulations logged as
+    # "permanently unlocated" in the manual-sourcing-backlog memory, found
+    # by the user directly on Finlex and retrieved via Finlex's Open Data
+    # API. MMM 606/2023 -- confirmed via real chunk text (livestock manure
+    # storage, exercise-area/silage-effluent structural requirements) --
+    # maatalous only, no water/dam content anywhere in the real text. VNa
+    # 319/2010 -- confirmed the direct implementing decree for the
+    # already-tagged patoturvallisuuslaki_494_2009 (dam classification,
+    # hydrological sizing, monitoring/safety-plan requirements) --
+    # vesivoima only, matching its companion Act exactly; no agriculture
+    # content in the real text despite dams sometimes serving agricultural
+    # irrigation, this specific decree's content doesn't touch that.
+    "mmm_606_2023_ymparistonsuojeluvaatimukset": "maatalous",
+    "vna_319_2010_patoturvallisuudesta":         "vesivoima",
 }
 
 
