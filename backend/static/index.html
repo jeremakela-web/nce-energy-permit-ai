@@ -2186,6 +2186,8 @@ const TRANSLATIONS = {
     opt_vaihe_esiselvitys: 'Esiselvitys',
     opt_vaihe_lupavaihe:   'Lupavaihe',
     opt_vaihe_rakentaminen:'Rakentaminen',
+    opt_vaihe_kayttolupa:  'Käyttölupa',
+    opt_vaihe_purku:       'Purku',
     opt_vir_valitse:  '— Valitse —',
     opt_vir_kunta:    'Kunta (rakentamislupa)',
     opt_vir_ely:      'ELY-keskus (YVA)',
@@ -2199,6 +2201,8 @@ const TRANSLATIONS = {
     phase_esiselvitys:    'Esiselvitysvaihe',
     phase_lupavaihe:      'Lupavaihe',
     phase_rakentaminen:   'Rakentamisvaihe',
+    phase_kayttolupa:     'Käyttölupavaihe',
+    phase_purku:          'Purkuvaihe',
     permits_viranomaiset: 'Viranomaiset &amp; luvat',
     permits_luvat:        'Tarvittavat luvat:',
     // Map/report loading
@@ -2608,6 +2612,8 @@ const TRANSLATIONS = {
     opt_vaihe_esiselvitys: 'Pre-study',
     opt_vaihe_lupavaihe:   'Permit phase',
     opt_vaihe_rakentaminen:'Construction',
+    opt_vaihe_kayttolupa:  'Operating licence',
+    opt_vaihe_purku:       'Decommissioning',
     opt_vir_valitse:  '— Select —',
     opt_vir_kunta:    'Municipality (construction permit)',
     opt_vir_ely:      'ELY Centre (EIA)',
@@ -2621,6 +2627,8 @@ const TRANSLATIONS = {
     phase_esiselvitys:    'Pre-study phase',
     phase_lupavaihe:      'Permit phase',
     phase_rakentaminen:   'Construction phase',
+    phase_kayttolupa:     'Operating licence phase',
+    phase_purku:          'Decommissioning phase',
     permits_viranomaiset: 'Authorities &amp; permits',
     permits_luvat:        'Required permits:',
     btn_map_loading:  'Loading…',
@@ -6456,6 +6464,25 @@ function _VAIHE_OPTS() {
     { value: 'Rakentaminen', label: t('opt_vaihe_rakentaminen') },
   ];
 }
+// Later phases (2026-08-13, P3-4) -- deliberately NOT added to _VAIHE_OPTS()
+// above, which stays exactly as-is for every hanketyyppi's initial render
+// (zero flash, byte-identical to before this change for the 13 hanketyyppi
+// that don't have these phases). _applyVaiheLock() adds these <option>
+// elements dynamically, only when the real /api/phase-status response for
+// the current hanketyyppi actually includes them -- see that function.
+//
+// Option `value` MUST stay pure ASCII ('Kayttolupa'/'Purku', no ä/ö) even
+// though the displayed label is correctly accented Finnish -- phase_lock.py's
+// PHASE_ORDER keys are ASCII-only ("kayttolupa"/"purku") and the backend
+// does requested_vaihe.lower() before the PHASE_ORDER lookup. 'Käyttölupa'.
+// lower() produces 'käyttölupa' (WITH ä/ö), which would NOT match the
+// ASCII key -- silently falling through to "unrecognized vaihe, allowed"
+// and bypassing phase-gating entirely with no visible error. Caught during
+// P3-4 scoping (2026-08-12), not discovered live.
+const _LATER_PHASE_OPTS = {
+  kayttolupa: { value: 'Kayttolupa', i18nKey: 'opt_vaihe_kayttolupa' },
+  purku:      { value: 'Purku',      i18nKey: 'opt_vaihe_purku' },
+};
 // Country-specific authority options. Value is a stable FI-based key; label is translated.
 const _COUNTRY_VIR_OPTS = {
   FI: () => [
@@ -7112,7 +7139,7 @@ async function _markPhaseComplete(hanketyyppi, phase) {
 }
 
 async function doSkipPhase(hanketyyppi, skipThroughPhase) {
-  const phaseLabels = { 1: 'esiselvitys', 2: 'lupavaihe', 3: 'rakentaminen' };
+  const phaseLabels = { 1: 'esiselvitys', 2: 'lupavaihe', 3: 'rakentaminen', 4: 'käyttölupa', 5: 'purku' };
   const label = phaseLabels[skipThroughPhase] || skipThroughPhase;
   if (!confirm(`Merkitäänkö vaihe "${label}" ohitetuksi (suoritettu muualla)?\nSeuraava vaihe avautuu välittömästi.`)) return;
   try {
@@ -7128,7 +7155,7 @@ async function doSkipPhase(hanketyyppi, skipThroughPhase) {
     _applyVaiheLock(hanketyyppi, d);
     // Update the phase dropdown to point to the next available phase
     const sel = document.getElementById('gf-vaihe');
-    const nextName = { 1: 'Lupavaihe', 2: 'Rakentaminen' }[skipThroughPhase];
+    const nextName = { 1: 'Lupavaihe', 2: 'Rakentaminen', 3: 'Kayttolupa', 4: 'Purku' }[skipThroughPhase];
     if (sel && nextName) sel.value = nextName;
   } catch (_) {}
 }
@@ -7137,7 +7164,11 @@ function _renderVaihepolku(hanketyyppi, status) {
   const el = document.getElementById('phase-lock-bar');
   // Don't render the bar in demo / phase-lock-disabled mode
   if (!el || !status || status.phase_lock_disabled) return;
-  const labels = { esiselvitys: t('opt_vaihe_esiselvitys'), lupavaihe: t('opt_vaihe_lupavaihe'), rakentaminen: t('opt_vaihe_rakentaminen') };
+  const labels = {
+    esiselvitys: t('opt_vaihe_esiselvitys'), lupavaihe: t('opt_vaihe_lupavaihe'),
+    rakentaminen: t('opt_vaihe_rakentaminen'),
+    kayttolupa: t('opt_vaihe_kayttolupa'), purku: t('opt_vaihe_purku'),
+  };
   const icons  = { done: '✓', active: '●', locked: '🔒' };
   const html = status.phases.map((p, i) => {
     const isSkipped = p.state === 'done' && p.completion_type === 'skipped';
@@ -7145,7 +7176,10 @@ function _renderVaihepolku(hanketyyppi, status) {
     const icon = isSkipped ? '✓' : icons[p.state];
     const label = labels[p.name] || p.name;
     const suffix = isSkipped ? ' <span class="pl-skipped-label">ohitettu</span>' : '';
-    const sep = i < 2 ? '<span class="pl-sep">→</span>' : '';
+    // 2026-08-13 (P3-4): was hardcoded `i < 2`, correct only for a 3-item
+    // list -- silently dropped the separator between the 4th/5th items on
+    // SMR's 5-phase bar. Generalized to work for any phase-list length.
+    const sep = i < status.phases.length - 1 ? '<span class="pl-sep">→</span>' : '';
     return `<span class="${cls}" title="${p.name}">${icon} ${label}${suffix}</span>${sep}`;
   }).join('');
   el.innerHTML = html;
@@ -7162,7 +7196,7 @@ function _renderVaihepolku(hanketyyppi, status) {
       // Skip the previous phase(s) up to completed+1-1 = completed
       const skipTo = status.completed_phase; // skip through the last completed, making the active one available
       // Offer to skip the current active phase
-      const skipLabel = { esiselvitys: 'esiselvitys', lupavaihe: 'lupavaihe', rakentaminen: 'rakentaminen' }[activePhase.name] || activePhase.name;
+      const skipLabel = { esiselvitys: 'esiselvitys', lupavaihe: 'lupavaihe', rakentaminen: 'rakentaminen', kayttolupa: 'käyttölupa', purku: 'purku' }[activePhase.name] || activePhase.name;
       skipBar.innerHTML = `<a href="#" class="pl-skip-link" onclick="event.preventDefault();doSkipPhase('${hanketyyppi}',${activePhase.phase})">Ohita ${skipLabel} →</a>`;
       skipBar.style.display = 'block';
     } else if (activePhase && nextPhaseNum === 1) {
@@ -7181,7 +7215,30 @@ function _applyVaiheLock(hanketyyppi, status) {
   const sel = document.getElementById('gf-vaihe');
   if (!sel) return;
   const completed = status.completed_phase || 0;
-  const phaseNum = { 'Esiselvitys': 1, 'Lupavaihe': 2, 'Rakentaminen': 3 };
+  const phaseNum = { 'Esiselvitys': 1, 'Lupavaihe': 2, 'Rakentaminen': 3, 'Kayttolupa': 4, 'Purku': 5 };
+
+  // 2026-08-13 (P3-4): dynamically add/remove <option> elements for the
+  // later phases (kayttolupa/purku) based on the REAL /api/phase-status
+  // response for THIS hanketyyppi -- deliberately no hardcoded hanketyyppi
+  // check here. status.phases is the backend's own declared phase list
+  // (driven by phase_lock.py's HANKETYYPPI_PHASE_COUNT); if a later phase's
+  // name isn't in it, its <option> is removed (or never added), so every
+  // non-SMR hanketyyppi's dropdown stays byte-identical to before this change.
+  const declaredNames = new Set((status.phases || []).map(p => p.name));
+  for (const [name, cfg] of Object.entries(_LATER_PHASE_OPTS)) {
+    let opt = Array.from(sel.options).find(o => o.value === cfg.value);
+    if (declaredNames.has(name)) {
+      if (!opt) {
+        opt = document.createElement('option');
+        opt.value = cfg.value;
+        sel.appendChild(opt);
+      }
+      opt.text = t(cfg.i18nKey);
+    } else if (opt) {
+      sel.removeChild(opt);
+    }
+  }
+
   for (const opt of sel.options) {
     const n = phaseNum[opt.value] || 0;
     if (n > 0 && n > completed + 1) {
