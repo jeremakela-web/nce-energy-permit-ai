@@ -1209,8 +1209,13 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             )
             # Auto-complete phase when PDF is generated (no user click required)
             if _PHASE_LOCK_OK and req.session_id and req.hankkeen_vaihe:
+                # 2026-08-13: added kayttolupa/purku — this dict predates P3-2's
+                # generalization of the phase-lock endpoints and was missed then;
+                # without these, a real SMR kayttolupa/purku generation would
+                # complete fine but silently fail to auto-advance the phase lock.
                 _phase_num = {"esiselvitys": 1, "lupavaihe": 2, "rakentaminen": 3,
-                              "rakentamisvaihe": 3}.get(req.hankkeen_vaihe.lower().strip(), 0)
+                              "rakentamisvaihe": 3, "kayttolupa": 4, "purku": 5,
+                              }.get(req.hankkeen_vaihe.lower().strip(), 0)
                 if _phase_num:
                     _phase_status = _unlock_next_phase(
                         req.session_id, req.hanketyyppi, _phase_num, "generated"
@@ -1321,13 +1326,49 @@ async def arq_task_generate_permit(
     Sync blocking work (Claude API + PDF render) is off-loaded to
     asyncio.to_thread() so other ARQ jobs and FastAPI requests run freely.
     max_jobs=2 caps concurrent generations at 2 (prevents OOM on 512MB Render).
+
+    2026-08-13: the very first _proofread_store write used to sit OUTSIDE
+    this try/except (before it even started), unlike _bg_generate()'s
+    equivalent write below, which has always been inside its own try. That
+    gap was found while diagnosing a real production incident: SMR
+    kayttolupa/purku generations occasionally got stuck at status="pending"
+    forever, invisible to the client, with zero error surfaced anywhere.
+    The exact low-level trigger for the underlying KeyError was never
+    pinned down with certainty despite substantial investigation (real
+    production log forensics + 170+ local repro trials matching this
+    arq version) — but regardless of the trigger, a bare
+    `_proofread_store[job_id][...]` outside any exception handler is a
+    real defect: if it ever raises, for ANY reason, ARQ's own internal
+    job-failure handling silently swallows it into a Redis result blob
+    nothing in this app reads, and the job hangs forever from the
+    client's point of view. Moving the write inside try/except (mirroring
+    _bg_generate exactly) plus the setdefault() self-heal below closes
+    that failure mode unconditionally, independent of whatever the exact
+    trigger turns out to be.
     """
-    print(f"[arq] {job_id} START hanke={hanketyyppi} country={country}", flush=True)
-    _proofread_store[job_id]["status"] = "running"
-
-    inp = ApplicationInput(**inp_dict)
-
     try:
+        _pre_existing = job_id in _proofread_store
+        _proofread_store.setdefault(
+            job_id, {"status": "pending", "pdf_bytes": None, "error": None}
+        )
+        if not _pre_existing:
+            # This is the specific scenario the investigation couldn't fully
+            # reproduce: _proofread_store[job_id] not yet visible when the
+            # ARQ worker started this task, despite the HTTP handler writing
+            # it before enqueueing. Self-healed via setdefault() above so
+            # the job runs normally instead of dying silently — but log it
+            # loudly so a recurrence finally gives us forensic proof of the
+            # exact mechanism, instead of the silent hang this used to cause.
+            print(f"[arq] {job_id} WARNING: _proofread_store entry missing at "
+                  f"task start (self-healed, job proceeding normally) — this "
+                  f"is the dispatch race from the 2026-08-13 investigation; "
+                  f"if you see this, please flag it, it's the first direct "
+                  f"evidence of the actual trigger", flush=True)
+        _proofread_store[job_id]["status"] = "running"
+        print(f"[arq] {job_id} START hanke={hanketyyppi} country={country}", flush=True)
+
+        inp = ApplicationInput(**inp_dict)
+
         draft_bytes, sections, sources = await asyncio.to_thread(
             generate_application_draft, inp
         )
@@ -1353,10 +1394,15 @@ async def arq_task_generate_permit(
         )
 
         # Auto-complete phase
+        # 2026-08-13: added kayttolupa/purku — same fix as
+        # generate_application_endpoint()'s equivalent dict above (Thread
+        # dispatch path); this is the ARQ dispatch path's counterpart, found
+        # missing the same two entries during the same investigation.
         if _PHASE_LOCK_OK and session_id and hankkeen_vaihe:
             _phase_num = {
                 "esiselvitys": 1, "lupavaihe": 2,
                 "rakentaminen": 3, "rakentamisvaihe": 3,
+                "kayttolupa": 4, "purku": 5,
             }.get(hankkeen_vaihe.lower().strip(), 0)
             if _phase_num:
                 _phase_status = _unlock_next_phase(
