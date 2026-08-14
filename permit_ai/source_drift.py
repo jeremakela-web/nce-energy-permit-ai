@@ -362,6 +362,39 @@ def get_latest_drift_status() -> dict:
     }
 
 
+def get_prior_success_flags(sources: list[str]) -> dict[str, bool]:
+    """Read-only: for each of the given sources, whether it has EVER had a
+    successful (non-check_failed) result anywhere in its history so far.
+
+    Used by the weekly recurring check (see arq_task_source_drift_check in
+    backend/main.py, 2026-08-14) to tell a genuine regression (a source that
+    used to work and just started failing) apart from a source that has
+    simply never once succeeded (a domain-wide SSL misconfig, a long-dead
+    URL, etc.) — the latter is already a known, standing problem and
+    shouldn't re-alert on every single weekly run just for staying exactly
+    as broken as it's always been.
+
+    Safe to call AFTER check_all_sources() has already written this run's
+    rows: a source that fails in the current run never gets a content_hash
+    written for that row, so its "have I ever succeeded" answer is
+    identical whether this is checked before or after the current run —
+    only sources that are newly succeeding for the first time this run
+    would differ, and those aren't the ones this function is used for.
+    """
+    if not sources:
+        return {}
+    conn = _connect()
+    placeholders = ",".join("?" for _ in sources)
+    rows = conn.execute(
+        f"SELECT DISTINCT source FROM source_drift_check "
+        f"WHERE content_hash IS NOT NULL AND source IN ({placeholders})",
+        sources,
+    ).fetchall()
+    conn.close()
+    ever_succeeded = {r[0] for r in rows}
+    return {s: (s in ever_succeeded) for s in sources}
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # CLI (internal debugging)
 # ─────────────────────────────────────────────────────────────────────────────

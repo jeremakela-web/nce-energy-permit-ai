@@ -381,7 +381,18 @@ def _build_arq_worker(redis_settings):
         # 03:00 UTC: off-peak, well clear of the ~00:00 CET SDAC market close
         # that publishes next-day prices, and clear of typical daytime PDF-
         # generation load on this single-service instance.
-        cron_jobs=[cron(arq_task_refresh_entsoe_prices, hour={3}, minute={0})],
+        #
+        # Weekly source-drift sweep (2026-08-14) — see
+        # arq_task_source_drift_check above and permit_ai/source_drift.py.
+        # Sunday 03:00 UTC: same off-peak reasoning as the ENTSO-E job.
+        # Weekly (not daily) because regulatory source text realistically
+        # drifts on the order of weeks/months, not days — a daily full
+        # sweep would just write ~121 near-identical "unchanged" rows/day
+        # for no real benefit, see the 2026-08-13/14 investigation report.
+        cron_jobs=[
+            cron(arq_task_refresh_entsoe_prices, hour={3}, minute={0}),
+            cron(arq_task_source_drift_check, weekday='sun', hour={3}, minute={0}),
+        ],
         redis_settings=redis_settings,
         max_jobs=2,           # max 2 concurrent permit generations
         handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
@@ -1489,6 +1500,52 @@ async def arq_task_refresh_entsoe_prices(ctx: dict) -> None:
         print(f"[arq] entsoe-price-refresh OK — {len(ok)}/{len(summary['countries'])} countries refreshed: {ok}", flush=True)
     except Exception as exc:
         print(f"[arq] entsoe-price-refresh FAILED: {exc}", flush=True)
+
+
+async def arq_task_source_drift_check(ctx: dict) -> None:
+    """
+    ARQ weekly cron job (see cron_jobs= in _arq_startup below) — runs the
+    full source-drift sweep (permit_ai/source_drift.py) across every
+    checkable (source, url) pair (~121 as of 2026-08-14) and logs a
+    summary. source_drift.py has existed since PR #52 (admin-triggered
+    only by original design — no cron/worker previously called it, see
+    that module's own docstring) but was never actually wired to run on a
+    schedule until now. Confirmed safe to automate via the 2026-08-13/14
+    investigation: a full manual sweep took ~30s wall-clock, negligible
+    CPU, zero observed impact on the live process.
+
+    Failure classification avoids re-alerting on sources that have NEVER
+    once succeeded (e.g. a domain-wide SSL misconfig, a long-dead URL —
+    real examples found in that investigation's first full sweep): a
+    source only counts as a genuine regression if it has at least one
+    prior successful (non-check_failed) result in its history AND this
+    run's result is check_failed. A source with zero successful history
+    ever is still recorded in the DB (nothing hidden), just not flagged
+    as urgent — it's a known, standing problem, not new information.
+    """
+    print("[drift-cron] weekly sweep starting", flush=True)
+    try:
+        report = await _source_drift.check_all_sources()
+    except Exception as exc:
+        print(f"[drift-cron] sweep FAILED to run at all: {type(exc).__name__}: {exc}", flush=True)
+        return
+
+    changed = [r["source"] for r in report["results"] if r["status"] == "changed"]
+    failed = [r["source"] for r in report["results"] if r["status"] == "check_failed"]
+    prior_success = _source_drift.get_prior_success_flags(failed) if failed else {}
+    regressions = sorted(s for s in failed if prior_success.get(s))
+    known_unreachable = sorted(s for s in failed if not prior_success.get(s))
+
+    print(
+        f"[drift-cron] weekly check complete: {report['targets_checked']} sources checked, "
+        f"{len(changed)} newly changed, {len(regressions)} newly-broken (regressions), "
+        f"{len(known_unreachable)} known-unreachable (excluded_sourceless={report['excluded_sourceless_count']})",
+        flush=True,
+    )
+    if changed:
+        print(f"[drift-cron] CHANGED: {changed}", flush=True)
+    if regressions:
+        print(f"[drift-cron] REGRESSIONS (previously succeeded, now failing): {regressions}", flush=True)
 
 
 @app.get("/api/proofread/{job_id}")
