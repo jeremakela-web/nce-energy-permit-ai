@@ -333,6 +333,39 @@ LITHUANIA_SOURCES: list[dict] = [
             "paslaugos (VIAP) levy on all electricity consumers."
         ),
     },
+    # ── Gas systems installation rules (buildings) ────────────────────────────
+    {
+        "name": "lt_dujos_sistemu_pastatuose_taisykles",
+        # pagd.lrv.lt (PAGD's own site) blocks automated fetches with an active
+        # Cloudflare challenge — confirmed via direct curl/WebFetch 2026-08-16,
+        # see manual sourcing backlog. The document itself is linked from PAGD's
+        # "Lietuvos Respublikos energetikos ministro priimti teisės aktai" page
+        # and is hosted on e-seimas.lrs.lt, which fetches fine directly.
+        # NOTE: e-seimas's default /portal/legalAct/lt/TAD/{id}/asr view only
+        # returns the document's table-of-contents shell (clause numbers, no
+        # article text) — the real content loads via JS/AJAX per clause and is
+        # NOT present in that HTML. The /rs/legalact/TAD/{id}/ export view
+        # (Word-generated HTML) DOES contain the full real text — confirmed by
+        # direct extraction (21,884 words, real numbered articles) — and is the
+        # pattern used here.
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.416480/",
+        "type": "html",
+        "category": "gas_systems_building_code",
+        "description": (
+            "Dujų sistemų pastatuose įrengimo taisyklės (patvirtinta Lietuvos "
+            "Respublikos energetikos ministro 2012-01-02 įsakymu Nr. 1-2, "
+            "galiojanti redakcija nuo 2020-09-02). "
+            "Technical rules for gas system design and installation in buildings "
+            "with gas operating pressure up to 16 bar: building gas pipelines, "
+            "gas appliance installation (types A/B/C), combustion product removal "
+            "(chimneys/ventilation), gas cylinder equipment, and required air "
+            "supply for gas appliances sharing a room with extraction ventilation. "
+            "Relevant to buildings with gas heating/appliances (residential, "
+            "commercial, industrial, agricultural, data centre backup systems) — "
+            "not applicable to BESS, wind, solar or SMR projects, which do not "
+            "involve building gas systems."
+        ),
+    },
     # ── BESS fire safety ──────────────────────────────────────────────────────
     {
         "name": "lt_priesgaisrines_saugos_taisykles",

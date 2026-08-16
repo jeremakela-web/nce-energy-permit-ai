@@ -155,6 +155,12 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "lt_vert_vejo_energetika":                       "tuulivoima_maa,tuulivoima_meri",
     # BESS fire safety — BESS and datakeskus, no wind/solar -- does NOT qualify
     "lt_priesgaisrines_saugos_taisykles":            "BESS,datakeskus",
+    # Gas systems installation rules (buildings) — building-code gas piping/appliance
+    # safety, sourced via pagd.lrv.lt's Ministry of Energy acts list. Not applicable
+    # to BESS/wind/solar/SMR/hydro (no gas systems involved) -- deliberately excluded
+    # from those to avoid contamination; only building types that plausibly install
+    # gas heating/appliances qualify.
+    "lt_dujos_sistemu_pastatuose_taisykles":         "asuinrakennus,liikerakennus,teollisuus,maatalous,datakeskus",
     # EIA law — all energy projects requiring PAV (BESS, wind, solar, SMR)
     "lt_pav_istatymas":                              "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,hybridi",
     "lt_pav_kategoriju_sarasas":                     "BESS,tuulivoima_maa,tuulivoima_meri,aurinkovoima,SMR,hybridi",
