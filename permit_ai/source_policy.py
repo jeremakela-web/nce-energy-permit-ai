@@ -162,6 +162,21 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "boverket_rise_bess_brandsakerhet":              "BESS,datakeskus",
     # DA — BESS fire safety (Beredskabsstyrelsen 2023 vejledning + DBI gap analysis 2025)
     "beredskabsstyrelsen_dbi_bess_brandsikkerhed":   "BESS,datakeskus",
+    # DA — real full-text law ingestion via retsinformation.dk ELI endpoint,
+    # replacing 9 previously-wrong _COUNTRY_LUVAT["DA"] citations (see
+    # backend/denmark_ingestion.py). Tags mirror exactly which DA hanketyyppi
+    # cite each law in _COUNTRY_LUVAT.
+    "da_undergrundsloven":            "SMR,smr_bess,smr_da,egs",
+    "da_miljovurderingsloven":        "SMR,BESS,tuulivoima_maa,aurinkovoima,smr_bess,vesivoima,tuulivoima_meri,teollisuus,smr_da,offshore_wind",
+    "da_stralebeskyttelsesloven":     "SMR,smr_bess,smr_da",
+    "da_kystbeskyttelsesloven":       "SMR,smr_bess,tuulivoima_meri,offshore_wind",
+    "da_byggeloven":                  "SMR,BESS,tuulivoima_maa,aurinkovoima,smr_bess,vesivoima,datakeskus,teollisuus,asuinrakennus,maatalous,liikerakennus,smr_da,egs",
+    "da_planloven":                   "SMR,BESS,tuulivoima_maa,aurinkovoima,smr_bess,datakeskus,teollisuus,asuinrakennus,maatalous,liikerakennus,smr_da,egs",
+    "da_miljobeskyttelsesloven":      "BESS,tuulivoima_maa,vesivoima,tuulivoima_meri,datakeskus,teollisuus,offshore_wind,egs",
+    "da_elforsyningsloven":           "BESS,tuulivoima_maa,aurinkovoima,smr_bess,vesivoima,tuulivoima_meri,datakeskus,offshore_wind",
+    "da_vandforsyningsloven":         "vesivoima",
+    "da_ve_loven":                    "tuulivoima_maa,tuulivoima_meri,offshore_wind",
+    "da_husdyrbrugloven":             "maatalous",
     # NO — BESS fire safety (NEK 488:2024, NEK 487:2022, TEK17 kap. 11, DSB 2021)
     "nek_dsb_bess_brannsikkerhet":                   "BESS,datakeskus",
     # EE — BESS fire safety (Päästeamet Dec 2024 guidance, Tuleohutuse seadus, EVS 812-7)
