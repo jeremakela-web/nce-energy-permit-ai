@@ -127,6 +127,7 @@ _HERE        = os.path.dirname(os.path.abspath(__file__))
 _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _RAQS_DB     = os.path.join(_DB_DIR, "raqs_reviews.db")
+_CITATION_GAP_DB = os.path.join(_DB_DIR, "citation_gap_flags.db")
 # TASO 1 cost & resource guardrail (confirmed with user 2026-08-07). Current fixed
 # pipeline usage was 1 RAG retrieval call + 4 Claude API calls per generation
 # (draft + proofread + RAQS×2); the RAQS-removal task (2026-08-09) cut the
@@ -7645,6 +7646,115 @@ def _raqs_store(review: dict, inp: "ApplicationInput") -> None:
         pass  # never block PDF generation
 
 
+# ─── Citation gap flagging (TASO 2, supplementary — hybrid design, 2026-08-16) ─
+#
+# Section 4 ("Lakiviitteet") is populated from a static, hanketyyppi+country
+# -keyed config list (cfg["luvat"]/cfg.get("laki_extra", []), or a
+# _COUNTRY_LUVAT override) — see generate_pdf(). That list stays the
+# GUARANTEED FLOOR: a full manual regulatory audit across all 135 real
+# (hanketyyppi, country) combinations with independently-defined law data
+# is real, valuable expert work, but too large to front-load before this
+# lands (tracked separately — see project_manual_sourcing_backlog.md).
+#
+# This adds a SUPPLEMENTARY, non-blocking layer instead: extract the law
+# references the model actually cited inline, and flag any that don't
+# appear (by numeric core) anywhere in the static list, as a signal for
+# human review. This NEVER changes what section 4 actually renders —
+# pure logging, same "never block generation" discipline as RAQS itself.
+#
+# Matching key is the bare numeric law identifier (e.g. "751/2023",
+# "2014/34/EU") ONLY — not the surrounding law-name text. Confirmed
+# during scoping against 4 real generated Finnish reports: name-based
+# matching produced real false positives from (a) the same law cited in a
+# differently-punctuated form, (b) config entries that embed free-text
+# annotations in the value itself (e.g. "YVA-laki 252/2017 (kynnykset
+# ylittyessä)"), and (c) Finnish grammatical case inflection — e.g.
+# "Säteilylakia"/"Säteilylain" vs. the base form "Säteilylaki" — which
+# produces spurious near-duplicate "different" citations. Keying on the
+# numeric core alone sidesteps all three; the same 4-report test then
+# found 0 false positives.
+#
+# FI-ONLY FOR NOW — DELIBERATE, TRACKED, NOT SILENT. The regex below
+# matches Finnish/EU numbering conventions (NNN/YYYY, YYYY/NN/EU) only.
+# Sweden (SFS YYYY:NNN), Denmark/Norway/Germany/Poland/Estonia/Latvia/
+# Lithuania each use different citation conventions and are completely
+# UNTESTED against this extractor — gated off below rather than run
+# unvalidated. This is a known, accepted, not-yet-built limitation (same
+# tracking treatment as the DA JS-SPA gap / LV wind coverage backlog
+# items), not something left implicit in the code.
+
+_CITATION_NUM_RE = re.compile(r"(\d{1,4}/\d{4}|\d{4}/\d{1,3}/EU)")
+
+# Countries this extractor is validated for. Extending to the other 8
+# means designing + testing a citation-number pattern per country's own
+# legal-citation convention (see module comment above) — not just adding
+# a country code here.
+_CITATION_GAP_SUPPORTED_COUNTRIES = {"FI"}
+
+
+def _extract_cited_law_numbers(sections: dict) -> set[str]:
+    """Real numeric law-reference cores (e.g. '751/2023', '2014/34/EU')
+    found anywhere in the generated section text. FI/EU numbering
+    conventions only — see module comment above."""
+    full_text = "\n".join(v for v in sections.values() if isinstance(v, str))
+    return set(_CITATION_NUM_RE.findall(full_text))
+
+
+def _flag_citation_gaps(sections: dict, laki_set: set) -> list[str]:
+    """Numeric law references cited in the generated text but not present
+    (by numeric core) anywhere in the static section-4 list for this
+    hanketyyppi/country. Supplementary signal for human review only —
+    never changes what section 4 renders."""
+    cited = _extract_cited_law_numbers(sections)
+    config_nums: set[str] = set()
+    for entry in laki_set:
+        config_nums.update(_CITATION_NUM_RE.findall(entry))
+    return sorted(cited - config_nums)
+
+
+def _citation_gap_init_db() -> None:
+    import sqlite3
+    os.makedirs(os.path.dirname(_CITATION_GAP_DB), exist_ok=True)
+    with sqlite3.connect(_CITATION_GAP_DB) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS citation_gap_flags (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at       TEXT    NOT NULL,
+                kiinteistotunnus TEXT,
+                kunta            TEXT,
+                hanketyyppi      TEXT,
+                country          TEXT,
+                flagged_json     TEXT    NOT NULL
+            )
+        """)
+
+
+def _citation_gap_store(flags: list[str], inp: "ApplicationInput") -> None:
+    """Only ever called with a non-empty `flags` list — no row means no
+    gap was found, so nothing to review. Same never-block-generation
+    discipline as _raqs_store."""
+    import sqlite3, json
+    from datetime import datetime, timezone
+    try:
+        _citation_gap_init_db()
+        with sqlite3.connect(_CITATION_GAP_DB) as conn:
+            conn.execute(
+                "INSERT INTO citation_gap_flags "
+                "(created_at, kiinteistotunnus, kunta, hanketyyppi, country, flagged_json) "
+                "VALUES (?,?,?,?,?,?)",
+                (
+                    datetime.now(timezone.utc).isoformat(),
+                    getattr(inp, "kiinteistotunnus", None),
+                    getattr(inp, "kunta", None),
+                    getattr(inp, "hanketyyppi", None),
+                    getattr(inp, "country", None),
+                    json.dumps(flags, ensure_ascii=False),
+                ),
+            )
+    except Exception:
+        pass  # never block PDF generation
+
+
 def _raqs_review(
     sections: dict,
     inp: "ApplicationInput",
@@ -8170,6 +8280,19 @@ def generate_pdf(
     for b in laki_bullets[2:]:
         story.append(b)
     story.append(Spacer(1, 4*mm))
+
+    # Citation gap flagging (TASO 2, supplementary, FI-only for now — see
+    # _flag_citation_gaps' module comment for the full reasoning and the
+    # other-8-countries tracking note). Never affects what section 4 above
+    # renders; purely a stored signal for human review, wrapped so it can
+    # never block generation.
+    if country in _CITATION_GAP_SUPPORTED_COUNTRIES:
+        try:
+            _gap_flags = _flag_citation_gaps(sections, laki_set)
+            if _gap_flags:
+                _citation_gap_store(_gap_flags, inp)
+        except Exception:
+            pass
 
     # ── 5. Liiteluettelo ──────────────────────────────────────────────────────
     story.append(PageBreak())
