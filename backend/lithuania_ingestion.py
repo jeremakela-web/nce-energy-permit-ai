@@ -68,7 +68,13 @@ LITHUANIA_SOURCES: list[dict] = [
     # ── Core electricity & energy laws ───────────────────────────────────────
     {
         "name": "lt_elektros_energetikos_istatymas",
-        "url": "https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.17924",
+        # Old TAIS.17924 via /portal/.../asr only returned the doc's TOC shell
+        # (no article text). TAIS.106350 via /rs/legalact/TAD/ confirmed real,
+        # substantial text (5,371 words, correct title) -- but this is the
+        # ORIGINAL AS-ENACTED text (2000), not confirmed to reflect the current
+        # consolidated redakcija -- see is_verified_current below.
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.106350/",
+        "is_verified_current": False,
         "type": "html",
         "category": "electricity_market_law",
         "description": (
@@ -88,7 +94,11 @@ LITHUANIA_SOURCES: list[dict] = [
     },
     {
         "name": "lt_atsinaujinancio_resurso_energetikos_istatymas",
-        "url": "https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.255838",
+        # Old TAIS.255838 via /portal/.../asr TOC-shell-only. TAIS.398874 via
+        # /rs/legalact/TAD/ confirmed real text (19,526 words, correct title) --
+        # original as-enacted (2011), not confirmed current -- see below.
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.398874/",
+        "is_verified_current": False,
         "type": "html",
         "category": "renewable_energy_law",
         "description": (
@@ -107,7 +117,14 @@ LITHUANIA_SOURCES: list[dict] = [
     },
     {
         "name": "lt_energetikos_istatymas",
-        "url": "https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.88734",
+        # Old TAIS.88734 via /portal/.../asr TOC-shell-only. TAIS.167899 via
+        # /rs/legalact/TAD/ confirmed real text (4,736 words, correct title) --
+        # confirmed ORIGINAL as-enacted (2002) text specifically: amendment
+        # list only goes up to 2000 and is signed by President Valdas Adamkus's
+        # first term -- known heavily amended since (Baltic desynchronisation,
+        # EU directives) -- not confirmed current, see below.
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.167899/",
+        "is_verified_current": False,
         "type": "html",
         "category": "energy_framework_law",
         "description": (
@@ -219,7 +236,11 @@ LITHUANIA_SOURCES: list[dict] = [
     },
     {
         "name": "lt_teritoriju_planavimo_istatymas",
-        "url": "https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.87072",
+        # Old TAIS.87072 via /portal/.../asr TOC-shell-only. TAIS.23069 via
+        # /rs/legalact/TAD/ confirmed real text (5,347 words, correct title) --
+        # original as-enacted (1995), not confirmed current -- see below.
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.23069/",
+        "is_verified_current": False,
         "type": "html",
         "category": "spatial_planning_law",
         "description": (
@@ -331,6 +352,63 @@ LITHUANIA_SOURCES: list[dict] = [
             "Auction capacity tranches published annually by Vyriausybė (government). "
             "VERT also monitors OZE support payments via Viešuosius interesus atitinkančios "
             "paslaugos (VIAP) levy on all electricity consumers."
+        ),
+    },
+    # ── Fire safety (via pagd.lrv.lt's Seimas/Environment Ministry/PAGD Director
+    #    acts lists — pagd.lrv.lt itself is Cloudflare-challenge-blocked to
+    #    automated fetches, so these 3 were located manually by the user then
+    #    fetched here via their e-seimas.lrs.lt legalAct source, using the
+    #    /rs/legalact/TAD/{id}/ pattern (confirmed real text, not the TOC-shell
+    #    /portal/.../asr view) ────────────────────────────────────────────────
+    {
+        "name": "lt_priesgaisrines_saugos_istatymas",
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.197461/",
+        "is_verified_current": False,  # original as-enacted (2002), see comment pattern above
+        "type": "html",
+        "category": "fire_safety_law",
+        "description": (
+            "Priešgaisrinės saugos įstatymas (Nr. IX-1225, 2002-12-05). "
+            "Lithuania's core national fire safety law — establishes the legal "
+            "framework for fire safety organization and enforcement, PAGD's "
+            "authority, and the general obligations of building owners/operators. "
+            "Relevant to BESS and any project type with fire-safety-regulated "
+            "installations."
+        ),
+    },
+    {
+        "name": "lt_str_esminiai_gaisrine_sauga",
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.96037/",
+        "is_verified_current": False,  # original as-enacted (1999), see comment pattern above
+        "type": "html",
+        "category": "fire_safety_building_code",
+        "description": (
+            "STR 2.01.01(2):1999 „Esminiai statinio reikalavimai. Gaisrinė "
+            "sauga“ (Aplinkos ministro įsakymas Nr. 422, 1999-12-27). Essential "
+            "building requirements — fire safety: the core Lithuanian "
+            "construction technical regulation (statybos techninis reglamentas) "
+            "setting fire-safety design requirements for all buildings. "
+            "Relevant to BESS, data centre, industrial and any building-permit-"
+            "requiring project type."
+        ),
+    },
+    {
+        "name": "lt_gamybos_pramones_sandeliavimo_gaisrine_sauga",
+        "url": "https://e-seimas.lrs.lt/rs/legalact/TAD/TAIS.418484/",
+        "is_verified_current": False,  # original as-enacted (2012), see comment pattern above
+        "type": "html",
+        "category": "fire_safety_industrial",
+        "description": (
+            "Gamybos, pramonės ir sandėliavimo statinių gaisrinės saugos "
+            "taisyklės (PAGD Director's order Nr. 1-45, 2012-02-06). Fire "
+            "safety rules for production, industrial and storage buildings — "
+            "directly relevant to BESS (containerized/warehouse-type "
+            "installations) and industrial (teollisuus) projects. "
+            "NOTE: the source page lists this alongside a separate 2005 "
+            "'Bendrųjų gaisrinės saugos taisyklių' (general fire safety rules) "
+            "order under the same combined listing — only the 2012 "
+            "production/industrial/storage order was found at this specific "
+            "document ID; the 2005 general rules remain a separate, "
+            "unresolved gap (need their own document ID)."
         ),
     },
     # ── Gas systems installation rules (buildings) ────────────────────────────
@@ -670,6 +748,13 @@ def ingest_lithuania_sources(sources: list[dict] | None = None) -> int:
                 "ingested_at":     ingested_at,
                 "source_type":     "manual" if local_path else kind,
                 **({"last_verified": ingested_at[:10]} if local_path else {}),
+                # False = fetched real, substantial text but confirmed (or not
+                # ruled out) to be the ORIGINAL as-enacted version, not verified
+                # to reflect the current consolidated redakcija — see the
+                # source dict's own comment for why. Defaults True (the
+                # pre-existing assumption for every source that predates this
+                # flag) so adding this key never silently changes older entries.
+                "is_verified_current": src.get("is_verified_current", True),
                 "hanketyyppi_tag": ht_tag,
             }
             for _ in chunks

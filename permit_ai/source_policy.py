@@ -155,6 +155,9 @@ SOURCE_HANKETYYPPI_TAG: dict[str, str] = {
     "lt_vert_vejo_energetika":                       "tuulivoima_maa,tuulivoima_meri",
     # BESS fire safety — BESS and datakeskus, no wind/solar -- does NOT qualify
     "lt_priesgaisrines_saugos_taisykles":            "BESS,datakeskus",
+    "lt_priesgaisrines_saugos_istatymas":            "BESS,datakeskus",
+    "lt_str_esminiai_gaisrine_sauga":                "BESS,datakeskus,teollisuus,asuinrakennus,liikerakennus,maatalous",
+    "lt_gamybos_pramones_sandeliavimo_gaisrine_sauga": "BESS,datakeskus,teollisuus",
     # Gas systems installation rules (buildings) — building-code gas piping/appliance
     # safety, sourced via pagd.lrv.lt's Ministry of Energy acts list. Not applicable
     # to BESS/wind/solar/SMR/hydro (no gas systems involved) -- deliberately excluded
