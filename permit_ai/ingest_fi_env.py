@@ -22,6 +22,9 @@ import time
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
 
+sys.path.insert(0, str(Path(__file__).parent))
+from source_policy import get_hanketyyppi_tag
+
 HERE   = Path(__file__).parent
 DB_DIR = HERE / "embeddings"
 
@@ -453,6 +456,135 @@ def ingest() -> None:
         print(f"  {i + len(new_docs[b])}/{len(new_docs)} ({pct}%)")
 
     print(f"\n✅ Valmis — {len(new_docs)} uutta chunkkia. Koko indeksi: {col.count()} chunkkia")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Full-text YSL 527/2014 + YVA-laki 252/2017 via Finlex Open Data API
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# The _FI_ENV_LAW_DOCS inline block above (§1) is a human-curated, paraphrased
+# compilation of key points — not verbatim statute text — because Finlex's
+# public-facing site is fully JS-rendered and was assumed unfetchable by simple
+# HTTP tools. That assumption turned out to be wrong: Finlex's Open Data API
+# (opendata.finlex.fi, Akoma Ntoso XML standard, own Swagger spec) is a real,
+# separate, government-run programmatic endpoint that bypasses the JS-rendered
+# site entirely — first found and validated for MMM 606/2023 / VNa 319/2010
+# (2026-08-13, see manual sourcing backlog), reused here for YSL/YVA-laki.
+#
+# Endpoint pattern: GET https://opendata.finlex.fi/finlex/avoindata/v1/akn/fi/
+# act/statute/{year}/{number}/fin@/main.pdf  — returns the real, complete,
+# verbatim statute PDF (Suomen säädöskokoelma). Confirmed live: YSL 527/2014
+# is 81 pages / 35,376 words; YVA-laki 252/2017 is 16 pages / 4,416 words —
+# both dramatically more complete than the existing curated excerpts (a few
+# thousand chars of paraphrased summary each).
+#
+# IMPORTANT — separate finding, not fixed here: the existing _FI_ENV_LAW_DOCS
+# inline excerpts are written ONLY to the "permit_docs" (v1) collection by
+# ingest()/above — never to "permit_docs_v2" (mpnet). generate_application.py
+# switches to v2 at startup whenever it's ready (backend/main.py's
+# _activate_all_v2(), gated on _v2_is_ready()) — which it is in production
+# (thousands of chunks). This means the existing curated YSL/YVA-laki
+# excerpts are very likely NOT actually retrievable in production today,
+# independent of the full-text-vs-excerpt question. Flagged, not silently
+# fixed by deleting/migrating that old function — out of scope for this
+# addition. The function below writes to BOTH collections, matching the
+# pattern already established in lithuania_ingestion.py / denmark_ingestion.py.
+_FI_ENV_FULL_TEXT_SOURCES: list[dict] = [
+    {
+        "name": "ysl_527_2014_full",
+        "year": 2014, "number": 527,
+        "description": "Ympäristönsuojelulaki 527/2014 (full verbatim statute text, via Finlex Open Data API)",
+    },
+    {
+        "name": "yva_laki_252_2017_full",
+        "year": 2017, "number": 252,
+        "description": "Laki ympäristövaikutusten arviointimenettelystä 252/2017 (full verbatim statute text, via Finlex Open Data API)",
+    },
+]
+
+_FINLEX_PDF_URL = (
+    "https://opendata.finlex.fi/finlex/avoindata/v1/akn/fi/act/statute/{year}/{number}/fin@/main.pdf"
+)
+
+
+def _fetch_finlex_pdf_text(year: int, number: int, timeout: int = 30) -> str:
+    import io
+    import pypdf
+    import requests
+
+    url = _FINLEX_PDF_URL.format(year=year, number=number)
+    resp = requests.get(url, timeout=timeout, headers=HEADERS)
+    resp.raise_for_status()
+    reader = pypdf.PdfReader(io.BytesIO(resp.content))
+    return "\n".join(p.extract_text() or "" for p in reader.pages)
+
+
+def ingest_finlex_full_text() -> int:
+    """
+    Ingest full verbatim text for YSL 527/2014 + YVA-laki 252/2017 via the
+    Finlex Open Data API into BOTH permit_docs and permit_docs_v2. Additive —
+    does not touch or remove the existing curated inline excerpts. Returns
+    total v2 chunks upserted. Never raises — logs failures and continues.
+    """
+    import chromadb
+    from sentence_transformers import SentenceTransformer
+
+    if not DB_DIR.exists():
+        raise RuntimeError(f"ChromaDB path not found: {DB_DIR}")
+
+    client  = chromadb.PersistentClient(path=str(DB_DIR))
+    col_v1  = client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine"})
+    col_v2  = client.get_or_create_collection("permit_docs_v2", metadata={"hnsw:space": "cosine"})
+
+    model_v1 = SentenceTransformer(EMBED_MODEL)
+    model_v2 = SentenceTransformer("paraphrase-multilingual-mpnet-base-v2")
+
+    ingested_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    total_v2 = 0
+
+    for src in _FI_ENV_FULL_TEXT_SOURCES:
+        name = src["name"]
+        print(f"\n[finlex_full] {name}")
+        try:
+            text = _fetch_finlex_pdf_text(src["year"], src["number"])
+        except Exception as exc:
+            print(f"  WARN: fetch/extract failed: {exc} — skipping")
+            continue
+
+        if len(text.split()) < 200:
+            print(f"  WARN: too short ({len(text.split())} words) — skipping")
+            continue
+
+        chunks = _chunk(text)
+        print(f"  {len(text.split()):,} words → {len(chunks)} chunks")
+
+        ids = [f"finlex_full__{name}__{i}" for i in range(len(chunks))]
+        metas = [
+            {
+                "source":          name,
+                "url":             _FINLEX_PDF_URL.format(year=src["year"], number=src["number"]),
+                "country":         "FI",
+                "lang":            "fi",
+                "description":     src["description"],
+                "ingested_at":     ingested_at,
+                "source_type":     "finlex_opendata_api",
+                "hanketyyppi_tag": get_hanketyyppi_tag(name),
+            }
+            for _ in chunks
+        ]
+
+        for i in range(0, len(chunks), BATCH):
+            b = slice(i, i + BATCH)
+            embs_v1 = model_v1.encode(chunks[b], show_progress_bar=False).tolist()
+            embs_v2 = model_v2.encode(chunks[b], show_progress_bar=False, normalize_embeddings=True).tolist()
+            col_v1.upsert(ids=ids[b], documents=chunks[b], metadatas=metas[b], embeddings=embs_v1)
+            col_v2.upsert(ids=ids[b], documents=chunks[b], metadatas=metas[b], embeddings=embs_v2)
+
+        total_v2 += len(chunks)
+        print(f"  Upserted {len(chunks)} chunks -> permit_docs + permit_docs_v2")
+
+    print(f"\n[finlex_full] Done. Total v2 chunks: {total_v2}")
+    return total_v2
 
 
 if __name__ == "__main__":
