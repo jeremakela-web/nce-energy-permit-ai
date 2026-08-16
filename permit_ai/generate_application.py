@@ -7755,25 +7755,69 @@ def _citation_gap_store(flags: list[str], inp: "ApplicationInput") -> None:
         pass  # never block PDF generation
 
 
-def _raqs_review(sections: dict, inp: "ApplicationInput") -> dict | None:
-    """Call Haiku to score sections on 5 RAQS criteria. Returns parsed dict or None."""
+def _raqs_review(
+    sections: dict,
+    inp: "ApplicationInput",
+    sources: list | None = None,
+    laki_set: set | None = None,
+) -> dict | None:
+    """Call Haiku to score sections on 5 RAQS criteria. Returns parsed dict or None.
+
+    2026-08-15 (TASO 1, real-report investigation): this used to send only
+    4 of the generated sections, each hard-capped at 800 characters, and
+    NEVER included the source list or lakiviitteet at all — RAQS was
+    structurally incapable of seeing what a human reader of the actual PDF
+    sees, which produced a long-standing, systemic pattern of false
+    "sections cut off"/"source not in reference list" flags (confirmed
+    against real RAQS history back to 2026-07-03, not just the report that
+    triggered this investigation). Now sends the FULL text of all 4
+    sections plus the real source list and lakiviitteet — the exact same
+    content the assembled PDF shows, built from `sources`/`laki_set`
+    (both already computed in generate_pdf() before this call, passed
+    through rather than recomputed). Real measured cost impact is
+    negligible (input tokens roughly triple, from ~2200 to an estimated
+    ~4000-5000 — still a fraction of a cent per call on Haiku).
+    """
     import json as _json
 
     lang = getattr(inp, "lang", "FI") or "FI"
 
-    # Build compact section summary — only text keys, capped at 800 chars each
+    # Full section text — no truncation. This alone fixes the
+    # "sections cut off mid-sentence" class of false flags.
     summary_parts = []
     for key in ["kuvaus", "perustelut", "luvat_teksti", "toimenpiteet"]:
         v = sections.get(key, "")
         if isinstance(v, str) and v.strip():
-            summary_parts.append(f"## {key}\n{v[:800]}")
+            summary_parts.append(f"## {key}\n{v}")
     sections_text = "\n\n".join(summary_parts)
+
+    # Source list — same shape/content as the PDF's own "Lähteet ja
+    # tietolähteet" section (src.get("display") or src.get("id")), so RAQS
+    # checks citations against exactly what the human reader will see.
+    sources_text = ""
+    if sources:
+        country = getattr(inp, "country", "FI") or "FI"
+        lines = []
+        for src in sources[:8]:
+            src_display = src.get("display") or src.get("id", "–")
+            src_country = src.get("country", country)
+            lines.append(f"- {src_display} ({src_country})")
+        sources_text = "## Lähteet ja tietolähteet\n" + "\n".join(lines)
+
+    # Lakiviitteet — same list the PDF's own section 4 renders (translated
+    # via _t_law, same as the PDF, not the raw internal reference strings).
+    laki_text = ""
+    if laki_set:
+        laki_lines = [f"- {_t_law(lang, ref)}" for ref in sorted(laki_set)]
+        laki_text = "## Lakiviitteet\n" + "\n".join(laki_lines)
+
+    full_content = "\n\n".join(p for p in [sections_text, sources_text, laki_text] if p)
 
     prompt = (
         f"Hanketyyppi: {getattr(inp, 'hanketyyppi', '?')} | "
         f"Teho: {getattr(inp, 'teho_mw', '?')} MW | "
         f"Kunta: {getattr(inp, 'kunta', '?')}\n\n"
-        f"LUONNOKSEN SISÄLTÖ:\n{sections_text}"
+        f"LUONNOKSEN SISÄLTÖ:\n{full_content}"
     )
 
     # Cost & resource guardrail (TASO 1): checked outside the try/except below.
@@ -8668,7 +8712,7 @@ def generate_pdf(
             story.append(_elem)
 
     # ── RAQS: reviewing agent — Haiku-arvio sisällön laadusta ────────────────
-    _raqs_result = _raqs_review(sections, inp)
+    _raqs_result = _raqs_review(sections, inp, sources=sources, laki_set=laki_set)
     if _raqs_result and is_final and getattr(inp, "generation_id", ""):
         # Rollback checkpoint (TASO 1): only the final, human-facing RAQS pass —
         # this is the terminal step before the human approval gate (see the
