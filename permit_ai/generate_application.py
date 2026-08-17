@@ -6046,6 +6046,17 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_maa":           "Land",
         "m_laadittu":      "Udarbejdet",       "m_laatinut_lbl": "Udarbejdet af",
         "m_laatinut":      "NCE Permit AI (AI-assisteret)",
+        "raqs_heading":    "RAQS-vurdering",
+        "raqs_subtitle":   ("AI-selvvurdering (Regulatory Assurance & Quality System) — erstatter ikke "
+                            "ekspertgennemgang. Point 1–5 pr. kriterium; høj score = bedre kvalitet."),
+        "raqs_overall":    "Samlet score",
+        "raqs_disclaimer": ("RAQS-vurdering genereret automatisk (claude-haiku). "
+                            "Gennemgå altid udkastet før indsendelse til myndighedsbehandling."),
+        "raqs_lbl_viittaukset":    "Lovhenvisninger",
+        "raqs_lbl_lupakattavuus":  "Tilladelsesdækning",
+        "raqs_lbl_epävarmuus":     "Usikkerhedshåndtering",
+        "raqs_lbl_kattavuus":      "Indholdsdybde",
+        "raqs_lbl_valmisteluaste": "Ansøgningsberedskab",
         "sec1": "1. Projektbeskrivelse",             "sec2": "2. Begrundelse og behov",
         "sec3": "3. Nødvendige tilladelser og myndigheder", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Bilagsliste",                    "sec6": "6. Næste skridt",
@@ -6130,6 +6141,17 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_maa":           "Land",
         "m_laadittu":      "Utarbeidet",        "m_laatinut_lbl": "Utarbeidet av",
         "m_laatinut":      "NCE Permit AI (AI-assistert)",
+        "raqs_heading":    "RAQS-vurdering",
+        "raqs_subtitle":   ("AI-selvvurdering (Regulatory Assurance & Quality System) — erstatter ikke "
+                            "ekspertgjennomgang. Poeng 1–5 per kriterium; høy poengsum = bedre kvalitet."),
+        "raqs_overall":    "Total poengsum",
+        "raqs_disclaimer": ("RAQS-vurdering generert automatisk (claude-haiku). "
+                            "Gjennomgå alltid utkastet før innsending til myndighetsbehandling."),
+        "raqs_lbl_viittaukset":    "Lovhenvisninger",
+        "raqs_lbl_lupakattavuus":  "Tillatelsesdekning",
+        "raqs_lbl_epävarmuus":     "Usikkerhetshåndtering",
+        "raqs_lbl_kattavuus":      "Innholdsdybde",
+        "raqs_lbl_valmisteluaste": "Søknadsberedskap",
         "sec1": "1. Prosjektbeskrivelse",            "sec2": "2. Begrunnelse og behov",
         "sec3": "3. Nødvendige tillatelser og myndigheter", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Vedleggsliste",                  "sec6": "6. Neste steg",
@@ -6213,6 +6235,17 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_maa":           "Kraj",
         "m_laadittu":      "Sporządzono",       "m_laatinut_lbl": "Sporządzone przez",
         "m_laatinut":      "NCE Permit AI (wspomagane przez AI)",
+        "raqs_heading":    "Ocena RAQS",
+        "raqs_subtitle":   ("Samoocena AI (Regulatory Assurance & Quality System) — nie zastępuje "
+                            "weryfikacji przez eksperta. Punktacja 1–5 na kryterium; wyższy wynik = lepsza jakość."),
+        "raqs_overall":    "Wynik łączny",
+        "raqs_disclaimer": ("Ocena RAQS wygenerowana automatycznie (claude-haiku). "
+                            "Zawsze zweryfikuj projekt przed złożeniem do organu."),
+        "raqs_lbl_viittaukset":    "Odniesienia prawne",
+        "raqs_lbl_lupakattavuus":  "Zakres zezwoleń",
+        "raqs_lbl_epävarmuus":     "Zarządzanie niepewnością",
+        "raqs_lbl_kattavuus":      "Głębokość treści",
+        "raqs_lbl_valmisteluaste": "Gotowość wniosku",
         "sec1": "1. Opis projektu",                  "sec2": "2. Uzasadnienie i potrzeba",
         "sec3": "3. Wymagane zezwolenia i organy",   "sec4": "4. Podstawy prawne",
         "sec5": "5. Lista załączników",              "sec6": "6. Następne kroki",
@@ -6305,6 +6338,17 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "m_maa":           "Land",
         "m_laadittu":      "Erstellt",        "m_laatinut_lbl": "Erstellt von",
         "m_laatinut":      "NCE Permit AI (KI-gestützt)",
+        "raqs_heading":    "RAQS-Bewertung",
+        "raqs_subtitle":   ("KI-Selbstbewertung (Regulatory Assurance & Quality System) — ersetzt keine "
+                            "fachkundige Prüfung. Punkte 1–5 pro Kriterium; hohe Punktzahl = bessere Qualität."),
+        "raqs_overall":    "Gesamtpunktzahl",
+        "raqs_disclaimer": ("RAQS-Bewertung automatisch erstellt (claude-haiku). "
+                            "Prüfen Sie den Entwurf stets vor der Einreichung bei der Behörde."),
+        "raqs_lbl_viittaukset":    "Gesetzesverweise",
+        "raqs_lbl_lupakattavuus":  "Genehmigungsabdeckung",
+        "raqs_lbl_epävarmuus":     "Unsicherheitsmanagement",
+        "raqs_lbl_kattavuus":      "Inhaltstiefe",
+        "raqs_lbl_valmisteluaste": "Antragsreife",
         "sec1": "1. Projektbeschreibung",            "sec2": "2. Begründung und Bedarf",
         "sec3": "3. Erforderliche Genehmigungen",    "sec4": "4. Rechtsgrundlagen",
         "sec5": "5. Anlagenverzeichnis",             "sec6": "6. Nächste Schritte",
@@ -7544,28 +7588,99 @@ def _taydennyslista_page(gaps: list[tuple[str, str]], st: dict, lang: str = "FI"
 
 # ─── RAQS: Regulatory Assurance & Quality System — reviewing agent ───────────
 
-_RAQS_SYSTEM_BASE = """\
-Olet sääntelylaadunvarmistusagentti (RAQS). Arvioi annettu energialupaluonnos viidellä kriteerillä.
-Anna kokonaislukupisteytys asteikolla 1–5 jokaiselle kriteerille ja yksi lyhyt perustelu (max 15 sanaa).
+# ── RAQS Full Phase 1: single structured criterion source ──────────────────
+# Previously the 5 criteria were hand-duplicated across three places (the
+# prompt text below, _RAQS_CRITERION_KEY, and _RAQS_ORDER) — changing or
+# adding a criterion meant editing all three in sync, with no check that
+# they'd stayed consistent. _RAQS_CRITERIA is now the single source of
+# truth: order, prompt wording (always Finnish — RAQS is always scored by
+# reading Finnish-labeled criteria; only its JSON *output* text is
+# translated via _RAQS_LANG_INSTRUCTION below) and PDF label key all live
+# in one place, and everything else is derived from it.
+_RAQS_CRITERIA: list[dict] = [
+    {
+        "id": "viittaukset",
+        "pdf_label_key": "raqs_lbl_viittaukset",
+        "prompt": "Lakiviittausten relevanttius ja tarkkuus (1=puuttuu/virheelliset, 5=täsmälliset ja kattavat)",
+        # numbered_pad/json_pad: exact original whitespace (list alignment
+        # was hand-typed, not a clean formula) — kept explicit per criterion
+        # so the generated prompt stays byte-identical to the pre-refactor
+        # text (verified: no behavioral risk from an accidental wording/
+        # whitespace drift in a prompt this scoring-sensitive).
+        "numbered_pad": 2, "json_pad": 4,
+    },
+    {
+        "id": "lupakattavuus",
+        "pdf_label_key": "raqs_lbl_lupakattavuus",
+        "prompt": "Tarvittavien lupamenettelyjen kattavuus (1=merkittäviä aukkoja, 5=kaikki luvat käsitelty)",
+        "numbered_pad": 1, "json_pad": 2,
+    },
+    {
+        "id": "epävarmuus",
+        "pdf_label_key": "raqs_lbl_epävarmuus",
+        "prompt": (
+            "Epävarmuuden hallinta. PUNAINEN LIPPU: jos tekstissä esiintyy tarkka määrällinen "
+            "lukema (€/MW/vuosi, %, €/MWh, indeksipiste tms.) yhdistettynä nimettyyn ulkoiseen "
+            "lähteeseen tai raporttiin (esim. \"Clean Horizon Storage Index\", \"BNEF\", "
+            "\"IEA Storage Tracker\") — mutta kyseinen lähde EI löydy raportin lähdeluettelosta "
+            "— laske 2 pistettä ja mainitse tämä perustelussa nimenomaisesti. "
+            "(1=vahvistamattomia tarkkoja ulkoisia lukuja esitetty faktana ilman lähdettä, "
+            "5=⚠️-merkinnät asiallisesti käytetty eikä vahvistamattomia tarkkoja markkinaviittauksia)"
+        ),
+        "numbered_pad": 3, "json_pad": 5,
+    },
+    {
+        "id": "kattavuus",
+        "pdf_label_key": "raqs_lbl_kattavuus",
+        "prompt": "Sisällön syvyys ja pituus (1=pintapuolinen, 5=perusteellinen)",
+        "numbered_pad": 4, "json_pad": 6,
+    },
+    {
+        "id": "valmisteluaste",
+        "pdf_label_key": "raqs_lbl_valmisteluaste",
+        "prompt": "Hakemusvalmisteluaste (1=raakaaineisto, 5=lähes jätettävissä sellaisenaan)",
+        "numbered_pad": 1, "json_pad": 1,
+    },
+]
 
-Kriteerit:
-1. viittaukset  — Lakiviittausten relevanttius ja tarkkuus (1=puuttuu/virheelliset, 5=täsmälliset ja kattavat)
-2. lupakattavuus — Tarvittavien lupamenettelyjen kattavuus (1=merkittäviä aukkoja, 5=kaikki luvat käsitelty)
-3. epävarmuus   — Epävarmuuden hallinta. PUNAINEN LIPPU: jos tekstissä esiintyy tarkka määrällinen lukema (€/MW/vuosi, %, €/MWh, indeksipiste tms.) yhdistettynä nimettyyn ulkoiseen lähteeseen tai raporttiin (esim. "Clean Horizon Storage Index", "BNEF", "IEA Storage Tracker") — mutta kyseinen lähde EI löydy raportin lähdeluettelosta — laske 2 pistettä ja mainitse tämä perustelussa nimenomaisesti. (1=vahvistamattomia tarkkoja ulkoisia lukuja esitetty faktana ilman lähdettä, 5=⚠️-merkinnät asiallisesti käytetty eikä vahvistamattomia tarkkoja markkinaviittauksia)
-4. kattavuus    — Sisällön syvyys ja pituus (1=pintapuolinen, 5=perusteellinen)
-5. valmisteluaste — Hakemusvalmisteluaste (1=raakaaineisto, 5=lähes jätettävissä sellaisenaan)
+# Derived, not hand-duplicated — see _RAQS_CRITERIA above.
+_RAQS_ORDER: list[str] = [c["id"] for c in _RAQS_CRITERIA]
+_RAQS_CRITERION_KEY: dict[str, str] = {c["id"]: c["pdf_label_key"] for c in _RAQS_CRITERIA}
 
-Vastaa VAIN validilla JSON-objektilla, ei muuta tekstiä:
-{
-  "viittaukset":    {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
-  "lupakattavuus":  {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
-  "epävarmuus":     {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
-  "kattavuus":      {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
-  "valmisteluaste": {"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"},
-  "yhteenveto":     "<max 25 sanaa>"
-}
-"""
 
+def _raqs_build_system_base() -> str:
+    """Generate _RAQS_SYSTEM_BASE's text from _RAQS_CRITERIA — the numbered
+    criteria list and the JSON schema example are both built from the same
+    list, so adding/reordering a criterion here can't desync them."""
+    numbered = "\n".join(
+        f"{i}. {c['id']}{' ' * c['numbered_pad']}— {c['prompt']}"
+        for i, c in enumerate(_RAQS_CRITERIA, 1)
+    )
+    json_fields = "\n".join(
+        f'  "{c["id"]}":{" " * c["json_pad"]}{{"pisteet": <1-5>, "perustelu": "<max 15 sanaa>"}},'
+        for c in _RAQS_CRITERIA
+    )
+    return (
+        "Olet sääntelylaadunvarmistusagentti (RAQS). Arvioi annettu energialupaluonnos "
+        f"viidellä kriteerillä.\nAnna kokonaislukupisteytys asteikolla 1–5 jokaiselle "
+        "kriteerille ja yksi lyhyt perustelu (max 15 sanaa).\n\n"
+        f"Kriteerit:\n{numbered}\n\n"
+        "Vastaa VAIN validilla JSON-objektilla, ei muuta tekstiä:\n{\n"
+        f"{json_fields}\n"
+        '  "yhteenveto":     "<max 25 sanaa>"\n}\n'
+    )
+
+
+_RAQS_SYSTEM_BASE = _raqs_build_system_base()
+
+# RAQS's JSON *output* text (perustelu/yhteenveto) is translated per output
+# language — the criteria themselves are always read in Finnish (see above).
+# Previously only EN/SE had this; DA/NO/PL/ET/DE/LV/LT fell through to no
+# instruction at all, meaning RAQS's own justification/summary text stayed
+# in whatever language the model defaulted to (usually Finnish) even when
+# every other part of the report was correctly translated — same class of
+# gap as P3-5's UI-string gap, but for an AI-facing prompt instead of a
+# static string table.
 _RAQS_LANG_INSTRUCTION = {
     "EN": (
         "CRITICAL OUTPUT RULE: All text values in the JSON response MUST be in English. "
@@ -7579,6 +7694,51 @@ _RAQS_LANG_INSTRUCTION = {
         "skrivas på svenska — oavsett vilket språk det granskade innehållet är på. "
         "JSON-nycklar (viittaukset, lupakattavuus osv.) förblir oförändrade; bara textvärdena byter språk."
     ),
+    "DA": (
+        "KRITISK UDDATAREGEL: Alle tekstværdier i JSON-svaret SKAL være på dansk. "
+        "Det betyder, at hver 'perustelu'-begrundelse og 'yhteenveto'-sammenfatning skal "
+        "skrives på dansk — uanset hvilket sprog det gennemgåede indhold er på. "
+        "JSON-nøgler (viittaukset, lupakattavuus osv.) forbliver uændrede; kun tekstværdierne skifter sprog."
+    ),
+    "NO": (
+        "KRITISK UTDATAREGEL: Alle tekstverdier i JSON-svaret MÅ være på norsk. "
+        "Det betyr at hver 'perustelu'-begrunnelse og 'yhteenveto'-sammendrag skal "
+        "skrives på norsk — uansett hvilket språk det gjennomgåtte innholdet er på. "
+        "JSON-nøkler (viittaukset, lupakattavuus osv.) forblir uendret; bare tekstverdiene bytter språk."
+    ),
+    "PL": (
+        "KRYTYCZNA ZASADA WYJŚCIA: Wszystkie wartości tekstowe w odpowiedzi JSON MUSZĄ być "
+        "w języku polskim. Oznacza to, że każde uzasadnienie 'perustelu' i podsumowanie "
+        "'yhteenveto' muszą być napisane po polsku — niezależnie od języka ocenianej treści. "
+        "Klucze JSON (viittaukset, lupakattavuus itd.) pozostają niezmienione; zmienia się "
+        "tylko język wartości tekstowych."
+    ),
+    "ET": (
+        "KRIITILINE VÄLJUNDIREEGEL: Kõik JSON-vastuse tekstiväärtused PEAVAD olema eesti "
+        "keeles. See tähendab, et iga 'perustelu' põhjendus ja 'yhteenveto' kokkuvõte tuleb "
+        "kirjutada eesti keeles — sõltumata hinnatava sisu keelest. JSON-võtmed (viittaukset, "
+        "lupakattavuus jne) jäävad muutumatuks; ainult tekstiväärtuste keel muutub."
+    ),
+    "DE": (
+        "KRITISCHE AUSGABEREGEL: Alle Textwerte in der JSON-Antwort MÜSSEN auf Deutsch sein. "
+        "Das bedeutet, dass jede 'perustelu'-Begründung und die 'yhteenveto'-Zusammenfassung "
+        "auf Deutsch verfasst werden müssen — unabhängig von der Sprache des geprüften Inhalts. "
+        "JSON-Schlüssel (viittaukset, lupakattavuus usw.) bleiben unverändert; nur die "
+        "Textwerte wechseln die Sprache."
+    ),
+    "LV": (
+        "KRITISKS IZVADES NOTEIKUMS: Visām teksta vērtībām JSON atbildē IR JĀBŪT latviešu "
+        "valodā. Tas nozīmē, ka katram 'perustelu' pamatojumam un 'yhteenveto' kopsavilkumam "
+        "jābūt rakstītam latviešu valodā — neatkarīgi no izvērtētā satura valodas. JSON atslēgas "
+        "(viittaukset, lupakattavuus utt.) paliek nemainītas; mainās tikai teksta vērtību valoda."
+    ),
+    "LT": (
+        "SVARBI IŠVESTIES TAISYKLĖ: Visos teksto reikšmės JSON atsakyme TURI būti lietuvių "
+        "kalba. Tai reiškia, kad kiekvienas 'perustelu' pagrindimas ir 'yhteenveto' santrauka "
+        "turi būti parašyti lietuvių kalba — nepriklausomai nuo vertinamo turinio kalbos. "
+        "JSON raktai (viittaukset, lupakattavuus ir kt.) lieka nepakitę; keičiasi tik teksto "
+        "reikšmių kalba."
+    ),
 }
 
 
@@ -7588,18 +7748,6 @@ def _raqs_system_prompt(lang: str) -> str:
         # Prepend the language rule so the model sees it before the Finnish criteria text
         return instr + "\n\n" + _RAQS_SYSTEM_BASE
     return _RAQS_SYSTEM_BASE
-
-
-# RAQS criterion key → _PDF_STRINGS key suffix (used by _raqs_page via _s())
-_RAQS_CRITERION_KEY: dict[str, str] = {
-    "viittaukset":    "raqs_lbl_viittaukset",
-    "lupakattavuus":  "raqs_lbl_lupakattavuus",
-    "epävarmuus":     "raqs_lbl_epävarmuus",
-    "kattavuus":      "raqs_lbl_kattavuus",
-    "valmisteluaste": "raqs_lbl_valmisteluaste",
-}
-
-_RAQS_ORDER = ["viittaukset", "lupakattavuus", "epävarmuus", "kattavuus", "valmisteluaste"]
 
 
 def _raqs_init_db() -> None:
