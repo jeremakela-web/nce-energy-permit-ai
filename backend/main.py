@@ -370,12 +370,6 @@ _ARQ_POOL = None          # arq.ArqRedis | None — None = Redis unavailable, fa
 _ARQ_WORKER_TASK = None   # asyncio.Task | None — the supervisor task, tracked for clean shutdown
 
 
-# TEMPORARY (2026-08-16) — see arq_task_cron_diagnostic's docstring. Flip
-# both this and the cron_jobs entry below off together once root cause is
-# found; also remove the watchdog task creation in _arq_worker_supervisor.
-_CRON_WATCHDOG_ENABLED = True
-
-
 def _build_arq_worker(redis_settings):
     from arq import cron
     from arq.worker import Worker
@@ -384,17 +378,6 @@ def _build_arq_worker(redis_settings):
         cron(arq_task_refresh_entsoe_prices, hour={3}, minute={0}),
         cron(arq_task_source_drift_check, weekday='sun', hour={3}, minute={0}),
     ]
-    if _CRON_WATCHDOG_ENABLED:
-        cron_jobs.append(cron(arq_task_cron_diagnostic))  # fires every minute
-
-    # TEMPORARY diagnostic (2026-08-16): confirm registration itself
-    # succeeded with the parameters we think we passed, independent of
-    # whether dispatch later works — a malformed/silently-dropped
-    # registration would be invisible without this.
-    for cj in cron_jobs:
-        print(f"[arq-registration] {cj.name}: month={cj.month} day={cj.day} "
-              f"weekday={cj.weekday} hour={cj.hour} minute={cj.minute} "
-              f"second={cj.second} run_at_startup={cj.run_at_startup}", flush=True)
 
     return Worker(
         functions=[arq_task_generate_permit],
@@ -420,26 +403,6 @@ def _build_arq_worker(redis_settings):
     )
 
 
-async def _cron_watchdog(worker) -> None:
-    """
-    TEMPORARY (2026-08-16) — see arq_task_cron_diagnostic's docstring.
-    Logs each registered cron job's name, current next_run, and whether
-    it looks overdue, every 30s. Directly answers: is the schedule being
-    computed/advanced at all, is it stuck, or is it correct-but-not-
-    resulting-in-dispatch. Reads worker.cron_jobs directly — no
-    monkeypatching, no dependency on arq's own (separately-confirmed-
-    invisible-to-us) internal logger.
-    """
-    from datetime import datetime, timezone
-    while True:
-        await asyncio.sleep(30)
-        now = datetime.now(timezone.utc)
-        for cj in worker.cron_jobs:
-            overdue = cj.next_run is not None and cj.next_run < now
-            print(f"[cron-watchdog] {cj.name}: next_run={cj.next_run} "
-                  f"now={now.isoformat()} overdue={overdue}", flush=True)
-
-
 async def _arq_worker_supervisor(redis_settings) -> None:
     """
     Runs the ARQ worker with automatic restart-on-crash.
@@ -461,10 +424,6 @@ async def _arq_worker_supervisor(redis_settings) -> None:
     backoff = 2.0
     while True:
         worker = _build_arq_worker(redis_settings)
-        watchdog_task = (
-            asyncio.create_task(_cron_watchdog(worker), name="cron-watchdog")
-            if _CRON_WATCHDOG_ENABLED else None
-        )
         try:
             print("[arq] Worker (re)started", flush=True)
             backoff = 2.0  # reset after a clean (re)start
@@ -480,8 +439,6 @@ async def _arq_worker_supervisor(redis_settings) -> None:
             print(f"[arq] WORKER CRASHED: {exc!r} — restarting in {backoff:.0f}s", flush=True)
             print(_tb.format_exc(), flush=True)
         finally:
-            if watchdog_task is not None:
-                watchdog_task.cancel()
             try:
                 await worker.close()
             except Exception:
@@ -1591,21 +1548,6 @@ async def arq_task_source_drift_check(ctx: dict) -> None:
         print(f"[drift-cron] CHANGED: {changed}", flush=True)
     if regressions:
         print(f"[drift-cron] REGRESSIONS (previously succeeded, now failing): {regressions}", flush=True)
-
-
-async def arq_task_cron_diagnostic(ctx: dict) -> None:
-    """
-    TEMPORARY (2026-08-16) — investigating why arq_task_refresh_entsoe_prices
-    (previously reliable) and arq_task_source_drift_check (new) both show
-    zero confirmed firings since the 2026-08-14 17:24 UTC deploy. Fires
-    every minute (bare cron() default: no month/day/weekday/hour
-    restriction, second=0) so a real production cron failure is
-    observable within ~1-2 minutes of this deploy, instead of waiting for
-    the next real 03:00 UTC window. Remove once root cause is found — see
-    _CRON_WATCHDOG_ENABLED below, which also needs turning off with this.
-    """
-    from datetime import datetime, timezone
-    print(f"[cron-diagnostic] tick fired at {datetime.now(timezone.utc).isoformat()}", flush=True)
 
 
 @app.get("/api/proofread/{job_id}")
