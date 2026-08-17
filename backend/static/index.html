@@ -7038,6 +7038,8 @@ const _COUNTRY_COVERAGE = {
   EE: { level: 'partial', label: 'EE — osittainen kattavuus (~79 chunkkia, ElTS/AtomE/KeHJS)' },
   PL: { level: 'partial', label: 'PL — osittainen kattavuus (~2 190 chunkkia)' },
   DE: { level: 'partial', label: 'DE — osittainen kattavuus (~920 chunkkia, BImSchG/EEG/BetrSichV)' },
+  LV: { level: 'partial', label: 'LV — osittainen kattavuus (~160 chunkkia)' },
+  LT: { level: 'partial', label: 'LT — osittainen kattavuus (~260 chunkkia)' },
 };
 
 function _isPermitAvailable(country, hanketyyppi) {
@@ -7082,7 +7084,7 @@ function setCountry(code) {
   if (topSel && topSel.value !== code) topSel.value = code;
 
   // Sync modal button bar
-  ['FI','SE','DA','NO','EE','PL','DE','LV'].forEach(c => {
+  ['FI','SE','DA','NO','EE','PL','DE','LV','LT'].forEach(c => {
     const btn = document.getElementById('country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
@@ -9136,6 +9138,7 @@ function archExportJson() {
         <button class="lang-btn" id="country-btn-PL" onclick="setCountry('PL')">🇵🇱 PL</button>
         <button class="lang-btn" id="country-btn-DE" onclick="setCountry('DE')">🇩🇪 DE</button>
         <button class="lang-btn" id="country-btn-LV" onclick="setCountry('LV')">🇱🇻 LV</button>
+        <button class="lang-btn" id="country-btn-LT" onclick="setCountry('LT')">🇱🇹 LT</button>
       </div>
       <div id="gen-country-detected" style="display:none;font-size:0.7rem;color:#00C2A8;margin-top:4px;"></div>
       <div id="gen-country-hint" class="gen-country-hint" style="display:none;" data-i18n="country_hint">Valitse ensin kohdemaasi</div>
