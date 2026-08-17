@@ -233,14 +233,32 @@ def _download(url: str, timeout: int = 30) -> bytes:
 
 def _extract_xml(data: bytes) -> str:
     """LexDania-schema XML — real body text lives in <Char> leaves nested inside
-    <Linea>/<Stk>/<Paragraf>/<Kapitel> structural tags. get_text() on the whole
-    tree is sufficient (same chunk-by-word-count approach used elsewhere in this
-    codebase; no structure-aware chunking needed) — verified live to produce
-    clean, readable Danish legal prose, not tag/attribute noise.
+    <Linea>/<Stk>/<Paragraf>/<Kapitel> structural tags. Walking every element's
+    .text/.tail and joining is sufficient (same chunk-by-word-count approach
+    used elsewhere in this codebase; no structure-aware chunking needed) —
+    verified live to produce clean, readable Danish legal prose, not tag/
+    attribute noise.
+
+    Uses stdlib xml.etree.ElementTree, not BeautifulSoup(data, "xml") — the
+    latter requires lxml, which is NOT a declared dependency of this project
+    (confirmed: absent from requirements.txt) and turned out to only be
+    present incidentally in local dev venvs, not in production. A real
+    production run 2026-08-17 failed all 11 sources with "Couldn't find a
+    tree builder with the features you requested: xml" before this fix —
+    the fetches themselves succeeded; only parsing failed. ElementTree is
+    stdlib (zero new dependency risk) and produces identical output —
+    confirmed via a direct word-count/content comparison against the
+    original BeautifulSoup+lxml approach on a real saved test document.
     """
-    from bs4 import BeautifulSoup
-    soup = BeautifulSoup(data, "xml")
-    return soup.get_text(separator=" ", strip=True)
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(data)
+    parts = []
+    for elem in root.iter():
+        if elem.text and elem.text.strip():
+            parts.append(elem.text.strip())
+        if elem.tail and elem.tail.strip():
+            parts.append(elem.tail.strip())
+    return " ".join(parts)
 
 
 # ── Chunking ──────────────────────────────────────────────────────────────────
