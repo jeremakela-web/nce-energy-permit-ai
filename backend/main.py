@@ -3221,6 +3221,30 @@ async def admin_ingest_lithuania():
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.post("/api/admin/ingest-denmark", dependencies=[Depends(_require_admin)])
+async def admin_ingest_denmark():
+    """Fetch Danish consolidated law texts via retsinformation.dk's ELI endpoint
+    and upsert chunks into ChromaDB. Admin only."""
+    try:
+        from denmark_ingestion import ingest_denmark_sources
+        count = ingest_denmark_sources()
+        return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/admin/ingest-finlex-full", dependencies=[Depends(_require_admin)])
+async def admin_ingest_finlex_full():
+    """Fetch full verbatim YSL 527/2014 + YVA-laki 252/2017 text via the Finlex
+    Open Data API and upsert chunks into both ChromaDB collections. Admin only."""
+    try:
+        from ingest_fi_env import ingest_finlex_full_text
+        count = ingest_finlex_full_text()
+        return {"status": "ok", "chunks_indexed": count}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 @app.post("/api/admin/ingest-caruna", dependencies=[Depends(_require_admin)])
 async def admin_ingest_caruna():
     """Download Caruna PDFs and upsert chunks into ChromaDB. Admin only."""
@@ -3348,7 +3372,7 @@ async def admin_reindex_ee_v2():
 # EE is skipped (already complete). Processes one country at a time in
 # 100-chunk batches with 0.5 s pauses to avoid OOM on the Render instance.
 
-_REINDEX_ALL_COUNTRIES = ["FI", "SE", "DA", "NO", "PL", "EU", "DE", "LV"]
+_REINDEX_ALL_COUNTRIES = ["FI", "SE", "DA", "NO", "PL", "EU", "DE", "LV", "LT"]
 _BULK_REINDEX_JOB: dict = {}
 
 
@@ -3470,6 +3494,67 @@ async def admin_reindex_all_v2_status():
     if not _BULK_REINDEX_JOB:
         return {"status": "no_job"}
     return _BULK_REINDEX_JOB
+
+
+@app.get("/api/admin/collection-source-diff", dependencies=[Depends(_require_admin)])
+async def admin_collection_source_diff():
+    """
+    Read-only: compare the set of distinct `source` metadata values present in
+    permit_docs (v1) vs permit_docs_v2 (mpnet, what production actually queries
+    once ready) — i.e. real visibility into which ingested content is v1-only
+    and therefore very likely unreachable by real generations today.
+
+    Grouped by country. Returns, per country: v1-only source names + their v1
+    chunk counts, and totals. Sources present in both (regardless of whether
+    v2's chunk count for that source exactly matches v1's) are not flagged —
+    this only answers "does retrieval ever see this source at all", not
+    per-chunk completeness.
+    """
+    def _run() -> dict:
+        import chromadb
+        client = chromadb.PersistentClient(path=_DB_PATH)
+        col_v1 = client.get_collection("permit_docs")
+        col_v2 = client.get_collection(_V2_COL)
+
+        v1_all = col_v1.get(include=["metadatas"])
+        v2_all = col_v2.get(include=["metadatas"])
+
+        def _by_country_source(metas: list[dict]) -> dict[str, dict[str, int]]:
+            out: dict[str, dict[str, int]] = {}
+            for m in metas:
+                country = (m or {}).get("country") or "UNKNOWN"
+                source  = (m or {}).get("source") or "UNKNOWN"
+                out.setdefault(country, {})
+                out[country][source] = out[country].get(source, 0) + 1
+            return out
+
+        v1_grouped = _by_country_source(v1_all["metadatas"])
+        v2_grouped = _by_country_source(v2_all["metadatas"])
+
+        result: dict = {"by_country": {}, "total_v1_only_sources": 0, "total_v1_only_chunks": 0}
+        for country, v1_sources in sorted(v1_grouped.items()):
+            v2_sources = v2_grouped.get(country, {})
+            v1_only = {
+                src: count for src, count in v1_sources.items()
+                if src not in v2_sources
+            }
+            if v1_only:
+                result["by_country"][country] = {
+                    "v1_only_sources": v1_only,
+                    "v1_only_source_count": len(v1_only),
+                    "v1_only_chunk_count": sum(v1_only.values()),
+                }
+                result["total_v1_only_sources"] += len(v1_only)
+                result["total_v1_only_chunks"]  += sum(v1_only.values())
+
+        result["v1_total_chunks"] = len(v1_all["ids"])
+        result["v2_total_chunks"] = len(v2_all["ids"])
+        return result
+
+    try:
+        return await asyncio.to_thread(_run)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.get("/api/admin/rag-test")
