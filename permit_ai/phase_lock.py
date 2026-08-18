@@ -47,7 +47,7 @@ DEFAULT_PHASE_COUNT = 3
 
 def get_max_phase(hanketyyppi: str) -> int:
     """Palauttaa hanketyypin käytössä olevan vaihemäärän. Oletus 3."""
-    return HANKETYYPPI_PHASE_COUNT.get(hanketyyppi, DEFAULT_PHASE_COUNT)
+    return HANKETYYPPI_PHASE_COUNT.get(_norm_hanke(hanketyyppi), DEFAULT_PHASE_COUNT)
 
 
 PHASE_ORDER = {
@@ -80,12 +80,49 @@ _PHASE_UNLOCK_ERROR: dict[int, str] = {
 }
 
 
+def _norm_hanke(hanketyyppi: str) -> str:
+    """
+    Normalizes hanketyyppi for use as a phase_lock storage/lookup key.
+
+    Found 2026-08-18: this module previously used hanketyyppi verbatim as a
+    raw dict key with zero case normalization anywhere. _HANKE_CFG's real
+    backend keys are inconsistently cased (BESS/SMR uppercase, the other
+    ~19 types lowercase) -- confirmed live that a completion recorded under
+    hanketyyppi="BESS" was invisible to a /api/phase-status query using
+    hanketyyppi="bess" for the same session (completed_phase read back as 0
+    instead of the real 1, even though the generation had genuinely
+    succeeded and unlocked the next phase). Normalizing to uppercase here,
+    at every public entry point, means read and write always agree
+    regardless of which casing any given caller happens to use -- defense
+    in depth rather than chasing every call site that might pass a
+    differently-cased value.
+    """
+    return (hanketyyppi or "").strip().upper()
+
+
 def _load() -> dict:
     try:
         with open(_SESSIONS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            raw = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
+    # Migrate-on-read: normalize hanketyyppi keys within each session to the
+    # same casing the functions below now use, so any pre-existing data
+    # written under a different casing (see _norm_hanke's docstring) is
+    # still found instead of silently orphaned. On a collision (the same
+    # session has both "bess" and "BESS" recorded, e.g. from different
+    # casing at different times), keep whichever has the higher
+    # completed_phase -- the more-progressed record.
+    migrated: dict = {}
+    for session_id, hanke_map in raw.items():
+        norm_map: dict = {}
+        for hanketyyppi, hanke_data in hanke_map.items():
+            key = _norm_hanke(hanketyyppi)
+            if key in norm_map and norm_map[key].get("completed_phase", 0) >= hanke_data.get("completed_phase", 0):
+                continue
+            norm_map[key] = hanke_data
+        migrated[session_id] = norm_map
+    return migrated
 
 
 def _save(data: dict) -> None:
@@ -114,6 +151,7 @@ def get_phase_status(session_id: str, hanketyyppi: str) -> dict:
             ]
         }
     """
+    hanketyyppi = _norm_hanke(hanketyyppi)
     with _lock:
         data = _load()
     sessions = data.get(session_id, {})
@@ -164,6 +202,7 @@ def unlock_next_phase(
     is defense in depth at the data-write layer, not the only thing
     preventing it.
     """
+    hanketyyppi = _norm_hanke(hanketyyppi)
     max_phase = get_max_phase(hanketyyppi)
     if not (1 <= completed_phase <= max_phase):
         return get_phase_status(session_id, hanketyyppi)
@@ -193,6 +232,7 @@ def skip_phases(session_id: str, hanketyyppi: str, skip_through_phase: int) -> d
     Ei ylikirjoita jo 'generated'-tilassa olevia vaiheita.
     Palauttaa päivitetyn phase_status-dictin.
     """
+    hanketyyppi = _norm_hanke(hanketyyppi)
     max_phase = get_max_phase(hanketyyppi)
     if skip_through_phase not in range(1, max_phase + 1):
         return get_phase_status(session_id, hanketyyppi)

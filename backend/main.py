@@ -2842,6 +2842,45 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
     return resp
 
 
+
+# _COUNTRY_LUVAT keys BESS/SMR uppercase, everything else lowercase (matches
+# _HANKE_CFG) -- permits_data.json/this endpoint use lowercase throughout.
+_LUVAT_TYPE_TO_PERMITS_KEY = {"BESS": "bess", "SMR": "smr"}
+_PERMITS_TYPE_TO_LUVAT_KEY = {"bess": "BESS", "smr": "SMR"}
+
+
+def _permits_from_country_luvat(country_cc: str, type_key: str) -> Optional[dict]:
+    """
+    Real fallback for the 7 countries (SE/DA/NO/EE/DE/LV/LT) with no
+    hand-curated entry in permits_data.json (only FI/PL are curated there).
+
+    Found 2026-08-18: without this, get_permits()'s only fallback was
+    `fi_base.get(type)` -- confirmed live that this silently rendered
+    Finnish authority/permit names (e.g. "Kemikaalilupa (Tukes)",
+    "Verkkoliityntä (Fingrid/jakelu)") in the LUVAT info box for LT/BESS,
+    and the same applies to every hanketyyppi for all 7 missing countries.
+
+    Derives real, sourced content instead from generate_application.py's
+    _COUNTRY_LUVAT -- the same per-country (permit, authority, law) data
+    already relied on elsewhere (chat widget, form dropdowns). _COUNTRY_LUVAT
+    has no phase split (esiselvitys/lupavaihe/rakentaminen), unlike
+    permits_data.json's hand-curated FI/PL entries, so the same flat list is
+    shown for all three phases -- an honest degradation (real, sourced
+    content, just not phase-differentiated) rather than fabricating a phase
+    split with no source for it.
+    """
+    luvat_key = _PERMITS_TYPE_TO_LUVAT_KEY.get(type_key, type_key)
+    rows = _gen_app_module._COUNTRY_LUVAT.get(country_cc, {}).get(luvat_key)
+    if not rows:
+        return None
+    phase_entry = {
+        "kohdeviranomainen": rows[0][1],
+        "viranomaiset": sorted({r[1] for r in rows}),
+        "luvat": [r[0] for r in rows],
+    }
+    return {"esiselvitys": phase_entry, "lupavaihe": phase_entry, "rakentaminen": phase_entry}
+
+
 @app.get("/api/permits")
 async def get_permits(
     type: Optional[str] = Query(default=None, alias="type"),
@@ -2861,7 +2900,9 @@ async def get_permits(
     if type:
         country = (country or "FI").upper()
         country_data = all_data.get(country, {})
-        resolved = country_data.get(type) or fi_base.get(type)
+        resolved = (country_data.get(type)
+                    or _permits_from_country_luvat(country, type)
+                    or fi_base.get(type))
         if not resolved:
             raise HTTPException(status_code=404, detail=f"Tyyppiä '{type}' ei löydy")
         kasittelyaika = fi_base.get(type, {}).get("kasittelyaika")
@@ -2879,6 +2920,27 @@ async def get_permits(
                     entry["kasittelyaika"] = fi_base.get(t, {}).get("kasittelyaika")
                 enriched[t] = entry
             result[cc] = enriched
+
+    # 2026-08-18: real per-country fallback for every country entirely
+    # absent from permits_data.json (all but FI/PL) -- see
+    # _permits_from_country_luvat's docstring. Without this these countries
+    # are missing from `result` altogether, which is why the frontend's own
+    # `_countryData[typeId] || _fiData[typeId]` fallback in
+    # _hankePhaseChanged() was silently resolving to Finnish data for every
+    # one of them. Only fills in hanketyyppis _COUNTRY_LUVAT actually has
+    # for that country -- never invents a type that isn't sourced.
+    for cc, hanke_map in _gen_app_module._COUNTRY_LUVAT.items():
+        if cc in result:
+            continue  # PL already has curated permits_data.json content -- don't override it
+        cc_result = {}
+        for luvat_key in hanke_map:
+            type_key = _LUVAT_TYPE_TO_PERMITS_KEY.get(luvat_key, luvat_key)
+            entry = _permits_from_country_luvat(cc, type_key)
+            if entry:
+                cc_result[type_key] = entry
+        if cc_result:
+            result[cc] = cc_result
+
     return JSONResponse(result)
 
 

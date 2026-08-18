@@ -1388,6 +1388,18 @@
               <button class="lang-btn" id="map-country-btn-NO" onclick="setMapCountry('NO')">🇳🇴 NO</button>
               <button class="lang-btn" id="map-country-btn-EE" onclick="setMapCountry('EE')">🇪🇪 EE</button>
               <button class="lang-btn" id="map-country-btn-PL" onclick="setMapCountry('PL')">🇵🇱 PL</button>
+              <!-- 2026-08-18: DE/LV/LT were missing entirely from this bar
+                   (found during live audit) -- selecting them wasn't even
+                   possible, unlike the other 5 non-FI countries which were
+                   at least selectable and correctly routed to the
+                   map_fi_only "coming soon" notice below (setMapCountry()
+                   hides #map-fi-form for any non-FI code). Added for
+                   consistency with every other 9-country selector in this
+                   app; functionally a no-op change since all three now
+                   resolve to the same existing coming-soon gate. -->
+              <button class="lang-btn" id="map-country-btn-DE" onclick="setMapCountry('DE')">🇩🇪 DE</button>
+              <button class="lang-btn" id="map-country-btn-LV" onclick="setMapCountry('LV')">🇱🇻 LV</button>
+              <button class="lang-btn" id="map-country-btn-LT" onclick="setMapCountry('LT')">🇱🇹 LT</button>
             </div>
           </div>
           <!-- Notice shown when non-FI country selected -->
@@ -2178,7 +2190,7 @@ const TRANSLATIONS = {
     proof_done_title: 'Oikoluku valmis',
     proof_dl:         'Lataa tarkistettu versio',
     proof_failed:     '⚠️ Oikoluku epäonnistui',
-    err_timeout:      'Aikakatkaisu (>300s) — yritä uudelleen',
+    err_timeout:      'Aikakatkaisu (>14 min) — yritä uudelleen',
     err_restart:      '⚠️ Palvelu käynnistyi uudelleen kesken generoinnin. Yritä uudelleen — tietosi ovat tallessa.',
     err_api_credit:   '⚠️ API-krediitit lopussa. Ota yhteyttä: info@ncenergy.fi',
     // Dropdown option labels
@@ -2607,7 +2619,7 @@ const TRANSLATIONS = {
     proof_done_title: 'Proofreading complete',
     proof_dl:         'Download proofread version',
     proof_failed:     '⚠️ Proofreading failed',
-    err_timeout:      'Timeout (>300s) — please try again',
+    err_timeout:      'Timeout (>14 min) — please try again',
     err_restart:      '⚠️ Service restarted during generation. Please try again — your data is safe.',
     err_api_credit:   '⚠️ API credits exhausted. Contact: info@ncenergy.fi',
     // Dropdown option labels
@@ -3026,7 +3038,7 @@ const TRANSLATIONS = {
     proof_done_title: 'Korrekturläsning klar',
     proof_dl:         'Ladda ned korrekturläst version',
     proof_failed:     '⚠️ Korrekturläsningen misslyckades',
-    err_timeout:      'Timeout (>300s) — försök igen',
+    err_timeout:      'Timeout (>14 min) — försök igen',
     err_restart:      '⚠️ Tjänsten startade om under genereringen. Försök igen — dina uppgifter är säkra.',
     err_api_credit:   '⚠️ API-krediter slut. Kontakta: info@ncenergy.fi',
     // Dropdown option labels
@@ -3260,7 +3272,7 @@ const TRANSLATIONS = {
     proof_done_title:'Korrekturlæsning fuldført',
     proof_dl:       'Download korrekturlæst version',
     proof_failed:   '⚠️ Korrekturlæsning mislykkedes',
-    err_timeout:    'Timeout (>300s) — prøv igen',
+    err_timeout:    'Timeout (>14 min) — prøv igen',
     err_restart:    '⚠️ Tjenesten genstartede under generering. Prøv igen — dine data er sikre.',
     err_api_credit: '⚠️ API-kreditter opbrugt. Kontakt: info@ncenergy.fi',
     err_gen_failed: 'Generering mislykkedes',
@@ -3685,7 +3697,7 @@ const TRANSLATIONS = {
     proof_done_title:'Korrekturlesing fullført',
     proof_dl:       'Last ned korrekturlest versjon',
     proof_failed:   '⚠️ Korrekturlesing mislyktes',
-    err_timeout:    'Tidsavbrudd (>300s) — prøv igjen',
+    err_timeout:    'Tidsavbrudd (>14 min) — prøv igjen',
     err_restart:    '⚠️ Tjenesten startet på nytt under generering. Prøv igjen — dataene dine er trygge.',
     err_api_credit: '⚠️ API-kreditter oppbrukt. Kontakt: info@ncenergy.fi',
     err_gen_failed: 'Generering mislyktes',
@@ -4110,7 +4122,7 @@ const TRANSLATIONS = {
     proof_done_title:'Korekta zakończona',
     proof_dl:       'Pobierz wersję po korekcie',
     proof_failed:   '⚠️ Korekta nie powiodła się',
-    err_timeout:    'Limit czasu (>300s) — spróbuj ponownie',
+    err_timeout:    'Limit czasu (>14 min) — spróbuj ponownie',
     err_restart:    '⚠️ Usługa uruchomiła się ponownie podczas generowania. Spróbuj ponownie — Twoje dane są bezpieczne.',
     err_api_credit: '⚠️ Kredyty API wyczerpane. Kontakt: info@ncenergy.fi',
     err_gen_failed: 'Generowanie nie powiodło się',
@@ -4777,7 +4789,7 @@ const TRANSLATIONS = {
     proof_done_title:    'Korrektur abgeschlossen',
     proof_dl:            'Geprüfte Version herunterladen',
     proof_failed:        '⚠️ Korrektur fehlgeschlagen',
-    err_timeout:         'Zeitüberschreitung (>300s) — erneut versuchen',
+    err_timeout:         'Zeitüberschreitung (>14 min) — erneut versuchen',
     err_restart:         '⚠️ Dienst wurde während der Generierung neu gestartet. Bitte erneut versuchen — Ihre Daten sind sicher.',
     err_api_credit:      '⚠️ API-Guthaben aufgebraucht. Kontakt: info@ncenergy.fi',
     err_gen_failed:      'Generierung fehlgeschlagen',
@@ -5245,7 +5257,7 @@ const TRANSLATIONS = {
     err_api_credit: '⚠️ API krediit otsas. Võtke ühendust: info@ncenergy.fi',
     err_gen_failed: 'Genereerimine ebaõnnestus',
     err_restart: '⚠️ Teenus taaskäivitus genereerimise ajal. Proovige uuesti — teie andmed on alles.',
-    err_timeout: 'Ajalõpp (>300s) — proovige uuesti',
+    err_timeout: 'Ajalõpp (>14 min) — proovige uuesti',
     phase_esiselvitys: 'Eeluuringu etapp',
     phase_lupavaihe: 'Loamenetluse etapp',
     phase_rakentaminen: 'Ehitusetapp',
@@ -5572,7 +5584,7 @@ const TRANSLATIONS = {
     proof_done_title: 'Korektūra pabeigta',
     proof_dl:         'Lejupielādēt pārbaudīto versiju',
     proof_failed:     '⚠️ Korektūra neizdevās',
-    err_timeout:      'Noildze (>300s) — lūdzu, mēģiniet vēlreiz',
+    err_timeout:      'Noildze (>14 min) — lūdzu, mēģiniet vēlreiz',
     err_restart:      '⚠️ Pakalpojums restartējās ģenerēšanas laikā. Lūdzu, mēģiniet vēlreiz — jūsu dati ir droši.',
     err_api_credit:   '⚠️ API kredīti izsmelti. Sazinieties: info@ncenergy.fi',
     // Dropdown option labels
@@ -6001,7 +6013,7 @@ const TRANSLATIONS = {
     proof_done_title: 'Korektūra baigta',
     proof_dl:         'Atsisiųsti patikrintą versiją',
     proof_failed:     '⚠️ Korektūra nepavyko',
-    err_timeout:      'Baigėsi laikas (>300s) — bandykite dar kartą',
+    err_timeout:      'Baigėsi laikas (>14 min) — bandykite dar kartą',
     err_restart:      '⚠️ Paslauga iš naujo paleista generavimo metu. Bandykite dar kartą — jūsų duomenys saugūs.',
     err_api_credit:   '⚠️ Baigėsi API kreditai. Susisiekite: info@ncenergy.fi',
     // Dropdown option labels
@@ -7122,6 +7134,16 @@ const COUNTRY_HINTS = {
   LT: ['vilnius','kaunas','klaipėda','klaipeda','šiauliai','siauliai',
        'panevėžys','panevezys','alytus','marijampolė','marijampole',
        'mažeikiai','mazeikiai','jonava','utena'],
+  // 2026-08-18: DE was missing entirely (found during live audit) -- the
+  // auto-detect-country-from-typed-kunta safety net (see its call site,
+  // submitGeneratorForm()) silently stayed on FI for any German city typed
+  // while the country selector hadn't been changed yet, unlike the other 8
+  // countries. ASCII variants (muenchen/koeln/duesseldorf/nuernberg)
+  // mirror the existing ö/ü-substitution convention already used for
+  // LV/LT's diacritics above.
+  DE: ['berlin','münchen','muenchen','hamburg','köln','koeln','frankfurt',
+       'stuttgart','düsseldorf','duesseldorf','dortmund','essen','leipzig',
+       'bremen','dresden','hannover','nürnberg','nuernberg'],
 };
 
 function detectCountry(text) {
@@ -7295,6 +7317,21 @@ function setCountry(code) {
   if (selectedProjectType && _cntryOverlay && _cntryOverlay.style.display !== 'none') {
     const savedVals = _saveFormValues();
     selectProjectType(selectedProjectType);
+    // gf-viranomainen is deliberately NOT restored here -- found 2026-08-18
+    // during live testing (with LT selected, target authority stayed
+    // empty/FI-default instead of the country-correct auto-fill). Root
+    // cause: selectProjectType() above just freshly computed the correct
+    // country-aware value (see its own "Auto-fill Kohdeviranomainen"
+    // block), but the unconditional _restoreFormValues() immediately after
+    // was overwriting it right back with whatever was in the field BEFORE
+    // this country change (stale, from the old country, or blank) --
+    // savedVals was captured before the re-render, so it always held the
+    // pre-change value. This wasn't caught by the earlier extracted-code
+    // test because that test called _countryAutoVir's mapping function in
+    // isolation and never exercised this actual save/reopen/restore event
+    // sequence -- a real gap in that test's coverage, not a false "0
+    // failures" result on what it did check.
+    delete savedVals['gf-viranomainen'];
     _restoreFormValues(savedVals);
   }
 
@@ -7310,7 +7347,7 @@ let mapSelectedCountry = 'FI';
 
 function setMapCountry(code) {
   mapSelectedCountry = code;
-  ['FI','SE','DA','NO','EE','PL'].forEach(c => {
+  ['FI','SE','DA','NO','EE','PL','DE','LV','LT'].forEach(c => {
     const btn = document.getElementById('map-country-btn-' + c);
     if (btn) btn.classList.toggle('active', c === code);
   });
@@ -7575,7 +7612,25 @@ function selectProjectType(typeId) {
   }
 
   const hvInfo = HANKETYYPIT[typeId] || {};
-  const lupaTagsHtml = (hvInfo.lupatyypit || []).map(l =>
+  // 2026-08-18: hvInfo.lupatyypit is hand-authored, Finnish-only content
+  // with no country dimension at all -- found live: this is the
+  // "LUVAT (YLEISESTI)" box showing "Kemikaalilupa (Tukes)"/"Verkkoliityntä
+  // (Fingrid/jakelu)" etc. regardless of selected country. For non-FI
+  // countries, prefer the real per-country permit list from _PERMITS_CFG
+  // (now backed by generate_application.py's _COUNTRY_LUVAT for every
+  // country via /api/permits, see main.py's _permits_from_country_luvat).
+  // FI keeps its original hand-authored list unchanged -- zero regression
+  // risk for the one country this box was already correct for.
+  let lupatyypitList = hvInfo.lupatyypit || [];
+  if (selectedCountry !== 'FI' && _PERMITS_CFG) {
+    const countryEntry = (_PERMITS_CFG[selectedCountry] || {})[typeId];
+    const countryLuvat = countryEntry &&
+      (countryEntry.esiselvitys || countryEntry.lupavaihe || countryEntry.rakentaminen);
+    if (countryLuvat && countryLuvat.luvat && countryLuvat.luvat.length) {
+      lupatyypitList = countryLuvat.luvat;
+    }
+  }
+  const lupaTagsHtml = lupatyypitList.map(l =>
     `<span class="gf-lupa-tag" data-lupa-fi="${l.replace(/"/g, '&quot;')}">${tLupa(l)}</span>`
   ).join('');
 
@@ -7903,7 +7958,15 @@ async function submitGeneratorForm() {
           proofBox.innerHTML = t('err_timeout');
         }
         _btnReset();
-      }, 360_000);
+      // 2026-08-18: was 360_000 (6 min) -- found via Render logs that a real,
+      // successful LT/BESS generation (job 59c4177a18) took ~390s end-to-end
+      // (POST 09:41:00 -> pdf done 09:47:30), so the client was giving up on
+      // and reporting "timeout" for jobs that were actually still running and
+      // completed successfully ~30s later server-side. Backend ARQ
+      // job_timeout=900s (see main.py _arq_startup) is the real ceiling this
+      // should track -- raised to 840_000 (14 min), 60s of margin under it,
+      // rather than re-guessing a new arbitrary client-side number.
+      }, 840_000);
     } else {
       _btnReset();
     }

@@ -14,10 +14,33 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm, mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     HRFlowable, Image as RLImage, KeepTogether, Paragraph,
     SimpleDocTemplate, Spacer, Table, TableStyle,
 )
+
+# ── TrueType font registration (UTF-8 safe, replaces Latin-1 Helvetica) ──────
+# Found 2026-08-18 during a real end-to-end PDF-generation test (all 10
+# languages): LV/LT text rendered with "missing glyph" placeholder boxes
+# in place of extended Baltic characters (ā/ī/ē/ņ for LV; ą/ę/į/ų/ė for LT)
+# -- plain "Helvetica" is a standard Type1 PDF base font restricted to
+# Latin-1/WinAnsi encoding, which doesn't cover those. Same root cause and
+# same fix already used by permit_ai/generate_application.py (registers
+# DejaVu Sans, full Unicode coverage) -- this file just never had it.
+_DEJAVU_PATH      = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+_DEJAVU_BOLD_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+if os.path.exists(_DEJAVU_PATH):
+    pdfmetrics.registerFont(TTFont("DejaVu", _DEJAVU_PATH))
+    PDF_FONT = "DejaVu"
+else:
+    PDF_FONT = "Helvetica"
+if os.path.exists(_DEJAVU_BOLD_PATH):
+    pdfmetrics.registerFont(TTFont("DejaVu-Bold", _DEJAVU_BOLD_PATH))
+    PDF_FONT_BOLD = "DejaVu-Bold"
+else:
+    PDF_FONT_BOLD = "Helvetica-Bold"
 
 C_RED    = colors.HexColor("#e94560")
 C_NAVY   = colors.HexColor("#16213e")
@@ -27,50 +50,89 @@ C_ORANGE = colors.HexColor("#ff9800")
 C_WHITE  = colors.white
 
 _RS: dict[str, dict[str, str]] = {
-    "title":         {"FI": "Akkuvarastohankkeen sijaintianalyysi", "EN": "BESS Site Location Analysis",         "SE": "Platsanalys för batterienergilager",       "DA": "Stedsanalyse for batterienergilager",      "NO": "Stedsanalyse for batterienergilager",      "PL": "Analiza lokalizacji systemu BESS"},
-    "title_sub":     {"FI": "BESS-kaavoituskartoitus",              "EN": "BESS Land Use Survey",                "SE": "Markanvändningskartläggning BESS",         "DA": "Arealanvendelseskortlægning BESS",         "NO": "Arealbrukskartlegging BESS",               "PL": "Raport zagospodarowania terenu BESS"},
-    "confidential":  {"FI": "LUOTTAMUKSELLINEN",                    "EN": "CONFIDENTIAL",                        "SE": "KONFIDENTIELLT",                           "DA": "FORTROLIGT",                               "NO": "KONFIDENSIELT",                            "PL": "POUFNE"},
-    "confid_sub":    {"FI": "Vain vastaanottajan käyttöön",         "EN": "For recipient only",                  "SE": "Endast för mottagaren",                    "DA": "Kun til modtageren",                       "NO": "Kun for mottakeren",                       "PL": "Tylko dla odbiorcy"},
+    "title":         {"FI": "Akkuvarastohankkeen sijaintianalyysi", "EN": "BESS Site Location Analysis",         "SE": "Platsanalys för batterienergilager",       "DA": "Stedsanalyse for batterienergilager",      "NO": "Stedsanalyse for batterienergilager",      "PL": "Analiza lokalizacji systemu BESS",
+                      "DE": "Standortanalyse für BESS-Projekt", "ET": "BESS-projekti asukohaanalüüs", "LV": "BESS projekta atrašanās vietas analīze", "LT": "BESS projekto vietos analizė"},
+    "title_sub":     {"FI": "BESS-kaavoituskartoitus",              "EN": "BESS Land Use Survey",                "SE": "Markanvändningskartläggning BESS",         "DA": "Arealanvendelseskortlægning BESS",         "NO": "Arealbrukskartlegging BESS",               "PL": "Raport zagospodarowania terenu BESS",
+                      "DE": "BESS-Flächennutzungserhebung", "ET": "BESS maakasutuse uuring", "LV": "BESS zemes izmantošanas apsekojums", "LT": "BESS žemės naudojimo tyrimas"},
+    "confidential":  {"FI": "LUOTTAMUKSELLINEN",                    "EN": "CONFIDENTIAL",                        "SE": "KONFIDENTIELLT",                           "DA": "FORTROLIGT",                               "NO": "KONFIDENSIELT",                            "PL": "POUFNE",
+                      "DE": "VERTRAULICH", "ET": "KONFIDENTSIAALNE", "LV": "KONFIDENCIĀLI", "LT": "KONFIDENCIALU"},
+    "confid_sub":    {"FI": "Vain vastaanottajan käyttöön",         "EN": "For recipient only",                  "SE": "Endast för mottagaren",                    "DA": "Kun til modtageren",                       "NO": "Kun for mottakeren",                       "PL": "Tylko dla odbiorcy",
+                      "DE": "Nur für den Empfänger bestimmt", "ET": "Ainult saaja kasutuseks", "LV": "Tikai saņēmēja lietošanai", "LT": "Skirta tik gavėjo naudojimui"},
     "disc_front":    {"FI": "Tämä raportti on laadittu esiselvityskäyttöön ja perustuu julkisiin avoimiin tietoihin. Raportti ei korvaa virallisia lupaselvityksiä eikä ole sitova. NCE Energy ei vastaa mahdollisten tietojen puutteellisuudesta tai muutoksista.",
                       "EN": "This report is prepared for preliminary investigation purposes and is based on publicly available open data. The report does not replace official permit investigations and is not binding. NCE Energy is not responsible for any incompleteness or changes in the data.",
                       "SE": "Denna rapport är framtagen för förstudieanvändning och baseras på offentliga öppna uppgifter. Rapporten ersätter inte officiella tillståndsutredningar och är inte bindande. NCE Energy ansvarar inte för eventuella brister eller ändringar i uppgifterna.",
                       "DA": "Denne rapport er udarbejdet til forundersøgelsesformål og er baseret på offentligt tilgængelige data. Rapporten erstatter ikke officielle tilladelsesundersøgelser og er ikke bindende. NCE Energy er ikke ansvarlig for eventuelle mangler eller ændringer i dataene.",
                       "NO": "Denne rapporten er utarbeidet for forhåndsundersøkelsesformål og er basert på offentlig tilgjengelige åpne data. Rapporten erstatter ikke offisielle tillatelsesutredninger og er ikke bindende. NCE Energy er ikke ansvarlig for eventuelle mangler eller endringer i dataene.",
-                      "PL": "Raport ten został przygotowany do celów wstępnego rozpoznania i opiera się na publicznie dostępnych danych. Raport nie zastępuje oficjalnych badań zezwoleń i nie jest wiążący. NCE Energy nie ponosi odpowiedzialności za niekompletność lub zmiany danych."},
-    "proj_info":     {"FI": "Hankkeen tiedot",                      "EN": "Project Information",                 "SE": "Projektinformation",                       "DA": "Projektoplysninger",                       "NO": "Prosjektinformasjon",                      "PL": "Informacje o projekcie"},
-    "fld":           {"FI": "Kenttä",                               "EN": "Field",                               "SE": "Fält",                                     "DA": "Felt",                                     "NO": "Felt",                                     "PL": "Pole"},
-    "val":           {"FI": "Arvo",                                 "EN": "Value",                               "SE": "Värde",                                    "DA": "Værdi",                                    "NO": "Verdi",                                    "PL": "Wartość"},
-    "param":         {"FI": "Parametri",                            "EN": "Parameter",                           "SE": "Parameter",                                "DA": "Parameter",                                "NO": "Parameter",                                "PL": "Parametr"},
-    "eval":          {"FI": "Arviointi",                            "EN": "Assessment",                          "SE": "Bedömning",                                "DA": "Vurdering",                                "NO": "Vurdering",                                "PL": "Ocena"},
-    "factor":        {"FI": "Tarkasteltava tekijä",                 "EN": "Factor",                              "SE": "Faktor",                                   "DA": "Faktor",                                   "NO": "Faktor",                                   "PL": "Czynnik"},
-    "result":        {"FI": "Tulos",                                "EN": "Result",                              "SE": "Resultat",                                 "DA": "Resultat",                                 "NO": "Resultat",                                 "PL": "Wynik"},
-    "map_view":      {"FI": "Karttanäkymä",                         "EN": "Map View",                            "SE": "Kartvyn",                                  "DA": "Kortvisning",                               "NO": "Kartvisning",                              "PL": "Widok mapy"},
-    "map_na":        {"FI": "Karttakuva ei saatavilla.",             "EN": "Map image not available.",            "SE": "Kartbild ej tillgänglig.",                  "DA": "Kortbillede ikke tilgængeligt.",            "NO": "Kartbilde ikke tilgjengelig.",              "PL": "Obraz mapy niedostępny."},
-    "sec1":          {"FI": "1. Kiinteistötiedot",                   "EN": "1. Property Information",             "SE": "1. Fastighetsuppgifter",                   "DA": "1. Ejendomsoplysninger",                   "NO": "1. Eiendomsopplysninger",                  "PL": "1. Informacje o nieruchomości"},
-    "sec2":          {"FI": "2. Sähköverkon liitynnän soveltuvuus ja suoja-alueet", "EN": "2. Grid Connection Suitability and Protection Zones", "SE": "2. Elnätets anslutningslämplighet och skyddszoner", "DA": "2. Nettilslutningsegnethed og beskyttelseszoner", "NO": "2. Nettilkoblingens egnethet og vernesoner", "PL": "2. Przydatność przyłączenia do sieci i strefy ochronne"},
-    "sec3":          {"FI": "3. Pohjavesialueet",                    "EN": "3. Groundwater Areas",                "SE": "3. Grundvattenområden",                    "DA": "3. Grundvandsområder",                     "NO": "3. Grunnvannsområder",                     "PL": "3. Obszary wód gruntowych"},
-    "sec4":          {"FI": "4. Muinaismuistot ja kulttuuriympäristö", "EN": "4. Archaeological Heritage and Cultural Environment", "SE": "4. Fornminnen och kulturmiljö", "DA": "4. Fortidsminder og kulturmiljø",          "NO": "4. Fornminner og kulturmiljø",              "PL": "4. Zabytki i środowisko kulturowe"},
-    "sec5":          {"FI": "5. Ympäristö- ja suojelualueet",        "EN": "5. Environmental and Protection Areas", "SE": "5. Miljö- och skyddsområden",            "DA": "5. Miljø- og beskyttelsesområder",         "NO": "5. Miljø- og verneområder",                "PL": "5. Obszary środowiskowe i chronione"},
-    "sec6":          {"FI": "6. Asutuksen etäisyys",                 "EN": "6. Distance to Settlements",          "SE": "6. Avstånd till bebyggelse",               "DA": "6. Afstand til bebyggelse",                "NO": "6. Avstand til bebyggelse",                "PL": "6. Odległość od zabudowy"},
-    "sec7":          {"FI": "7. Kaavoitustilanne ja maankäyttölupa", "EN": "7. Zoning and Land Use Permit",       "SE": "7. Planläggning och markanvändningstillstånd", "DA": "7. Zonering og arealanvendelsestilladelse", "NO": "7. Plansituasjon og arealbrukstillatelse", "PL": "7. Plan zagospodarowania i pozwolenie na użytkowanie"},
-    "sec7b":         {"FI": "7b. Maaperä ja tulvavaara",             "EN": "7b. Soil and Flood Risk",             "SE": "7b. Markförhållanden och översvämningsrisk", "DA": "7b. Jordbund og oversvømmelsesrisiko",    "NO": "7b. Grunnforhold og flomrisiko",            "PL": "7b. Gleba i ryzyko powodzi"},
-    "sec8":          {"FI": "8. Hankkeen toteutettavuusindeksi (0–100)", "EN": "8. Project Feasibility Index (0–100)", "SE": "8. Projektgenomförbarhetsindex (0–100)", "DA": "8. Projektgennemførlighed (0–100)",        "NO": "8. Prosjektgjennomførbarhet (0–100)",      "PL": "8. Wskaźnik wykonalności projektu (0–100)"},
-    "sec8b":         {"FI": "8b. NCE Energy — Lupaprosessianalyysi (tekoälyavusteinen)", "EN": "8b. NCE Energy — Permit Process Analysis (AI-assisted)", "SE": "8b. NCE Energy — Tillståndsprocessanalys (AI-assisterad)", "DA": "8b. NCE Energy — Tilladelsesprocessanalyse (AI-assisteret)", "NO": "8b. NCE Energy — Tillatelsesprosessanalyse (AI-assistert)", "PL": "8b. NCE Energy — Analiza procesu zezwoleń (wspomagana przez AI)"},
-    "sec8c":         {"FI": "8c. Lupaprosessin aikajana",            "EN": "8c. Permit Process Timeline",         "SE": "8c. Tillståndsprocessens tidslinje",        "DA": "8c. Tidslinje for tilladelsesprocessen",   "NO": "8c. Tidslinje for tillatelsesprosessen",   "PL": "8c. Harmonogram procesu zezwoleń"},
-    "sec9":          {"FI": "9. Suositukset",                        "EN": "9. Recommendations",                  "SE": "9. Rekommendationer",                      "DA": "9. Anbefalinger",                          "NO": "9. Anbefalinger",                          "PL": "9. Zalecenia"},
-    "sec10":         {"FI": "10. Lakisääteiset vaatimukset ja viranomaisprosessi", "EN": "10. Statutory Requirements and Authority Process", "SE": "10. Lagstadgade krav och myndighetsprocedur", "DA": "10. Lovmæssige krav og myndighedsproces", "NO": "10. Lovfestede krav og myndighetsprosess", "PL": "10. Wymagania ustawowe i proces urzędowy"},
-    "sec11":         {"FI": "11. Seuraavat toimenpiteet",            "EN": "11. Next Steps",                      "SE": "11. Nästa steg",                           "DA": "11. Næste trin",                           "NO": "11. Neste steg",                           "PL": "11. Kolejne kroki"},
-    "disc_label":    {"FI": "VASTUUVAPAUSLAUSEKE",                   "EN": "DISCLAIMER",                          "SE": "ANSVARSFRISKRIVNING",                      "DA": "ANSVARSFRASKRIVELSE",                      "NO": "ANSVARSFRASKRIVELSE",                      "PL": "ZASTRZEŻENIE"},
-    "confidential_footer": {"FI": "Luottamuksellinen",              "EN": "Confidential",                        "SE": "Konfidentiellt",                           "DA": "Fortroligt",                               "NO": "Konfidensielt",                            "PL": "Poufne"},
-    "page":          {"FI": "Sivu",                                  "EN": "Page",                                "SE": "Sida",                                     "DA": "Side",                                     "NO": "Side",                                     "PL": "Strona"},
-    "owner":         {"FI": "Omistaja / kehittäjä",                  "EN": "Owner / developer",                   "SE": "Ägare / utvecklare",                       "DA": "Ejer / udvikler",                          "NO": "Eier / utvikler",                          "PL": "Właściciel / deweloper"},
-    "project":       {"FI": "Hanke",                                 "EN": "Project",                             "SE": "Projekt",                                  "DA": "Projekt",                                  "NO": "Prosjekt",                                 "PL": "Projekt"},
-    "power":         {"FI": "Teho",                                  "EN": "Power",                               "SE": "Effekt",                                   "DA": "Effekt",                                   "NO": "Effekt",                                   "PL": "Moc"},
-    "grid_conn":     {"FI": "Verkkoliityntä",                        "EN": "Grid connection",                     "SE": "Nätanslutning",                            "DA": "Nettilslutning",                           "NO": "Nettilkobling",                            "PL": "Przyłączenie do sieci"},
-    "market_tgt":    {"FI": "Tavoitemarkkinat",                      "EN": "Target markets",                      "SE": "Målmarknader",                             "DA": "Målmarkeder",                              "NO": "Målmarkeder",                              "PL": "Rynki docelowe"},
-    "loc_muni":      {"FI": "Sijaintikunta",                         "EN": "Municipality",                        "SE": "Belägenhet (kommun)",                      "DA": "Beliggenhedskommune",                      "NO": "Beliggenhetkommune",                       "PL": "Gmina"},
-    "prop_id":       {"FI": "Kiinteistötunnus",                      "EN": "Property ID",                         "SE": "Fastighetsbeteckning",                     "DA": "Ejendomsnummer",                           "NO": "Eiendomsnummer",                           "PL": "Numer nieruchomości"},
-    "report_date":   {"FI": "Raportin päivämäärä",                   "EN": "Report date",                         "SE": "Rapportdatum",                             "DA": "Rapportdato",                              "NO": "Rapportdato",                              "PL": "Data raportu"},
+                      "PL": "Raport ten został przygotowany do celów wstępnego rozpoznania i opiera się na publicznie dostępnych danych. Raport nie zastępuje oficjalnych badań zezwoleń i nie jest wiążący. NCE Energy nie ponosi odpowiedzialności za niekompletność lub zmiany danych.",
+                      "DE": "Dieser Bericht wurde zu Zwecken der Vorabprüfung erstellt und basiert auf öffentlich zugänglichen offenen Daten. Der Bericht ersetzt keine offiziellen Genehmigungsprüfungen und ist nicht bindend. NCE Energy übernimmt keine Verantwortung für etwaige Unvollständigkeiten oder Änderungen der Daten.", "ET": "See aruanne on koostatud eeluuringu eesmärgil ja põhineb avalikult kättesaadavatel avatud andmetel. Aruanne ei asenda ametlikke loamenetluse uuringuid ega ole siduv. NCE Energy ei vastuta andmete võimaliku puudulikkuse või muutumise eest.", "LV": "Šis pārskats ir sagatavots iepriekšējas izpētes nolūkos un balstīts uz publiski pieejamiem atvērtiem datiem. Pārskats neaizstāj oficiālas atļauju izpētes un nav saistošs. NCE Energy neuzņemas atbildību par datu iespējamo nepilnību vai izmaiņām.", "LT": "Ši ataskaita parengta preliminaraus tyrimo tikslais ir yra pagrįsta viešai prieinamais atvirais duomenimis. Ataskaita nepakeičia oficialių leidimų tyrimų ir nėra privaloma. NCE Energy neatsako už galimą duomenų neišsamumą ar pasikeitimus."},
+    "proj_info":     {"FI": "Hankkeen tiedot",                      "EN": "Project Information",                 "SE": "Projektinformation",                       "DA": "Projektoplysninger",                       "NO": "Prosjektinformasjon",                      "PL": "Informacje o projekcie",
+                      "DE": "Projektinformationen", "ET": "Projekti andmed", "LV": "Projekta informācija", "LT": "Projekto informacija"},
+    "fld":           {"FI": "Kenttä",                               "EN": "Field",                               "SE": "Fält",                                     "DA": "Felt",                                     "NO": "Felt",                                     "PL": "Pole",
+                      "DE": "Feld", "ET": "Väli", "LV": "Lauks", "LT": "Laukas"},
+    "val":           {"FI": "Arvo",                                 "EN": "Value",                               "SE": "Värde",                                    "DA": "Værdi",                                    "NO": "Verdi",                                    "PL": "Wartość",
+                      "DE": "Wert", "ET": "Väärtus", "LV": "Vērtība", "LT": "Reikšmė"},
+    "param":         {"FI": "Parametri",                            "EN": "Parameter",                           "SE": "Parameter",                                "DA": "Parameter",                                "NO": "Parameter",                                "PL": "Parametr",
+                      "DE": "Parameter", "ET": "Parameeter", "LV": "Parametrs", "LT": "Parametras"},
+    "eval":          {"FI": "Arviointi",                            "EN": "Assessment",                          "SE": "Bedömning",                                "DA": "Vurdering",                                "NO": "Vurdering",                                "PL": "Ocena",
+                      "DE": "Bewertung", "ET": "Hinnang", "LV": "Novērtējums", "LT": "Vertinimas"},
+    "factor":        {"FI": "Tarkasteltava tekijä",                 "EN": "Factor",                              "SE": "Faktor",                                   "DA": "Faktor",                                   "NO": "Faktor",                                   "PL": "Czynnik",
+                      "DE": "Faktor", "ET": "Tegur", "LV": "Faktors", "LT": "Veiksnys"},
+    "result":        {"FI": "Tulos",                                "EN": "Result",                              "SE": "Resultat",                                 "DA": "Resultat",                                 "NO": "Resultat",                                 "PL": "Wynik",
+                      "DE": "Ergebnis", "ET": "Tulemus", "LV": "Rezultāts", "LT": "Rezultatas"},
+    "map_view":      {"FI": "Karttanäkymä",                         "EN": "Map View",                            "SE": "Kartvyn",                                  "DA": "Kortvisning",                               "NO": "Kartvisning",                              "PL": "Widok mapy",
+                      "DE": "Kartenansicht", "ET": "Kaardivaade", "LV": "Kartes skats", "LT": "Žemėlapio vaizdas"},
+    "map_na":        {"FI": "Karttakuva ei saatavilla.",             "EN": "Map image not available.",            "SE": "Kartbild ej tillgänglig.",                  "DA": "Kortbillede ikke tilgængeligt.",            "NO": "Kartbilde ikke tilgjengelig.",              "PL": "Obraz mapy niedostępny.",
+                      "DE": "Kartenbild nicht verfügbar.", "ET": "Kaardipilt pole saadaval.", "LV": "Kartes attēls nav pieejams.", "LT": "Žemėlapio vaizdas nepasiekiamas."},
+    "sec1":          {"FI": "1. Kiinteistötiedot",                   "EN": "1. Property Information",             "SE": "1. Fastighetsuppgifter",                   "DA": "1. Ejendomsoplysninger",                   "NO": "1. Eiendomsopplysninger",                  "PL": "1. Informacje o nieruchomości",
+                      "DE": "1. Grundstücksinformationen", "ET": "1. Kinnistu andmed", "LV": "1. Īpašuma informācija", "LT": "1. Nekilnojamojo turto informacija"},
+    "sec2":          {"FI": "2. Sähköverkon liitynnän soveltuvuus ja suoja-alueet", "EN": "2. Grid Connection Suitability and Protection Zones", "SE": "2. Elnätets anslutningslämplighet och skyddszoner", "DA": "2. Nettilslutningsegnethed og beskyttelseszoner", "NO": "2. Nettilkoblingens egnethet og vernesoner", "PL": "2. Przydatność przyłączenia do sieci i strefy ochronne",
+                      "DE": "2. Eignung des Netzanschlusses und Schutzzonen", "ET": "2. Elektrivõrguga liitumise sobivus ja kaitsevööndid", "LV": "2. Elektrotīkla pieslēguma piemērotība un aizsargjoslas", "LT": "2. Elektros tinklo prijungimo tinkamumas ir apsaugos zonos"},
+    "sec3":          {"FI": "3. Pohjavesialueet",                    "EN": "3. Groundwater Areas",                "SE": "3. Grundvattenområden",                    "DA": "3. Grundvandsområder",                     "NO": "3. Grunnvannsområder",                     "PL": "3. Obszary wód gruntowych",
+                      "DE": "3. Grundwassergebiete", "ET": "3. Põhjaveealad", "LV": "3. Gruntsūdeņu teritorijas", "LT": "3. Požeminio vandens teritorijos"},
+    "sec4":          {"FI": "4. Muinaismuistot ja kulttuuriympäristö", "EN": "4. Archaeological Heritage and Cultural Environment", "SE": "4. Fornminnen och kulturmiljö", "DA": "4. Fortidsminder og kulturmiljø",          "NO": "4. Fornminner og kulturmiljø",              "PL": "4. Zabytki i środowisko kulturowe",
+                      "DE": "4. Bodendenkmäler und Kulturumgebung", "ET": "4. Muinsuskaitse ja kultuurikeskkond", "LV": "4. Arheoloģiskais mantojums un kultūrvide", "LT": "4. Archeologinis paveldas ir kultūrinė aplinka"},
+    "sec5":          {"FI": "5. Ympäristö- ja suojelualueet",        "EN": "5. Environmental and Protection Areas", "SE": "5. Miljö- och skyddsområden",            "DA": "5. Miljø- og beskyttelsesområder",         "NO": "5. Miljø- og verneområder",                "PL": "5. Obszary środowiskowe i chronione",
+                      "DE": "5. Umwelt- und Schutzgebiete", "ET": "5. Keskkonna- ja kaitsealad", "LV": "5. Vides un aizsargājamās teritorijas", "LT": "5. Aplinkos ir saugomos teritorijos"},
+    "sec6":          {"FI": "6. Asutuksen etäisyys",                 "EN": "6. Distance to Settlements",          "SE": "6. Avstånd till bebyggelse",               "DA": "6. Afstand til bebyggelse",                "NO": "6. Avstand til bebyggelse",                "PL": "6. Odległość od zabudowy",
+                      "DE": "6. Abstand zu Siedlungen", "ET": "6. Kaugus asustusest", "LV": "6. Attālums līdz apdzīvotām vietām", "LT": "6. Atstumas iki gyvenviečių"},
+    "sec7":          {"FI": "7. Kaavoitustilanne ja maankäyttölupa", "EN": "7. Zoning and Land Use Permit",       "SE": "7. Planläggning och markanvändningstillstånd", "DA": "7. Zonering og arealanvendelsestilladelse", "NO": "7. Plansituasjon og arealbrukstillatelse", "PL": "7. Plan zagospodarowania i pozwolenie na użytkowanie",
+                      "DE": "7. Bebauungsplanstatus und Flächennutzungsgenehmigung", "ET": "7. Planeeringu olukord ja maakasutusluba", "LV": "7. Teritorijas plānojuma statuss un zemes izmantošanas atļauja", "LT": "7. Teritorijų planavimo būklė ir žemės naudojimo leidimas"},
+    "sec7b":         {"FI": "7b. Maaperä ja tulvavaara",             "EN": "7b. Soil and Flood Risk",             "SE": "7b. Markförhållanden och översvämningsrisk", "DA": "7b. Jordbund og oversvømmelsesrisiko",    "NO": "7b. Grunnforhold og flomrisiko",            "PL": "7b. Gleba i ryzyko powodzi",
+                      "DE": "7b. Boden und Überschwemmungsrisiko", "ET": "7b. Pinnas ja üleujutusrisk", "LV": "7b. Augsne un plūdu risks", "LT": "7b. Dirvožemis ir potvynių rizika"},
+    "sec8":          {"FI": "8. Hankkeen toteutettavuusindeksi (0–100)", "EN": "8. Project Feasibility Index (0–100)", "SE": "8. Projektgenomförbarhetsindex (0–100)", "DA": "8. Projektgennemførlighed (0–100)",        "NO": "8. Prosjektgjennomførbarhet (0–100)",      "PL": "8. Wskaźnik wykonalności projektu (0–100)",
+                      "DE": "8. Projekt-Machbarkeitsindex (0–100)", "ET": "8. Projekti teostatavuse indeks (0–100)", "LV": "8. Projekta īstenojamības indekss (0–100)", "LT": "8. Projekto įgyvendinamumo indeksas (0–100)"},
+    "sec8b":         {"FI": "8b. NCE Energy — Lupaprosessianalyysi (tekoälyavusteinen)", "EN": "8b. NCE Energy — Permit Process Analysis (AI-assisted)", "SE": "8b. NCE Energy — Tillståndsprocessanalys (AI-assisterad)", "DA": "8b. NCE Energy — Tilladelsesprocessanalyse (AI-assisteret)", "NO": "8b. NCE Energy — Tillatelsesprosessanalyse (AI-assistert)", "PL": "8b. NCE Energy — Analiza procesu zezwoleń (wspomagana przez AI)",
+                      "DE": "8b. NCE Energy — Genehmigungsprozessanalyse (KI-gestützt)", "ET": "8b. NCE Energy — Loamenetluse analüüs (tehisintellekti abil)", "LV": "8b. NCE Energy — Atļauju procesa analīze (ar MI palīdzību)", "LT": "8b. NCE Energy — Leidimų proceso analizė (dirbtinio intelekto pagalba)"},
+    "sec8c":         {"FI": "8c. Lupaprosessin aikajana",            "EN": "8c. Permit Process Timeline",         "SE": "8c. Tillståndsprocessens tidslinje",        "DA": "8c. Tidslinje for tilladelsesprocessen",   "NO": "8c. Tidslinje for tillatelsesprosessen",   "PL": "8c. Harmonogram procesu zezwoleń",
+                      "DE": "8c. Zeitplan des Genehmigungsprozesses", "ET": "8c. Loamenetluse ajakava", "LV": "8c. Atļauju procesa laika grafiks", "LT": "8c. Leidimų proceso laiko juosta"},
+    "sec9":          {"FI": "9. Suositukset",                        "EN": "9. Recommendations",                  "SE": "9. Rekommendationer",                      "DA": "9. Anbefalinger",                          "NO": "9. Anbefalinger",                          "PL": "9. Zalecenia",
+                      "DE": "9. Empfehlungen", "ET": "9. Soovitused", "LV": "9. Ieteikumi", "LT": "9. Rekomendacijos"},
+    "sec10":         {"FI": "10. Lakisääteiset vaatimukset ja viranomaisprosessi", "EN": "10. Statutory Requirements and Authority Process", "SE": "10. Lagstadgade krav och myndighetsprocedur", "DA": "10. Lovmæssige krav og myndighedsproces", "NO": "10. Lovfestede krav og myndighetsprosess", "PL": "10. Wymagania ustawowe i proces urzędowy",
+                      "DE": "10. Gesetzliche Anforderungen und Behördenverfahren", "ET": "10. Seadusest tulenevad nõuded ja ametiasutuse menetlus", "LV": "10. Normatīvās prasības un iestāžu process", "LT": "10. Teisiniai reikalavimai ir institucijų procesas"},
+    "sec11":         {"FI": "11. Seuraavat toimenpiteet",            "EN": "11. Next Steps",                      "SE": "11. Nästa steg",                           "DA": "11. Næste trin",                           "NO": "11. Neste steg",                           "PL": "11. Kolejne kroki",
+                      "DE": "11. Nächste Schritte", "ET": "11. Järgmised sammud", "LV": "11. Nākamie soļi", "LT": "11. Tolesni veiksmai"},
+    "disc_label":    {"FI": "VASTUUVAPAUSLAUSEKE",                   "EN": "DISCLAIMER",                          "SE": "ANSVARSFRISKRIVNING",                      "DA": "ANSVARSFRASKRIVELSE",                      "NO": "ANSVARSFRASKRIVELSE",                      "PL": "ZASTRZEŻENIE",
+                      "DE": "HAFTUNGSAUSSCHLUSS", "ET": "VASTUTUSE VÄLISTAMINE", "LV": "ATRUNA", "LT": "ATSAKOMYBĖS APRIBOJIMAS"},
+    "confidential_footer": {"FI": "Luottamuksellinen",              "EN": "Confidential",                        "SE": "Konfidentiellt",                           "DA": "Fortroligt",                               "NO": "Konfidensielt",                            "PL": "Poufne",
+                      "DE": "Vertraulich", "ET": "Konfidentsiaalne", "LV": "Konfidenciāli", "LT": "Konfidencialu"},
+    "page":          {"FI": "Sivu",                                  "EN": "Page",                                "SE": "Sida",                                     "DA": "Side",                                     "NO": "Side",                                     "PL": "Strona",
+                      "DE": "Seite", "ET": "Lehekülg", "LV": "Lapa", "LT": "Puslapis"},
+    "owner":         {"FI": "Omistaja / kehittäjä",                  "EN": "Owner / developer",                   "SE": "Ägare / utvecklare",                       "DA": "Ejer / udvikler",                          "NO": "Eier / utvikler",                          "PL": "Właściciel / deweloper",
+                      "DE": "Eigentümer / Entwickler", "ET": "Omanik / arendaja", "LV": "Īpašnieks / attīstītājs", "LT": "Savininkas / vystytojas"},
+    "project":       {"FI": "Hanke",                                 "EN": "Project",                             "SE": "Projekt",                                  "DA": "Projekt",                                  "NO": "Prosjekt",                                 "PL": "Projekt",
+                      "DE": "Projekt", "ET": "Projekt", "LV": "Projekts", "LT": "Projektas"},
+    "power":         {"FI": "Teho",                                  "EN": "Power",                               "SE": "Effekt",                                   "DA": "Effekt",                                   "NO": "Effekt",                                   "PL": "Moc",
+                      "DE": "Leistung", "ET": "Võimsus", "LV": "Jauda", "LT": "Galia"},
+    "grid_conn":     {"FI": "Verkkoliityntä",                        "EN": "Grid connection",                     "SE": "Nätanslutning",                            "DA": "Nettilslutning",                           "NO": "Nettilkobling",                            "PL": "Przyłączenie do sieci",
+                      "DE": "Netzanschluss", "ET": "Võrguühendus", "LV": "Tīkla pieslēgums", "LT": "Tinklo prijungimas"},
+    "market_tgt":    {"FI": "Tavoitemarkkinat",                      "EN": "Target markets",                      "SE": "Målmarknader",                             "DA": "Målmarkeder",                              "NO": "Målmarkeder",                              "PL": "Rynki docelowe",
+                      "DE": "Zielmärkte", "ET": "Sihtturud", "LV": "Mērķa tirgi", "LT": "Tikslinės rinkos"},
+    "loc_muni":      {"FI": "Sijaintikunta",                         "EN": "Municipality",                        "SE": "Belägenhet (kommun)",                      "DA": "Beliggenhedskommune",                      "NO": "Beliggenhetkommune",                       "PL": "Gmina",
+                      "DE": "Standortgemeinde", "ET": "Asukoha omavalitsus", "LV": "Atrašanās vietas pašvaldība", "LT": "Buvimo vietos savivaldybė"},
+    "prop_id":       {"FI": "Kiinteistötunnus",                      "EN": "Property ID",                         "SE": "Fastighetsbeteckning",                     "DA": "Ejendomsnummer",                           "NO": "Eiendomsnummer",                           "PL": "Numer nieruchomości",
+                      "DE": "Grundstückskennung", "ET": "Kinnistu tunnus", "LV": "Īpašuma numurs", "LT": "Nekilnojamojo turto numeris"},
+    "report_date":   {"FI": "Raportin päivämäärä",                   "EN": "Report date",                         "SE": "Rapportdatum",                             "DA": "Rapportdato",                              "NO": "Rapportdato",                              "PL": "Data raportu",
+                      "DE": "Berichtsdatum", "ET": "Aruande kuupäev", "LV": "Pārskata datums", "LT": "Ataskaitos data"},
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -107,22 +169,22 @@ def _styles() -> dict:
     base = getSampleStyleSheet()
     return {
         "title":      ParagraphStyle("title",      parent=base["Title"], fontSize=22,
-                                     textColor=C_NAVY, spaceAfter=2, fontName="Helvetica-Bold"),
+                                     textColor=C_NAVY, spaceAfter=2, fontName=PDF_FONT_BOLD),
         "title_sub":  ParagraphStyle("title_sub",  fontSize=11, textColor=C_RED,
-                                     spaceAfter=2, fontName="Helvetica-Bold"),
-        "subtitle":   ParagraphStyle("subtitle",   fontSize=9,  textColor=C_GRAY, spaceAfter=6),
+                                     spaceAfter=2, fontName=PDF_FONT_BOLD),
+        "subtitle":   ParagraphStyle("subtitle",   fontSize=9,  textColor=C_GRAY, spaceAfter=6, fontName=PDF_FONT),
         "h2":         ParagraphStyle("h2",         fontSize=12, textColor=C_RED,
-                                     spaceBefore=14, spaceAfter=6, fontName="Helvetica-Bold"),
-        "body":       ParagraphStyle("body",       fontSize=9,  spaceAfter=4, leading=13),
-        "small":      ParagraphStyle("small",      fontSize=8,  textColor=C_GRAY, leading=11),
-        "footer":     ParagraphStyle("footer",     fontSize=7,  textColor=C_GRAY, alignment=TA_CENTER),
+                                     spaceBefore=14, spaceAfter=6, fontName=PDF_FONT_BOLD),
+        "body":       ParagraphStyle("body",       fontSize=9,  spaceAfter=4, leading=13, fontName=PDF_FONT),
+        "small":      ParagraphStyle("small",      fontSize=8,  textColor=C_GRAY, leading=11, fontName=PDF_FONT),
+        "footer":     ParagraphStyle("footer",     fontSize=7,  textColor=C_GRAY, alignment=TA_CENTER, fontName=PDF_FONT),
         "disclaimer": ParagraphStyle("disclaimer", fontSize=7,  textColor=C_GRAY, leading=11,
-                                     alignment=TA_CENTER, spaceBefore=4, spaceAfter=2),
+                                     alignment=TA_CENTER, spaceBefore=4, spaceAfter=2, fontName=PDF_FONT),
         "disc_label": ParagraphStyle("disc_label", fontSize=6,  textColor=C_GRAY, alignment=TA_CENTER,
-                                     fontName="Helvetica-Bold", spaceAfter=4),
+                                     fontName=PDF_FONT_BOLD, spaceAfter=4),
         "confid":     ParagraphStyle("confid",     fontSize=8,  textColor=C_RED,
-                                     alignment=TA_RIGHT, fontName="Helvetica-Bold"),
-        "contact":    ParagraphStyle("contact",    fontSize=8,  textColor=C_NAVY, leading=12),
+                                     alignment=TA_RIGHT, fontName=PDF_FONT_BOLD),
+        "contact":    ParagraphStyle("contact",    fontSize=8,  textColor=C_NAVY, leading=12, fontName=PDF_FONT),
     }
 
 
@@ -225,7 +287,7 @@ def generate_bess_report(
     author_right = [
         Paragraph(_r(lang, "confidential"), st["confid"]),
         Paragraph(_r(lang, "confid_sub"), ParagraphStyle(
-            "confid_sub", fontSize=7, textColor=C_GRAY, alignment=TA_RIGHT)),
+            "confid_sub", fontSize=7, textColor=C_GRAY, alignment=TA_RIGHT, fontName=PDF_FONT)),
     ]
     author_tbl = Table([[author_left, author_right]], colWidths=[9*cm, 8*cm])
     author_tbl.setStyle(TableStyle([
@@ -241,7 +303,7 @@ def generate_bess_report(
     C_DISC_BG = colors.HexColor("#f8f8f8")
     disc_notice = Table([[Paragraph(
         _r(lang, "disc_front"),
-        ParagraphStyle("front_disc", fontSize=7.5, textColor=C_GRAY, leading=11),
+        ParagraphStyle("front_disc", fontSize=7.5, textColor=C_GRAY, leading=11, fontName=PDF_FONT),
     )]], colWidths=[17*cm])
     disc_notice.setStyle(TableStyle([
         ("BOX",        (0, 0), (-1, -1), 0.5, C_GRAY),
@@ -701,7 +763,7 @@ def generate_bess_report(
         canv.setStrokeColor(C_GRAY)
         canv.setLineWidth(0.3)
         canv.line(margin, y_line, page_w - margin, y_line)
-        canv.setFont("Helvetica", 6.5)
+        canv.setFont(PDF_FONT, 6.5)
         canv.setFillColor(C_GRAY)
         canv.drawString(margin, y_text,
                         f"{_r(lang, 'title')}  |  {kiinteistotunnus}  |  {kuntanimi}")
@@ -722,7 +784,7 @@ def _table(data: list) -> Table:
     t.setStyle(TableStyle([
         ("BACKGROUND",  (0,0), (-1,0), C_NAVY),
         ("TEXTCOLOR",   (0,0), (-1,0), C_WHITE),
-        ("FONTNAME",    (0,0), (-1,0), "Helvetica-Bold"),
+        ("FONTNAME",    (0,0), (-1,0), PDF_FONT_BOLD),
         ("FONTSIZE",    (0,0), (-1,-1), 8),
         ("GRID",        (0,0), (-1,-1), 0.5, C_GRAY),
         ("ROWBACKGROUNDS", (0,1), (-1,-1), [colors.white, colors.HexColor("#f5f5f5")]),
@@ -766,14 +828,14 @@ def _score_table(a: dict, score: int) -> Table:
     t.setStyle(TableStyle([
         ("BACKGROUND",     (0,0), (-1,0), C_NAVY),
         ("TEXTCOLOR",      (0,0), (-1,0), C_WHITE),
-        ("FONTNAME",       (0,0), (-1,0), "Helvetica-Bold"),
+        ("FONTNAME",       (0,0), (-1,0), PDF_FONT_BOLD),
         ("FONTSIZE",       (0,0), (-1,-1), 7.5),
         ("ALIGN",          (1,0), (-1,-1), "CENTER"),
         ("GRID",           (0,0), (-1,-1), 0.5, C_GRAY),
         ("ROWBACKGROUNDS", (0,1), (-1,-2), [colors.white, colors.HexColor("#f5f5f5")]),
         ("BACKGROUND",     (0,-1), (-1,-1), _score_color(score)),
         ("TEXTCOLOR",      (0,-1), (-1,-1), C_WHITE),
-        ("FONTNAME",       (0,-1), (-1,-1), "Helvetica-Bold"),
+        ("FONTNAME",       (0,-1), (-1,-1), PDF_FONT_BOLD),
         ("PADDING",        (0,0), (-1,-1), 4),
     ]))
 
@@ -989,16 +1051,16 @@ def _regulatory_table(
         # Column header
         ("BACKGROUND",  (0, 0),         (-1, 0),         C_NAVY),
         ("TEXTCOLOR",   (0, 0),         (-1, 0),         C_WHITE),
-        ("FONTNAME",    (0, 0),         (-1, 0),         "Helvetica-Bold"),
+        ("FONTNAME",    (0, 0),         (-1, 0),         PDF_FONT_BOLD),
         # Section A header row
         ("BACKGROUND",  (0, sec_a_idx), (-1, sec_a_idx), C_NAVY),
         ("TEXTCOLOR",   (0, sec_a_idx), (-1, sec_a_idx), colors.HexColor("#f4a261")),
-        ("FONTNAME",    (0, sec_a_idx), (-1, sec_a_idx), "Helvetica-Bold"),
+        ("FONTNAME",    (0, sec_a_idx), (-1, sec_a_idx), PDF_FONT_BOLD),
         ("SPAN",        (0, sec_a_idx), (-1, sec_a_idx)),
         # Section B header row
         ("BACKGROUND",  (0, sec_b_idx), (-1, sec_b_idx), colors.HexColor("#0f3460")),
         ("TEXTCOLOR",   (0, sec_b_idx), (-1, sec_b_idx), colors.HexColor("#64b5f6")),
-        ("FONTNAME",    (0, sec_b_idx), (-1, sec_b_idx), "Helvetica-Bold"),
+        ("FONTNAME",    (0, sec_b_idx), (-1, sec_b_idx), PDF_FONT_BOLD),
         ("SPAN",        (0, sec_b_idx), (-1, sec_b_idx)),
         # Global
         ("FONTSIZE",    (0, 0),         (-1, -1),        8),
@@ -1014,7 +1076,7 @@ def _regulatory_table(
         tila = row[-1]
         if "PAKOLLINEN ⚠" in tila:
             style += [("BACKGROUND", (0,ri), (-1,ri), C_PAKOLLINEN),
-                      ("FONTNAME",   (0,ri), (-1,ri), "Helvetica-Bold")]
+                      ("FONTNAME",   (0,ri), (-1,ri), PDF_FONT_BOLD)]
         elif "ennen" in tila:
             style.append(("BACKGROUND", (0,ri), (-1,ri), C_WARN_ROW))
         else:
@@ -1026,7 +1088,7 @@ def _regulatory_table(
         tila = row[-1]
         if "PAKOLLINEN ⚠" in tila:
             style += [("BACKGROUND", (0,ri), (-1,ri), C_PAKOLLINEN),
-                      ("FONTNAME",   (0,ri), (-1,ri), "Helvetica-Bold")]
+                      ("FONTNAME",   (0,ri), (-1,ri), PDF_FONT_BOLD)]
         else:
             style.append(("BACKGROUND", (0,ri), (-1,ri), colors.HexColor("#f0fff4")))
 
@@ -1165,12 +1227,15 @@ def _analysis_section(a: dict, kuntanimi_gen: str) -> list:
     C_AI_BG = colors.HexColor("#f0f4ff")
     C_AI_BD = colors.HexColor("#3a7bd5")
 
-    st_head = ParagraphStyle("an_h",    fontSize=9,   fontName="Helvetica-Bold",
+    st_head = ParagraphStyle("an_h",    fontSize=9,   fontName=PDF_FONT_BOLD,
                              textColor=C_AI_BD, spaceAfter=4)
-    st_sec  = ParagraphStyle("an_sec",  fontSize=8.5, fontName="Helvetica-Bold",
+    st_sec  = ParagraphStyle("an_sec",  fontSize=8.5, fontName=PDF_FONT_BOLD,
                              spaceBefore=6, spaceAfter=2)
-    st_body = ParagraphStyle("an_body", fontSize=8.5, leading=13, spaceAfter=4)
-    st_disc = ParagraphStyle("an_disc", fontSize=7.5, fontName="Helvetica-BoldOblique",
+    st_body = ParagraphStyle("an_body", fontSize=8.5, leading=13, spaceAfter=4, fontName=PDF_FONT)
+    # PDF_FONT_BOLD, not a dedicated oblique variant -- DejaVu-Oblique isn't
+    # registered above (only regular + bold), and correct Baltic character
+    # rendering matters more here than the italic slant on a disclaimer line.
+    st_disc = ParagraphStyle("an_disc", fontSize=7.5, fontName=PDF_FONT_BOLD,
                              textColor=colors.HexColor("#333333"), leading=11, spaceBefore=6)
 
     narrative = _build_analysis_narrative(a, kuntanimi_gen)
@@ -1334,7 +1399,7 @@ def _timeline_table(
     style = [
         ("BACKGROUND", (0,0), (-1,0), C_HEAD),
         ("TEXTCOLOR",  (0,0), (-1,0), colors.white),
-        ("FONTNAME",   (0,0), (-1,0), "Helvetica-Bold"),
+        ("FONTNAME",   (0,0), (-1,0), PDF_FONT_BOLD),
         ("FONTSIZE",   (0,0), (-1,-1), 7.5),
         ("GRID",       (0,0), (-1,-1), 0.5, C_GRAY),
         ("VALIGN",     (0,0), (-1,-1), "TOP"),
@@ -1359,7 +1424,7 @@ def _timeline_table(
             bg = C_WARN
         style.append(("BACKGROUND", (0, ri), (-1, ri), bg))
         if "KRIITTINEN" in note:
-            style.append(("FONTNAME", (0, ri), (-1, ri), "Helvetica-Bold"))
+            style.append(("FONTNAME", (0, ri), (-1, ri), PDF_FONT_BOLD))
 
     t.setStyle(TableStyle(style))
     return t
@@ -1376,7 +1441,7 @@ def _next_steps_table(data: list) -> Table:
     style = [
         ("BACKGROUND",  (0,0), (-1,0), C_NAVY),
         ("TEXTCOLOR",   (0,0), (-1,0), C_WHITE),
-        ("FONTNAME",    (0,0), (-1,0), "Helvetica-Bold"),
+        ("FONTNAME",    (0,0), (-1,0), PDF_FONT_BOLD),
         ("FONTSIZE",    (0,0), (-1,-1), 8),
         ("GRID",        (0,0), (-1,-1), 0.5, C_GRAY),
         ("VALIGN",      (0,0), (-1,-1), "TOP"),
@@ -1388,7 +1453,7 @@ def _next_steps_table(data: list) -> Table:
         bg = priority_colors.get(prio, C_NORM)
         style.append(("BACKGROUND", (0, row_i), (-1, row_i), bg))
         if prio == "KRIITTINEN":
-            style.append(("FONTNAME", (0, row_i), (-1, row_i), "Helvetica-Bold"))
+            style.append(("FONTNAME", (0, row_i), (-1, row_i), PDF_FONT_BOLD))
 
     t.setStyle(TableStyle(style))
     return t
