@@ -6513,6 +6513,28 @@ function _VERKKO_OPTS() {
       { value: 'PSE 110 kV',                   label: 'PSE 110 kV' },
       { value: 'PSE 400 kV',                   label: 'PSE 400 kV' },
     ];
+    // LT/LV/EE/DE added 2026-08-18 (urgent, pre-Olana-demo fix) -- were
+    // silently falling through to the FI default (Caruna/Elenia/Fingrid),
+    // real live bug caught during the user's own final test run tonight.
+    // LT/LV values cross-checked against _COUNTRY_LUVAT (generate_
+    // application.py)'s real BESS grid-connection entries, same source
+    // used for last night's chat-widget authority names.
+    case 'LT': return [sel,
+      { value: 'ESO skirstomasis tinklas (<5 MW)',   label: 'ESO skirstomasis tinklas (<5 MW)' },
+      { value: 'LITGRID AB perdavimo tinklas (>5 MW)', label: 'LITGRID AB perdavimo tinklas (>5 MW)' },
+    ];
+    case 'LV': return [sel,
+      { value: 'Sadales tīkls AS (<5 MW)',            label: 'Sadales tīkls AS (<5 MW)' },
+      { value: 'AST Augstsprieguma tīkls (>5 MW)',     label: 'AST Augstsprieguma tīkls (>5 MW)' },
+    ];
+    case 'EE': return [sel,
+      { value: 'Elektrilevi OÜ (jaotusvõrk)',          label: 'Elektrilevi OÜ (jaotusvõrk)' },
+      { value: 'Elering AS (põhivõrk)',                label: 'Elering AS (põhivõrk)' },
+    ];
+    case 'DE': return [sel,
+      { value: 'Verteilnetzbetreiber (VNB)',           label: 'Verteilnetzbetreiber (VNB)' },
+      { value: 'Übertragungsnetzbetreiber (ÜNB)',      label: 'Übertragungsnetzbetreiber (ÜNB)' },
+    ];
     default: return [sel,  // FI
       { value: 'Jakeluverkko 20 kV (Caruna)', label: t('opt_verkko_caruna') },
       { value: 'Jakeluverkko 20 kV (Elenia)', label: t('opt_verkko_elenia') },
@@ -6639,6 +6661,39 @@ const _COUNTRY_VIR_OPTS = {
     { value: 'Übertragungsnetzbetreiber (EnWG)',          label: 'Übertragungsnetzbetreiber / ÜNB (Netzanschluss, EnWG § 17)' },
     { value: 'Umweltbehörde (UVP/WHG)',                   label: 'Umweltbehörde (UVP-Prüfung / WHG-Erlaubnis)' },
     { value: 'Muu',                                       label: t('opt_vir_muu') },
+  ],
+  // LT/LV/EE added 2026-08-18 (urgent, pre-Olana-demo fix) -- were entirely
+  // missing, silently falling back to _COUNTRY_VIR_OPTS.FI. Real live bug
+  // caught during the user's own final test run tonight. Authorities
+  // cross-checked against _COUNTRY_LUVAT (generate_application.py)'s real
+  // BESS+SMR permit-authority lists, same source as last night's chat
+  // widget fix -- not guessed independently.
+  LT: () => [
+    { value: '— Valitse —',                                 label: t('opt_vir_valitse') },
+    { value: 'Savivaldybės administracija (statybos leidimas)', label: 'Savivaldybės administracija (statybos leidimas)' },
+    { value: 'AAA (PAV)',                                   label: 'AAA — Aplinkos apsaugos agentūra (PAV)' },
+    { value: 'VERT (energetikos reguliavimas)',             label: 'VERT — Valstybinė energetikos reguliavimo taryba' },
+    { value: 'PAGD (gaisrinė sauga)',                        label: 'PAGD — Priešgaisrinės apsaugos ir gelbėjimo departamentas' },
+    { value: 'LITGRID (tinklų prijungimas)',                label: 'LITGRID AB (tinklų prijungimas, >5 MW)' },
+    { value: 'Muu',                                         label: t('opt_vir_muu') },
+  ],
+  LV: () => [
+    { value: '— Valitse —',                                 label: t('opt_vir_valitse') },
+    { value: 'Pašvaldības būvvalde (būvatļauja)',           label: 'Pašvaldības būvvalde (būvatļauja)' },
+    { value: 'VPVB (IVN)',                                  label: 'VPVB — Vides pārraudzības valsts birojs (IVN)' },
+    { value: 'SPRK (enerģētikas regulēšana)',                label: 'SPRK — Sabiedrisko pakalpojumu regulēšanas komisija' },
+    { value: 'VUGD (ugunsdrošība)',                          label: 'VUGD — Valsts ugunsdzēsības un glābšanas dienests' },
+    { value: 'AST (tīkla pieslēgums)',                       label: 'AST — Augstsprieguma tīkls (tīkla pieslēgums, >5 MW)' },
+    { value: 'Muu',                                         label: t('opt_vir_muu') },
+  ],
+  EE: () => [
+    { value: '— Valitse —',                                 label: t('opt_vir_valitse') },
+    { value: 'Kohaliku omavalitsuse (ehitusluba)',          label: 'Kohaliku omavalitsuse (ehitusluba)' },
+    { value: 'Keskkonnaamet (KMH)',                         label: 'Keskkonnaamet (KMH)' },
+    { value: 'Konkurentsiamet (energiaturu reg.)',          label: 'Konkurentsiamet (energiaturu regulatsioon)' },
+    { value: 'Päästeamet (tuleohutus)',                     label: 'Päästeamet (tuleohutus)' },
+    { value: 'Elering AS (võrguühendus)',                   label: 'Elering AS (võrguühendus)' },
+    { value: 'Muu',                                         label: t('opt_vir_muu') },
   ],
 };
 
@@ -7563,6 +7618,17 @@ function selectProjectType(typeId) {
         EE: { smr: 'TTJA (tuumaenergia)', smr_ee: 'TTJA (tuumaenergia)', smr_bess: 'TTJA (tuumaenergia)', bess: 'Elering (võrguühendus) / omavalitsus (ehitusluba)', tuulivoima_maa: 'Keskkonnaministeerium / omavalitsus', tuulivoima_meri: 'Keskkonnaministeerium (KMH)', aurinkovoima: 'Omavalitsus (ehitusluba)', vesivoima: 'Keskkonnaamet (veeluba)' },
         PL: { smr: 'PAA (energetyka jądrowa)', smr_bess: 'PAA (energetyka jądrowa)', bess: 'Gmina (pozwolenie na budowę)', tuulivoima_maa: 'Gmina (pozwolenie na budowę)', aurinkovoima: 'Gmina (pozwolenie na budowę)', vesivoima: 'Wody Polskie (pozwolenie wodnoprawne)' },
         DE: { smr: 'BASE (Atomrecht)', smr_de: 'BASE (Atomrecht)', smr_bess: 'BASE (Atomrecht)', bess: 'Immissionsschutzbehörde (BImSchG)', tuulivoima_maa: 'Immissionsschutzbehörde (BImSchG)', tuulivoima_meri: 'Bundesnetzagentur (Netz)', aurinkovoima: 'Gemeinde (Baugenehmigung)', vesivoima: 'Umweltbehörde (UVP/WHG)', hybridi: 'Immissionsschutzbehörde (BImSchG)' },
+        // LT/LV added 2026-08-18 (urgent, pre-Olana-demo fix) -- were
+        // entirely missing, so selecting LT/LV left the FI default value
+        // ("Kunta (rakentamislupa)"/"STUK (ydinlupa)" etc.) auto-filled
+        // into a dropdown that (before this same fix) didn't even have a
+        // matching LT/LV option to display it correctly. smr/smr_bess
+        // deliberately left unmapped for both, matching this file's own
+        // existing pattern for countries with no established nuclear
+        // regulator role yet (same as how PL has no smr_bess entry above)
+        // -- not a new gap, not touched, not relevant to tomorrow's BESS demo.
+        LT: { bess: 'Savivaldybės administracija (statybos leidimas)', tuulivoima_maa: 'AAA (PAV)', aurinkovoima: 'Savivaldybės administracija (statybos leidimas)', vesivoima: 'AAA (PAV)' },
+        LV: { bess: 'Pašvaldības būvvalde (būvatļauja)', tuulivoima_maa: 'VPVB (IVN)', aurinkovoima: 'Pašvaldības būvvalde (būvatļauja)', vesivoima: 'VPVB (IVN)' },
       };
       let _autoVir = (_countryAutoVir[selectedCountry] || {})[typeId] || hvInfo.autoFields.kohdeviranomainen;
       sel.value = _autoVir;
