@@ -1767,17 +1767,17 @@
   <div class="pai-header">
     <div class="pai-header-title">
       <h2>&#x1F4CB; Permit AI</h2>
-      <p>NCE (Native Clean Energy) &mdash; Fingrid &middot; Pelastusopisto &middot; Tukes &middot; STUK YVL</p>
+      <p id="pai-header-subtitle">NCE (Native Clean Energy) &mdash; Fingrid &middot; Pelastuslaitos &middot; Tukes &middot; STUK YVL</p>
     </div>
     <button class="pai-close" onclick="togglePermitAI()" title="Sulje" data-i18n-title="btn_close">&#x2715;</button>
   </div>
 
   <div class="pai-chips">
     <button class="pai-chip" onclick="askPermit('Mitä lupia tarvitaan 1MW BESS pohjavesialueella?')">BESS + pohjavesi</button>
-    <button class="pai-chip" onclick="askPermit('Mitä Fingrid vaatii verkkoliityntälaskelmilta BESS-hankkeelle?')">Fingrid-vaatimukset</button>
+    <button class="pai-chip" id="pai-chip-tso" onclick="askPermit(_paiChipTsoQuestion())">Fingrid-vaatimukset</button>
     <button class="pai-chip" onclick="askPermit('Milloin BESS-hankkeelle tarvitaan YVA-menettely?')">YVA-kynnys</button>
     <button class="pai-chip" onclick="askPermit('Mitkä ovat paloturvallisuusvaatimukset BESS-konttiasennukselle ulkona?')">Paloturvallisuus</button>
-    <button class="pai-chip" onclick="askPermit('Mitä STUK edellyttää SMR-laitoksen pre-licensing vaiheessa?')">SMR pre-licensing</button>
+    <button class="pai-chip" id="pai-chip-nuclear" onclick="askPermit(_paiChipNuclearQuestion())">SMR pre-licensing</button>
     <button class="pai-chip" onclick="askPermit('Mitä sammutusvedenkeräysvaatimuksia on litiumioniakkuvarastolle?')">Sammutusvesi</button>
     <button class="btn-gen-hakemus" onclick="toggleGenForm()">&#x1F4C4; <span data-i18n="btn_generate_hakemus">Generoi hakemus</span></button>
   </div>
@@ -2290,6 +2290,9 @@ const TRANSLATIONS = {
     btn_close:            'Sulje',
     btn_send:             'Lähetä',
     pai_placeholder:      'Kysy lupaprosessista, Fingrid-vaatimuksista, STUK YVL-ohjeista… (Ctrl+Enter lähettää)',
+    pai_welcome_greeting: 'Hei! Olen NCE Permit AI.',
+    pai_welcome_intro:    'Vastaan kysymyksiin energia-alan lupaprosesseista. Viralliset lähteet:',
+    pai_welcome_footer:   'Kirjoita kysymys tai valitse pikavalinta. Voit myös generoida lupahakemusluonnoksen PDF-muodossa.',
     ph_esim_ha:           'esim. 4,50',
     alert_fill_required:  'Täytä kiinteistötunnus, kunta ja hakija.',
     err_prefix:           'Virhe',
@@ -2706,6 +2709,9 @@ const TRANSLATIONS = {
     btn_close:            'Close',
     btn_send:             'Send',
     pai_placeholder:      'Ask about permit processes, Fingrid requirements, STUK YVL guidelines… (Ctrl+Enter sends)',
+    pai_welcome_greeting: 'Hi! I\'m NCE Permit AI.',
+    pai_welcome_intro:    'I answer questions about energy sector permit processes. Official sources:',
+    pai_welcome_footer:   'Type a question or choose a quick option. You can also generate a permit application draft as a PDF.',
     ph_esim_ha:           'e.g. 4.50',
     alert_fill_required:  'Fill in property ID, municipality and applicant.',
     err_prefix:           'Error',
@@ -3122,6 +3128,9 @@ const TRANSLATIONS = {
     btn_close:            'Stäng',
     btn_send:             'Skicka',
     pai_placeholder:      'Fråga om tillståndsprocesser, Fingrid-krav, STUK YVL-riktlinjer… (Ctrl+Enter skickar)',
+    pai_welcome_greeting: 'Hej! Jag är NCE Permit AI.',
+    pai_welcome_intro:    'Jag svarar på frågor om tillståndsprocesser inom energisektorn. Officiella källor:',
+    pai_welcome_footer:   'Skriv en fråga eller välj ett snabbval. Du kan också generera ett utkast till tillståndsansökan som PDF.',
     ph_esim_ha:           't.ex. 4,50',
     alert_fill_required:  'Fyll i fastighetsbeteckning, kommun och sökande.',
     err_prefix:           'Fel',
@@ -3544,6 +3553,9 @@ const TRANSLATIONS = {
     btn_close:                'Luk',
     btn_send:                 'Send',
     pai_placeholder:          'Spørg om tilladelsesprocesser, Fingrid-krav, STUK YVL-retningslinjer… (Ctrl+Enter sender)',
+    pai_welcome_greeting: 'Hej! Jeg er NCE Permit AI.',
+    pai_welcome_intro:    'Jeg svarer på spørgsmål om tilladelsesprocesser i energisektoren. Officielle kilder:',
+    pai_welcome_footer:   'Skriv et spørgsmål eller vælg en genvej. Du kan også generere et udkast til tilladelsesansøgning som PDF.',
     ph_esim_ha:               'f.eks. 4,50',
     alert_fill_required:      'Udfyld ejendomsidentifikator, kommune og ansøger.',
     err_prefix:               'Fejl',
@@ -3966,6 +3978,9 @@ const TRANSLATIONS = {
     btn_close:                'Lukk',
     btn_send:                 'Send',
     pai_placeholder:          'Spør om tillatelsesp rosesser, Fingrid-krav, STUK YVL-retningslinjer… (Ctrl+Enter sender)',
+    pai_welcome_greeting: 'Hei! Jeg er NCE Permit AI.',
+    pai_welcome_intro:    'Jeg svarer på spørsmål om tillatelsesprosesser i energisektoren. Offisielle kilder:',
+    pai_welcome_footer:   'Skriv et spørsmål eller velg en snarvei. Du kan også generere et utkast til tillatelsessøknad som PDF.',
     ph_esim_ha:               'f.eks. 4,50',
     alert_fill_required:      'Fyll inn eiendomsidentifikator, kommune og søker.',
     err_prefix:               'Feil',
@@ -4388,6 +4403,9 @@ const TRANSLATIONS = {
     btn_close:                'Zamknij',
     btn_send:                 'Wyślij',
     pai_placeholder:          'Zapytaj o procesy zezwoleń, wymagania Fingrid, wytyczne STUK YVL… (Ctrl+Enter wysyła)',
+    pai_welcome_greeting: 'Cześć! Jestem NCE Permit AI.',
+    pai_welcome_intro:    'Odpowiadam na pytania dotyczące procesów zezwoleń w sektorze energetycznym. Oficjalne źródła:',
+    pai_welcome_footer:   'Wpisz pytanie lub wybierz szybką opcję. Możesz też wygenerować projekt wniosku o zezwolenie w formacie PDF.',
     ph_esim_ha:               'np. 4,50',
     alert_fill_required:      'Uzupełnij identyfikator nieruchomości, gminę i wnioskodawcę.',
     err_prefix:               'Błąd',
@@ -4824,6 +4842,9 @@ const TRANSLATIONS = {
     btn_close:           'Schließen',
     btn_send:            'Senden',
     pai_placeholder:     'Fragen zu Genehmigungsprozessen, Fingrid-Anforderungen, STUK YVL-Richtlinien… (Ctrl+Enter sendet)',
+    pai_welcome_greeting: 'Hallo! Ich bin NCE Permit AI.',
+    pai_welcome_intro:    'Ich beantworte Fragen zu Genehmigungsprozessen im Energiesektor. Offizielle Quellen:',
+    pai_welcome_footer:   'Geben Sie eine Frage ein oder wählen Sie eine Schnellauswahl. Sie können auch einen Genehmigungsantragsentwurf als PDF erstellen.',
     ph_esim_ha:          'z.B. 4,50',
     alert_fill_required: 'Bitte Grundstücksidentifikator, Gemeinde und Antragsteller ausfüllen.',
     err_prefix:          'Fehler',
@@ -4889,6 +4910,9 @@ const TRANSLATIONS = {
     btn_close:          'Sulge',
     btn_send:           'Saada',
     pai_placeholder:    'Küsimused loamenetluste, Elering-ühenduste, TTJA-nõuete kohta… (Ctrl+Enter saadab)',
+    pai_welcome_greeting: 'Tere! Olen NCE Permit AI.',
+    pai_welcome_intro:    'Vastan küsimustele energiasektori loamenetluste kohta. Ametlikud allikad:',
+    pai_welcome_footer:   'Kirjutage küsimus või valige kiirvalik. Samuti saate genereerida loataotluse kavandi PDF-vormingus.',
     ph_esim_ha:         'nt 4,50',
     map_select_hint:    '— Valige projekti tüüp —',
     lbl_country:        'Riik',
@@ -5660,6 +5684,9 @@ const TRANSLATIONS = {
     btn_close:            'Aizvērt',
     btn_send:             'Sūtīt',
     pai_placeholder:      'Jautājiet par atļauju procesiem, Fingrid prasībām, STUK YVL vadlīnijām… (Ctrl+Enter nosūta)',
+    pai_welcome_greeting: 'Sveiki! Es esmu NCE Permit AI.',
+    pai_welcome_intro:    'Es atbildu uz jautājumiem par atļauju procesiem enerģētikas nozarē. Oficiālie avoti:',
+    pai_welcome_footer:   'Ierakstiet jautājumu vai izvēlieties ātro opciju. Varat arī ģenerēt atļaujas pieteikuma melnrakstu PDF formātā.',
     ph_esim_ha:           'piem., 4,50',
     alert_fill_required:  'Aizpildiet īpašuma identifikatoru, pašvaldību un pieteicēju.',
     err_prefix:           'Kļūda',
@@ -6086,6 +6113,9 @@ const TRANSLATIONS = {
     btn_close:            'Uždaryti',
     btn_send:             'Siųsti',
     pai_placeholder:      'Klauskite apie leidimų procesus, Fingrid reikalavimus, STUK YVL gaires… (Ctrl+Enter siunčia)',
+    pai_welcome_greeting: 'Sveiki! Aš esu NCE Permit AI.',
+    pai_welcome_intro:    'Atsakau į klausimus apie leidimų procesus energetikos sektoriuje. Oficialūs šaltiniai:',
+    pai_welcome_footer:   'Įveskite klausimą arba pasirinkite greitą parinktį. Taip pat galite sugeneruoti leidimo paraiškos juodraštį PDF formatu.',
     ph_esim_ha:           'pvz., 4,50',
     alert_fill_required:  'Užpildykite nekilnojamojo turto identifikatorių, savivaldybę ir pareiškėją.',
     err_prefix:           'Klaida',
@@ -6219,6 +6249,11 @@ function setLang(lang) {
     selectProjectType(selectedProjectType);
     _restoreFormValues(savedVals);
   }
+  // Must run AFTER the generic [data-i18n-ph] loop above (which would
+  // otherwise overwrite pai-textarea's placeholder with the untouched,
+  // FI-authority-name-containing translation) — this call substitutes the
+  // correct country authority names back in on top of it.
+  _updatePaiWidgetContext();
 }
 
 // ─────────────────────────────────────────────
@@ -6332,6 +6367,19 @@ const PROJECT_TYPES = [
     regWarning: true,
     name: { FI: 'SMR Eesti (Coming)',        EN: 'SMR Estonia (Coming)',       SE: 'SMR Estland (Coming)',          DA: 'SMR Estland (Coming)',          NO: 'SMR Estland (Coming)',          PL: 'SMR Estonia (Coming)',           DE: 'SMR Estland (Coming)',          ET: 'SMR Eesti (tulemas)',           LV: 'SMR Igaunija (drīzumā)', LT: 'SMR Estija (netrukus)' },
     sub:  { FI: 'Viron ydinvoimalupamenettely', EN: 'Estonian nuclear permit process', SE: 'Estniskt kärnkraftstillstånd', DA: 'Estisk kernereaktor-tilladelse', NO: 'Estisk kjernekraft-tillatelse', PL: 'Estońska procedura zezwolenia', DE: 'Estnisches Kernkraftgenehmigungsverfahren', ET: 'Eesti tuumaenergia loamenetlus', LV: 'Igaunijas kodolenerģijas atļauju procedūra', LT: 'Estijos branduolinės energetikos leidimo procesas' } },
+  { id: 'smr_lv',
+    icon: '⚛️',
+    regWarning: true,
+    // Added during the pre-Olana-demo audit (2026-08-17): permit_ai/
+    // generate_application.py's _HANKE_CFG has a real 'smr_lv' key
+    // (aliased to SMR's base config) -- this card was simply missing,
+    // same "backend config exists, frontend card wasn't added" pattern
+    // as the LT country-selector bug found earlier tonight. regWarning
+    // matches smr_no/da/de/ee: _COUNTRY_LUVAT['LV']['SMR'] explicitly
+    // flags "Kodolenerģijas likums neeksistē" (no nuclear energy law
+    // exists) -- same real gap those other four already show a warning for.
+    name: { FI: 'SMR Latvia (Coming)',       EN: 'SMR Latvia (Coming)',        SE: 'SMR Lettland (Coming)',         DA: 'SMR Letland (Coming)',          NO: 'SMR Latvia (Coming)',           PL: 'SMR Łotwa (Coming)',             DE: 'SMR Lettland (Coming)',         ET: 'SMR Läti (tulemas)',            LV: 'SMR Latvija (drīzumā)', LT: 'SMR Latvija (netrukus)' },
+    sub:  { FI: 'Latvian ydinvoimalupamenettely', EN: 'Latvian nuclear permit process', SE: 'Lettiskt kärnkraftstillstånd', DA: 'Lettisk kernereaktor-tilladelse', NO: 'Latvisk kjernekraft-tillatelse', PL: 'Łotewska procedura zezwolenia', DE: 'Lettisches Kernkraftgenehmigungsverfahren', ET: 'Läti tuumaenergia loamenetlus', LV: 'Latvijas kodolenerģijas atļauju procedūra', LT: 'Latvijos branduolinės energetikos leidimo procesas' } },
   { id: 'vesivoima',
     icon: '💧',
     name: { FI: 'Vesivoima',        EN: 'Hydropower',          SE: 'Vattenkraft',          DA: 'Vandkraft',          NO: 'Vannkraft',         PL: 'Energia wodna',         DE: 'Wasserkraft',           ET: 'Hüdroenergia',          LV: 'Hidroenerģija', LT: 'Hidroenergija' },
@@ -6346,6 +6394,19 @@ const PROJECT_TYPES = [
     sub:  { FI: 'Liikerakennushanke',EN: 'Commercial project',  SE: 'Affärsprojekt',   DA: 'Erhvervsprojekt',  NO: 'Næringsprosjekt', PL: 'Projekt komercyjny',    DE: 'Gewerbeprojekt',        ET: 'Äriprojekt',            LV: 'Komercprojekts', LT: 'Komercinis projektas' } },
   { id: 'muu',
     icon: '📋',
+    // comingSoon added during the pre-Olana-demo audit (2026-08-17): 'muu'
+    // has NO entry in permit_ai/generate_application.py's _HANKE_CFG at
+    // all -- confirmed multiple unguarded _HANKE_CFG[hanketyyppi] lookups
+    // in the real generation pipeline (no .get()/fallback anywhere) would
+    // raise a real KeyError mid-generation. It WAS reachable: no
+    // comingSoon flag meant a user could select it, fill the form, and
+    // hit Generate, hitting a real 500 partway through. Backend's own
+    // /api/generate-application allowlist does include 'muu', so this is
+    // a genuine content gap, not a typo -- gating it in the UI (same
+    // proven-safe mechanism already used for sco2/egs/thermal_battery/
+    // smes/iron_air_battery/gravity_storage below) is the safe fix until
+    // real "other project type" content/config exists.
+    comingSoon: true,
     name: { FI: 'Muu hanke',        EN: 'Other Project',       SE: 'Annat projekt',     DA: 'Andet projekt',     NO: 'Annet prosjekt',    PL: 'Inny projekt',          DE: 'Sonstiges Projekt',     ET: 'Muu projekt',           LV: 'Cits projekts', LT: 'Kitas projektas' },
     sub:  { FI: 'Muut hanketyypit', EN: 'Other project types', SE: 'Andra projekttyper',DA: 'Andre projekttyper', NO: 'Andre prosjekttyper',PL: 'Inne typy projektów',  DE: 'Andere Projekttypen',   ET: 'Muud projekti tüübid',  LV: 'Citi projektu veidi', LT: 'Kiti projektų tipai' } },
   { id: 'ymparistolupa',
@@ -7047,6 +7108,88 @@ function _isPermitAvailable(country, hanketyyppi) {
   return true;
 }
 
+// ─────────────────────────────────────────────
+// Permit AI chat widget — country-aware authority names
+// ─────────────────────────────────────────────
+// Real authority names per country, cross-checked against _COUNTRY_LUVAT
+// (permit_ai/generate_application.py) — the same authoritative source the
+// actual permit-generation logic uses, not guessed independently. Order:
+// [grid TSO, fire/rescue or emergency authority, energy/environmental
+// regulator, nuclear or top-level technical regulator] — matches FI's
+// original Fingrid/Pelastuslaitos/Tukes/STUK YVL grouping. Institution
+// names are proper nouns and are NOT translated per UI language (same
+// convention already used throughout this file, e.g. "Fingrid" stays
+// "Fingrid" in every language's existing strings).
+const _COUNTRY_AUTHORITIES = {
+  FI: ['Fingrid', 'Pelastuslaitos', 'Tukes', 'STUK YVL'],
+  SE: ['Svenska kraftnät', 'Räddningstjänsten', 'Länsstyrelsen', 'SSM'],
+  DA: ['Energinet', 'Beredskabsstyrelsen', 'Miljøstyrelsen', 'SIS'],
+  NO: ['Statnett', 'Brannvesenet', 'Miljødirektoratet', 'DSA'],
+  PL: ['URE', 'Straż pożarna', 'RDOŚ', 'PAA'],
+  EE: ['Elering', 'Päästeamet', 'Konkurentsiamet', 'TTJA'],
+  DE: ['ÜNB', 'Feuerwehr', 'Immissionsschutzbehörde', 'BMUV'],
+  LV: ['AST', 'VUGD', 'SPRK', 'VPVB'],
+  LT: ['LITGRID/ESO', 'PAGD', 'VERT', 'AAA'],
+};
+
+// [TSO name, nuclear/top-technical-regulator name] used to substitute the
+// two authority-specific quick-chip questions (originally hardcoded to
+// Fingrid/STUK). Same source as _COUNTRY_AUTHORITIES above.
+function _paiTso(country)     { return (_COUNTRY_AUTHORITIES[country] || _COUNTRY_AUTHORITIES.FI)[0]; }
+function _paiNuclearReg(country) { return (_COUNTRY_AUTHORITIES[country] || _COUNTRY_AUTHORITIES.FI)[3]; }
+
+function _paiChipTsoQuestion() {
+  const tso = _paiTso(typeof selectedCountry !== 'undefined' ? selectedCountry : 'FI');
+  return `Mitä ${tso} vaatii verkkoliityntälaskelmilta BESS-hankkeelle?`;
+}
+
+function _paiChipNuclearQuestion() {
+  const reg = _paiNuclearReg(typeof selectedCountry !== 'undefined' ? selectedCountry : 'FI');
+  return `Mitä ${reg} edellyttää SMR-laitoksen pre-licensing vaiheessa?`;
+}
+
+// Rebuilds every country/language-dependent piece of the Permit AI chat
+// widget: header subtitle, welcome bubble, textarea placeholder, and the
+// 2 authority-specific quick-chip labels. Called on page load, and again
+// from setCountry()/setLang() so it always reflects current UI state —
+// never left stale after either changes. Never throws: missing DOM nodes
+// (e.g. widget not yet rendered) are just skipped, matching this file's
+// existing defensive-DOM-access convention elsewhere.
+function _updatePaiWidgetContext() {
+  const country = (typeof selectedCountry !== 'undefined' && selectedCountry) ? selectedCountry : 'FI';
+  const authorities = _COUNTRY_AUTHORITIES[country] || _COUNTRY_AUTHORITIES.FI;
+  const authorityList = authorities.join(' · '); // middle dot, same separator as the original text
+
+  const subtitleEl = document.getElementById('pai-header-subtitle');
+  if (subtitleEl) subtitleEl.textContent = `NCE (Native Clean Energy) — ${authorityList}`;
+
+  const firstBubble = document.querySelector('#pai-messages .chat-msg.ai .bubble');
+  if (firstBubble) {
+    firstBubble.innerHTML =
+      `${t('pai_welcome_greeting')}<br><br>` +
+      `${t('pai_welcome_intro')} ${authorityList}.<br><br>` +
+      `${t('pai_welcome_footer')}`;
+  }
+
+  const ta = document.getElementById('pai-textarea');
+  if (ta) {
+    // The stored placeholder translation still contains the literal FI
+    // names ("Fingrid", "STUK YVL") baked into its sentence structure —
+    // substitute rather than retranslate, so every language's existing
+    // grammar/word order stays correct while the two proper nouns become
+    // country-accurate. FI/EN act as safe defaults if a translated string
+    // doesn't contain one of the tokens (e.g. already-customized ET text).
+    let ph = t('pai_placeholder');
+    ph = ph.replace(/Fingrid/g, _paiTso(country)).replace(/STUK YVL/g, _paiNuclearReg(country));
+    ta.placeholder = ph;
+  }
+
+  const tsoChip = document.getElementById('pai-chip-tso');
+  if (tsoChip) tsoChip.textContent = `${_paiTso(country)}-vaatimukset`;
+  const nuclearChip = document.getElementById('pai-chip-nuclear');
+  if (nuclearChip) nuclearChip.textContent = 'SMR pre-licensing';
+}
+
 function _updatePermitNotice() {
   const notice = document.getElementById('gen-country-notice');
   const formSection = document.getElementById('gen-form-section');
@@ -7102,6 +7245,7 @@ function setCountry(code) {
 
   _updatePermitNotice();
   _rebuildMapGrid();
+  _updatePaiWidgetContext();
 }
 
 // ─────────────────────────────────────────────
@@ -8747,6 +8891,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTool = localStorage.getItem('nce_tool');
     if (savedTool && ['generator', 'bess', 'rtb'].includes(savedTool)) switchTab(savedTool);
   } catch (_) {}
+
+  // Always run once on load, independent of whether a saved language was
+  // found above — setLang() already triggers this internally when a saved
+  // language exists, but a fresh visit (no localStorage yet) would
+  // otherwise never exercise the dynamic path and just show the static
+  // HTML's default (FI) text — which happens to be correct for FI, but
+  // this makes the real code path run every time, not just conditionally.
+  try { _updatePaiWidgetContext(); } catch (_) {}
 
   const ta = document.getElementById('pai-textarea');
   if (!ta) return;
