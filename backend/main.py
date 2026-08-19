@@ -86,6 +86,27 @@ _V2_MIN_CHUNKS = 200            # buildCommand produces ~300-600 FI chunks; back
 _DB_PATH       = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "permit_ai", "embeddings"))
 _reindex_log   = logging.getLogger("reindex")
 
+# 2026-08-19: arq's own job lifecycle logging (job start/finish via
+# logger.info, job-claim races via logger.debug, "function not found"/
+# "expired"/"max retries" via logger.warning -- see arq.worker) was
+# completely invisible in production. This app never calls
+# logging.basicConfig(), and uvicorn's own default config
+# (uvicorn.config.LOGGING_CONFIG) only attaches handlers to the
+# uvicorn/uvicorn.error/uvicorn.access loggers, never to root -- so any
+# other logger without its own handler (arq.worker included) falls
+# through to Python's logging.lastResort, which only surfaces WARNING and
+# above. arq's INFO-level "-> job started" / "<- job finished" lines were
+# being silently dropped this whole time. Found while investigating a real
+# incident: generation jobs silently stuck at status=pending forever
+# (~41% hit rate over 7 days, zero error surfaced anywhere). This attaches
+# a handler directly to arq's own logger so its already-written
+# diagnostics actually reach the log stream -- no new instrumentation,
+# just making Python's logging module emit what arq already produces.
+_arq_log_handler = logging.StreamHandler()
+_arq_log_handler.setFormatter(logging.Formatter("[arq.internal] %(message)s"))
+logging.getLogger("arq").addHandler(_arq_log_handler)
+logging.getLogger("arq").setLevel(logging.INFO)
+
 
 def _v2_is_ready() -> bool:
     """Return True if permit_docs_v2 exists and has enough chunks."""
@@ -1291,7 +1312,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
                 pass
 
     if _ARQ_POOL is not None:
-        await _ARQ_POOL.enqueue_job(
+        _enqueued = await _ARQ_POOL.enqueue_job(
             "arq_task_generate_permit",
             job_id        = job_id,
             inp_dict      = dataclasses.asdict(inp),
@@ -1304,6 +1325,27 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
             tenant_id     = _tenant_id or "",   # PR B — see the note above
             project_id    = _project_id or "",  # this function, same reasoning
         )
+        # 2026-08-19: ArqRedis.enqueue_job() returns None (not an
+        # exception) if a job with this arq-internal id already exists, or
+        # a WatchError race occurred (see arq/connections.py) -- this
+        # return value was never checked, so a job could silently never
+        # reach the queue at all while the client still got a 202 and then
+        # polled a "pending" status forever, indistinguishable from a job
+        # that's genuinely still queued. Low-probability trigger given the
+        # id is a fresh uuid4() per call (not something this app controls),
+        # but a genuine unguarded failure mode regardless -- found during
+        # the 2026-08-19 stuck-generation investigation. Surfaced as a real
+        # error to the client instead of a silent 202, and the orphaned
+        # "pending" store entry is removed so a stray poll can't be
+        # mistaken for a real in-flight job.
+        if _enqueued is None:
+            print(f"[arq] {job_id} ENQUEUE FAILED — enqueue_job() returned None "
+                  f"(job id already existed or WatchError race)", flush=True)
+            _proofread_store.pop(job_id, None)
+            raise HTTPException(
+                status_code=503,
+                detail="Generointijonoon lisääminen epäonnistui — yritä uudelleen.",
+            )
     else:
         Thread(target=_bg_generate, daemon=True).start()
 
