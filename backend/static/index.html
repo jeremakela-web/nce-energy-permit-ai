@@ -6174,6 +6174,38 @@ const LUPA_I18N = {
   'Rakentamislupa (STUK)':                 { EN: 'Construction licence (STUK)',            SE: 'Byggnadstillstånd (STUK)',            DA: 'Byggetilladelse (Sik)',               NO: 'Byggetillatelse (DSB)',             PL: 'Zezwolenie na budowę (PAA)',        DE: 'Bauerlaubnis (STUK)', ET: 'Ehitusluba (STUK)', LV: 'Būvatļauja (STUK)', LT: 'Statybos leidimas (STUK)' },
   'Käyttölupa (STUK)':                     { EN: 'Operating licence (STUK)',               SE: 'Drifttillstånd (STUK)',               DA: 'Driftstilladelse (Sik)',              NO: 'Driftstillatelse (DSB)',            PL: 'Zezwolenie na eksploatację (PAA)', DE: 'Betriebserlaubnis (STUK)', ET: 'Kasutusluba (STUK)', LV: 'Ekspluatācijas atļauja (STUK)', LT: 'Eksploatavimo leidimas (STUK)' },
   'Pelastuslaitoksen hyväksyntä':          { EN: 'Fire authority approval',                SE: 'Räddningsverkets godkännande',        DA: 'Brandmyndighedens godkendelse',       NO: 'Brannmyndighetens godkjenning',    PL: 'Zgoda straży pożarnej',             DE: 'Feuerwehrgenehmigung', ET: 'Päästeameti heakskiit', LV: 'Ugunsdrošības iestādes apstiprinājums', LT: 'Priešgaisrinės tarnybos patvirtinimas' },
+  // 2026-08-19 (urgent, pre-Ecogain-demo fix): 14 more strings added --
+  // these are _COUNTRY_LUVAT permit-name values (SE/DA/NO/PL, surfaced in
+  // the "TILLSTÅND (ALLMÄNT)" box since PR #94's country-aware fallback
+  // went live 18.8) that LUPA_I18N never covered because it was only ever
+  // built for HANKETYYPIT's original 14 FI-default strings, not
+  // _COUNTRY_LUVAT's much larger per-country vocabulary. Values copied
+  // verbatim from _LUPA_TRANS (generate_application.py) -- the same,
+  // already-verified translations the actual PDF-generation path already
+  // uses for these 4 countries -- no new content authored here. No DE/ET/
+  // LV/LT keys: _LUPA_TRANS doesn't have them for these entries either
+  // (separate, deferred bug -- see the DE/EE PDF-generation gap noted in
+  // the same investigation); tLupa()'s existing entry.EN fallback covers
+  // those languages honestly in the meantime rather than showing raw
+  // Finnish. "Vesilupa (merialue)" deliberately excluded -- missing from
+  // _LUPA_TRANS entirely (not just incomplete), so copying it would mean
+  // authoring new content, out of scope for this additive-only fix;
+  // affects only tuulivoima_meri/offshore_wind (SE/DA/NO), not BESS or
+  // onshore wind, so not demo-relevant for 20.8.
+  'Käyttölupa (ydinlaitos)': { EN: 'Operating licence (nuclear facility)', SE: 'Drifttillstånd (kärnkraftverk)', DA: 'Driftstilladelse (kerneanlæg)', NO: 'Driftstillatelse (kjernekraftanlegg)', PL: 'Zezwolenie na eksploatację (obiekt jądrowy)' },
+  'Maankäyttösopimus': { EN: 'Land use agreement', SE: 'Markanvändningsavtal', DA: 'Arealforbrugaftale', NO: 'Arealbruksavtale', PL: 'Umowa o użytkowaniu gruntu' },
+  'Maankäyttösopimus / kaavoitus': { EN: 'Land use agreement / zoning', SE: 'Markanvändningsavtal / planläggning', DA: 'Arealforbrugaftale / zoneinddeling', NO: 'Arealbruksavtale / soneinndeling', PL: 'Umowa o użytkowaniu gruntu / podział na strefy' },
+  'Naapurikuuleminen': { EN: 'Neighbour consultation', SE: 'Grannehörande', DA: 'Nabohøring', NO: 'Nabohøring', PL: 'Konsultacje sąsiedzkie' },
+  'Osayleiskaava tai asemakaava': { EN: 'Local master plan or detailed plan', SE: 'Delgeneralplan eller detaljplan', DA: 'Lokalplan eller rammeplan', NO: 'Kommuneplan eller reguleringsplan', PL: 'Plan miejscowy lub plan szczegółowy' },
+  'Periaatepäätös (VN)': { EN: 'Decision-in-principle (Council of State)', SE: 'Principbeslut (statsrådet)', DA: 'Principbeslutning (statsrådet)', NO: 'Prinsippvedtak (statsrådet)', PL: 'Decyzja zasadnicza (Rada Ministrów)' },
+  'Rakentamislupa (ydinlaitos)': { EN: 'Construction licence (nuclear facility)', SE: 'Byggnadstillstånd (kärnkraftverk)', DA: 'Byggetilladelse (kerneanlæg)', NO: 'Byggetillatelse (kjernekraftanlegg)', PL: 'Pozwolenie na budowę (obiekt jądrowy)' },
+  'Verkkoliityntäsopimus': { EN: 'Grid connection agreement', SE: 'Nätanslutningsavtal', DA: 'Nettilslutningsaftale', NO: 'Nettilknytningsavtale', PL: 'Umowa przyłączeniowa do sieci' },
+  'Vesilupa (jäähdytysvesi)': { EN: 'Water permit (cooling water)', SE: 'Vattentillstånd (kylvatten)', DA: 'Vandtilladelse (kølevand)', NO: 'Vanntillatelse (kjølevann)', PL: 'Pozwolenie wodnoprawne (woda chłodząca)' },
+  'Vesilupa (padotus, rakentaminen)': { EN: 'Water permit (damming, construction)', SE: 'Vattentillstånd (dämning, byggande)', DA: 'Vandtilladelse (opstemning, byggeri)', NO: 'Vanntillatelse (demning, bygging)', PL: 'Pozwolenie wodnoprawne (piętrzenie, budowa)' },
+  'YVA-menettely': { EN: 'EIA procedure', SE: 'MKB-förfarande', DA: 'VVM-procedure', NO: 'KU-prosess', PL: 'Procedura OOŚ' },
+  'YVA-menettely (tarvitt.)': { EN: 'EIA procedure (if required)', SE: 'MKB-förfarande (vid behov)', DA: 'VVM-procedure (om nødvendigt)', NO: 'KU-prosess (om nødvendig)', PL: 'Procedura OOŚ (jeśli wymagana)' },
+  'YVA-menettely (≥10 MW / ≥5 voimalaa)': { EN: 'EIA procedure (≥10 MW / ≥5 turbines)', SE: 'MKB-förfarande (≥10 MW / ≥5 verk)', DA: 'VVM-procedure (≥10 MW / ≥5 møller)', NO: 'KU-prosess (≥10 MW / ≥5 turbiner)', PL: 'Procedura OOŚ (≥10 MW / ≥5 turbin)' },
+  'Ympäristölupa (tarvitt.)': { EN: 'Environmental permit (if required)', SE: 'Miljötillstånd (vid behov)', DA: 'Miljøgodkendelse (om nødvendigt)', NO: 'Miljøtillatelse (om nødvendig)', PL: 'Pozwolenie środowiskowe (jeśli wymagane)' },
 };
 
 function tLupa(fi) {
