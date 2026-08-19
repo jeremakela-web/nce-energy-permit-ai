@@ -1346,6 +1346,24 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
                 status_code=503,
                 detail="Generointijonoon lisääminen epäonnistui — yritä uudelleen.",
             )
+        # 2026-08-19: write-then-read-back verification, using arq's own
+        # supported Job.status() API (checks the result key / in-progress
+        # key / queue sorted-set score via the exact same Redis connection
+        # and queue arq's worker polls -- see arq/jobs.py's Job.status()) --
+        # pushes the investigation one level past "enqueue_job() didn't
+        # return None" to "and the write is actually visible, in the right
+        # place, right now". Expected value immediately after a normal
+        # enqueue is 'queued' (score == now, not deferred); 'deferred'
+        # would point to a scoring/clock issue, 'not_found' would mean the
+        # write evaporated immediately, 'in_progress'/'complete' this early
+        # would be its own anomaly worth knowing about. Read-only, no
+        # raw Redis access needed -- temporary diagnostic, not a fix.
+        try:
+            _status_after_enqueue = await _enqueued.status()
+            print(f"[arq] {job_id} enqueued OK — arq_job_id={_enqueued.job_id} "
+                  f"status_immediately_after_enqueue={_status_after_enqueue.value}", flush=True)
+        except Exception as _status_exc:
+            print(f"[arq] {job_id} status-check-after-enqueue FAILED: {_status_exc!r}", flush=True)
     else:
         Thread(target=_bg_generate, daemon=True).start()
 
