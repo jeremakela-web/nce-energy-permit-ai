@@ -1610,6 +1610,33 @@ async def arq_task_source_drift_check(ctx: dict) -> None:
         print(f"[drift-cron] REGRESSIONS (previously succeeded, now failing): {regressions}", flush=True)
 
 
+# 2026-08-19: real stage-by-stage progress, replacing the frontend's old
+# fake time-based _bgSteps animation. Source of truth is PR #47/#49's
+# generation_checkpoint table (retrieval_trace.py) -- already actively
+# written from 6 call sites in generate_application.py for every real
+# generation, keyed by generation_id == the same job_id used here
+# (confirmed: inp.generation_id = job_id is set before enqueue, see
+# generate_application_endpoint() above). Never existed before now; this
+# endpoint previously exposed nothing about progress within a running job.
+_CHECKPOINT_STAGE_ORDER = ("retrieval", "draft", "proofread", "raqs_final")
+
+
+def _compute_generation_stage(status: str, completed_steps: set) -> str:
+    """Maps checkpoint rows written so far to a single current-stage label.
+    Each _CHECKPOINT_STAGE_ORDER step name means "this step just finished" --
+    so 0 completed = still in retrieval, 1 completed (retrieval) = now in
+    draft, etc. 4 completed (all of them) but status not yet "done" covers
+    the narrow window where PDF assembly (part of the raqs_final step in
+    apply_proofread_to_pdf) is finishing up after the checkpoint write.
+    """
+    if status == "done":
+        return "complete"
+    n = sum(1 for s in _CHECKPOINT_STAGE_ORDER if s in completed_steps)
+    if n >= len(_CHECKPOINT_STAGE_ORDER):
+        return "finalizing"
+    return _CHECKPOINT_STAGE_ORDER[n]
+
+
 @app.get("/api/proofread/{job_id}")
 async def proofread_status(job_id: str):
     """Oikolukutehtävän tila: pending | running | done | error | insufficient_sources."""
@@ -1631,11 +1658,13 @@ async def proofread_status(job_id: str):
                 "avg_relevance": job.get("avg_relevance", 0.0),
             },
         )
+    _completed_steps = {c["step"] for c in _retrieval_trace.get_checkpoints(job_id)}
     return {
         "status": _status,
         "error": job.get("error"),
         "debug_sections": job.get("debug_sections"),
         "phase_status": job.get("phase_status"),
+        "stage": _compute_generation_stage(_status, _completed_steps),
     }
 
 
