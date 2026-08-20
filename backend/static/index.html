@@ -2182,6 +2182,7 @@ const TRANSLATIONS = {
     progress_pdf:     'Rakennetaan PDF…',
     progress_final:   'Viimeistellään…',
     progress_done:        'Valmis – lataa PDF',
+    progress_stuck_warning: 'Tämä kestää tavallista kauemmin — odota tai yritä myöhemmin uudelleen.',
     progress_proofread:   'Oikoluku käynnissä…',
     btn_download_pdf:     'Lataa PDF',
     // Proofread
@@ -2615,6 +2616,7 @@ const TRANSLATIONS = {
     progress_pdf:     'Building PDF…',
     progress_final:   'Finalising…',
     progress_done:        'Ready – download PDF',
+    progress_stuck_warning: 'This is taking longer than usual — please wait or try again later.',
     progress_proofread:   'Proofreading in progress…',
     btn_download_pdf:     'Download PDF',
     // Proofread
@@ -3038,6 +3040,7 @@ const TRANSLATIONS = {
     progress_pdf:     'Bygger PDF…',
     progress_final:   'Slutför…',
     progress_done:        'Klar – ladda ned PDF',
+    progress_stuck_warning: 'Detta tar längre tid än vanligt — vänta eller försök igen senare.',
     progress_proofread:   'Korrekturläsning pågår…',
     btn_download_pdf:     'Ladda ned PDF',
     // Proofread
@@ -3278,6 +3281,7 @@ const TRANSLATIONS = {
     progress_pdf:   'Bygger PDF…',
     progress_final: 'Afslutter…',
     progress_done:       'Klar – download PDF',
+    progress_stuck_warning: 'Dette tager længere tid end normalt — vent eller prøv igen senere.',
     progress_proofread:  'Korrekturlæsning pågår…',
     btn_download_pdf:    'Download PDF',
     proof_running:  '🔄 Korrekturlæsning kører i baggrunden…',
@@ -3707,6 +3711,7 @@ const TRANSLATIONS = {
     progress_pdf:   'Bygger PDF…',
     progress_final: 'Ferdigstiller…',
     progress_done:       'Klar – last ned PDF',
+    progress_stuck_warning: 'Dette tar lengre tid enn vanlig — vent eller prøv igjen senere.',
     progress_proofread:  'Korrekturlesing pågår…',
     btn_download_pdf:    'Last ned PDF',
     proof_running:  '🔄 Korrekturlesing kjører i bakgrunnen…',
@@ -4136,6 +4141,7 @@ const TRANSLATIONS = {
     progress_pdf:   'Budowanie PDF…',
     progress_final: 'Finalizacja…',
     progress_done:       'Gotowe – pobierz PDF',
+    progress_stuck_warning: 'To trwa dłużej niż zwykle — poczekaj lub spróbuj ponownie później.',
     progress_proofread:  'Korekta w toku…',
     btn_download_pdf:    'Pobierz PDF',
     proof_running:  '🔄 Korekta w toku w tle…',
@@ -4810,6 +4816,7 @@ const TRANSLATIONS = {
     progress_pdf:        'PDF wird erstellt…',
     progress_final:      'Wird abgeschlossen…',
     progress_done:       'Fertig – PDF herunterladen',
+    progress_stuck_warning: 'Dies dauert länger als gewöhnlich — bitte warten oder später erneut versuchen.',
     progress_proofread:  'Korrektur läuft…',
     // Proofread / errors
     proof_running:       '🔄 Korrektur läuft im Hintergrund…',
@@ -5277,6 +5284,7 @@ const TRANSLATIONS = {
     man_yleiskaava: 'Üldplaneering (käsitsi sisestatud)',
     progress_claude: 'Teksti genereerimine (Claude)…',
     progress_done: 'Valmis – laadi PDF alla',
+    progress_stuck_warning: 'See võtab tavalisest kauem aega — oodake või proovige hiljem uuesti.',
     progress_final: 'Viimistlemine…',
     progress_pdf: 'PDF koostamine…',
     progress_proofread: 'Korrektuur käib…',
@@ -5608,6 +5616,7 @@ const TRANSLATIONS = {
     progress_pdf:     'Tiek veidots PDF…',
     progress_final:   'Tiek pabeigts…',
     progress_done:        'Gatavs – lejupielādēt PDF',
+    progress_stuck_warning: 'Tas aizņem ilgāku laiku nekā parasti — lūdzu, uzgaidiet vai mēģiniet vēlāk vēlreiz.',
     progress_proofread:   'Notiek korektūra…',
     btn_download_pdf:     'Lejupielādēt PDF',
     // Proofread
@@ -6041,6 +6050,7 @@ const TRANSLATIONS = {
     progress_pdf:     'Kuriamas PDF…',
     progress_final:   'Baigiama…',
     progress_done:        'Paruošta – atsisiųsti PDF',
+    progress_stuck_warning: 'Tai užtrunka ilgiau nei įprastai — palaukite arba bandykite vėliau dar kartą.',
     progress_proofread:   'Vyksta korektūra…',
     btn_download_pdf:     'Atsisiųsti PDF',
     // Proofread
@@ -7960,20 +7970,40 @@ async function submitGeneratorForm() {
     // Consume response body (JSON {job_id} or error text)
     await resp.text();
 
-    // Generation queued — show slow background-progress animation (10 s steps)
+    // Generation queued — real stage-by-stage progress from here on.
+    // 2026-08-19: was a fake, purely time-based setInterval animation
+    // (_bgSteps) with zero connection to actual server state -- it played
+    // out identically whether a job was genuinely progressing or silently
+    // stuck (see the 2026-08-19 dispatch-bug investigation, where this was
+    // confirmed to be exactly what made a real ~1-in-2 silent-hang rate
+    // invisible to users). Now driven by the real `stage` field on
+    // /api/proofread/{job_id} (backed by PR #47/#49's generation_checkpoint
+    // table, see _compute_generation_stage() in main.py) -- reuses the
+    // already-translated progress_* keys, just reordered/re-percentaged to
+    // match the real pipeline (retrieval -> draft -> proofread ->
+    // raqs_final -> PDF assembly/finalizing -> done) instead of the old
+    // guessed ordering.
+    const _STAGE_PROGRESS = {
+      retrieval:  [15, 'progress_rag'],
+      draft:      [35, 'progress_claude'],
+      proofread:  [55, 'progress_proofread'],
+      raqs_final: [75, 'progress_final'],
+      finalizing: [90, 'progress_pdf'],
+      complete:   [100, 'progress_done'],
+    };
     if (progFill) progFill.style.width = '15%';
     if (progPct)  progPct.textContent  = '15%';
     if (progMsg)  progMsg.textContent  = t('progress_rag');
-    const _bgSteps = [[30,'progress_claude'],[55,'progress_pdf'],[75,'progress_proofread'],[85,'progress_final']];
-    let _bgIdx = 0;
-    const _bgTimer = setInterval(() => {
-      if (_bgIdx < _bgSteps.length) {
-        const [pct, key] = _bgSteps[_bgIdx++];
-        if (progFill) progFill.style.width = pct + '%';
-        if (progMsg)  progMsg.textContent  = t(key);
-        if (progPct)  progPct.textContent  = pct + '%';
-      }
-    }, 15000);
+    const _genStartTime = Date.now();
+    // Real retrieval alone was observed taking ~24s in production log
+    // forensics (job 59c4177a18, START->RAG_WARN) -- 90s gives ~4x margin
+    // over that before treating "still zero checkpoints" as worth flagging,
+    // without false-triggering on a legitimately slightly-slower-than-usual
+    // retrieval. Scoped specifically to the retrieval stage (the stage the
+    // known dispatch bug actually gets stuck at) -- a slow-but-progressing
+    // later stage already has the existing 840s absolute timeout as its
+    // own backstop, no need to duplicate that here.
+    const _STUCK_THRESHOLD_MS = 90_000;
 
     log(`${t('log_gen_done')}: ${selectedProjectType} / ${payload.kunta}`, 'ok');
 
@@ -7989,7 +8019,7 @@ async function submitGeneratorForm() {
         try {
           const sr = await fetch(`${API_BASE}/api/proofread/${jobId}`);
           if (!sr.ok) {
-            clearInterval(poll); clearInterval(_bgTimer);
+            clearInterval(poll);
             if (progWrap) progWrap.classList.remove('visible');
             if (proofBox) {
               proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,170,0,0.08);border:1px solid rgba(233,170,0,0.3);border-radius:8px;font-size:0.78rem;color:#c8920a;';
@@ -8000,7 +8030,6 @@ async function submitGeneratorForm() {
           const sd = await sr.json();
           if (sd.status === 'done') {
             clearInterval(poll);
-            clearInterval(_bgTimer);
             if (progFill) progFill.style.width = '100%';
             if (progPct)  progPct.textContent  = '100%';
             if (progMsg)  progMsg.textContent  = t('progress_done');
@@ -8023,7 +8052,6 @@ async function submitGeneratorForm() {
             _btnReset();
           } else if (sd.status === 'error') {
             clearInterval(poll);
-            clearInterval(_bgTimer);
             if (progWrap) progWrap.classList.remove('visible');
             if (proofBox) {
               const _errMsg = sd.error || '';
@@ -8037,11 +8065,22 @@ async function submitGeneratorForm() {
               }
             }
             _btnReset();
+          } else {
+            // Still pending/running — reflect the real stage from the
+            // backend (see _STAGE_PROGRESS above) instead of a fake timer.
+            const _stageInfo = _STAGE_PROGRESS[sd.stage] || _STAGE_PROGRESS.retrieval;
+            const [_pct, _key] = _stageInfo;
+            if (progFill) progFill.style.width = _pct + '%';
+            if (progPct)  progPct.textContent  = _pct + '%';
+            const _stuckAtRetrieval = sd.stage === 'retrieval'
+              && (Date.now() - _genStartTime) > _STUCK_THRESHOLD_MS;
+            if (progMsg) progMsg.textContent = _stuckAtRetrieval
+              ? t('progress_stuck_warning') : t(_key);
           }
-        } catch (_e) { clearInterval(poll); clearInterval(_bgTimer); _btnReset(); }
+        } catch (_e) { clearInterval(poll); _btnReset(); }
       }, 7000);
       setTimeout(() => {
-        clearInterval(poll); clearInterval(_bgTimer);
+        clearInterval(poll);
         if (progWrap) progWrap.classList.remove('visible');
         if (proofBox) {
           proofBox.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;background:rgba(233,170,0,0.08);border:1px solid rgba(233,170,0,0.3);border-radius:8px;font-size:0.78rem;color:#c8920a;';
