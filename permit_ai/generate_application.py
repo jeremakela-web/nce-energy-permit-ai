@@ -750,6 +750,7 @@ _HUOM_LABEL: dict[str, str] = {
     "DA": "[Bem.] ",
     "NO": "[Merk] ",
     "PL": "[Uwaga] ",
+    "LT": "[Pastaba] ",
 }
 
 
@@ -4712,6 +4713,15 @@ _LANG_INSTRUCTIONS: dict[str, str] = {
         "piemēram, pilsētu nosaukumi, uzņēmumu nosaukumi un iestāžu saīsinājumi (ELY, STUK, Luova, "
         "Fingrid, Traficom) ir pieņemami tikai kā īpašvārdi.\n\n"
     ),
+    "LT": (
+        "KRITINIS KALBOS REIKALAVIMAS: JŪS PRIVALOTE parašyti KIEKVIENĄ šio leidimo paraiškos žodį "
+        "lietuvių kalba. VISOS antraštės, pastraipos, sąrašo punktai, išnašos ir pastabos turi būti "
+        "lietuvių kalba. NEĮTRAUKITE suomiškų žodžių ar sakinių į išvestį. "
+        "Suomijos įstatymų numeriai (pvz., YSL 527/2014, MRL 132/1999) gali būti nurodyti kaip "
+        "juridiniai identifikatoriai — visada pridėkite šalia lietuvišką įstatymo pavadinimą. Suomijos "
+        "tikriniai vardai, tokie kaip miestų pavadinimai, įmonių pavadinimai ir institucijų "
+        "santrumpos (ELY, STUK, Luova, Fingrid, Traficom), yra priimtini tik kaip tikriniai vardai.\n\n"
+    ),
 }
 
 _PHASE_INSTRUCTIONS: dict[str, str] = {
@@ -5118,6 +5128,16 @@ _WRITE_INSTRUCTION: dict[str, str] = {
            "šajā kontekstā iegūtajiem regulatīvajiem avotiem un precedentu lietām. "
            "Ja informācija kādam argumentācijas solim trūkst, skaidri norādiet, kas trūkst. "
            "Nekad neģenerējiet saturu, kas nav pamatots ar iegūtajiem avotiem:"),
+    "LT": ("Parašykite šias keturias dalis lietuvių kalba, aiškiai atskirtas antraštėmis. "
+           "Kiekviena dalis apima argumentacijos grandinės žingsnius kaip matomas paantraštes (### ANALIZUOTI, ### GAUTI ir kt.). "
+           "Įtraukite įstatymų nuorodas laužtiniuose skliaustuose, pvz., [Statybos įstatymas] arba [PAV įstatymas]. "
+           "Jei kokia nors informacija yra neaiški, trūksta arba reikalauja specializuotų žinių, "
+           "iškart po tos vietos pridėkite žymą '⚠️ Rekomenduojama ekspertų peržiūra' — "
+           "nespėliokite ir nepildykite žinių spragų prielaidomis. "
+           "SVARBU: kiekvieną rekomendaciją, rizikos vertinimą ir gyvavimo ciklo išplėtimą grinskite "
+           "griežtai šiame kontekste gautais reguliavimo šaltiniais ir precedentinėmis bylomis. "
+           "Jei kuriam nors argumentacijos žingsniui trūksta informacijos, aiškiai nurodykite, kas trūksta. "
+           "Niekada negenerinkite turinio, kuris nėra pagrįstas gautais šaltiniais:"),
 }
 
 # Hanketyypit joissa epävarmuusmerkintä on erityisen kriittinen
@@ -5166,6 +5186,13 @@ _CRITICAL_EXTRA: dict[str, str] = {
            "(b) wartość graniczna techniczna lub parametr nie wynika z dostarczonej dokumentacji, "
            "(c) informacje prawne są niekompletne lub otwarte na interpretację. "
            "Nigdy nie generuj liczb, harmonogramów ani wymogów bez udokumentowanej podstawy."),
+    "LT": ("⚠️ SPECIALI INSTRUKCIJA ŠIAM PROJEKTO TIPUI: {hanketyyppi} projektams reguliavimo reikalavimai, "
+           "saugos taisyklės ir teisinis pagrindas yra ypač tikslūs ir kintantys. "
+           "Naudokite žymą '⚠️ Rekomenduojama ekspertų peržiūra' VISADA, KAI: "
+           "(a) reguliavimo reikalavimas ar leidimo procedūra yra neaiški arba galimai pasikeitusi, "
+           "(b) techninė riba ar parametras nėra pagrįstas pateikta dokumentacija, "
+           "(c) teisinė informacija yra neišsami arba gali būti interpretuojama įvairiai. "
+           "Niekada negenerinkite skaičių, terminų ar reikalavimų be dokumentuoto pagrindo."),
 }
 
 _PROMPT_HEADERS: dict[str, dict[str, str]] = {
@@ -5630,6 +5657,58 @@ _PROMPT_HEADERS: dict[str, dict[str, str]] = {
         "viranomainen_ohje":  ("SVARĪGI: Pieteikums ir adresēts iestādei '{auth}'. "
                                "Pielāgojiet saturu, struktūru un valodu tās prasībām. "
                                "Atsaucieties uz šīs iestādes vadlīnijām, veidlapām un prasībām."),
+    },
+    "LT": {
+        "intro":        "Parengkite leidimo paraiškos projektą šiam projektui:",
+        "rag_intro":    "Žemiau pateikiama susijusi dokumentacija (Fingrid, Tukes, Aplinkos ministerija):",
+        "kuvaus":       "PROJEKTO APRAŠYMAS",
+        "perustelut":   "PAGRINDIMAS IR POREIKIS",
+        "luvat":        "LEIDIMŲ PROCEDŪROS APRAŠYMAS",
+        "toimenpiteet": "TOLESNI ŽINGSNIAI",
+        "kuvaus_inst":  ("Parašykite šį skyrių dviem matomais žingsniais:\n\n"
+                         "### ANALIZUOTI\n"
+                         "Nustatykite pagrindines projekto charakteristikas ir rizikos veiksnius: tipą, vietą, dydį, "
+                         "šalį, susijusias institucijas. Įtraukite šiam projekto tipui būdingus techninius parametrus.\n\n"
+                         "### GAUTI\n"
+                         "Nustatykite iš RAG konteksto šiam projekto profiliui aktualiausius reguliavimo reikalavimus "
+                         "ir precedentines bylas. Parašykite 3–4 pastraipų aprašymą: tikslas, techninė informacija, "
+                         "vieta, prijungimas prie tinklo ir poveikis aplinkai. Skyrius turi būti pakankamai išsamus "
+                         "išankstinei konsultacijai."),
+        "kuvaus_extra": " Atsižvelkite į pateiktą informaciją apie vietą ir poveikį aplinkai.",
+        "perustelut_inst": ("Parašykite šį skyrių dviem matomais žingsniais:\n\n"
+                            "### PALYGINTI\n"
+                            "Palyginkite šį projektą su precedentinėmis bylomis iš RAG konteksto: kokios rizikos "
+                            "buvo, kaip jos buvo išspręstos, kas lėmė projektų sėkmę ar nesėkmę.\n\n"
+                            "### ĮVERTINTI\n"
+                            "Nustatykite, kurios rizikos yra svarbiausios patvirtinimo tikimybei šiuo atveju. "
+                            "Parašykite 2–3 pastraipų pagrindimą, kodėl projektas yra būtinas "
+                            "(energetikos sistemos požiūriu, Suomijos klimato tikslai, "
+                            "regioninis ekonominis poveikis), ir nurodykite didžiausią pavienę patvirtinimo riziką."),
+        "luvat_inst":   ("### GAUTI — LEIDIMAI\n"
+                         "Trumpai paaiškinkite (1–2 sakiniai kiekvienam leidimui), ką apima kiekvienas reikalingas "
+                         "leidimas, kodėl jis reikalingas šiam projektui ir kuri institucija jį nagrinėja. "
+                         "Prireikus nurodykite susijusius precedentus ar specialius reikalavimus."),
+        "luvat_extra":  " Ypač atsižvelkite į paskirties institucijos {auth} procesus ir reikalavimus.",
+        "toimenpiteet_first": ("Išankstinė konsultacija su savivaldybės statybos priežiūros institucija + "
+                               "teritorijų planavimo patikra — Pareiškėjas / {kunta} statybos priežiūra — "
+                               "per 1–2 savaites"),
+        "toimenpiteet_inst": ("Parašykite šį skyrių dviem matomais žingsniais:\n\n"
+                              "### REKOMENDUOTI\n"
+                              "Pirmasis žingsnis VISADA yra: \"{first}\".\n"
+                              "Tada išvardykite lygiai 4 konkrečius veiksmus, kurie padidina patvirtinimo "
+                              "tikimybę (tyrimai, išvados, projekto pakeitimai, dokumentai). "
+                              "Formatas: numeris. Veiksmas – Atsakinga šalis – Terminas\n\n"
+                              "### GYVAVIMO CIKLAS\n"
+                              "6 žingsnis: Išplėskite rekomendacijas į kitą projekto gyvavimo ciklo etapą "
+                              "TIK TUO ATVEJU, JEI gautame kontekste yra pakankamai duomenų apie tą etapą. "
+                              "Jei šaltiniai neapima vėlesnių etapų, aiškiai nurodykite: "
+                              "'Nepakanka šaltinių duomenų vėlesnio etapo rekomendacijoms.' "
+                              "Formatas: 6. Veiksmas – Atsakinga šalis – Terminas"),
+        "toimenpiteet_vaihe": " Atsižvelkite į dabartinį projekto etapą: {vaihe}.",
+        "phase_label":        "Projekto etapas",
+        "viranomainen_ohje":  ("SVARBU: Paraiška adresuota institucijai '{auth}'. "
+                               "Pritaikykite turinį, struktūrą ir kalbą pagal jos reikalavimus. "
+                               "Remkitės tos institucijos gairėmis, formomis ir reikalavimais."),
     },
 }
 
@@ -6567,6 +6646,124 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "nce_info_desc":   ("NCE Permit AI ist ein KI-gestütztes Werkzeug zur Automatisierung von "
                             "Genehmigungsverfahren für Energieprojekte."),
     },
+    "LT": {
+        "sub_title": "Statybos leidimo paraiškos projektas",
+        "esiselvitys_sub": "Išankstinio tyrimo ir konsultacijos medžiaga — Parengta statybos leidimo išankstinei konsultacijai",
+        "lupavaihe_sub": "Leidimo etapas — Statybos leidimo paraiškos projektas",
+        "rakentaminen_sub": "Statybos etapas — Vykdymas ir priežiūra",
+        "disclaimer_h": "DI SUGENERUOTAS PROJEKTAS — REIKALINGA EKSPERTŲ PERŽIŪRA",
+        "disclaimer_b": "Šis dokumentas yra dirbtinio intelekto sugeneruotas projektas, kurį prieš teikiant institucijoms būtina peržiūrėti kvalifikuotam ekspertui.",
+        "nce_speed_note": "NCE Permit AI sugeneruoja paraiškos projektą per kelias minutes. Institucijos nagrinėjimo laikas yra atskiras procesas ir priklauso nuo projekto tipo (žr. žemiau).",
+        "arviointiviive_lbl": "Institucijos nagrinėjimo laikas",
+        "m_hakija": "Pareiškėjas",
+        "m_ytunnus": "Įmonės kodas",
+        "m_hanketyyppi": "Projekto tipas",
+        "m_teho": "Galia",
+        "m_kunta": "Savivaldybė",
+        "m_kt": "Kadastro numeris",
+        "m_maa": "Šalis",
+        "m_laadittu": "Parengta",
+        "m_laatinut_lbl": "Parengė",
+        "m_laatinut": "NCE Permit AI (su DI pagalba)",
+        "sec1": "1. Projekto aprašymas",
+        "sec2": "2. Pagrindimas ir poreikis",
+        "sec3": "3. Reikalingi leidimai ir institucijos",
+        "sec4": "4. Teisinis pagrindas",
+        "sec5": "5. Priedų sąrašas",
+        "sec6": "6. Tolesni žingsniai",
+        "sec_standards": "Taikomi standartai (ES / tarptautiniai)",
+        "th_std_code": "Standartas",
+        "th_std_scope": "Taikymo sritis",
+        "th_std_supervisor": "Priežiūros institucija",
+        "liite_standards": "Atitikties standartams deklaracija",
+        "liitteet_note": ("Kartu su paraiška privaloma pateikti šiuos priedus. "
+                          "Pažymėkite langelį, kai priedas paruoštas."),
+        "lahteet_h": "Šaltiniai ir nuorodos",
+        "lahteet_laki_h": "Teisinis pagrindas",
+        "lahteet_rag_h": "Institucijų šaltiniai",
+        "lahteet_b": "Rengiant šį projektą buvo naudojami šie oficialūs dokumentai:",
+        "yhteystiedot_h": "Pareiškėjo kontaktiniai duomenys",
+        "yht_hakija": "Pareiškėjas",
+        "yht_ytunnus": "Įmonės kodas",
+        "yht_osoite": "Adresas",
+        "yht_lisatietoja": "Papildoma informacija",
+        "footer":          ("NCE Permit AI (Native Clean Energy)  ·  ncenergy.fi  ·  "
+                            "info@ncenergy.fi"
+                            "·  DI sugeneruotas projektas — reikalinga ekspertų peržiūra"),
+        "th_lupa":  "Leidimas / Pranešimas", "th_viran": "Institucija", "th_laki": "Teisinis pagrindas",
+        "th_nro":   "Nr.",  "th_liite": "Priedas",  "th_tila": "Būsena",
+        "liite_toimitettu": "[ ] Pateikta",
+        "toim_nro": "Nr.", "toim_toimenpide": "Veiksmas",
+        "toim_vastuutaho": "Atsakingas", "toim_aikataulu": "Terminas",
+        "hdr_draft": "leidimo paraiškos projektas", "hdr_right": "ncenergy.fi  |  DI projektas",
+        "ftr_ai":    "DI projektas — reikalinga peržiūra", "ftr_sivu": "Puslapis",
+        "esiselvitys_p":   ("Projektas yra išankstinio tyrimo etape. Galutinės techninės "
+                            "specifikacijos, sklypo planai ir poveikio aplinkai vertinimai bus "
+                            "patikslinti tolesnio planavimo metu."),
+        "lupavaihe_p":     ("Projektas yra leidimo etape. Statybos leidimo paraiška ir priedai "
+                            "rengiami pateikti institucijai."),
+        "rakentaminen_p":  ("Projektas yra statybos etape. Įgyvendinimas vykdomas pagal "
+                            "patvirtintus leidimus ir planus, prižiūrint atsakingoms institucijoms."),
+        "bess_pintaala":   "Numatomas sklypo plotas yra 0,4–0,6 ha.",
+        "mks_viittaus":    ("Projekto teritorijos žemės naudojimas ištirtas NCE žemės naudojimo "
+                            "ataskaitoje (žr. 2 priedą: Žemės naudojimo ataskaitos PDF). Ataskaitoje "
+                            "pateikiama informacija apie nekilnojamąjį turtą, teritorijų planavimo "
+                            "statusą, saugomas teritorijas ir požeminio vandens telkinių duomenis, "
+                            "atitinkančius taikomų nacionalinių teritorijų planavimo teisės aktų "
+                            "reikalavimus sklypo tyrimams."),
+        "kaava_BESS":      ("<b>Teritorijų planavimo statusas (svarbiausias išankstinio tyrimo "
+                            "aspektas):</b> Pirmiausia būtina nustatyti BESS projekto sklypo "
+                            "teritorijų planavimo statusą. Daugumoje savivaldybių baterijų energijos "
+                            "kaupimo sistemos įrengimui reikalingas detalusis planas arba planavimo "
+                            "leidimas. Teritorijų planavimo statusas labiausiai lemia bendrą leidimo "
+                            "proceso trukmę — pirmasis žingsnis yra išankstinė konsultacija su "
+                            "statybos priežiūros institucija."),
+        "kaava_tuuli":     ("<b>Teritorijų planavimo statusas ir PAV reikalavimas:</b> Vėjo "
+                            "elektrinių projektui beveik visada reikalingas vietinis bendrasis arba "
+                            "detalusis planas (Žemės naudojimo ir statybos įstatymas 132/1999, "
+                            "§ 77a). PAV procedūra (PAV įstatymas 252/2017) yra privaloma ≥10 MW "
+                            "arba ≥5 vėjo jėgainių projektams — teritorijų planavimo ir PAV procesai "
+                            "dažnai vyksta lygiagrečiai ir kartu trunka 3–6 metus. Teritorijų "
+                            "planavimo statusas išsprendžiamas pirmiausia, prieš kitus leidimus."),
+        "kaava_SMR":       ("<b>STUK išankstinis licencijavimas (svarbiausias pirmasis žingsnis):</b> "
+                            "Branduolinio objekto projektui Valstybės tarybos principinis sprendimas "
+                            "(Branduolinės energijos įstatymas 990/1987, § 11) ir STUK išankstinio "
+                            "licencijavimo procedūra yra privalomi prieš visus kitus leidimus. "
+                            "Procesą inicijuoja STUK YVL gairių saugos ataskaita. Teritorijų "
+                            "planavimas vykdomas lygiagrečiai, tačiau branduolinės saugos procedūra "
+                            "yra dominuojanti."),
+        "kaava_aurinkovoima": ("<b>Statybos leidimas ir teritorijų planavimas:</b> Nedideliam saulės "
+                            "parkui (mažesniam nei apie 1 ha) gali būti taikoma supaprastinta "
+                            "procedūra pagal Statybos įstatymą 751/2023 (§ 49). PAV nereikalaujama "
+                            "projektams, mažesniems nei 50 ha. Vis tiek būtina patikrinti teritorijų "
+                            "planavimo statusą — už detaliojo plano ribų gali prireikti planavimo "
+                            "leidimo."),
+        "kaava_generic":   ("<b>Teritorijų planavimo statusas:</b> Prieš teikiant paraišką būtina "
+                            "patikrinti dabartinį projekto sklypo teritorijų planavimo statusą "
+                            "išankstinėje konsultacijoje su statybos priežiūros institucija. "
+                            "Teritorijų planavimo statusas tiesiogiai veikia leidimo proceso trukmę "
+                            "ir reikalavimus — statybai dažnai reikalingas detalusis planas, jo "
+                            "pakeitimas arba planavimo leidimas."),
+        "nce_info_desc":   ("NCE Permit AI yra dirbtinio intelekto įrankis, automatizuojantis "
+                            "energetikos projektų leidimų procesus."),
+        "raqs_heading":    "RAQS vertinimas",
+        "raqs_subtitle":   ("Dirbtinio intelekto savęs vertinimas (Regulatory Assurance & Quality "
+                            "System) — nepakeičia ekspertų peržiūros. Kiekvienas kriterijus "
+                            "vertinamas 1–5 balais; didesnis balas reiškia geresnę kokybę."),
+        "raqs_overall":    "Bendras įvertinimas",
+        "raqs_disclaimer": ("RAQS vertinimas sugeneruotas automatiškai naudojant dirbtinį intelektą. "
+                            "Prieš teikdami projektą leidimus išduodančiai institucijai, visada jį "
+                            "peržiūrėkite."),
+        "raqs_lbl_viittaukset":     "Teisinės nuorodos",
+        "raqs_lbl_lupakattavuus":  "Leidimų aprėptis",
+        "raqs_lbl_epävarmuus":     "Neapibrėžtumo valdymas",
+        "raqs_lbl_kattavuus":      "Turinio išsamumas",
+        "raqs_lbl_valmisteluaste": "Paraiškos parengtumas",
+        "taydennys_heading":  "Papildymo kontrolinis sąrašas",
+        "taydennys_subtitle": ("Šiuos punktus būtina papildyti prieš teikiant paraišką institucijai. "
+                               "Šiuos punktus taip pat rasite tekste kaip oranžines [BŪTINA] žymas."),
+        "taydennys_osio":     "Skyrius",
+    },
 }
 
 _KAAVA_KEY: dict[str, str] = {
@@ -6749,6 +6946,19 @@ _NATIONAL_SUPERVISORS: dict[str, dict[str, str]] = {
 }
 
 
+# KNOWN, LIVE INACCURACY (2026-08-23, LT language-gap investigation — see
+# LT_LANGUAGE_GAP_INVESTIGATION.md): DE and LT have no entry here, so
+# generate_pdf() (~line 8380: _BESS_MARKET_DATA.get(_country,
+# _BESS_MARKET_DATA["FI"])) falls back to FINLAND'S market index and cites it
+# as a real source in that country's own BESS report's "Lähteet" list — e.g.
+# a Lithuanian BESS report currently cites "Clean Horizon Storage Index — 110
+# €k/MW/year" as if it reflected the Lithuanian market. Labeled a "hardcoded
+# estimate," so not false precision, but nothing marks it as Finland-specific.
+# Needs real DE/LT market data (or an honest "not yet researched" placeholder,
+# same pattern as the [TÄYDENNETTÄVÄ – ...] markers used elsewhere), not a
+# fabricated figure — tracked as real per-country research alongside item
+# 5(B)'s law-citation research and item 4's _COUNTRY_LIITTEET buildout. Do
+# NOT add a plausible-looking DE/LT number here without that research.
 _BESS_MARKET_DATA: dict[str, dict] = {
     "FI": {"index": 110, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
     "SE": {"index": 145, "unit": "€k/MW/year", "source": "Clean Horizon Storage Index", "date": "Q1/2026"},
