@@ -35,6 +35,27 @@ services:
     rootDir: .
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    previews:
+      generation: "off"  # 2026-08-23: PR previews were auto-inheriting this
+        # service's REDIS_URL (fromService binding below), instead of an
+        # isolated instance. A stale, 10-day-old PR #77 preview
+        # (srv-d9uo7frbc2fs739k3p00) was found running its own independent
+        # in-process arq worker against PRODUCTION's Redis queue,
+        # uncoordinated with production's worker -- both racing to claim
+        # the same generation jobs. When the stale preview won the race, it
+        # ran outdated code that failed immediately, silently "losing" the
+        # job from production's point of view (client sees status=pending
+        # forever, no error, since production's own process never touched
+        # it). This was the root cause of a ~50-58% real-world hit-rate
+        # failure on /api/generate-application, confirmed via direct log
+        # evidence on the stale preview's own service, not inferred.
+        # Disabled here as documentation ONLY -- per this file's own
+        # "not under active Blueprint auto-sync" note above, the field that
+        # actually matters is the live service's own `previews.generation`
+        # setting, changed directly via the Render API. Re-enabling PR
+        # previews (e.g. for future frontend/UI work) requires first
+        # verifying a fresh preview gets a genuinely isolated Redis
+        # instance, not just flipping this back on.
     disk:
       name: permit-ai-data
       mountPath: /opt/render/project/src/permit_ai/embeddings
