@@ -105,7 +105,21 @@ _reindex_log   = logging.getLogger("reindex")
 _arq_log_handler = logging.StreamHandler()
 _arq_log_handler.setFormatter(logging.Formatter("[arq.internal] %(message)s"))
 logging.getLogger("arq").addHandler(_arq_log_handler)
-logging.getLogger("arq").setLevel(logging.INFO)
+# 2026-08-23: was logging.INFO -- a real blind spot in this exact setup,
+# found while investigating a job (32c60bc851) that never got an [arq]
+# START line at all (a different, more common failure signature than the
+# tail-hang PR #99 targets -- that one DID start and run to completion
+# internally). start_jobs()'s two silent-skip branches ("job %s already
+# running elsewhere", "multi-exec error, job %s already started elsewhere")
+# log at logger.debug(), which sits BELOW the logger's own effective level
+# -- Python filters at the logger before handlers ever see the record, so
+# these two lines have been invisible even with the handler above already
+# attached. Confirmed via arq's actual source: exactly these two debug
+# calls exist in the entire package (plus one unrelated Windows-only
+# line), so this is a targeted, low-volume bump, not a noise risk --
+# raised to DEBUG specifically to see whether either of these branches is
+# what's silently swallowing jobs that never start.
+logging.getLogger("arq").setLevel(logging.DEBUG)
 
 
 def _v2_is_ready() -> bool:
