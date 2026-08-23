@@ -707,6 +707,69 @@ def _fix_hardcoded_ely(text: str, country: str) -> str:
     return _ELY_RE.sub(auth, text)
 
 
+# Item 5(B) law-citation backstop (2026-08-23, SE research — see
+# SE_LAW_CITATION_RESEARCH.md for full sourcing). Deterministic backstop for
+# bare/untranslated Finnish statute citations (e.g. "MRL 132/1999", "YVA-laki
+# 252/2017") leaking directly into freeform generated prose — same RAG-leak
+# failure mode the Traficom/STUK/ELY-keskus backstops above guard against
+# (RAG-retrieved Finnish source chunks can surface the literal citation
+# regardless of what the prompt says). This is a SEPARATE, additional layer
+# to the _LAW_TRANS table fix (also shipped in this change) which covers the
+# STRUCTURED law-reference call sites (_t_law(), the Lakiviitteet section,
+# the liite/lupa tables) — this backstop covers the un-structured case where
+# the model writes the citation directly into kuvaus/perustelut/luvat_teksti/
+# toimenpiteet prose, bypassing _t_law() entirely.
+#
+# Only SE is populated so far (this is the first country researched in the
+# item 5(B)/item 4 combined queue — see SE_LAW_CITATION_RESEARCH.md). Adding
+# a country here requires real per-country statute research first, same
+# discipline as _TRAFICOM_REPLACEMENT/_ELY_REPLACEMENT above — do NOT add a
+# plausible-looking entry without that research.
+#
+# Deliberately drops any trailing Finnish paragraph/section reference (e.g.
+# ", 77a §") rather than trying to preserve or translate it — there is no
+# verified section-level correspondence between the Finnish law's paragraph
+# numbering and the target country's own law, and keeping the Finnish
+# paragraph number next to the (now correct) target-country act would read
+# as a claim about THAT act's own section numbering, which would be a new,
+# separate fabrication risk.
+_LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
+    "MRL":                  {"SE": "Plan- och bygglagen (2010:900)"},
+    "Rakentamislaki":       {"SE": "Plan- och bygglagen (2010:900)"},
+    "YVA-laki":             {"SE": "Miljöbalken kap. 6 (miljöbedömningar)"},
+    "YSL":                  {"SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)"},
+    "Vesilaki":             {"SE": "Miljöbalken kap. 11 (vattenverksamhet)"},
+    "Pelastuslaki":         {"SE": "Lag (2003:778) om skydd mot olyckor"},
+    "Ydinenergialaki":      {"SE": "Lag (1984:3) om kärnteknisk verksamhet"},
+    "Patoturvallisuuslaki": {"SE": "Förordning (2014:214) om dammsäkerhet"},
+}
+_LAW_CITATION_NUMS: dict[str, str] = {
+    "MRL": "132/1999", "Rakentamislaki": "751/2023", "YVA-laki": "252/2017",
+    "YSL": "527/2014", "Vesilaki": "587/2011", "Pelastuslaki": "379/2011",
+    "Ydinenergialaki": "990/1987", "Patoturvallisuuslaki": "494/2009",
+}
+_LAW_CITATION_RE: dict[str, re.Pattern] = {
+    name: re.compile(
+        rf'\b{re.escape(name)}\s+{re.escape(num)}'
+        rf'(?:\s*,?\s*§\s*[\w:–\-]+|\s*,?\s*\d+[a-z]?\s*§)?'
+    )
+    for name, num in _LAW_CITATION_NUMS.items()
+}
+
+
+def _fix_hardcoded_law_citations(text: str, country: str) -> str:
+    """Replace any bare/untranslated Finnish statute citation (name + number,
+    with or without a trailing paragraph reference) with the real, researched
+    statutory equivalent for non-FI countries. See _LAW_CITATION_REPLACEMENT
+    comment above. No-ops entirely for countries without a researched entry."""
+    for name, repl_by_country in _LAW_CITATION_REPLACEMENT.items():
+        repl = repl_by_country.get(country)
+        if not repl:
+            continue
+        text = _LAW_CITATION_RE[name].sub(repl, text)
+    return text
+
+
 # Same class of bug as Traficom above, found via the 2026-07-28 translation-table
 # audit: SMR/smr_bess's base liitteet list includes "Alustava turvallisuusseloste
 # (STUK YVL A.1 mukainen)" (STUK = Finnish nuclear safety regulator). SE/DA/NO/PL/
@@ -796,7 +859,9 @@ def _final_polish(sections: dict, lang: str, country: str = "FI", hanketyyppi: s
     1. Deterministinen diakriittikorjaus (ä/ö) kaikille suomenkielisille kentille.
     2. Viranomaistermien ja lakiviitteiden korjaus (_postprocess_text).
     3. tuulivoima_maa: pakollinen Traficom-korvaus muille kuin FI-hankkeille.
-    4. Asiantuntijatarkistus-merkintöjen karsinta enintään 3 kappaleeseen.
+    4. Bare FI-lakiviitteiden korvaus (_fix_hardcoded_law_citations) — ei
+       hanketyyppi-rajattu, koska lakiviitteet esiintyvät useissa hanketyypeissä.
+    5. Asiantuntijatarkistus-merkintöjen karsinta enintään 3 kappaleeseen.
     """
     result = {}
     for k, v in sections.items():
@@ -807,6 +872,7 @@ def _final_polish(sections: dict, lang: str, country: str = "FI", hanketyyppi: s
         v = _postprocess_text(v, lang)
         if hanketyyppi == "tuulivoima_maa":
             v = _fix_hardcoded_traficom(v, country)
+        v = _fix_hardcoded_law_citations(v, country)
         result[k] = v
 
     # Globaali rajoitin: VAIN sisältöosiot (ei kansilehti/disclaimer/footer)
@@ -3028,7 +3094,24 @@ _COUNTRY_CONFIG: dict[str, dict] = {
         "authorities": ["Länsstyrelsen", "Energimyndigheten", "Boverket", "Mark- och miljödomstolen", "Naturvårdsverket",
                          "Svenska kraftnät (TSO — transmission grid connection, equivalent to Finnish Fingrid)",
                          "Elsäkerhetsverket (Swedish National Electrical Safety Board — electrical installation safety, equivalent to Finnish Tukes)"],
-        "key_laws": ["Plan- och bygglagen (PBL 2010:900)", "Miljöbalken (MB 1998:808)", "Ellagen (1997:857)", "Miljöprövningsförordningen (2013:251)"],
+        "key_laws": ["Plan- och bygglagen (PBL 2010:900)", "Miljöbalken (MB 1998:808)", "Ellagen (1997:857)",
+                     "Miljöprövningsförordningen (2013:251)", "Lag (2003:778) om skydd mot olyckor (LSO)",
+                     "Lag (1984:3) om kärnteknisk verksamhet", "Förordning (2014:214) om dammsäkerhet",
+                     "Lag (2010:1011) om brandfarliga och explosiva varor (LBE)"],
+        # 2026-08-23 (item 5(B), SE research — see SE_LAW_CITATION_RESEARCH.md):
+        # the previous version of this prefix already correctly listed Sweden's
+        # real laws (PBL, Miljöbalken) but didn't say which specific Finnish
+        # statute each one replaces -- the model had the right raw material in
+        # its own context but no explicit mapping, which likely explains why it
+        # kept inventing plausible-sounding-but-fake Swedish law names
+        # ("Miljöskyddslagen", "MKB-lagen") instead of using the real ones
+        # already given to it. This version adds the explicit per-statute
+        # mapping (verified against Riksdagen/Boverket/MSB/Naturvårdsverket,
+        # not recalled) and an explicit instruction not to invent names.
+        # Prompt-level complement to the _fix_hardcoded_law_citations()
+        # backstop above -- this reduces how often that backstop needs to fire
+        # at all; the backstop remains the safety net for whatever still slips
+        # through (same RAG-leak risk as Traficom/STUK/ELY-keskus).
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in SWEDEN. Apply Swedish regulatory framework:\n"
             "Key authorities: Länsstyrelsen (county board), Energimyndigheten (energy agency), "
@@ -3038,14 +3121,41 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "equivalent to Finnish Fingrid), "
             "Elsäkerhetsverket (electrical installation safety authority; equivalent to Finnish Tukes), "
             "Transportstyrelsen (Swedish Transport Agency — aviation obstacle lighting for wind "
-            "turbines per TSFS 2020:88; equivalent to Finnish Traficom).\n"
-            "Key laws: Plan- och bygglagen PBL 2010:900 (building permits = Bygglov), "
-            "Miljöbalken MB 1998:808 (environmental permits = Miljötillstånd), "
-            "Ellagen 1997:857 (grid connection), Miljöprövningsförordningen 2013:251 (EIA = MKB), "
-            "TSFS 2020:88 (aviation obstacle lighting).\n"
-            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Fingrid) "
+            "turbines per TSFS 2020:88; equivalent to Finnish Traficom), "
+            "Strålsäkerhetsmyndigheten SSM (nuclear/radiation safety authority; equivalent to Finnish STUK), "
+            "MSB — Myndigheten för samhällsskydd och beredskap (fire/explosion safety, civil protection).\n"
+            "Key laws — use EXACTLY these, mapped to the Finnish statute each one replaces:\n"
+            "- Plan- och bygglagen PBL 2010:900 = building permits AND zoning (Bygglov/detaljplan) — "
+            "replaces BOTH Finnish MRL 132/1999 and Rakentamislaki 751/2023, since Sweden does not "
+            "split these into two separate acts the way Finland's 2023 reform did.\n"
+            "- Miljöbalken MB 1998:808 kap. 6 (miljöbedömningar) = environmental impact assessment — "
+            "replaces Finnish YVA-laki 252/2017.\n"
+            "- Miljöbalken MB 1998:808 kap. 9 (miljöfarlig verksamhet) = environmental permit — "
+            "replaces Finnish YSL 527/2014.\n"
+            "- Miljöbalken MB 1998:808 kap. 11 (vattenverksamhet) = water operations permit — "
+            "replaces Finnish Vesilaki 587/2011.\n"
+            "- Miljöprövningsförordningen 2013:251 = classification of which activities need a permit "
+            "and at what level (complements MB kap. 9, does not replace it).\n"
+            "- Lag (2003:778) om skydd mot olyckor (LSO) = rescue services / fire safety — "
+            "replaces Finnish Pelastuslaki 379/2011.\n"
+            "- Lag (2010:1011) om brandfarliga och explosiva varor (LBE) = flammable/explosive goods "
+            "handling permit, administered by MSB — relevant for BESS fire/explosion safety.\n"
+            "- Lag (1984:3) om kärnteknisk verksamhet = nuclear technical activities, reviewed by SSM — "
+            "replaces Finnish Ydinenergialaki 990/1987.\n"
+            "- Förordning (2014:214) om dammsäkerhet = dam safety, supervised by Länsstyrelsen — "
+            "replaces Finnish Patoturvallisuuslaki 494/2009.\n"
+            "- Ellagen 1997:857 = grid connection. TSFS 2020:88 = aviation obstacle lighting.\n"
+            "- For onshore/offshore wind specifically: Miljöbalken 16 kap. 4 § gives the host "
+            "municipality an unconditional veto over a wind power permit (no justification required, "
+            "not appealable) — this has no Finnish equivalent and materially affects approval "
+            "likelihood; mention it where relevant.\n"
+            "CRITICAL: Never cite a Finnish statute number (MRL, YSL, YVA-laki, Rakentamislaki, Vesilaki, "
+            "Pelastuslaki, Ydinenergialaki, Patoturvallisuuslaki) directly in the output — always use the "
+            "correct Swedish law from the mapping above instead, and never invent a plausible-sounding "
+            "Swedish law name that is not in the list above.\n"
+            "Replace ALL Finnish entity references (ELY-keskus, Tukes, Traficom, Fingrid, STUK, Luova) "
             "with the Swedish equivalents listed above (Länsstyrelsen, Elsäkerhetsverket, Transportstyrelsen, "
-            "Svenska kraftnät). "
+            "Svenska kraftnät, SSM). "
             "If a Swedish equivalent is uncertain, mark it: [Requires verification against Swedish regulations].\n\n"
         ),
     },
@@ -4257,7 +4367,8 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Maankäyttöselvitys PDF (NCE)",
             "SSM preliminär säkerhetsredovisning (PSR) — Kärntekniklag (SFS 1984:3)",
             "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
-            "Brandsäkerhetsrapport BESS (NFPA 855 / EN 50604-1)",
+            "Brandsäkerhetsrapport BESS (NFPA 855 / EN 50604-1) — tillstånd enligt "
+            "Lag (2010:1011) om brandfarliga och explosiva varor (LBE)",
             "Hydrogeologisk utredning (kylvattenresurs)",
             "Nätanslutningsplan (Svenska kraftnät)",
             "Detaljplan / kommunal markanvändningsplan",
@@ -4276,6 +4387,93 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Miljökonsekvensbedömning (vid behov)",
             "PUE- och energieffektivitetsutredning",
             "Bolagsregistreringsutdrag (Bolagsverket)",
+        ],
+        # 2026-08-23 (item 4, SE research — see SE_LAW_CITATION_RESEARCH.md):
+        # energy-project hanketyyppis added first per pilot-activity priority
+        # (SE/Ecogain); construction types (asuinrakennus/liikerakennus/
+        # maatalous/teollisuus) deliberately not yet added, lower priority.
+        # All citations verified against Riksdagen/Boverket/MSB/
+        # Naturvårdsverket -- see the research doc for sourcing.
+        "BESS": [
+            "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Anmälan/tillstånd miljöfarlig verksamhet — Miljöbalken kap. 9 (anmälan till kommun "
+            "eller tillstånd från Länsstyrelsen beroende på storlek)",
+            "Brandskyddsdokumentation — Lag (2010:1011) om brandfarliga och explosiva varor (LBE)",
+            "Bygglov / detaljplan — Plan- och bygglagen (2010:900)",
+            "Nätanslutningsplan (Svenska kraftnät / lokalt elnätsbolag)",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
+        ],
+        "tuulivoima_maa": [
+            "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
+            "Tillståndsansökan miljöfarlig verksamhet — Miljöbalken kap. 9 (prövas av "
+            "Miljöprövningsdelegationen vid Länsstyrelsen)",
+            "Kommunalt tillstyrkande (kommunalt veto — Miljöbalken 16 kap. 4 §)",
+            "Bygglov / detaljplan — Plan- och bygglagen (2010:900)",
+            "Nätanslutningsplan (Svenska kraftnät / lokalt elnätsbolag)",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
+        ],
+        "tuulivoima_meri": [
+            "Sijaintikartta / Lägesbeskrivning (sjökort)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
+            "Tillståndsansökan vattenverksamhet — Miljöbalken kap. 11 (prövas av mark- och "
+            "miljödomstol)",
+            "Kommunalt tillstyrkande (kommunalt veto — Miljöbalken 16 kap. 4 §, gäller även "
+            "kustnära havsbaserad vindkraft)",
+            "Nätanslutningsplan (Svenska kraftnät)",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
+        ],
+        "aurinkovoima": [
+            "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Bygglov / detaljplan — Plan- och bygglagen (2010:900)",
+            "Anmälan miljöfarlig verksamhet (vid behov, större anläggningar) — Miljöbalken kap. 9",
+            "Nätanslutningsplan (lokalt elnätsbolag)",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
+        ],
+        "vesivoima": [
+            "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Miljökonsekvensbeskrivning (MKB) — Miljöbalken kap. 6",
+            "Tillståndsansökan vattenverksamhet — Miljöbalken kap. 11 (prövas av mark- och "
+            "miljödomstol)",
+            "Dammsäkerhetsdokumentation — Förordning (2014:214) om dammsäkerhet",
+            "Nätanslutningsplan (Svenska kraftnät)",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
+        ],
+        # hybridi (BESS + wind/solar): a real, de-duplicated combined list per
+        # the user's explicit ask -- NOT a mechanical union of the BESS and
+        # wind/solar lists above (which would duplicate bygglov/nätanslutning/
+        # bolagsregistrering entries three times over).
+        "hybridi": [
+            "Sijaintikartta / Lägesbeskrivning (skala 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Miljökonsekvensbeskrivning (MKB, vid behov beroende på anläggningens storlek) — "
+            "Miljöbalken kap. 6",
+            "Tillståndsansökan/anmälan miljöfarlig verksamhet (BESS- och kraftproduktionsdel) — "
+            "Miljöbalken kap. 9",
+            "Brandskyddsdokumentation (BESS) — Lag (2010:1011) om brandfarliga och explosiva "
+            "varor (LBE)",
+            "Kommunalt tillstyrkande (vid vindkraftkomponent — kommunalt veto, Miljöbalken "
+            "16 kap. 4 §)",
+            "Bygglov / detaljplan — Plan- och bygglagen (2010:900)",
+            "Integrerad nätanslutningsplan (Svenska kraftnät / lokalt elnätsbolag)",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
+        ],
+        "ymparistolupa": [
+            "Tillståndsansökan miljöfarlig verksamhet — Miljöbalken kap. 9",
+            "Miljökonsekvensbeskrivning (MKB, vid behov) — Miljöbalken kap. 6",
+            "Bolagsregistreringsutdrag (Bolagsverket)",
+            "Fullmakt (om ombud företräder sökanden)",
         ],
     },
     "DA": {
@@ -4564,6 +4762,12 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
 for _smr_c in ("SE", "DA", "NO", "DE"):
     _COUNTRY_LIITTEET[_smr_c][f"smr_{_smr_c.lower()}"] = _COUNTRY_LIITTEET[_smr_c]["SMR"]
 del _smr_c
+
+# 2026-08-23 (item 4, SE research): offshore_wind is the same real-world
+# project as tuulivoima_meri (see the identical _HANKE_NIMI_TRANS aliasing
+# from PR #103) -- SE's newly-added tuulivoima_meri liite entry applies
+# equally to offshore_wind, same reasoning as above.
+_COUNTRY_LIITTEET["SE"]["offshore_wind"] = _COUNTRY_LIITTEET["SE"]["tuulivoima_meri"]
 
 _SYSTEM = (
     "Käytä aina oikeita suomenkielisiä merkkejä: ä, ö, å. "
@@ -5784,41 +5988,41 @@ _LUPA_TRANS: dict[str, dict[str, str]] = {
 }
 
 _LAW_TRANS: dict[str, dict[str, str]] = {
-    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöskyddslagen (YSL 527/2014)",                      "DA": "Miljøbeskyttelsesloven (YSL 527/2014)",                   "NO": "Miljøvernloven (YSL 527/2014)",                    "PL": "Ustawa o ochronie środowiska (YSL 527/2014)"},
-    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Bygglag / Plan- och bygglag (751/2023 / 132/1999)",    "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999)",        "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999)", "PL": "Prawo budowlane / Ustawa o zagospodarowaniu przestrzennym (751/2023 / 132/1999)"},
-    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Bygglagen 751/2023",                                   "DA": "Byggeloven 751/2023",                                     "NO": "Byggeloven 751/2023",                              "PL": "Prawo budowlane 751/2023"},
-    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Bygglagen 751/2023, § 44",                             "DA": "Byggeloven 751/2023, § 44",                               "NO": "Byggeloven 751/2023, § 44",                        "PL": "Prawo budowlane 751/2023, § 44"},
-    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Räddningslagen 379/2011, § 15",                        "DA": "Redningstjenesteloven 379/2011, § 15",                    "NO": "Brannvernloven 379/2011, § 15",                    "PL": "Ustawa o ochronie przeciwpożarowej 379/2011, § 15"},
+    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",                      "DA": "Miljøbeskyttelsesloven (YSL 527/2014)",                   "NO": "Miljøvernloven (YSL 527/2014)",                    "PL": "Ustawa o ochronie środowiska (YSL 527/2014)"},
+    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Plan- och bygglagen (2010:900)",    "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999)",        "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999)", "PL": "Prawo budowlane / Ustawa o zagospodarowaniu przestrzennym (751/2023 / 132/1999)"},
+    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Plan- och bygglagen (2010:900)",                                   "DA": "Byggeloven 751/2023",                                     "NO": "Byggeloven 751/2023",                              "PL": "Prawo budowlane 751/2023"},
+    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Plan- och bygglagen (2010:900)",                             "DA": "Byggeloven 751/2023, § 44",                               "NO": "Byggeloven 751/2023, § 44",                        "PL": "Prawo budowlane 751/2023, § 44"},
+    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Lag (2003:778) om skydd mot olyckor",                        "DA": "Redningstjenesteloven 379/2011, § 15",                    "NO": "Brannvernloven 379/2011, § 15",                    "PL": "Ustawa o ochronie przeciwpożarowej 379/2011, § 15"},
     "Sähkömarkkinalaki 588/2013":                           {"EN": "Electricity Market Act (588/2013)",                                    "SE": "Elmarknadslagen (588/2013)",                           "DA": "Elmarkedsloven (588/2013)",                               "NO": "Energiloven (588/2013)",                           "PL": "Ustawa o rynku energii elektrycznej (588/2013)"},
     "Maa-aineslaki 555/1981":                               {"EN": "Extractable Land Resources Act (555/1981)",                            "SE": "Marktäktslagen (555/1981)",                            "DA": "Råstofloven (555/1981)",                                  "NO": "Mineralressursloven (555/1981)",                   "PL": "Ustawa o kopalinach pospolitych (555/1981)"},
-    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "MKB-lagen (252/2017)",                                 "DA": "VVM-loven (252/2017)",                                    "NO": "KU-loven (252/2017)",                              "PL": "Ustawa OOŚ (252/2017)"},
-    "YVA-laki 252/2017 (kynnykset ylittyessä)":            {"EN": "EIA Act 252/2017 (when thresholds exceeded)",                          "SE": "MKB-lagen 252/2017 (vid tröskelöverskridning)",        "DA": "VVM-loven 252/2017 (når grænseværdier overskrides)",      "NO": "KU-loven 252/2017 (når terskler overskrides)",    "PL": "Ustawa OOŚ 252/2017 (gdy progi są przekroczone)"},
-    "YVA-laki 252/2017 (≥50 ha hankkeet)":                 {"EN": "EIA Act 252/2017 (≥50 ha projects)",                                   "SE": "MKB-lagen 252/2017 (≥50 ha projekt)",                 "DA": "VVM-loven 252/2017 (≥50 ha projekter)",                   "NO": "KU-loven 252/2017 (≥50 ha prosjekter)",           "PL": "Ustawa OOŚ 252/2017 (≥50 ha projekty)"},
-    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen 132/1999, § 77a",                  "DA": "Planlægningsloven 132/1999, § 77a",                       "NO": "Plan- og bygningsloven 132/1999, § 77a",          "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 77a"},
-    "MRL 132/1999 § 137":                                   {"EN": "Land Use and Building Act 132/1999, § 137",                            "SE": "Plan- och bygglagen 132/1999, § 137",                  "DA": "Planlægningsloven 132/1999, § 137",                       "NO": "Plan- og bygningsloven 132/1999, § 137",          "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 137"},
+    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                                 "DA": "VVM-loven (252/2017)",                                    "NO": "KU-loven (252/2017)",                              "PL": "Ustawa OOŚ (252/2017)"},
+    "YVA-laki 252/2017 (kynnykset ylittyessä)":            {"EN": "EIA Act 252/2017 (when thresholds exceeded)",                          "SE": "Miljöbalken kap. 6 (miljöbedömningar), vid tröskelöverskridning",        "DA": "VVM-loven 252/2017 (når grænseværdier overskrides)",      "NO": "KU-loven 252/2017 (når terskler overskrides)",    "PL": "Ustawa OOŚ 252/2017 (gdy progi są przekroczone)"},
+    "YVA-laki 252/2017 (≥50 ha hankkeet)":                 {"EN": "EIA Act 252/2017 (≥50 ha projects)",                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                 "DA": "VVM-loven 252/2017 (≥50 ha projekter)",                   "NO": "KU-loven 252/2017 (≥50 ha prosjekter)",           "PL": "Ustawa OOŚ 252/2017 (≥50 ha projekty)"},
+    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planlægningsloven 132/1999, § 77a",                       "NO": "Plan- og bygningsloven 132/1999, § 77a",          "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 77a"},
+    "MRL 132/1999 § 137":                                   {"EN": "Land Use and Building Act 132/1999, § 137",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planlægningsloven 132/1999, § 137",                       "NO": "Plan- og bygningsloven 132/1999, § 137",          "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 137"},
     "MRL 197 §":                                            {"EN": "Land Use and Building Act, § 197",                                     "SE": "Plan- och bygglagen, § 197",                           "DA": "Planlægningsloven, § 197",                                "NO": "Plan- og bygningsloven, § 197",                    "PL": "Ustawa o zagospodarowaniu przestrzennym, § 197"},
-    "MRL 132/1999 § 91a":                                   {"EN": "Land Use and Building Act 132/1999, § 91a",                            "SE": "Plan- och bygglagen 132/1999, § 91a",                  "DA": "Planlægningsloven 132/1999, § 91a",                       "NO": "Plan- og bygningsloven 132/1999, § 91a",          "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 91a"},
-    "MRL 132/1999 § 9":                                     {"EN": "Land Use and Building Act 132/1999, § 9",                              "SE": "Plan- och bygglagen 132/1999, § 9",                    "DA": "Planlægningsloven 132/1999, § 9",                         "NO": "Plan- og bygningsloven 132/1999, § 9",            "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 9"},
-    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (132/1999)",                       "DA": "Planlægningsloven (132/1999)",                            "NO": "Plan- og bygningsloven (132/1999)",                "PL": "Ustawa o zagospodarowaniu przestrzennym (132/1999)"},
+    "MRL 132/1999 § 91a":                                   {"EN": "Land Use and Building Act 132/1999, § 91a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planlægningsloven 132/1999, § 91a",                       "NO": "Plan- og bygningsloven 132/1999, § 91a",          "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 91a"},
+    "MRL 132/1999 § 9":                                     {"EN": "Land Use and Building Act 132/1999, § 9",                              "SE": "Plan- och bygglagen (2010:900)",                    "DA": "Planlægningsloven 132/1999, § 9",                         "NO": "Plan- og bygningsloven 132/1999, § 9",            "PL": "Ustawa o zagospodarowaniu przestrzennym 132/1999, § 9"},
+    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (2010:900)",                       "DA": "Planlægningsloven (132/1999)",                            "NO": "Plan- og bygningsloven (132/1999)",                "PL": "Ustawa o zagospodarowaniu przestrzennym (132/1999)"},
     "Ilmailulaki 864/2014":                                 {"EN": "Aviation Act (864/2014)",                                              "SE": "Luftfartslagen (864/2014)",                            "DA": "Luftfartsloven (864/2014)",                               "NO": "Luftfartsloven (864/2014)",                        "PL": "Ustawa lotnicza (864/2014)"},
     "Maakaari 540/1995":                                    {"EN": "Code of Real Estate (540/1995)",                                       "SE": "Jordabalken (540/1995)",                               "DA": "Tinglysningsloven (540/1995)",                            "NO": "Eiendomsloven (540/1995)",                         "PL": "Ustawa o nieruchomościach (540/1995)"},
-    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Vattenlagen (587/2011)",                               "DA": "Vandloven (587/2011)",                                    "NO": "Vannressursloven (587/2011)",                      "PL": "Prawo wodne (587/2011)"},
-    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Vattenlagen 587/2011, § 3:2",                          "DA": "Vandloven 587/2011, § 3:2",                               "NO": "Vannressursloven 587/2011, § 3:2",                 "PL": "Prawo wodne 587/2011, § 3:2"},
+    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                               "DA": "Vandloven (587/2011)",                                    "NO": "Vannressursloven (587/2011)",                      "PL": "Prawo wodne (587/2011)"},
+    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                          "DA": "Vandloven 587/2011, § 3:2",                               "NO": "Vannressursloven 587/2011, § 3:2",                 "PL": "Prawo wodne 587/2011, § 3:2"},
     "Merilaki 674/1994":                                    {"EN": "Maritime Act (674/1994)",                                              "SE": "Sjölagen (674/1994)",                                  "DA": "Søloven (674/1994)",                                      "NO": "Sjøloven (674/1994)",                              "PL": "Kodeks morski (674/1994)"},
     "Merenkulkulaki 1672/2009":                             {"EN": "Maritime Navigation Act (1672/2009)",                                  "SE": "Sjöfartslagen (1672/2009)",                            "DA": "Søfartsloven (1672/2009)",                                "NO": "Navigasjonsloven (1672/2009)",                     "PL": "Ustawa o żegludze morskiej (1672/2009)"},
     "Laki alueiden käytöstä":                               {"EN": "Act on Land Use",                                                      "SE": "Lagen om områdesanvändning",                           "DA": "Lov om arealanvendelse",                                  "NO": "Lov om arealbruk",                                 "PL": "Ustawa o użytkowaniu gruntów"},
-    "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126":    {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999 §§ 125–126)", "SE": "Bygglag / Plan- och bygglag (751/2023 / 132/1999 §§ 125–126)", "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999 §§ 125–126)", "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999 §§ 125–126)", "PL": "Prawo budowlane (751/2023 / 132/1999 §§ 125–126)"},
-    "Rakentamislaki 751/2023 / MRL 132/1999 § 126":         {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999, § 126)", "SE": "Bygglag / Plan- och bygglag (751/2023 / 132/1999, § 126)", "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999, § 126)", "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999, § 126)", "PL": "Prawo budowlane (751/2023 / 132/1999, § 126)"},
-    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Kärnenergilagen 990/1987, § 11",                        "DA": "Kerneenergieloven 990/1987, § 11",                        "NO": "Atomenergiloven 990/1987, § 11",                   "PL": "Ustawa o energii jądrowej 990/1987, § 11"},
-    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Kärnenergilagen 990/1987, § 18",                        "DA": "Kerneenergieloven 990/1987, § 18",                        "NO": "Atomenergiloven 990/1987, § 18",                   "PL": "Ustawa o energii jądrowej 990/1987, § 18"},
-    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Kärnenergilagen 990/1987, § 20",                        "DA": "Kerneenergieloven 990/1987, § 20",                        "NO": "Atomenergiloven 990/1987, § 20",                   "PL": "Ustawa o energii jądrowej 990/1987, § 20"},
+    "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126":    {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999 §§ 125–126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999 §§ 125–126)", "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999 §§ 125–126)", "PL": "Prawo budowlane (751/2023 / 132/1999 §§ 125–126)"},
+    "Rakentamislaki 751/2023 / MRL 132/1999 § 126":         {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999, § 126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999, § 126)", "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999, § 126)", "PL": "Prawo budowlane (751/2023 / 132/1999, § 126)"},
+    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Kerneenergieloven 990/1987, § 11",                        "NO": "Atomenergiloven 990/1987, § 11",                   "PL": "Ustawa o energii jądrowej 990/1987, § 11"},
+    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Kerneenergieloven 990/1987, § 18",                        "NO": "Atomenergiloven 990/1987, § 18",                   "PL": "Ustawa o energii jądrowej 990/1987, § 18"},
+    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Kerneenergieloven 990/1987, § 20",                        "NO": "Atomenergiloven 990/1987, § 20",                   "PL": "Ustawa o energii jądrowej 990/1987, § 20"},
     "Kalastuslaki 379/2015":                                {"EN": "Fisheries Act (379/2015)",                                             "SE": "Fiskelagen (379/2015)",                                "DA": "Fiskeriloven (379/2015)",                                 "NO": "Fiskeloven (379/2015)",                            "PL": "Ustawa o rybołówstwie (379/2015)"},
     "Säteilylaki 859/2018":                                 {"EN": "Radiation Act (859/2018)",                                             "SE": "Strålningslagen (859/2018)",                           "DA": "Strålingsloven (859/2018)",                               "NO": "Strålevernloven (859/2018)",                       "PL": "Ustawa prawo atomowe (859/2018)"},
     "Kemikaaliturvallisuuslaki 390/2005":                   {"EN": "Chemicals Safety Act (390/2005)",                                      "SE": "Kemikaliesäkerhetslagen (390/2005)",                   "DA": "Kemikaliesikkerhedsloven (390/2005)",                     "NO": "Kjemikaliesikkerhetsloven (390/2005)",             "PL": "Ustawa o bezpieczeństwie chemicznym (390/2005)"},
     "Kemikaaliturvallisuuslaki 390/2005 (BESS)":           {"EN": "Chemicals Safety Act 390/2005 (BESS)",                                  "SE": "Kemikaliesäkerhetslagen 390/2005 (BESS)",              "DA": "Kemikaliesikkerhedsloven 390/2005 (BESS)",                "NO": "Kjemikaliesikkerhetsloven 390/2005 (BESS)",        "PL": "Ustawa o bezpieczeństwie chemicznym 390/2005 (BESS)"},
     "Luonnonsuojelulaki 9/2023":                            {"EN": "Nature Conservation Act (9/2023)",                                     "SE": "Naturvårdslagen (9/2023)",                             "DA": "Naturbeskyttelsesloven (9/2023)",                         "NO": "Naturmangfoldloven (9/2023)",                      "PL": "Ustawa o ochronie przyrody (9/2023)"},
     "Maantielaki 503/2005 (tiealueet)":                     {"EN": "Highways Act 503/2005 (road areas)",                                   "SE": "Väglagen 503/2005 (vägområden)",                       "DA": "Vejloven 503/2005 (vejarealer)",                          "NO": "Vegloven 503/2005 (vegarealer)",                   "PL": "Ustawa o drogach publicznych 503/2005 (obszary drogowe)"},
-    "Patoturvallisuuslaki 494/2009":                        {"EN": "Dam Safety Act (494/2009)",                                            "SE": "Damsäkerhetslagen (494/2009)",                         "DA": "Dæmningssikkerhedsloven (494/2009)",                      "NO": "Damsikkerhetsloven (494/2009)",                    "PL": "Ustawa o bezpieczeństwie budowli piętrzących (494/2009)"},
+    "Patoturvallisuuslaki 494/2009":                        {"EN": "Dam Safety Act (494/2009)",                                            "SE": "Förordning (2014:214) om dammsäkerhet",                         "DA": "Dæmningssikkerhedsloven (494/2009)",                      "NO": "Damsikkerhetsloven (494/2009)",                    "PL": "Ustawa o bezpieczeństwie budowli piętrzących (494/2009)"},
 }
 
 _LIITE_TRANS: dict[str, dict[str, str]] = {
@@ -6233,18 +6437,19 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "tillståndsprocessen — förkonsultation med byggnadstillsynen är det första steget."),
         "kaava_tuuli":     ("<b>Planläggningsstatus och MKB-krav:</b> Ett vindkraftsprojekt kräver nästan "
                             "alltid en lokal översiktsplan eller detaljplan (Plan- och bygglagen "
-                            "132/1999, § 77a). MKB-förfarandet (MKB-lagen 252/2017) är obligatoriskt för "
+                            "2010:900). MKB-förfarandet (Miljöbalken kap. 6) är obligatoriskt för "
                             "projekt ≥10 MW eller ≥5 verk — plan- och MKB-processerna löper ofta "
                             "parallellt och tar sammanlagt 3–6 år. Planläggningsstatus klarläggs först."),
-        "kaava_SMR":       ("<b>STUK förlicensiering (viktigaste första steget):</b> För ett kärnkraftverk "
-                            "krävs statsrådets principbeslut (kärnenergilag 990/1987, 11 §) och STUK:s "
-                            "förlicensieringsförfarande innan alla andra tillstånd. STUK:s "
-                            "säkerhetsredogörelse enligt YVL-riktlinjerna inleder processen. "
-                            "Planläggning hanteras parallellt men kärnkraftssäkerhetsförfarandet är "
+        "kaava_SMR":       ("<b>SSM-förlicensiering (viktigaste första steget):</b> För ett kärnkraftverk "
+                            "krävs regeringens tillståndsprövning (Lag (1984:3) om kärnteknisk "
+                            "verksamhet) och Strålsäkerhetsmyndighetens (SSM) förlicensieringsförfarande "
+                            "innan alla andra tillstånd. SSM:s säkerhetsgranskning inleder processen. "
+                            "Planläggning hanteras parallellt men kärnsäkerhetsförfarandet är "
                             "den dominerande faktorn."),
-        "kaava_aurinkovoima": ("<b>Bygglov och planläggning:</b> Från och med 1.1.2025 ersätter rakentamislupa "
-                            "(bygglov) de tidigare typerna bygglov och åtgärdstillstånd (Bygglag 751/2023). "
-                            "MKB krävs inte för projekt under 50 ha. Planläggningsstatus måste ändå kontrolleras — "
+        "kaava_aurinkovoima": ("<b>Bygglov och planläggning:</b> En solcellsanläggning kräver normalt bygglov "
+                            "eller anmälan enligt Plan- och bygglagen (2010:900) — mindre anläggningar kan i "
+                            "vissa fall omfattas av bygglovsbefriade åtgärder. MKB krävs normalt inte för "
+                            "mindre projekt. Planläggningsstatus måste ändå kontrolleras — "
                             "planeringstillstånd kan behövas utanför detaljplaneområden."),
         "kaava_generic":   ("<b>Planläggningsstatus:</b> Gällande planläggningsstatus för projektplatsen "
                             "måste verifieras i ett förkonsultationsmöte med byggnadstillsynen innan "
