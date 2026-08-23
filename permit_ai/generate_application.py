@@ -626,6 +626,12 @@ _POSTPROCESS_RULES_FI: list[tuple[str, str]] = [
 # showed the leak in the same generated text as the correct new authority).
 # This guarantees the wrong Finnish entity never reaches the final PDF for
 # non-FI countries, independent of what the LLM actually wrote.
+#
+# 2026-08-23 (manual QA item 4): broadened to also catch "Finavia" (Finland's
+# airport operator, the second half of the "Lentoestekartoitus (Traficom/
+# Finavia)" liite name in _LIITE_TRANS) — same class of leak, same target
+# replacement per country, since both are FI-specific aviation entities that
+# the generic national aviation authority below correctly substitutes for.
 _TRAFICOM_REPLACEMENT: dict[str, str] = {
     "SE": "Transportstyrelsen",
     "DA": "Trafikstyrelsen",
@@ -636,16 +642,69 @@ _TRAFICOM_REPLACEMENT: dict[str, str] = {
     "LV": "LGS (Latvijas gaisa satiksme)",
     "LT": "ANCO / Civilinės aviacijos administracija",
 }
-_TRAFICOM_RE = re.compile(r'\bTraficom\w*')
+_TRAFICOM_RE = re.compile(r'\bTraficom\w*|\bFinavia\w*')
 
 
 def _fix_hardcoded_traficom(text: str, country: str) -> str:
-    """Replace any literal 'Traficom' mention with the correct national aviation
-    authority for non-FI countries. See _TRAFICOM_REPLACEMENT comment above."""
+    """Replace any literal 'Traficom' or 'Finavia' mention with the correct
+    national aviation authority for non-FI countries. See
+    _TRAFICOM_REPLACEMENT comment above.
+
+    Traficom and Finavia both map to the SAME replacement authority (both are
+    FI-specific aviation entities; the target country only has one relevant
+    equivalent), so a combined mention like "Traficom/Finavia" would collapse
+    to a visible duplicate ("Transportstyrelsen/Transportstyrelsen") without
+    this dedup step.
+    """
     auth = _TRAFICOM_REPLACEMENT.get(country)
     if not auth:
         return text
-    return _TRAFICOM_RE.sub(auth, text)
+    text = _TRAFICOM_RE.sub(auth, text)
+    dup = re.escape(auth)
+    # (?<!\w)/(?!\w) rather than \b: several replacement values themselves end
+    # in ")" (e.g. PL "ULC (Urząd Lotnictwa Cywilnego)"), and \b requires a
+    # genuine word/non-word transition — it silently fails to match when the
+    # duplicate is immediately followed by another non-word character (e.g.
+    # the liite name's own closing paren), which \w-based lookarounds handle.
+    return re.sub(rf'(?<!\w){dup}\s*/\s*{dup}(?!\w)', auth, text)
+
+
+# Deterministic backstop for the ELY-keskus/NTM-centralen leak (manual QA item
+# 4, 2026-08-23): ELY-keskus is a Finnish REGIONAL authority. _AUTHORITY_TRANS
+# only holds a literal per-language CALQUE of the Finnish name for EN/SE/DA/
+# NO/PL (e.g. Swedish "NTM-centralen") — not a real competent authority in the
+# target country — and has no entry at all for DE/ET/LV/LT, so those fall
+# through to the raw untranslated Finnish "ELY-keskus". Confirmed live: a SE
+# generation showed "NTM-centralen" in its bilaga list, reading as if Sweden
+# had an authority literally called that. Same class of bug as Traficom
+# above, same backstop shape (country dict + regex + function), applied at
+# the same _t_liite() choke point so it's independent of _AUTHORITY_TRANS's
+# own (currently incomplete) per-language coverage.
+_ELY_REPLACEMENT: dict[str, str] = {
+    "SE": "Länsstyrelsen",
+    "DA": "Miljøstyrelsen",
+    "NO": "Statsforvalteren",
+    "PL": "RDOŚ (Regionalna Dyrekcja Ochrony Środowiska)",
+    "EE": "Keskkonnaamet",
+    "DE": "zuständige Umweltbehörde (Land)",
+    "LV": "Valsts vides dienests",
+    "LT": "Aplinkos apsaugos agentūra",
+}
+_ELY_RE = re.compile(
+    r'\bELY[-\s]keskus\w*|\bELY:n\b|\bELY\s*Centre\w*|\bELY-center\w*|\bELY-senter\w*|'
+    r'\bCentrum\s+ELY\w*|\bNTM-central\w*'
+)
+
+
+def _fix_hardcoded_ely(text: str, country: str) -> str:
+    """Replace any Finnish 'ELY-keskus' mention (raw, or its literal
+    per-language calque such as Swedish 'NTM-centralen') with the real
+    competent regional/environmental authority for non-FI countries. See
+    _ELY_REPLACEMENT comment above."""
+    auth = _ELY_REPLACEMENT.get(country)
+    if not auth:
+        return text
+    return _ELY_RE.sub(auth, text)
 
 
 # Same class of bug as Traficom above, found via the 2026-07-28 translation-table
@@ -2507,6 +2566,38 @@ def _apply_source_cap(
     return selected
 
 
+def _humanize_source_id(raw: str) -> str:
+    """Turn a raw ChromaDB source stem (the ingestion-time filename, e.g.
+    "lion_2025_bess") into a generic, human-readable display title (e.g.
+    "Lion 2025 Bess") -- a snake_case-to-Title-Case pass, nothing source-
+    specific.
+
+    2026-08-24: found this was the direct root cause of a real, systemic
+    RAQS false-positive pattern (the "epävarmuus" criterion, a pure Claude
+    judgment call with no deterministic matching anywhere in the pipeline,
+    was comparing the human-formatted in-text citation Claude itself wrote
+    -- e.g. "[Lion 2025 BESS, s. 20]" -- against this exact raw slug shown
+    unchanged in the source list it's given, and understandably concluding
+    they didn't match) -- and the SAME raw, un-humanized value was also
+    rendering directly into the customer-facing PDF's own "Lähteet ja
+    tietolähteet" section (both read sites use the same `display` field on
+    the same `sources` list; fixed once here, both close).
+
+    Deliberately generic rather than a per-source manual title table --
+    with 8,000+ chunks across hundreds of sources in 9 countries, a manual
+    table doesn't scale as a first pass. This will render acronyms
+    (YSL, YVA, YM, ...) in Title Case rather than their correct all-caps
+    form (e.g. "Ysl 527 2014" not "YSL 527 2014") -- an accepted,
+    explicitly-scoped tradeoff; a manual override table for specific
+    sources that don't humanize well can be added incrementally later,
+    as they're actually noticed, not speculatively now.
+    """
+    if not raw:
+        return raw
+    words = [w for w in re.split(r"[_\-]+", raw) if w]
+    return " ".join(w.capitalize() for w in words) or raw
+
+
 def _rag_context(
     hanketyyppi: str,
     country: str = "FI",
@@ -2596,7 +2687,7 @@ def _rag_context(
                     all_source_ids.append(src_id)
                     if src_id not in all_source_meta:
                         all_source_meta[src_id] = {
-                            "display": _src_name or src_id,
+                            "display": _humanize_source_id(_src_name or src_id),
                             "url":     meta.get("url"),
                         }
 
@@ -2827,47 +2918,95 @@ def _statutory_sources(hanketyyppi: str, country: str = "FI") -> list[str]:
 _HANKE_NIMI_TRANS: dict[str, dict[str, str]] = {
     "BESS":           {"EN": "Battery Energy Storage System (BESS)",         "SE": "Batterienergilagringssystem (BESS)",
                        "DA": "Batterienergilagringssystem (BESS)",            "NO": "Batterienergilagringssystem (BESS)",
-                       "PL": "System magazynowania energii w akumulatorach (BESS)"},
+                       "PL": "System magazynowania energii w akumulatorach (BESS)",
+                       "DE": "Batteriespeichersystem (BESS)",                 "ET": "Akupatarei energiasalvestussüsteem (BESS)",
+                       "LV": "Bateriju energijas uzkrāšanas sistēma (BESS)",  "LT": "Baterijų energijos kaupimo sistema (BESS)"},
     "tuulivoima_maa": {"EN": "Onshore Wind Power Project",                   "SE": "Landbaserat vindkraftsprojekt",
                        "DA": "Landbaseret vindkraftsprojekt",                  "NO": "Landbasert vindkraftprosjekt",
-                       "PL": "Lądowy projekt farmy wiatrowej"},
+                       "PL": "Lądowy projekt farmy wiatrowej",
+                       "DE": "Onshore-Windenergieprojekt",                    "ET": "Maismaa tuuleenergiaprojekt",
+                       "LV": "Sauszemes vēja enerģijas projekts",             "LT": "Sausumos vėjo energijos projektas"},
     "tuulivoima_meri":{"EN": "Offshore Wind Power Project",                  "SE": "Offshorevindkraftsprojekt",
                        "DA": "Offshore-vindkraftsprojekt",                    "NO": "Offshore-vindkraftprosjekt",
-                       "PL": "Morski projekt farmy wiatrowej"},
+                       "PL": "Morski projekt farmy wiatrowej",
+                       "DE": "Offshore-Windenergieprojekt",                   "ET": "Meretuuleenergia projekt",
+                       "LV": "Jūras vēja enerģijas projekts",                 "LT": "Jūrinis vėjo energijos projektas"},
     "aurinkovoima":   {"EN": "Solar Power Plant Project",                    "SE": "Solkraftsprojekt",
                        "DA": "Solkraftværksprojekt",                          "NO": "Solkraftverksprosjekt",
-                       "PL": "Projekt elektrowni słonecznej"},
+                       "PL": "Projekt elektrowni słonecznej",
+                       "DE": "Solarkraftwerksprojekt",                        "ET": "Päikeseelektrijaama projekt",
+                       "LV": "Saules elektrostacijas projekts",               "LT": "Saulės elektrinės projektas"},
     "SMR":            {"EN": "Small Modular Reactor (SMR) — pre-licensing",  "SE": "Liten modulär reaktor (SMR) — förlicensiering",
                        "DA": "Lille modulær reaktor (SMR) — forhåndslicensiering", "NO": "Liten modulær reaktor (SMR) — forhåndslisensering",
-                       "PL": "Mały reaktor modułowy (SMR) — wstępne licencjonowanie"},
+                       "PL": "Mały reaktor modułowy (SMR) — wstępne licencjonowanie",
+                       "DE": "Kleiner modularer Reaktor (SMR) — Vorgenehmigungsverfahren",
+                       "ET": "Väike moodulreaktor (SMR) — eelloa taotlus",
+                       "LV": "Mazais moduļreaktors (SMR) — iepriekšējā licencēšana",
+                       "LT": "Mažasis modulinis reaktorius (SMR) — išankstinis licencijavimas"},
     "vesivoima":      {"EN": "Hydroelectric Power Project",                  "SE": "Vattenkraftsprojekt",
                        "DA": "Vandkraftsprojekt",                             "NO": "Vannkraftprosjekt",
-                       "PL": "Projekt elektrowni wodnej"},
+                       "PL": "Projekt elektrowni wodnej",
+                       "DE": "Wasserkraftprojekt",                            "ET": "Hüdroelektrijaama projekt",
+                       "LV": "Hidroelektrostacijas projekts",                 "LT": "Hidroelektrinės projektas"},
     "smr_bess":       {"EN": "SMR + BESS Hybrid Energy System",              "SE": "SMR + BESS hybridsystem",
                        "DA": "SMR + BESS hybridsystem",                       "NO": "SMR + BESS hybridsystem",
-                       "PL": "System hybrydowy SMR + BESS"},
+                       "PL": "System hybrydowy SMR + BESS",
+                       "DE": "SMR + BESS Hybrid-Energiesystem",               "ET": "SMR + BESS hübriidenergiasüsteem",
+                       "LV": "SMR + BESS hibrīda energosistēma",              "LT": "SMR + BESS hibridinė energetikos sistema"},
     "asuinrakennus":  {"EN": "Residential Construction Permit Application",   "SE": "Bygglovsansökan för bostadsbyggnad",
                        "DA": "Byggetilladelsesansøgning for beboelsesbygning", "NO": "Byggetillatelsessøknad for boligbygg",
-                       "PL": "Wniosek o pozwolenie na budowę budynku mieszkalnego"},
+                       "PL": "Wniosek o pozwolenie na budowę budynku mieszkalnego",
+                       "DE": "Baugenehmigungsantrag für Wohngebäude",         "ET": "Elamu ehitusloa taotlus",
+                       "LV": "Dzīvojamās ēkas būvatļaujas pieteikums",        "LT": "Gyvenamojo pastato statybos leidimo paraiška"},
     "teollisuus":     {"EN": "Industrial Construction Permit Application",    "SE": "Bygglovsansökan för industribyggnad",
                        "DA": "Byggetilladelsesansøgning for industribygning",  "NO": "Byggetillatelsessøknad för industribygg",
-                       "PL": "Wniosek o pozwolenie na budowę budynku przemysłowego"},
+                       "PL": "Wniosek o pozwolenie na budowę budynku przemysłowego",
+                       "DE": "Baugenehmigungsantrag für Industriegebäude",    "ET": "Tööstushoone ehitusloa taotlus",
+                       "LV": "Rūpnieciskās ēkas būvatļaujas pieteikums",      "LT": "Pramoninio pastato statybos leidimo paraiška"},
     "maatalous":      {"EN": "Agricultural Construction Permit Application",  "SE": "Bygglovsansökan för lantbruksbyggnad",
                        "DA": "Byggetilladelsesansøgning for landbrugsbygning", "NO": "Byggetillatelsessøknad for landbruksbygg",
-                       "PL": "Wniosek o pozwolenie na budowę budynku rolniczego"},
+                       "PL": "Wniosek o pozwolenie na budowę budynku rolniczego",
+                       "DE": "Baugenehmigungsantrag für landwirtschaftliches Gebäude",
+                       "ET": "Põllumajandushoone ehitusloa taotlus",
+                       "LV": "Lauksaimniecības ēkas būvatļaujas pieteikums",  "LT": "Žemės ūkio pastato statybos leidimo paraiška"},
     "liikerakennus":  {"EN": "Commercial Construction Permit Application",    "SE": "Bygglovsansökan för affärsbyggnad",
                        "DA": "Byggetilladelsesansøgning for erhvervsbygning",  "NO": "Byggetillatelsessøknad for næringsbygg",
-                       "PL": "Wniosek o pozwolenie na budowę budynku handlowego"},
+                       "PL": "Wniosek o pozwolenie na budowę budynku handlowego",
+                       "DE": "Baugenehmigungsantrag für Gewerbegebäude",      "ET": "Äriehitise ehitusloa taotlus",
+                       "LV": "Komerciālās ēkas būvatļaujas pieteikums",       "LT": "Komercinio pastato statybos leidimo paraiška"},
     "muu":            {"EN": "Other Project Permit Application",             "SE": "Tillståndsansökan för annat projekt",
                        "DA": "Tilladelsesansøgning for andet projekt",         "NO": "Tillatelsessøknad for annet prosjekt",
-                       "PL": "Wniosek o zezwolenie na inny projekt"},
+                       "PL": "Wniosek o zezwolenie na inny projekt",
+                       "DE": "Genehmigungsantrag für sonstiges Projekt",      "ET": "Muu projekti loataotlus",
+                       "LV": "Cita projekta atļaujas pieteikums",             "LT": "Kito projekto leidimo paraiška"},
     "ymparistolupa":  {"EN": "Environmental Permit Application (YSL 527/2014)", "SE": "Miljötillståndsansökan",
                        "DA": "Miljøtilladelsesansøgning",                      "NO": "Søknad om miljøtillatelse",
-                       "PL": "Wniosek o pozwolenie środowiskowe"},
+                       "PL": "Wniosek o pozwolenie środowiskowe",
+                       "DE": "Umweltgenehmigungsantrag",                      "ET": "Keskkonnaloa taotlus",
+                       "LV": "Vides atļaujas pieteikums",                     "LT": "Aplinkosaugos leidimo paraiška"},
     "datakeskus":     {"EN": "Data Centre Permit Application",                  "SE": "Tillståndsansökan för datacenter",
                        "DA": "Tilladelsesansøgning for datacenter",              "NO": "Tillatelsessøknad for datasenter",
-                       "PL": "Wniosek o zezwolenie na centrum danych"},
+                       "PL": "Wniosek o zezwolenie na centrum danych",
+                       "DE": "Genehmigungsantrag für Rechenzentrum",          "ET": "Andmekeskuse loataotlus",
+                       "LV": "Datu centra atļaujas pieteikums",               "LT": "Duomenų centro leidimo paraiška"},
+    "hybridi":        {"EN": "Hybrid Power Plant Project (BESS + Wind/Solar)", "SE": "Hybridkraftverksprojekt (BESS + vind/sol)",
+                       "DA": "Hybridkraftværksprojekt (BESS + vind/sol)",      "NO": "Hybridkraftverksprosjekt (BESS + vind/sol)",
+                       "PL": "Projekt hybrydowej elektrowni (BESS + wiatr/słońce)",
+                       "DE": "Hybridkraftwerksprojekt (BESS + Wind/Solar)",    "ET": "Hübriidelektrijaama projekt (BESS + tuul/päike)",
+                       "LV": "Hibrīda elektrostacijas projekts (BESS + vējš/saule)",
+                       "LT": "Hibridinės elektrinės projektas (BESS + vėjas/saulė)"},
 }
+# offshore_wind is the same real-world project concept as tuulivoima_meri (the
+# JS form config aliases HANKETYYPIT.offshore_wind = HANKETYYPIT.tuulivoima_meri
+# for the same reason) — reuse its translations rather than duplicating them.
+_HANKE_NIMI_TRANS["offshore_wind"] = _HANKE_NIMI_TRANS["tuulivoima_meri"]
+# The six smr_XX country variants (smr_se/no/da/de/ee/lv) share the identical
+# nimi_fi ("Pienydinreaktori (SMR) — ennakkolupahakemus") as the base "SMR"
+# hanketyyppi — they are the same project concept, just pre-scoped to a given
+# country, so they reuse SMR's translations rather than duplicating them.
+for _smr_country in ("se", "no", "da", "de", "ee", "lv"):
+    _HANKE_NIMI_TRANS[f"smr_{_smr_country}"] = _HANKE_NIMI_TRANS["SMR"]
+del _smr_country
 
 def _nimi(lang: str, hanketyyppi: str, nimi_fi: str) -> str:
     if lang == "FI":
@@ -5687,15 +5826,17 @@ def _t_law(lang: str, fi: str) -> str:
     return _t_str(lang, fi, _LAW_TRANS)
 
 def _t_liite(lang: str, fi: str, country: str = "FI") -> str:
-    """Liitteen nimen käännös. Ajaa myös Traficom- ja STUK-korvaukset (ks.
-    _fix_hardcoded_traficom, _fix_hardcoded_stuk) — _LIITE_TRANS-taulukon
-    kiinteät viranomaismaininnat ovat samat joka kielessä, koska _t_liite ei
-    aiemmin saanut maatietoa lainkaan; sama pysyvä ongelma kuin
-    context_extra-tekstissä, mutta eri koodipolku (staattinen käännöstaulukko,
-    ei Claude-generoitu proosa) — ei siis liity RAG-kontekstiin lainkaan."""
+    """Liitteen nimen käännös. Ajaa myös Traficom/Finavia-, STUK- ja
+    ELY-keskus-korvaukset (ks. _fix_hardcoded_traficom, _fix_hardcoded_stuk,
+    _fix_hardcoded_ely) — _LIITE_TRANS-taulukon kiinteät viranomaismaininnat
+    ovat samat joka kielessä, koska _t_liite ei aiemmin saanut maatietoa
+    lainkaan; sama pysyvä ongelma kuin context_extra-tekstissä, mutta eri
+    koodipolku (staattinen käännöstaulukko, ei Claude-generoitu proosa) —
+    ei siis liity RAG-kontekstiin lainkaan."""
     text = _t_str(lang, fi, _LIITE_TRANS)
     text = _fix_hardcoded_traficom(text, country)
     text = _fix_hardcoded_stuk(text, country)
+    text = _fix_hardcoded_ely(text, country)
     return text
 
 
@@ -5815,7 +5956,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_subtitle":   ("AI-itsearvio (Regulatory Assurance & Quality System) — ei korvaa asiantuntijatarkistusta. "
                             "Pisteet 1–5 per kriteeri; korkea pistemäärä = parempi laatu."),
         "raqs_overall":    "Kokonaispistemäärä",
-        "raqs_disclaimer": ("RAQS-arvio tuotettu automaattisesti (claude-haiku). "
+        "raqs_disclaimer": ("RAQS-arvio tuotettu automaattisesti tekoälyn avulla. "
                             "Arvioi aina luonnos ennen viranomaisen käsittelyyn toimittamista."),
         "raqs_lbl_viittaukset":    "Lakiviittaukset",
         "raqs_lbl_lupakattavuus":  "Lupakattavuus",
@@ -5919,7 +6060,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_subtitle":   ("AI self-assessment (Regulatory Assurance & Quality System) — does not replace expert review. "
                             "Score 1–5 per criterion; higher score = better quality."),
         "raqs_overall":    "Overall score",
-        "raqs_disclaimer": ("RAQS assessment generated automatically (claude-haiku). "
+        "raqs_disclaimer": ("RAQS assessment generated automatically using AI. "
                             "Always review the draft before submitting to the permitting authority."),
         "raqs_lbl_viittaukset":    "Legal References",
         "raqs_lbl_lupakattavuus":  "Permit Coverage",
@@ -6018,7 +6159,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_subtitle":   ("AI-självbedömning (Regulatory Assurance & Quality System) — ersätter inte expertgranskning. "
                             "Poäng 1–5 per kriterium; högre poäng = bättre kvalitet."),
         "raqs_overall":    "Totalpoäng",
-        "raqs_disclaimer": ("RAQS-bedömning genererad automatiskt (claude-haiku). "
+        "raqs_disclaimer": ("RAQS-bedömning genererad automatiskt med AI. "
                             "Granska alltid utkastet innan det skickas till tillståndsmyndigheten."),
         "raqs_lbl_viittaukset":    "Lagreferenser",
         "raqs_lbl_lupakattavuus":  "Tillståndstäckning",
@@ -6050,7 +6191,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_subtitle":   ("AI-selvvurdering (Regulatory Assurance & Quality System) — erstatter ikke "
                             "ekspertgennemgang. Point 1–5 pr. kriterium; høj score = bedre kvalitet."),
         "raqs_overall":    "Samlet score",
-        "raqs_disclaimer": ("RAQS-vurdering genereret automatisk (claude-haiku). "
+        "raqs_disclaimer": ("RAQS-vurdering genereret automatisk med AI. "
                             "Gennemgå altid udkastet før indsendelse til myndighedsbehandling."),
         "raqs_lbl_viittaukset":    "Lovhenvisninger",
         "raqs_lbl_lupakattavuus":  "Tilladelsesdækning",
@@ -6145,7 +6286,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_subtitle":   ("AI-selvvurdering (Regulatory Assurance & Quality System) — erstatter ikke "
                             "ekspertgjennomgang. Poeng 1–5 per kriterium; høy poengsum = bedre kvalitet."),
         "raqs_overall":    "Total poengsum",
-        "raqs_disclaimer": ("RAQS-vurdering generert automatisk (claude-haiku). "
+        "raqs_disclaimer": ("RAQS-vurdering generert automatisk med AI. "
                             "Gjennomgå alltid utkastet før innsending til myndighetsbehandling."),
         "raqs_lbl_viittaukset":    "Lovhenvisninger",
         "raqs_lbl_lupakattavuus":  "Tillatelsesdekning",
@@ -6239,7 +6380,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_subtitle":   ("Samoocena AI (Regulatory Assurance & Quality System) — nie zastępuje "
                             "weryfikacji przez eksperta. Punktacja 1–5 na kryterium; wyższy wynik = lepsza jakość."),
         "raqs_overall":    "Wynik łączny",
-        "raqs_disclaimer": ("Ocena RAQS wygenerowana automatycznie (claude-haiku). "
+        "raqs_disclaimer": ("Ocena RAQS wygenerowana automatycznie przy użyciu AI. "
                             "Zawsze zweryfikuj projekt przed złożeniem do organu."),
         "raqs_lbl_viittaukset":    "Odniesienia prawne",
         "raqs_lbl_lupakattavuus":  "Zakres zezwoleń",
@@ -6342,7 +6483,7 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_subtitle":   ("KI-Selbstbewertung (Regulatory Assurance & Quality System) — ersetzt keine "
                             "fachkundige Prüfung. Punkte 1–5 pro Kriterium; hohe Punktzahl = bessere Qualität."),
         "raqs_overall":    "Gesamtpunktzahl",
-        "raqs_disclaimer": ("RAQS-Bewertung automatisch erstellt (claude-haiku). "
+        "raqs_disclaimer": ("RAQS-Bewertung automatisch mit KI erstellt. "
                             "Prüfen Sie den Entwurf stets vor der Einreichung bei der Behörde."),
         "raqs_lbl_viittaukset":    "Gesetzesverweise",
         "raqs_lbl_lupakattavuus":  "Genehmigungsabdeckung",
@@ -7961,8 +8102,22 @@ def _raqs_review(
 
     full_content = "\n\n".join(p for p in [sections_text, sources_text, laki_text] if p)
 
+    # Translate the raw internal hanketyyppi ID (e.g. "tuulivoima_maa") before
+    # it goes into the prompt. Left untranslated, this raw ID was leaking into
+    # RAQS's own "yhteenveto" output even for non-FI reports, since nothing
+    # in _raqs_system_prompt()'s language instruction can translate a string
+    # the model is simply asked to echo/reference. FI is left as the raw ID
+    # (same as before) since it reads as a normal Finnish hanketyyppi slug
+    # there; only non-FI languages need the _HANKE_NIMI_TRANS lookup.
+    _raqs_hanketyyppi_raw = getattr(inp, "hanketyyppi", "?") or "?"
+    _raqs_hanketyyppi_nimi = (
+        _HANKE_NIMI_TRANS.get(_raqs_hanketyyppi_raw, {}).get(lang, _raqs_hanketyyppi_raw)
+        if lang != "FI"
+        else _raqs_hanketyyppi_raw
+    )
+
     prompt = (
-        f"Hanketyyppi: {getattr(inp, 'hanketyyppi', '?')} | "
+        f"Hanketyyppi: {_raqs_hanketyyppi_nimi} | "
         f"Teho: {getattr(inp, 'teho_mw', '?')} MW | "
         f"Kunta: {getattr(inp, 'kunta', '?')}\n\n"
         f"LUONNOKSEN SISÄLTÖ:\n{full_content}"
