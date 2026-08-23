@@ -736,46 +736,81 @@ def _fix_hardcoded_ely(text: str, country: str) -> str:
 _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
     "MRL":                  {"SE": "Plan- och bygglagen (2010:900)",
                               "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)",
-                              "LT": "Teritorijų planavimo įstatymas"},
+                              "LT": "Teritorijų planavimo įstatymas",
+                              "DA": "Planloven",
+                              "NO": "Plan- og bygningsloven"},
     "Rakentamislaki":       {"SE": "Plan- och bygglagen (2010:900)",
                               "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)",
-                              "LT": "Statybos įstatymas"},
+                              "LT": "Statybos įstatymas",
+                              "DA": "Byggeloven",
+                              # NO: same law as MRL above (Plan- og bygningsloven merges
+                              # zoning and building) -- not a separate act, matching SE.
+                              "NO": "Plan- og bygningsloven"},
     "YVA-laki":             {"SE": "Miljöbalken kap. 6 (miljöbedömningar)",
                               "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)",
-                              "LT": "PAV įstatymas"},
+                              "LT": "PAV įstatymas",
+                              "DA": "Miljøvurderingsloven",
+                              # NO: EIA is chapter 14 of the same Plan- og bygningsloven,
+                              # not a separate act -- confirmed via regjeringen.no.
+                              "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)"},
     "YSL":                  {"SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",
                               "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)",
-                              "LT": "Aplinkos apsaugos įstatymas"},
+                              "LT": "Aplinkos apsaugos įstatymas",
+                              "DA": "Miljøbeskyttelsesloven",
+                              "NO": "Forurensningsloven"},
     "Vesilaki":             {"SE": "Miljöbalken kap. 11 (vattenverksamhet)",
                               "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)",
-                              "LT": "Vandens įstatymas"},
+                              "LT": "Vandens įstatymas",
+                              # DA: Vandløbsloven (watercourse act), NOT Vandforsyningsloven
+                              # (drinking-water supply act, a different law) -- confirmed
+                              # via a real hydropower (vandkraft) example, see
+                              # DA_NO_LAW_CITATION_RESEARCH.md.
+                              "DA": "Vandløbsloven",
+                              "NO": "Vannressursloven"},
     "Pelastuslaki":         {"SE": "Lag (2003:778) om skydd mot olyckor",
                               "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)",
-                              "LT": "Priešgaisrinės saugos įstatymas"},
-    # Ydinenergialaki/LT: deliberately NOT a simple name swap, per explicit
-    # instruction -- keeps the real law + the real regulator (VATESI, already
-    # used correctly in _STUK_REPLACEMENT since PR #103) + the honest
-    # "no new-build permit path" caveat together in one string, rather than
-    # simplifying to either "there's a law" or "there's no path" alone. See
-    # LT_LAW_CITATION_RESEARCH.md section 2: VATESI's real current remit is
-    # Ignalina NPP decommissioning/waste, not new-build licensing -- both
-    # facts are true and need to travel together.
+                              "LT": "Priešgaisrinės saugos įstatymas",
+                              "DA": "Beredskabsloven",
+                              "NO": "Brann- og eksplosjonsvernloven"},
+    # Ydinenergialaki: each country's nuclear situation is genuinely
+    # different -- deliberately NOT templated off one another, per explicit
+    # instruction. See DA_NO_LAW_CITATION_RESEARCH.md / LT_LAW_CITATION_RESEARCH.md.
+    #  - LT: real law + real active regulator (VATESI), but its current remit
+    #    is Ignalina NPP decommissioning/waste, not new-build licensing.
+    #  - DA: an outright statutory BAN on nuclear power generation (1985) --
+    #    more clear-cut than "no permit path", an explicit prohibition.
+    #  - NO: real law + real active regulator (DSA), AND genuine current
+    #    commercial interest (real 2023-2025 SMR siting proposals) -- unlike
+    #    DA or LT, there's no reason to say "no path could exist" here; the
+    #    honest statement is "a framework exists and real proposals are
+    #    being pursued, but a first-of-its-kind commercial licensing process
+    #    hasn't been demonstrated yet."
     "Ydinenergialaki":      {"SE": "Lag (1984:3) om kärnteknisk verksamhet",
                               "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)",
                               "LT": ("Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE "
                                      "eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo "
-                                     "branduolinio objekto statybai reikėtų naujo teisinio pagrindo)")},
-    # Patoturvallisuuslaki: PL and LT deliberately have no entry -- neither
-    # country has a separate dam-safety act (verified, see
+                                     "branduolinio objekto statybai reikėtų naujo teisinio pagrindo)"),
+                              "DA": ("Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — "
+                                     "der findes ingen tilladelsesproces for nye atomkraftanlæg"),
+                              "NO": ("Atomenergiloven (1972) og DSA (Direktoratet for strålevern og "
+                                     "atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men "
+                                     "reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg "
+                                     "pågår); en fullstendig lisensieringsprosess for et førstegangs "
+                                     "kommersielt anlegg er ikke dokumentert ennå")},
+    # Patoturvallisuuslaki: PL, LT and DA deliberately have no entry.
+    # PL/LT: neither country has a separate dam-safety act (verified, see
     # PL_LAW_CITATION_RESEARCH.md / LT_LAW_CITATION_RESEARCH.md); dam safety
     # is folded into the general water-law/construction-technical-regulation
     # framework instead (PL: Prawo wodne + IMGW-PIB; LT: Statybos įstatymas +
-    # STR technical regulations). A bare "Patoturvallisuuslaki 494/2009"
-    # citation leaking into PL/LT prose correctly falls through unfixed
-    # rather than being mapped to a fabricated standalone act -- same
-    # principle as the LV/STUK verification-hedge pattern elsewhere in this
-    # file (don't invent a specific law where none exists).
-    "Patoturvallisuuslaki": {"SE": "Förordning (2014:214) om dammsäkerhet"},
+    # STR technical regulations). DA: genuinely NOT confirmed either way --
+    # no dedicated dam-safety act or regulation was found after two targeted
+    # searches, but unlike PL/LT I could not positively confirm it's "folded
+    # into" any specific existing law either -- left as an open, flagged gap
+    # rather than a guessed conclusion (see the _LAW_TRANS verification-hedge
+    # for the same key). NO, by contrast, DOES have a real, specific, named
+    # regulation (Damsikkerhetsforskriften) -- included below.
+    "Patoturvallisuuslaki": {"SE": "Förordning (2014:214) om dammsäkerhet",
+                              "NO": "Damsikkerhetsforskriften (2009, nr. 1600) — NVE tilsyn"},
 }
 _LAW_CITATION_NUMS: dict[str, str] = {
     "MRL": "132/1999", "Rakentamislaki": "751/2023", "YVA-laki": "252/2017",
@@ -3198,24 +3233,52 @@ _COUNTRY_CONFIG: dict[str, dict] = {
         "authorities": ["Energistyrelsen", "Miljøstyrelsen", "kommunalbestyrelse", "Planklagenævnet", "Kystdirektoratet",
                          "Energinet (TSO — transmission grid connection, equivalent to Finnish Fingrid)",
                          "Sikkerhedsstyrelsen (Danish Safety Technology Authority — electrical installation safety, equivalent to Finnish Tukes)"],
-        "key_laws": ["Planloven (LBK nr 1157/2022)", "Miljøvurderingsloven (LOV nr 973/2023)", "Elforsyningsloven (LBK nr 1255/2021)", "Naturbeskyttelsesloven"],
+        "key_laws": ["Planloven (LBK nr 1157/2022)", "Byggeloven", "Miljøvurderingsloven (LOV nr 973/2023)",
+                     "Miljøbeskyttelsesloven", "Vandløbsloven", "Beredskabsloven",
+                     "Elforsyningsloven (LBK nr 1255/2021)", "Naturbeskyttelsesloven"],
+        # 2026-08-23 (item 5(B), DA research — see DA_NO_LAW_CITATION_RESEARCH.md):
+        # same fix as SE/PL/LT's prompt_prefix -- explicit per-statute mapping
+        # added, plus laws that were entirely missing from the previous
+        # version (Miljøbeskyttelsesloven, Vandløbsloven, Beredskabsloven,
+        # Byggeloven as a named law rather than just "building permit =
+        # Byggetilladelse").
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in DENMARK. Apply Danish regulatory framework:\n"
             "Key authorities: Energistyrelsen (Danish Energy Agency), Miljøstyrelsen (EPA), "
             "kommunalbestyrelse (municipal council), Planklagenævnet (planning appeals board), "
             "Kystdirektoratet (coastal authority for offshore), "
+            "DEMA — Beredskabsstyrelsen (Danish Emergency Management Agency; fire/rescue coordination), "
             "Energinet (TSO — transmission grid connection = nettilslutningsaftale; "
             "equivalent to Finnish Fingrid), "
             "Sikkerhedsstyrelsen (electrical installation safety authority; equivalent to Finnish Tukes), "
             "Trafikstyrelsen (Danish Civil Aviation and Railway Authority — aviation obstacle lighting "
             "for wind turbines per BL 3-11; equivalent to Finnish Traficom).\n"
-            "Key laws: Planloven for land use planning (building permit = Byggetilladelse), "
-            "Miljøvurderingsloven for EIA (= Miljøkonsekvensvurdering / MKV), "
-            "Elforsyningsloven for electricity supply, Naturbeskyttelsesloven for nature protection, "
+            "Key laws — use EXACTLY these, mapped to the Finnish statute each one replaces:\n"
+            "- Planloven = zoning/land-use planning — replaces Finnish MRL 132/1999. Denmark, like "
+            "Poland and Lithuania, keeps this SEPARATE from building permits — do not merge them.\n"
+            "- Byggeloven = building permits (Byggetilladelse) — replaces Finnish Rakentamislaki "
+            "751/2023.\n"
+            "- Miljøvurderingsloven = environmental impact assessment (Miljøkonsekvensvurdering/MKV) "
+            "— replaces Finnish YVA-laki 252/2017.\n"
+            "- Miljøbeskyttelsesloven = environmental permit (miljøgodkendelse) — replaces Finnish "
+            "YSL 527/2014.\n"
+            "- Vandløbsloven = water-law permits, including hydropower (vandkraft) — replaces Finnish "
+            "Vesilaki 587/2011. Do NOT use Vandforsyningsloven, which is drinking-water/groundwater "
+            "supply specifically, a different law.\n"
+            "- Beredskabsloven = fire/rescue preparedness, coordinated by DEMA — replaces Finnish "
+            "Pelastuslaki 379/2011.\n"
+            "- Patoturvallisuuslaki 494/2009 (dam safety): NO confirmed Danish equivalent — do not "
+            "invent one. Mark any dam-safety-specific claim as [Requires verification against Danish "
+            "regulations] rather than naming a specific law.\n"
+            "- Ydinenergialaki 990/1987 (nuclear): Denmark has a STATUTORY BAN on nuclear power "
+            "generation (1985 law) — state this directly as a prohibition, not as \"no permit path "
+            "exists\" (a ban is a stronger, more definite fact than an absent framework).\n"
+            "- Elforsyningsloven for electricity supply, Naturbeskyttelsesloven for nature protection, "
             "BL 3-11 (aviation obstacle lighting for wind turbines).\n"
-            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Fingrid) "
-            "with the Danish equivalents listed above (Miljøstyrelsen, Sikkerhedsstyrelsen, Trafikstyrelsen, "
-            "Energinet). "
+            "Never invent a plausible-sounding Danish law name that is not in the mapping above.\n"
+            "Replace ALL Finnish entity references (ELY-keskus, Tukes, Traficom, Fingrid, STUK, Luova) "
+            "with the Danish equivalents listed above (Miljøstyrelsen, Sikkerhedsstyrelsen, "
+            "Trafikstyrelsen, Energinet). "
             "Mark uncertain items: [Requires verification against Danish regulations].\n\n"
         ),
     },
@@ -3223,23 +3286,59 @@ _COUNTRY_CONFIG: dict[str, dict] = {
         "name": "Norway / Norge",
         "authorities": ["NVE (Norges vassdrags- og energidirektorat)", "Statsforvalteren", "DSB", "Kommunen", "Miljødirektoratet",
                          "Statnett (TSO — transmission grid connection, equivalent to Finnish Fingrid)"],
-        "key_laws": ["Plan- og bygningsloven (PBL 2008)", "Energiloven (1990)", "Forurensningsloven (1981)", "Naturmangfoldloven (2009)"],
+        "key_laws": ["Plan- og bygningsloven (PBL 2008)", "Energiloven (1990)", "Forurensningsloven (1981)",
+                     "Vannressursloven (2000)", "Brann- og eksplosjonsvernloven (2002)",
+                     "Damsikkerhetsforskriften (2009, nr. 1600)", "Atomenergiloven (1972)",
+                     "Naturmangfoldloven (2009)"],
+        # 2026-08-23 (item 5(B), NO research — see DA_NO_LAW_CITATION_RESEARCH.md):
+        # same fix as SE/PL/LT/DA's prompt_prefix -- explicit per-statute
+        # mapping added, plus laws that were entirely missing from the
+        # previous version (Vannressursloven, Brann- og eksplosjonsvernloven,
+        # Damsikkerhetsforskriften, Atomenergiloven/DSA).
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in NORWAY. Apply Norwegian regulatory framework:\n"
-            "Key authorities: NVE (Norwegian Water Resources and Energy Directorate — concessions), "
+            "Key authorities: NVE (Norwegian Water Resources and Energy Directorate — concessions, "
+            "water-law permits, dam safety supervision), "
             "Statsforvalteren (county governor), "
-            "DSB (Direktoratet for samfunnssikkerhet og beredskap — civil protection, incl. electrical "
-            "installation safety; equivalent to Finnish Tukes), "
+            "DSB (Direktoratet for samfunnssikkerhet og beredskap — civil protection, fire/explosion "
+            "safety, incl. electrical installation safety; equivalent to Finnish Tukes), "
+            "DSA (Direktoratet for strålevern og atomsikkerhet — Norwegian Radiation and Nuclear "
+            "Safety Authority; nuclear-specific, distinct from DSB), "
             "Kommunen (municipality), Miljødirektoratet (Environment Agency), "
             "Statnett (TSO — transmission grid connection = nettilknytningsavtale; "
             "equivalent to Finnish Fingrid), "
             "Luftfartstilsynet (Norwegian Civil Aviation Authority — aviation obstacle lighting for "
             "structures ≥60m including wind turbines; equivalent to Finnish Traficom).\n"
-            "Key laws: Plan- og bygningsloven PBL 2008 (building permit = Byggetillatelse), "
-            "Energiloven 1990 (energy facilities), Forurensningsloven 1981 (pollution/environmental), "
-            "Naturmangfoldloven 2009 (biodiversity). EIA = Konsekvensutredning (KU).\n"
-            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Fingrid) "
-            "with the Norwegian equivalents listed above (Statsforvalteren, DSB, Luftfartstilsynet, Statnett). "
+            "Key laws — use EXACTLY these, mapped to the Finnish statute each one replaces:\n"
+            "- Plan- og bygningsloven (PBL, 2008) = BOTH zoning/planning AND building permits "
+            "(Byggetillatelse) — replaces BOTH Finnish MRL 132/1999 and Rakentamislaki 751/2023, since "
+            "Norway merges these into one law, same pattern as Sweden's PBL, NOT split like Denmark/"
+            "Poland/Lithuania.\n"
+            "- Plan- og bygningsloven kapittel 14 (konsekvensutredning) = EIA — replaces Finnish "
+            "YVA-laki 252/2017. This is a CHAPTER of the same PBL above, not a separate act — do not "
+            "call it \"KU-loven\" as if it were its own standalone law.\n"
+            "- Forurensningsloven (1981) = environmental/pollution permit — replaces Finnish YSL "
+            "527/2014.\n"
+            "- Vannressursloven (2000) = water resources/water-law permit — replaces Finnish Vesilaki "
+            "587/2011.\n"
+            "- Brann- og eksplosjonsvernloven (2002) = fire/explosion safety, DSB-administered — "
+            "replaces Finnish Pelastuslaki 379/2011.\n"
+            "- Damsikkerhetsforskriften (2009, nr. 1600) = dam safety, NVE-supervised — replaces "
+            "Finnish Patoturvallisuuslaki 494/2009. This IS a real, specific, named regulation (unlike "
+            "some other countries where no separate dam-safety law exists) — cite it directly.\n"
+            "- Ydinenergialaki 990/1987 (nuclear): Atomenergiloven (1972) is real and DSA is a real, "
+            "active regulator. Norway has never had a commercial nuclear power plant, but genuine "
+            "commercial SMR proposals are currently being pursued (real site-selection activity as of "
+            "2023-2025). State BOTH facts together: the real law/regulator exist, AND a first-of-its-"
+            "kind commercial licensing process has not been demonstrated yet — do not simplify to "
+            "either \"there's a clear path\" or \"there's no path at all\" (this is a different "
+            "situation from Denmark's outright nuclear ban or Lithuania's decommissioning-only "
+            "regulator remit).\n"
+            "- Energiloven (1990) for energy facilities, Naturmangfoldloven (2009) for biodiversity.\n"
+            "Never invent a plausible-sounding Norwegian law name that is not in the mapping above.\n"
+            "Replace ALL Finnish entity references (ELY-keskus, Tukes, Traficom, Fingrid, STUK, Luova) "
+            "with the Norwegian equivalents listed above (Statsforvalteren, DSB, Luftfartstilsynet, "
+            "Statnett, DSA). "
             "Mark uncertain items: [Requires verification against Norwegian regulations].\n\n"
         ),
     },
@@ -4569,10 +4668,24 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
         ],
     },
     "DA": {
+        # 2026-08-23 (DA research -- see DA_NO_LAW_CITATION_RESEARCH.md): the
+        # previous SMR/smr_bess entries here implied a normal nuclear-safety
+        # review pathway ("Nuklær sikkerhedsredegørelse... Lov nr. 94/2003")
+        # that is now confirmed to conflict with Denmark's real, verified,
+        # statutory BAN on nuclear power generation (1985 law) -- a
+        # customer building a Danish SMR project would have seen a normal-
+        # looking attachment checklist for a project that is currently
+        # illegal to build. Fixed by leading with the ban as the first,
+        # unmissable item; the remaining items (VVM, grid connection,
+        # zoning, CVR) are left as generically-relevant should the ban ever
+        # be repealed, but the fabricated safety-review authority/citation
+        # is removed rather than kept.
         "SMR": [
+            "⚠️ Danmark har et lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes "
+            "ingen tilladelsesproces for et nyt atomkraftanlæg. Et sådant projekt forudsætter, at "
+            "Folketinget først ophæver forbuddet.",
             "Kortbilag / Beliggenhedskort (1:20 000)",
             "Maankäyttöselvitys PDF (NCE)",
-            "Nuklær sikkerhedsredegørelse (Sundhedsstyrelsen / SIS) — Lov nr. 94/2003",
             "VVM-redegørelse (Vurdering af Virkninger på Miljøet) — Miljøvurderingsloven",
             "Hydrogeologisk undersøgelse (kølevandsbehov)",
             "Nettilslutningsplan (Energinet)",
@@ -4581,9 +4694,11 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
         ],
         "smr_bess": [
+            "⚠️ Danmark har et lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — SMR-delen af "
+            "dette hybridprojekt har ingen tilladelsesproces i Danmark. BESS-delen er upåvirket af "
+            "forbuddet.",
             "Kortbilag / Beliggenhedskort (1:20 000)",
             "Maankäyttöselvitys PDF (NCE)",
-            "Nuklær sikkerhedsredegørelse (Sundhedsstyrelsen / SIS) — Lov nr. 94/2003",
             "VVM-redegørelse — Miljøvurderingsloven",
             "Brandsikkerhedsrapport BESS (NFPA 855 / EN 50604-1)",
             "Nettilslutningsplan (Energinet)",
@@ -4604,9 +4719,92 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "PUE- og energieffektivitetsundersøgelse",
             "Virksomhedsregistreringsudskrift (CVR)",
         ],
+        # 2026-08-23 (item 4, DA research -- see DA_NO_LAW_CITATION_RESEARCH.md):
+        # energy-project hanketyyppis added first per pilot-activity priority;
+        # construction types deliberately not yet added, lower priority.
+        "BESS": [
+            "Kortbilag / Beliggenhedskort (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Byggetilladelse — Byggeloven",
+            "Miljøgodkendelse eller anmeldelse (afhængig af størrelse) — Miljøbeskyttelsesloven",
+            "Brandsikkerhedsdokumentation — Beredskabsloven",
+            "Lokalplan / kommuneplanramme — Planloven",
+            "Nettilslutningsplan (Energinet / lokalt netselskab)",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
+        "tuulivoima_maa": [
+            "Kortbilag / Beliggenhedskort (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "VVM-redegørelse — Miljøvurderingsloven",
+            "Lokalplan — Planloven",
+            "Byggetilladelse — Byggeloven",
+            "Nettilslutningsplan (Energinet)",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
+        "tuulivoima_meri": [
+            "Kortbilag / Søkort",
+            "Maankäyttöselvitys PDF (NCE)",
+            "VVM-redegørelse — Miljøvurderingsloven",
+            "Tilladelse fra Kystdirektoratet (kystnære/havbaserede anlæg)",
+            "Nettilslutningsplan (Energinet)",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
+        "aurinkovoima": [
+            "Kortbilag / Beliggenhedskort (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Byggetilladelse — Byggeloven",
+            "VVM-screening (større anlæg) — Miljøvurderingsloven",
+            "Lokalplan / kommuneplanramme — Planloven",
+            "Nettilslutningsplan (lokalt netselskab)",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
+        "vesivoima": [
+            "Kortbilag / Beliggenhedskort (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "VVM-redegørelse — Miljøvurderingsloven",
+            "Vandløbstilladelse — Vandløbsloven",
+            "Dæmningsdokumentation — [Requires verification against Danish regulations; no confirmed "
+            "dedicated dam-safety act found]",
+            "Nettilslutningsplan (Energinet)",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
+        # hybridi (BESS + wind/solar): real de-duplicated combined list, same
+        # approach as SE/PL/LT's -- not a mechanical union.
+        "hybridi": [
+            "Kortbilag / Beliggenhedskort (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "VVM-redegørelse (afhængig af størrelse og vindkomponent) — Miljøvurderingsloven",
+            "Miljøgodkendelse eller anmeldelse (BESS- og produktionsdel) — Miljøbeskyttelsesloven",
+            "Brandsikkerhedsdokumentation (BESS) — Beredskabsloven",
+            "Lokalplan / kommuneplanramme — Planloven",
+            "Byggetilladelse — Byggeloven",
+            "Integreret nettilslutningsplan (Energinet / lokalt netselskab)",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
+        "ymparistolupa": [
+            "Miljøgodkendelse eller sektorgodkendelse — Miljøbeskyttelsesloven",
+            "VVM-redegørelse (hvis relevant) — Miljøvurderingsloven",
+            "Virksomhedsregistreringsudskrift (CVR)",
+            "Fuldmagt (hvis repræsentant handler på vegne af ansøger)",
+        ],
     },
     "NO": {
+        # 2026-08-23 (NO research -- see DA_NO_LAW_CITATION_RESEARCH.md): the
+        # citations here were already accurate (Strålevernloven LOV-2000-05-
+        # 12-36, DSA, Plan- og bygningsloven kap. 14 all confirmed real) --
+        # only addition is the same genuine-interest-but-undemonstrated-
+        # process caveat as the kaava_SMR card, so a customer sees it here
+        # too, not just in the prose section.
         "SMR": [
+            "⚠️ Norge har aldri hatt et kommersielt kjernekraftverk. Reelle kommersielle SMR-forslag er "
+            "under vurdering, men en fullstendig lisensieringsprosess for et førstegangs kommersielt "
+            "anlegg er ikke dokumentert ennå — verifiser nøye før videre planlegging.",
             "Kart / Stedsbeskrivelse (1:20 000)",
             "Maankäyttöselvitys PDF (NCE)",
             "Sikkerhetsanalyse (DSA — Direktoratet for strålevern og atomsikkerhet) — Strålevernloven",
@@ -4618,6 +4816,10 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Fullmakt (dersom representant opptrer på vegne av søker)",
         ],
         "smr_bess": [
+            "⚠️ Norge har aldri hatt et kommersielt kjernekraftverk. Reelle kommersielle SMR-forslag er "
+            "under vurdering, men en fullstendig lisensieringsprosess for et førstegangs kommersielt "
+            "anlegg er ikke dokumentert ennå — verifiser nøye før videre planlegging. BESS-delen er "
+            "upåvirket.",
             "Kart / Stedsbeskrivelse (1:20 000)",
             "Maankäyttöselvitys PDF (NCE)",
             "Sikkerhetsanalyse (DSA) — Strålevernloven (LOV-2000-05-12-36)",
@@ -4640,6 +4842,80 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Konsekvensutredning (ved behov)",
             "PUE- og energieffektivitetsutredning",
             "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+        ],
+        # 2026-08-23 (item 4, NO research -- see DA_NO_LAW_CITATION_RESEARCH.md):
+        # energy-project hanketyyppis added first per pilot-activity priority;
+        # construction types deliberately not yet added, lower priority.
+        "BESS": [
+            "Kart / Stedsbeskrivelse (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Byggetillatelse — Plan- og bygningsloven",
+            "Utslippstillatelse eller melding (avhengig av størrelse) — Forurensningsloven",
+            "Brannsikkerhetsdokumentasjon — Brann- og eksplosjonsvernloven",
+            "Reguleringsplan / kommuneplan",
+            "Nettilknytningsplan (Statnett / lokalt nettselskap)",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
+        ],
+        "tuulivoima_maa": [
+            "Kart / Stedsbeskrivelse (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Konsekvensutredning (KU) — Plan- og bygningsloven kapittel 14",
+            "Reguleringsplan / kommunedelplan — Plan- og bygningsloven",
+            "Byggetillatelse — Plan- og bygningsloven",
+            "Nettilknytningsplan (Statnett)",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
+        ],
+        "tuulivoima_meri": [
+            "Kart / Sjøkart",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Konsekvensutredning (KU) — Plan- og bygningsloven kapittel 14",
+            "Tillatelse etter havenergilovgivningen (havbasert vindkraft)",
+            "Nettilknytningsplan (Statnett)",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
+        ],
+        "aurinkovoima": [
+            "Kart / Stedsbeskrivelse (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Byggetillatelse — Plan- og bygningsloven",
+            "KU-vurdering (større anlegg) — Plan- og bygningsloven kapittel 14",
+            "Reguleringsplan / kommuneplan",
+            "Nettilknytningsplan (lokalt nettselskap)",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
+        ],
+        "vesivoima": [
+            "Kart / Stedsbeskrivelse (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Konsekvensutredning (KU) — Plan- og bygningsloven kapittel 14",
+            "Konsesjon etter vannressursloven",
+            "Damsikkerhetsdokumentasjon — Damsikkerhetsforskriften (NVE-tilsyn)",
+            "Nettilknytningsplan (Statnett)",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
+        ],
+        # hybridi (BESS + wind/solar): real de-duplicated combined list, same
+        # approach as SE/PL/LT/DA's -- not a mechanical union.
+        "hybridi": [
+            "Kart / Stedsbeskrivelse (1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Konsekvensutredning (avhengig av størrelse og vindkomponent) — Plan- og bygningsloven "
+            "kapittel 14",
+            "Utslippstillatelse eller melding (BESS- og produksjonsdel) — Forurensningsloven",
+            "Brannsikkerhetsdokumentasjon (BESS) — Brann- og eksplosjonsvernloven",
+            "Reguleringsplan / kommuneplan",
+            "Byggetillatelse — Plan- og bygningsloven",
+            "Integrert nettilknytningsplan (Statnett / lokalt nettselskap)",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
+        ],
+        "ymparistolupa": [
+            "Utslippstillatelse eller sektortillatelse — Forurensningsloven",
+            "Konsekvensutredning (hvis relevant) — Plan- og bygningsloven kapittel 14",
+            "Foretaksregistreringsutskrift (Brønnøysundregistrene)",
+            "Fullmakt (dersom representant opptrer på vegne av søker)",
         ],
     },
     "PL": {
@@ -4999,6 +5275,28 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Juridinio asmens registravimo pažymėjimas",
             "Įgaliojimas (jei atstovas veikia pareiškėjo vardu)",
         ],
+        # hybridi (BESS + wind/solar): purely non-nuclear, so treated like
+        # the other 7 straightforward entries per explicit instruction --
+        # a real de-duplicated combined list, not a mechanical union, same
+        # approach as SE/PL's hybridi entries. Added 2026-08-23 alongside
+        # the rest of the LT batch after initially being grouped with
+        # SMR/smr_bess (a lower-confidence exclusion, since hybridi has no
+        # actual nuclear content of its own -- confirmed here).
+        "hybridi": [
+            "Vietos schema (mastelis 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "PAV atranka arba ataskaita (priklausomai nuo masto ir vėjo komponento) — PAV įstatymas (AAA)",
+            "Priešgaisrinės saugos ekspertizė (BESS dalis) — Priešgaisrinės saugos įstatymas (PAGD, "
+            "privaloma prieš statybos leidimą)",
+            "Karinio radaro derinimas (jei yra vėjo komponentas — Lietuvos kariuomenė)",
+            "Teritorijų planavimo dokumentas (bendrasis arba detalusis planas) — Teritorijų planavimo "
+            "įstatymas",
+            "Statybos leidimas — Statybos įstatymas (per INFOSTATYBA)",
+            "Integruota prisijungimo prie tinklo sutartis (LITGRID >5 MW arba ESO <5 MW)",
+            "Gamybos licencija arba registracija (VERT — priklausomai nuo galios)",
+            "Juridinio asmens registravimo pažymėjimas",
+            "Įgaliojimas (jei atstovas veikia pareiškėjo vardu)",
+        ],
         "ymparistolupa": [
             "Taršos leidimas arba TIPK (priklausomai nuo veiklos masto) — Aplinkos apsaugos įstatymas",
             "PAV ataskaita (jei reikalinga) — PAV įstatymas (AAA)",
@@ -5040,6 +5338,11 @@ _COUNTRY_LIITTEET["PL"]["offshore_wind"] = _COUNTRY_LIITTEET["PL"]["tuulivoima_m
 # 2026-08-23 (item 4, LT research): same offshore_wind/tuulivoima_meri
 # aliasing as SE/PL above.
 _COUNTRY_LIITTEET["LT"]["offshore_wind"] = _COUNTRY_LIITTEET["LT"]["tuulivoima_meri"]
+
+# 2026-08-23 (item 4, DA/NO research): same offshore_wind/tuulivoima_meri
+# aliasing as SE/PL/LT above.
+_COUNTRY_LIITTEET["DA"]["offshore_wind"] = _COUNTRY_LIITTEET["DA"]["tuulivoima_meri"]
+_COUNTRY_LIITTEET["NO"]["offshore_wind"] = _COUNTRY_LIITTEET["NO"]["tuulivoima_meri"]
 
 _SYSTEM = (
     "Käytä aina oikeita suomenkielisiä merkkejä: ä, ö, å. "
@@ -6260,41 +6563,41 @@ _LUPA_TRANS: dict[str, dict[str, str]] = {
 }
 
 _LAW_TRANS: dict[str, dict[str, str]] = {
-    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",                      "DA": "Miljøbeskyttelsesloven (YSL 527/2014)",                   "NO": "Miljøvernloven (YSL 527/2014)",                    "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)", "LT": "Aplinkos apsaugos įstatymas"},
-    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Plan- och bygglagen (2010:900)",    "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999)",        "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999)", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414) / Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
-    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Plan- och bygglagen (2010:900)",                                   "DA": "Byggeloven 751/2023",                                     "NO": "Byggeloven 751/2023",                              "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas"},
-    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Plan- och bygglagen (2010:900)",                             "DA": "Byggeloven 751/2023, § 44",                               "NO": "Byggeloven 751/2023, § 44",                        "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas"},
-    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Lag (2003:778) om skydd mot olyckor",                        "DA": "Redningstjenesteloven 379/2011, § 15",                    "NO": "Brannvernloven 379/2011, § 15",                    "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)", "LT": "Priešgaisrinės saugos įstatymas"},
+    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",                      "DA": "Miljøbeskyttelsesloven",                   "NO": "Forurensningsloven",                    "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)", "LT": "Aplinkos apsaugos įstatymas"},
+    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Plan- och bygglagen (2010:900)",    "DA": "Byggeloven / Planloven",        "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414) / Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
+    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Plan- och bygglagen (2010:900)",                                   "DA": "Byggeloven",                                     "NO": "Plan- og bygningsloven",                              "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas"},
+    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Plan- och bygglagen (2010:900)",                             "DA": "Byggeloven",                               "NO": "Plan- og bygningsloven",                        "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas"},
+    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Lag (2003:778) om skydd mot olyckor",                        "DA": "Beredskabsloven",                    "NO": "Brann- og eksplosjonsvernloven",                    "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)", "LT": "Priešgaisrinės saugos įstatymas"},
     "Sähkömarkkinalaki 588/2013":                           {"EN": "Electricity Market Act (588/2013)",                                    "SE": "Elmarknadslagen (588/2013)",                           "DA": "Elmarkedsloven (588/2013)",                               "NO": "Energiloven (588/2013)",                           "PL": "Ustawa o rynku energii elektrycznej (588/2013)"},
     "Maa-aineslaki 555/1981":                               {"EN": "Extractable Land Resources Act (555/1981)",                            "SE": "Marktäktslagen (555/1981)",                            "DA": "Råstofloven (555/1981)",                                  "NO": "Mineralressursloven (555/1981)",                   "PL": "Ustawa o kopalinach pospolitych (555/1981)"},
-    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                                 "DA": "VVM-loven (252/2017)",                                    "NO": "KU-loven (252/2017)",                              "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas"},
-    "YVA-laki 252/2017 (kynnykset ylittyessä)":            {"EN": "EIA Act 252/2017 (when thresholds exceeded)",                          "SE": "Miljöbalken kap. 6 (miljöbedömningar), vid tröskelöverskridning",        "DA": "VVM-loven 252/2017 (når grænseværdier overskrides)",      "NO": "KU-loven 252/2017 (når terskler overskrides)",    "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227), gdy progi są przekroczone", "LT": "PAV įstatymas, kai viršijamos ribinės vertės"},
-    "YVA-laki 252/2017 (≥50 ha hankkeet)":                 {"EN": "EIA Act 252/2017 (≥50 ha projects)",                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                 "DA": "VVM-loven 252/2017 (≥50 ha projekter)",                   "NO": "KU-loven 252/2017 (≥50 ha prosjekter)",           "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas"},
-    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planlægningsloven 132/1999, § 77a",                       "NO": "Plan- og bygningsloven 132/1999, § 77a",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
-    "MRL 132/1999 § 137":                                   {"EN": "Land Use and Building Act 132/1999, § 137",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planlægningsloven 132/1999, § 137",                       "NO": "Plan- og bygningsloven 132/1999, § 137",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
+    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                                 "DA": "Miljøvurderingsloven",                                    "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",                              "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas"},
+    "YVA-laki 252/2017 (kynnykset ylittyessä)":            {"EN": "EIA Act 252/2017 (when thresholds exceeded)",                          "SE": "Miljöbalken kap. 6 (miljöbedömningar), vid tröskelöverskridning",        "DA": "Miljøvurderingsloven, når grænseværdier overskrides",      "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning), når terskler overskrides",    "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227), gdy progi są przekroczone", "LT": "PAV įstatymas, kai viršijamos ribinės vertės"},
+    "YVA-laki 252/2017 (≥50 ha hankkeet)":                 {"EN": "EIA Act 252/2017 (≥50 ha projects)",                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                 "DA": "Miljøvurderingsloven",                   "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",           "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas"},
+    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
+    "MRL 132/1999 § 137":                                   {"EN": "Land Use and Building Act 132/1999, § 137",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
     "MRL 197 §":                                            {"EN": "Land Use and Building Act, § 197",                                     "SE": "Plan- och bygglagen, § 197",                           "DA": "Planlægningsloven, § 197",                                "NO": "Plan- og bygningsloven, § 197",                    "PL": "Ustawa o zagospodarowaniu przestrzennym, § 197"},
-    "MRL 132/1999 § 91a":                                   {"EN": "Land Use and Building Act 132/1999, § 91a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planlægningsloven 132/1999, § 91a",                       "NO": "Plan- og bygningsloven 132/1999, § 91a",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
-    "MRL 132/1999 § 9":                                     {"EN": "Land Use and Building Act 132/1999, § 9",                              "SE": "Plan- och bygglagen (2010:900)",                    "DA": "Planlægningsloven 132/1999, § 9",                         "NO": "Plan- og bygningsloven 132/1999, § 9",            "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
-    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (2010:900)",                       "DA": "Planlægningsloven (132/1999)",                            "NO": "Plan- og bygningsloven (132/1999)",                "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
+    "MRL 132/1999 § 91a":                                   {"EN": "Land Use and Building Act 132/1999, § 91a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
+    "MRL 132/1999 § 9":                                     {"EN": "Land Use and Building Act 132/1999, § 9",                              "SE": "Plan- och bygglagen (2010:900)",                    "DA": "Planloven",                         "NO": "Plan- og bygningsloven",            "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
+    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (2010:900)",                       "DA": "Planloven",                            "NO": "Plan- og bygningsloven",                "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
     "Ilmailulaki 864/2014":                                 {"EN": "Aviation Act (864/2014)",                                              "SE": "Luftfartslagen (864/2014)",                            "DA": "Luftfartsloven (864/2014)",                               "NO": "Luftfartsloven (864/2014)",                        "PL": "Ustawa lotnicza (864/2014)"},
     "Maakaari 540/1995":                                    {"EN": "Code of Real Estate (540/1995)",                                       "SE": "Jordabalken (540/1995)",                               "DA": "Tinglysningsloven (540/1995)",                            "NO": "Eiendomsloven (540/1995)",                         "PL": "Ustawa o nieruchomościach (540/1995)"},
-    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                               "DA": "Vandloven (587/2011)",                                    "NO": "Vannressursloven (587/2011)",                      "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas"},
-    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                          "DA": "Vandloven 587/2011, § 3:2",                               "NO": "Vannressursloven 587/2011, § 3:2",                 "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas"},
+    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                               "DA": "Vandløbsloven",                                    "NO": "Vannressursloven",                      "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas"},
+    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                          "DA": "Vandløbsloven",                               "NO": "Vannressursloven",                 "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas"},
     "Merilaki 674/1994":                                    {"EN": "Maritime Act (674/1994)",                                              "SE": "Sjölagen (674/1994)",                                  "DA": "Søloven (674/1994)",                                      "NO": "Sjøloven (674/1994)",                              "PL": "Kodeks morski (674/1994)"},
     "Merenkulkulaki 1672/2009":                             {"EN": "Maritime Navigation Act (1672/2009)",                                  "SE": "Sjöfartslagen (1672/2009)",                            "DA": "Søfartsloven (1672/2009)",                                "NO": "Navigasjonsloven (1672/2009)",                     "PL": "Ustawa o żegludze morskiej (1672/2009)"},
     "Laki alueiden käytöstä":                               {"EN": "Act on Land Use",                                                      "SE": "Lagen om områdesanvändning",                           "DA": "Lov om arealanvendelse",                                  "NO": "Lov om arealbruk",                                 "PL": "Ustawa o użytkowaniu gruntów"},
-    "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126":    {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999 §§ 125–126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999 §§ 125–126)", "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999 §§ 125–126)", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
-    "Rakentamislaki 751/2023 / MRL 132/1999 § 126":         {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999, § 126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggelov / Planlægningslov (751/2023 / 132/1999, § 126)", "NO": "Byggelov / Plan- og bygningsloven (751/2023 / 132/1999, § 126)", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
-    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Kerneenergieloven 990/1987, § 11",                        "NO": "Atomenergiloven 990/1987, § 11",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)"},
-    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Kerneenergieloven 990/1987, § 18",                        "NO": "Atomenergiloven 990/1987, § 18",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)"},
-    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Kerneenergieloven 990/1987, § 20",                        "NO": "Atomenergiloven 990/1987, § 20",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)"},
+    "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126":    {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999 §§ 125–126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggeloven / Planloven", "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
+    "Rakentamislaki 751/2023 / MRL 132/1999 § 126":         {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999, § 126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggeloven / Planloven", "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
+    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)"},
+    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)"},
+    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)"},
     "Kalastuslaki 379/2015":                                {"EN": "Fisheries Act (379/2015)",                                             "SE": "Fiskelagen (379/2015)",                                "DA": "Fiskeriloven (379/2015)",                                 "NO": "Fiskeloven (379/2015)",                            "PL": "Ustawa o rybołówstwie (379/2015)"},
     "Säteilylaki 859/2018":                                 {"EN": "Radiation Act (859/2018)",                                             "SE": "Strålningslagen (859/2018)",                           "DA": "Strålingsloven (859/2018)",                               "NO": "Strålevernloven (859/2018)",                       "PL": "Ustawa prawo atomowe (859/2018)"},
     "Kemikaaliturvallisuuslaki 390/2005":                   {"EN": "Chemicals Safety Act (390/2005)",                                      "SE": "Kemikaliesäkerhetslagen (390/2005)",                   "DA": "Kemikaliesikkerhedsloven (390/2005)",                     "NO": "Kjemikaliesikkerhetsloven (390/2005)",             "PL": "Ustawa o bezpieczeństwie chemicznym (390/2005)"},
     "Kemikaaliturvallisuuslaki 390/2005 (BESS)":           {"EN": "Chemicals Safety Act 390/2005 (BESS)",                                  "SE": "Kemikaliesäkerhetslagen 390/2005 (BESS)",              "DA": "Kemikaliesikkerhedsloven 390/2005 (BESS)",                "NO": "Kjemikaliesikkerhetsloven 390/2005 (BESS)",        "PL": "Ustawa o bezpieczeństwie chemicznym 390/2005 (BESS)"},
     "Luonnonsuojelulaki 9/2023":                            {"EN": "Nature Conservation Act (9/2023)",                                     "SE": "Naturvårdslagen (9/2023)",                             "DA": "Naturbeskyttelsesloven (9/2023)",                         "NO": "Naturmangfoldloven (9/2023)",                      "PL": "Ustawa o ochronie przyrody (9/2023)"},
     "Maantielaki 503/2005 (tiealueet)":                     {"EN": "Highways Act 503/2005 (road areas)",                                   "SE": "Väglagen 503/2005 (vägområden)",                       "DA": "Vejloven 503/2005 (vejarealer)",                          "NO": "Vegloven 503/2005 (vegarealer)",                   "PL": "Ustawa o drogach publicznych 503/2005 (obszary drogowe)"},
-    "Patoturvallisuuslaki 494/2009":                        {"EN": "Dam Safety Act (494/2009)",                                            "SE": "Förordning (2014:214) om dammsäkerhet",                         "DA": "Dæmningssikkerhedsloven (494/2009)",                      "NO": "Damsikkerhetsloven (494/2009)",                    "PL": "Prawo wodne (Dz.U. 2017 poz. 1566) — brak odrębnej ustawy o bezpieczeństwie zapór w Polsce"},
+    "Patoturvallisuuslaki 494/2009":                        {"EN": "Dam Safety Act (494/2009)",                                            "SE": "Förordning (2014:214) om dammsäkerhet",                         "DA": "[Vaatii tarkistuksen — Tanskan patoturvallisuuslainsäädäntöä ei ole vielä varmistettu]",                      "NO": "Damsikkerhetsforskriften (2009, nr. 1600) — NVE tilsyn",                    "PL": "Prawo wodne (Dz.U. 2017 poz. 1566) — brak odrębnej ustawy o bezpieczeństwie zapór w Polsce"},
 }
 
 _LIITE_TRANS: dict[str, dict[str, str]] = {
@@ -6820,19 +7123,19 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "samlede varighed af tilladelsesprocessen — forhåndskonsultation med "
                             "byggesagsafdelingen er det første trin."),
         "kaava_tuuli":     ("<b>Planlægningsstatus og VVM-krav:</b> Et vindkraftprojekt kræver næsten altid "
-                            "en lokaloversigtsplan eller lokalplan (Planlægningsloven 132/1999, § 77a). "
-                            "VVM-proceduren (VVM-loven 252/2017) er obligatorisk for projekter ≥10 MW "
+                            "en lokaloversigtsplan eller lokalplan (Planloven). "
+                            "VVM-proceduren (Miljøvurderingsloven) er obligatorisk for projekter ≥10 MW "
                             "eller ≥5 møller — plan- og VVM-processerne forløber ofte parallelt og tager "
                             "tilsammen 3–6 år. Planlægningsstatus afklares først."),
-        "kaava_SMR":       ("<b>STUK forlicensiering (det vigtigste første trin):</b> For et kernekraftanlæg "
-                            "er statsrådets principbeslutning (kernenergiloven 990/1987, § 11) og STUKs "
-                            "forlicensieringsprocedure obligatoriske inden alle andre tilladelser. STUKs "
-                            "sikkerhedsredegørelse i henhold til YVL-retningslinjerne indleder processen. "
-                            "Planlægning behandles parallelt, men kernesikkerhedsproceduren er den "
-                            "dominerende faktor."),
-        "kaava_aurinkovoima": ("<b>Byggetilladelse og planlægning:</b> Fra og med 1.1.2025 erstatter rakentamislupa "
-                            "(byggetilladelse) de tidligere typer byggetilladelse og handlingstilladelse (Bygglov 751/2023). "
-                            "VVM kræves ikke for projekter under 50 ha. Planlægningsstatus skal dog stadig "
+        "kaava_SMR":       ("<b>Kernekraft er forbudt ved lov (vigtigste bemærkning):</b> Danmark har siden "
+                            "1985 et lovfæstet forbud mod kerneenergiproduktion. Der findes derfor ingen "
+                            "tilladelsesproces for opførelse af et nyt atomkraftanlæg i Danmark. Et sådant "
+                            "projekt ville kræve, at Folketinget først ophævede forbuddet, før nogen "
+                            "tilladelsesbehandling kunne indledes."),
+        "kaava_aurinkovoima": ("<b>Byggetilladelse og planlægning:</b> En solcellepark kræver normalt "
+                            "byggetilladelse eller anmeldelse i henhold til Byggeloven — mindre anlæg kan "
+                            "i visse tilfælde være omfattet af undtagelser fra byggetilladelseskravet. "
+                            "VVM kræves normalt ikke for mindre projekter. Planlægningsstatus skal dog stadig "
                             "kontrolleres — en planlægningstilladelse kan være nødvendig uden for "
                             "lokalplanområder."),
         "kaava_generic":   ("<b>Planlægningsstatus:</b> Den gældende planlægningsstatus for projektstedet "
@@ -6915,18 +7218,20 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "varigheten av tillatelsesprosessen — forhåndskonsultasjon med byggesaksavdelingen "
                             "er det første trinnet."),
         "kaava_tuuli":     ("<b>Reguleringstatus og KU-krav:</b> Et vindkraftprosjekt krever nesten alltid "
-                            "en kommunedelplan eller reguleringsplan (Plan- og bygningsloven 132/1999, "
-                            "§ 77a). KU-prosedyren (KU-loven 252/2017) er obligatorisk for prosjekter "
+                            "en kommunedelplan eller reguleringsplan (Plan- og bygningsloven). "
+                            "KU-prosedyren (Plan- og bygningsloven kapittel 14) er obligatorisk for prosjekter "
                             "≥10 MW eller ≥5 turbiner — plan- og KU-prosessene løper ofte parallelt og "
                             "tar til sammen 3–6 år. Reguleringstatus avklares først."),
-        "kaava_SMR":       ("<b>STUK forhåndslisensering (viktigste første trinn):</b> For et kjernekraftanlegg "
-                            "er statsrådets prinsippbeslutning (atomenergisloven 990/1987, § 11) og STUKs "
-                            "forhåndslisensieringsprosedyre obligatoriske før alle andre tillatelser. STUKs "
-                            "sikkerhetsrapport i henhold til YVL-retningslinjene starter prosessen. "
-                            "Regulering håndteres parallelt, men kjernekraftsikkerhetsprosedyren er den "
-                            "dominerende faktoren."),
-        "kaava_aurinkovoima": ("<b>Byggetillatelse og regulering:</b> Fra og med 1.1.2025 erstatter rakentamislupa "
-                            "(byggetillatelse) de tidligere typene byggetillatelse og tiltakstillatelse (Bygglov 751/2023). "
+        "kaava_SMR":       ("<b>Atomenergiloven og DSA-regulering (viktigste merknad):</b> Norge har aldri "
+                            "hatt et kommersielt kjernekraftverk. Atomenergiloven (1972) og Direktoratet "
+                            "for strålevern og atomsikkerhet (DSA) utgjør et reelt, aktivt regelverk, og "
+                            "reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår). En "
+                            "fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er "
+                            "imidlertid ikke dokumentert ennå — dette bør verifiseres nøye før prosjektet "
+                            "planlegges videre."),
+        "kaava_aurinkovoima": ("<b>Byggetillatelse og regulering:</b> Et solkraftverk krever normalt "
+                            "byggetillatelse eller melding i henhold til Plan- og bygningsloven — mindre "
+                            "anlegg kan i enkelte tilfeller være unntatt fra søknadsplikten. "
                             "KU kreves ikke for prosjekter under 50 ha. Reguleringstatus må likevel "
                             "sjekkes — dispensasjon kan være nødvendig utenfor reguleringsplanområder."),
         "kaava_generic":   ("<b>Reguleringstatus:</b> Gjeldende reguleringstatus for prosjektstedet "
