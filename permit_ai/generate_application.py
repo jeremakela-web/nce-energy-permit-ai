@@ -4545,6 +4545,25 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
     },
 }
 
+# 2026-08-23 (manual QA item 4, priority 3): the country-scoped smr_XX
+# hanketyyppis (smr_se/no/da/de/ee/lv) had ZERO _COUNTRY_LIITTEET coverage of
+# their own, despite the target country being unambiguous from the
+# hanketyyppi ID itself, so they fell through to the FI base SMR liite list.
+# smr_ee already had its own real entry (unchanged here). For SE/DA/NO/DE,
+# smr_XX is the exact same real-world project as that country's existing,
+# already-researched "SMR" entry — just reached via the country-scoped
+# hanketyyppi ID instead of the generic one — so it reuses that entry
+# directly, same aliasing pattern already used for _HANKE_NIMI_TRANS's
+# offshore_wind/smr_XX entries. LV is deliberately NOT included here: LV has
+# zero _COUNTRY_LIITTEET coverage for ANY hanketyyppi (no baseline "SMR"
+# entry to alias from), and Latvia has no nuclear regulatory framework at all
+# (see the _STUK_REPLACEMENT LV hedge) — a real liite list would need
+# genuine research, not a mechanical copy, so smr_lv is intentionally left
+# for that follow-up work rather than aliased or fabricated here.
+for _smr_c in ("SE", "DA", "NO", "DE"):
+    _COUNTRY_LIITTEET[_smr_c][f"smr_{_smr_c.lower()}"] = _COUNTRY_LIITTEET[_smr_c]["SMR"]
+del _smr_c
+
 _SYSTEM = (
     "Käytä aina oikeita suomenkielisiä merkkejä: ä, ö, å. "
     "ÄLÄ KOSKAAN kirjoita 'a' tai 'o' silloin kun oikea merkki on 'ä' tai 'ö'. "
@@ -6034,10 +6053,11 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "Zoning status has the greatest impact on the total duration of the permit "
                             "process — pre-consultation with the building authority is the first step."),
         "kaava_tuuli":     ("<b>Zoning status and EIA requirement:</b> A wind power project almost always "
-                            "requires a local master plan or detailed plan (MRL 132/1999, 77a §). The EIA "
-                            "procedure (YVA-laki 252/2017) is mandatory for projects ≥10 MW or ≥5 turbines "
-                            "— zoning and EIA processes often run in parallel, taking 3–6 years combined. "
-                            "Zoning is resolved first before other permits."),
+                            "requires a local master plan or detailed plan (Land Use and Building Act "
+                            "132/1999, § 77a). The EIA procedure (EIA Act 252/2017) is mandatory for "
+                            "projects ≥10 MW or ≥5 turbines — zoning and EIA processes often run in "
+                            "parallel, taking 3–6 years combined. Zoning is resolved first before other "
+                            "permits."),
         "kaava_SMR":       ("<b>STUK pre-licensing (most critical first step):</b> For a nuclear facility "
                             "project, the Council of State's decision-in-principle (Nuclear Energy Act "
                             "990/1987, § 11) and STUK's pre-licensing procedure are mandatory before all "
@@ -6133,10 +6153,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "planeringstillstånd. Planläggningsstatus påverkar mest den totala längden på "
                             "tillståndsprocessen — förkonsultation med byggnadstillsynen är det första steget."),
         "kaava_tuuli":     ("<b>Planläggningsstatus och MKB-krav:</b> Ett vindkraftsprojekt kräver nästan "
-                            "alltid en lokal översiktsplan eller detaljplan (MRL 132/1999, 77a §). "
-                            "MKB-förfarandet (YVA-laki 252/2017) är obligatoriskt för projekt ≥10 MW eller "
-                            "≥5 verk — plan- och MKB-processerna löper ofta parallellt och tar sammanlagt "
-                            "3–6 år. Planläggningsstatus klarläggs först."),
+                            "alltid en lokal översiktsplan eller detaljplan (Plan- och bygglagen "
+                            "132/1999, § 77a). MKB-förfarandet (MKB-lagen 252/2017) är obligatoriskt för "
+                            "projekt ≥10 MW eller ≥5 verk — plan- och MKB-processerna löper ofta "
+                            "parallellt och tar sammanlagt 3–6 år. Planläggningsstatus klarläggs först."),
         "kaava_SMR":       ("<b>STUK förlicensiering (viktigaste första steget):</b> För ett kärnkraftverk "
                             "krävs statsrådets principbeslut (kärnenergilag 990/1987, 11 §) och STUK:s "
                             "förlicensieringsförfarande innan alla andra tillstånd. STUK:s "
@@ -6244,10 +6264,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "samlede varighed af tilladelsesprocessen — forhåndskonsultation med "
                             "byggesagsafdelingen er det første trin."),
         "kaava_tuuli":     ("<b>Planlægningsstatus og VVM-krav:</b> Et vindkraftprojekt kræver næsten altid "
-                            "en lokaloversigtsplan eller lokalplan (MRL 132/1999, 77a §). VVM-proceduren "
-                            "(YVA-laki 252/2017) er obligatorisk for projekter ≥10 MW eller ≥5 møller — "
-                            "plan- og VVM-processerne forløber ofte parallelt og tager tilsammen 3–6 år. "
-                            "Planlægningsstatus afklares først."),
+                            "en lokaloversigtsplan eller lokalplan (Planlægningsloven 132/1999, § 77a). "
+                            "VVM-proceduren (VVM-loven 252/2017) er obligatorisk for projekter ≥10 MW "
+                            "eller ≥5 møller — plan- og VVM-processerne forløber ofte parallelt og tager "
+                            "tilsammen 3–6 år. Planlægningsstatus afklares først."),
         "kaava_SMR":       ("<b>STUK forlicensiering (det vigtigste første trin):</b> For et kernekraftanlæg "
                             "er statsrådets principbeslutning (kernenergiloven 990/1987, § 11) og STUKs "
                             "forlicensieringsprocedure obligatoriske inden alle andre tilladelser. STUKs "
@@ -6339,10 +6359,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "varigheten av tillatelsesprosessen — forhåndskonsultasjon med byggesaksavdelingen "
                             "er det første trinnet."),
         "kaava_tuuli":     ("<b>Reguleringstatus og KU-krav:</b> Et vindkraftprosjekt krever nesten alltid "
-                            "en kommunedelplan eller reguleringsplan (MRL 132/1999, 77a §). KU-prosedyren "
-                            "(YVA-laki 252/2017) er obligatorisk for prosjekter ≥10 MW eller ≥5 turbiner — "
-                            "plan- og KU-prosessene løper ofte parallelt og tar til sammen 3–6 år. "
-                            "Reguleringstatus avklares først."),
+                            "en kommunedelplan eller reguleringsplan (Plan- og bygningsloven 132/1999, "
+                            "§ 77a). KU-prosedyren (KU-loven 252/2017) er obligatorisk for prosjekter "
+                            "≥10 MW eller ≥5 turbiner — plan- og KU-prosessene løper ofte parallelt og "
+                            "tar til sammen 3–6 år. Reguleringstatus avklares først."),
         "kaava_SMR":       ("<b>STUK forhåndslisensering (viktigste første trinn):</b> For et kjernekraftanlegg "
                             "er statsrådets prinsippbeslutning (atomenergisloven 990/1987, § 11) og STUKs "
                             "forhåndslisensieringsprosedyre obligatoriske før alle andre tillatelser. STUKs "
@@ -6435,10 +6455,11 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "czas trwania procesu uzyskiwania zezwoleń — wstępna konsultacja z wydziałem "
                             "budowlanym jest pierwszym krokiem."),
         "kaava_tuuli":     ("<b>Status planistyczny i wymóg OOŚ:</b> Projekt farmy wiatrowej niemal zawsze "
-                            "wymaga planu miejscowego (MRL 132/1999, 77a §). Procedura OOŚ "
-                            "(YVA-laki 252/2017) jest obowiązkowa dla projektów ≥10 MW lub ≥5 turbin — "
-                            "procesy planistyczne i OOŚ przebiegają często równolegle i trwają łącznie "
-                            "3–6 lat. Status planistyczny ustala się w pierwszej kolejności."),
+                            "wymaga planu miejscowego (Ustawa o zagospodarowaniu przestrzennym 132/1999, "
+                            "§ 77a). Procedura OOŚ (Ustawa OOŚ 252/2017) jest obowiązkowa dla projektów "
+                            "≥10 MW lub ≥5 turbin — procesy planistyczne i OOŚ przebiegają często "
+                            "równolegle i trwają łącznie 3–6 lat. Status planistyczny ustala się "
+                            "w pierwszej kolejności."),
         "kaava_SMR":       ("<b>Wstępne licencjonowanie STUK (najważniejszy pierwszy krok):</b> W przypadku "
                             "obiektu jądrowego decyzja zasadnicza Rady Stanu (ustawa o energii jądrowej "
                             "990/1987, § 11) i procedura wstępnego licencjonowania STUK są obowiązkowe "
@@ -6447,8 +6468,8 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                             "ale procedura bezpieczeństwa jądrowego jest czynnikiem dominującym."),
         "kaava_aurinkovoima": ("<b>Pozwolenie na roboty budowlane lub pozwolenie na budowę — i planowanie:</b> "
                             "Dla małej elektrowni słonecznej (poniżej ok. 1 ha) często wystarczy zgłoszenie "
-                            "robót budowlanych zamiast pełnego pozwolenia na budowę (Ustawa budowlana "
-                            "751/2023 / MRL 132/1999, § 126). OOŚ nie jest wymagana dla projektów poniżej "
+                            "robót budowlanych zamiast pełnego pozwolenia na budowę (Prawo budowlane "
+                            "751/2023 / 132/1999, § 126). OOŚ nie jest wymagana dla projektów poniżej "
                             "50 ha. Status planistyczny musi jednak zostać sprawdzony — decyzja o warunkach "
                             "zabudowy może być konieczna poza obszarami objętymi miejscowym planem."),
         "kaava_generic":   ("<b>Status planistyczny:</b> Obowiązujący status planistyczny terenu projektu "
