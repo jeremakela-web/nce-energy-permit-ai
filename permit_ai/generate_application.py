@@ -4999,6 +4999,28 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Juridinio asmens registravimo pažymėjimas",
             "Įgaliojimas (jei atstovas veikia pareiškėjo vardu)",
         ],
+        # hybridi (BESS + wind/solar): purely non-nuclear, so treated like
+        # the other 7 straightforward entries per explicit instruction --
+        # a real de-duplicated combined list, not a mechanical union, same
+        # approach as SE/PL's hybridi entries. Added 2026-08-23 alongside
+        # the rest of the LT batch after initially being grouped with
+        # SMR/smr_bess (a lower-confidence exclusion, since hybridi has no
+        # actual nuclear content of its own -- confirmed here).
+        "hybridi": [
+            "Vietos schema (mastelis 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "PAV atranka arba ataskaita (priklausomai nuo masto ir vėjo komponento) — PAV įstatymas (AAA)",
+            "Priešgaisrinės saugos ekspertizė (BESS dalis) — Priešgaisrinės saugos įstatymas (PAGD, "
+            "privaloma prieš statybos leidimą)",
+            "Karinio radaro derinimas (jei yra vėjo komponentas — Lietuvos kariuomenė)",
+            "Teritorijų planavimo dokumentas (bendrasis arba detalusis planas) — Teritorijų planavimo "
+            "įstatymas",
+            "Statybos leidimas — Statybos įstatymas (per INFOSTATYBA)",
+            "Integruota prisijungimo prie tinklo sutartis (LITGRID >5 MW arba ESO <5 MW)",
+            "Gamybos licencija arba registracija (VERT — priklausomai nuo galios)",
+            "Juridinio asmens registravimo pažymėjimas",
+            "Įgaliojimas (jei atstovas veikia pareiškėjo vardu)",
+        ],
         "ymparistolupa": [
             "Taršos leidimas arba TIPK (priklausomai nuo veiklos masto) — Aplinkos apsaugos įstatymas",
             "PAV ataskaita (jei reikalinga) — PAV įstatymas (AAA)",
