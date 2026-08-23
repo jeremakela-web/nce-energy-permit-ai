@@ -7287,11 +7287,30 @@ def _sections_language_check(sections: dict, lang: str) -> list[str]:
     return check_fi_language_leak(combined)
 
 
-def _s(lang: str, key: str) -> str:
-    """Hae käännetty merkkijono PDF-layoutille. EE/ET → EN fallback; muut → FI."""
+def _s(lang: str, key: str, country: str = "FI") -> str:
+    """Hae käännetty merkkijono PDF-layoutille. EE/ET → EN fallback; muut → FI.
+
+    2026-08-23 (architectural fix, folded into the SE research follow-up):
+    the Traficom/STUK/ELY-keskus/law-citation deterministic backstops were
+    previously only wired into _t_liite() (liite/attachment names) -- the
+    _PDF_STRINGS "kaava_*" cards this function renders bypassed all of them
+    entirely, which is exactly how "STUK" ended up named as the reviewing
+    authority in a Swedish nuclear project's kaava_SMR card (found during SE
+    research, PR #106) even though a STUK backstop already existed. Applying
+    the same four backstops here means every future per-country research
+    pass automatically protects this call site too, instead of needing the
+    same architectural gap rediscovered and re-patched each time. `country`
+    defaults to "FI", under which all four backstops are no-ops (verified) --
+    so every other _s() call site is unaffected unless it opts in by passing
+    country explicitly, same safe-by-default shape as _t_liite()."""
     _lang = "EN" if lang in ("EE", "ET", "LV") else lang
     d = _PDF_STRINGS.get(_lang) or _PDF_STRINGS["FI"]
-    return d.get(key) or _PDF_STRINGS["FI"].get(key, key)
+    text = d.get(key) or _PDF_STRINGS["FI"].get(key, key)
+    text = _fix_hardcoded_traficom(text, country)
+    text = _fix_hardcoded_stuk(text, country)
+    text = _fix_hardcoded_ely(text, country)
+    text = _fix_hardcoded_law_citations(text, country)
+    return text
 
 
 def _generate_sections(
@@ -8987,7 +9006,7 @@ def generate_pdf(
     ]))
     story.append(Spacer(1, 5*mm))
     _kaava_key = _KAAVA_KEY.get(inp.hanketyyppi, "kaava_generic")
-    story.append(Paragraph(_s(lang, _kaava_key), st["body"]))
+    story.append(Paragraph(_s(lang, _kaava_key, country), st["body"]))
     luvat_txt = sections.get("luvat_teksti", "")
     if luvat_txt:
         story.extend(_para_text(luvat_txt, st))
