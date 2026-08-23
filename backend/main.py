@@ -3693,6 +3693,65 @@ async def admin_last_generation_timing(secret: str = ""):
     return t
 
 
+@app.get("/api/admin/arq-queue-peek")
+async def admin_arq_queue_peek(arq_job_id: str = "", secret: str = ""):
+    """
+    TEMPORARY diagnostic (2026-08-23) -- continuation of the stuck-generation
+    investigation. Job 4afe3b8ddf (arq_job_id=d88b9af76ba14bc6b9bdff81f080e6e0)
+    was confirmed enqueued with a healthy, immediately-eligible score
+    (Job.status() == "queued") and both worker slots confirmed free at
+    submission time (the only other in-flight job had finished 55s earlier),
+    yet its arq_job_id NEVER appeared again in any log line -- not even
+    arq.worker.start_jobs()'s own "already running elsewhere"/"multi-exec
+    error" debug branches (both now visible via PR #100's DEBUG-level
+    logging, and confirmed firing normally for a healthy job in the same
+    window). That rules out every mechanism checked so far and narrows this
+    to zrangebyscore() itself (or whatever consumes its result in
+    _poll_iteration()) apparently not returning this job_id, despite
+    zscore() confirming it's present and eligible.
+
+    Rather than monkey-patch arq's own third-party _poll_iteration() to add
+    logging (a more invasive change), this replicates arq's EXACT poll
+    query (arq.worker.Worker._poll_iteration(), same queue name/score
+    range/read limit) via _ARQ_POOL -- a different Python connection object
+    than the worker's own internal pool, but the same underlying Redis
+    instance -- for direct, read-only comparison against a zscore lookup on
+    the same job_id. Zero writes. Remove once root-caused.
+    """
+    if not secret or secret != _ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    if _ARQ_POOL is None:
+        raise HTTPException(status_code=503, detail="ARQ pool not available")
+
+    from arq.constants import default_queue_name, in_progress_key_prefix
+    from arq.utils import timestamp_ms
+
+    now = timestamp_ms()
+    # Exact same call _poll_iteration() makes: min=-inf, start=0 (this app's
+    # queue never sets a custom _queue_read_offset -- confirmed unused,
+    # always 0, in arq's own source), num=queue_read_limit (max(max_jobs*5,
+    # 100) = 100 for this app's max_jobs=2), max=now.
+    job_ids_raw = await _ARQ_POOL.zrangebyscore(
+        default_queue_name, min=float("-inf"), start=0, num=100, max=now
+    )
+    job_ids = [j.decode() if isinstance(j, bytes) else j for j in job_ids_raw]
+
+    result = {
+        "checked_at_ms": now,
+        "zrangebyscore_queue_name": default_queue_name,
+        "zrangebyscore_count": len(job_ids),
+        "zrangebyscore_job_ids": job_ids,
+    }
+    if arq_job_id:
+        result["target_arq_job_id"] = arq_job_id
+        result["target_in_zrangebyscore_result"] = arq_job_id in job_ids
+        result["target_zscore"] = await _ARQ_POOL.zscore(default_queue_name, arq_job_id)
+        result["target_in_progress_key_exists"] = bool(
+            await _ARQ_POOL.exists(in_progress_key_prefix + arq_job_id)
+        )
+    return result
+
+
 @app.get("/api/admin/retrieval-trace/{generation_id}")
 async def admin_retrieval_trace(generation_id: str, secret: str = ""):
     """
