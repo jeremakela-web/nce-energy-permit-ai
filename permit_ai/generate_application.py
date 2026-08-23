@@ -8947,18 +8947,35 @@ def apply_proofread_to_pdf(
     """Oikolue sections Claudella ja rakenna lopullinen PDF."""
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections, generation_id=inp.generation_id)
+    # 2026-08-23: granular checkpoints added below, narrowing the stuck-job
+    # investigation past t7c_proofread_succeeded (see _LAST_TIMING) -- a job
+    # was caught live completing _proofread_sections() successfully (t7c
+    # written) but never reaching arq_task_generate_permit's own "pdf done"
+    # log line or _proofread_store status update, with no error surfaced
+    # anywhere. This tail (second _final_polish(), the checkpoint save,
+    # generate_pdf()) has no explicit timeout the way the two Claude calls
+    # do -- these checkpoints exist purely to show which of the three it is
+    # the next time a job gets caught stuck here. Purely additive, no
+    # behavior change.
+    _LAST_TIMING["t8_final_polish2_start"] = _time.monotonic()
     sections = _final_polish(sections, _lang, inp.country or "FI", inp.hanketyyppi)
+    _LAST_TIMING["t8c_final_polish2_done"] = _time.monotonic()
     if inp.generation_id:
         # Rollback checkpoint (TASO 1): the exact `sections` state that feeds
         # the final PDF next.
+        _LAST_TIMING["t9_checkpoint_save_start"] = _time.monotonic()
         _retrieval_trace.save_checkpoint(
             generation_id=inp.generation_id, step="proofread", state={"sections": sections},
         )
-    return generate_pdf(
+        _LAST_TIMING["t9c_checkpoint_save_done"] = _time.monotonic()
+    _LAST_TIMING["t10_generate_pdf_start"] = _time.monotonic()
+    pdf = generate_pdf(
         inp, sections, sources,
         warning_flag, prec_chunks or [], prec_sources or [],
         # is_final defaults to True — this is the human-facing deliverable PDF.
     )
+    _LAST_TIMING["t10c_generate_pdf_done"] = _time.monotonic()
+    return pdf
 
 
 def generate_application(inp: ApplicationInput) -> str:
