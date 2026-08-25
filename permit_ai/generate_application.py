@@ -128,15 +128,31 @@ _DB_DIR      = os.path.join(_HERE, "embeddings")
 _OUTPUT_DIR  = os.path.join(_HERE, "output")
 _RAQS_DB     = os.path.join(_DB_DIR, "raqs_reviews.db")
 _CITATION_GAP_DB = os.path.join(_DB_DIR, "citation_gap_flags.db")
-# TASO 1 cost & resource guardrail (confirmed with user 2026-08-07). Current fixed
-# pipeline usage was 1 RAG retrieval call + 4 Claude API calls per generation
-# (draft + proofread + RAQS×2); the RAQS-removal task (2026-08-09) cut the
-# dead draft-PDF RAQS call, so it's now 3 (draft + proofread + RAQS×1). Caps
-# left as-is (now ~2x / 3x headroom instead of 1.5x / 3x) rather than
-# retuned down — still reacting to an observed runaway, not the fixed
-# baseline itself, so tighter caps aren't a goal of this task.
+# TASO 1 cost & resource guardrail (confirmed with user 2026-08-07). A hard,
+# visibility-only ceiling against an uncontrolled cost/resource LOOP -- NOT
+# throttling, NOT a rate limit, NOT a timeout budget (those are handled
+# entirely separately: anthropic.RateLimitError/APITimeoutError per call,
+# and each call's own fixed timeout=600.0). Raising this number doesn't
+# cause any extra calls or cost by itself -- the pipeline's call count per
+# hanketyyppi/country is fixed by code logic regardless of the cap; this
+# only changes when the safety net fires.
+#
+# Baseline fixed pipeline usage was 1 RAG retrieval call + 4 Claude API calls
+# per generation (draft + proofread + RAQS×2); the RAQS-removal task
+# (2026-08-09) cut the dead draft-PDF RAQS call, so it became 3 (draft +
+# proofread + RAQS×1).
+#
+# 2026-08-25 (YVL Compliance Memo, live-test follow-up): SMR/smr_bess,
+# country=="FI" generations now make 6 calls (draft, proofread, one call
+# per covered YVL guide ×3, RAQS) -- the OLD cap of 6 gave this specific
+# path zero headroom, meaning a single legitimate future addition (a second
+# memo type, an extra review pass) would trip a "runaway" guardrail on
+# entirely normal operation. Raised to 8 (confirmed with user 2026-08-25) --
+# 2 calls of headroom above the new 6-call baseline, matching the spirit of
+# the original ~2x-over-baseline margin without being as generous, since 6
+# is already close to what any single hanketyyppi plausibly needs.
 _RAG_ITERATION_CAP = 3
-_CLAUDE_CALL_CAP    = 6
+_CLAUDE_CALL_CAP    = 8
 _LOGO_PATH   = os.path.join(_HERE, "..", "backend", "nce_energy_logo.png")
 _MODEL_ID      = "claude-sonnet-4-5"
 _MODEL_ID_FAST = "claude-haiku-4-5-20251001"   # oikoluku ja nopeat kutsut
