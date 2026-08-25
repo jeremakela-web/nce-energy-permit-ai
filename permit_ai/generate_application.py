@@ -6110,6 +6110,52 @@ _WRITE_INSTRUCTION: dict[str, str] = {
 # Hanketyypit joissa epävarmuusmerkintä on erityisen kriittinen
 _CRITICAL_HANKE_TYPES: set[str] = {"SMR", "smr_bess", "ymparistolupa"}
 
+# ── YVL Compliance Memo (STUK meeting 2026-08-25, Antti Tynkkynen) ─────────
+# FI-only, SMR/smr_bess-only -- reuses the same reasoning as everywhere else
+# this session: YVL is STUK's own guideline series, meaningless for
+# smr_se/smr_no/smr_da/smr_de/smr_ee/smr_lv's entirely different national
+# nuclear-safety authorities. Not reusing _CRITICAL_HANKE_TYPES above --
+# that set also includes ymparistolupa, which has nothing to do with YVL.
+_YVL_MEMO_HANKE_TYPES: set[str] = {"SMR", "smr_bess"}
+
+# Full YVL catalogue (46 guides), fetched directly from stuklex.fi/en/yvl-ohje
+# 2026-08-25 -- used only to build the honest "not yet covered" list below,
+# never to write compliance content about a guide whose text we don't have.
+# D.6 does not appear in STUK's published listing (reserved/withdrawn/
+# renumbered -- not independently confirmed, not guessed at).
+_YVL_GUIDE_SERIES: dict[str, list[str]] = {
+    "A": [f"A.{n}" for n in range(1, 13)],                  # A.1-A.12
+    "B": [f"B.{n}" for n in range(1, 9)],                    # B.1-B.8
+    "C": [f"C.{n}" for n in range(1, 8)],                    # C.1-C.7
+    "D": ["D.1", "D.2", "D.3", "D.4", "D.5", "D.7"],          # no D.6 published
+    "E": [f"E.{n}" for n in range(1, 14)],                   # E.1-E.13
+}
+
+# The only guides with real, ingested source text today (verified directly
+# against the RAG corpus, not assumed from source_policy.py's tag alone) --
+# real FI titles, fetched from stuklex.fi, kept in FI regardless of output
+# `lang` (same precedent as untranslated foreign statute names elsewhere in
+# this codebase, e.g. Sweden's "Miljöbalken" staying Swedish in EN output).
+_YVL_MEMO_COVERED: dict[str, str] = {
+    "A.1": "Ydinenergian käytön turvallisuusvalvonta",
+    "B.1": "Ydinvoimalaitoksen turvallisuussuunnittelu",
+    "C.1": "Ydinlaitoksen rakenteellinen säteilyturvallisuus",
+}
+
+
+def _yvl_pending_codes() -> str:
+    """Every YVL guide NOT in _YVL_MEMO_COVERED, grouped by series, as a
+    single display string (e.g. 'A.2, A.3, ... | B.2, B.3, ... | ...').
+    Codes only -- never invents a translated/English title for a guide we
+    have no real source text for; STUK's own guide codes are language-
+    invariant, safe to show regardless of output `lang`."""
+    groups = []
+    for series, codes in _YVL_GUIDE_SERIES.items():
+        pending = [c for c in codes if c not in _YVL_MEMO_COVERED]
+        if pending:
+            groups.append(", ".join(f"YVL {c}" for c in pending))
+    return "  |  ".join(groups)
+
 _CRITICAL_EXTRA: dict[str, str] = {
     "FI": ("⚠️ ERITYISOHJE TÄLLE HANKETYYPILLE: {hanketyyppi}-hankkeissa viranomaisvaatimukset, "
            "turvallisuusmääräykset ja lakiperusta ovat erityisen tarkkoja ja muuttuvia. "
@@ -7028,6 +7074,15 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Epävarmuudenhallinta",
         "raqs_lbl_kattavuus":      "Sisällön kattavuus",
         "raqs_lbl_valmisteluaste": "Hakemusvalmisteluaste",
+        # YVL Compliance Memo (STUK, 2026-08-25) -- interim, partial-coverage annex
+        "yvl_memo_heading":       "YVL-vaatimustenmukaisuusmuistio",
+        "yvl_memo_partial_label": "OSITTAINEN KATTAVUUS",
+        "yvl_memo_covered_label": "Katetut YVL-ohjeet (lähdeaineisto vahvistettu):",
+        "yvl_memo_pending_label": "Kattamattomat YVL-ohjeet (lähdeaineiston hankinta kesken):",
+        "yvl_memo_disclaimer":    ("Tämä muistio kattaa tällä hetkellä vain yllä listatut YVL-ohjeet, joiden "
+                                    "sisältö on vahvistettu lähdeaineistosta. Se EI ole kattava esitys kaikista "
+                                    "STUKin YVL-ohjeista. Puuttuvien ohjeiden lähdeaineiston hankinta on "
+                                    "erillinen, myöhemmin aikataulutettava projekti."),
         # Täydennyslista (completion checklist) page strings
         "taydennys_heading":  "Täydennyslista",
         "taydennys_subtitle": ("Alla olevat kohdat vaativat täydentämistä ennen hakemuksen jättämistä "
@@ -7133,6 +7188,14 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Uncertainty Management",
         "raqs_lbl_kattavuus":      "Content Depth",
         "raqs_lbl_valmisteluaste": "Application Readiness",
+        "yvl_memo_heading":       "YVL Compliance Memo",
+        "yvl_memo_partial_label": "PARTIAL COVERAGE",
+        "yvl_memo_covered_label": "Covered YVL guides (source content confirmed):",
+        "yvl_memo_pending_label": "YVL guides not yet covered (sourcing pending):",
+        "yvl_memo_disclaimer":    ("This memo currently covers only the YVL guides listed above, whose "
+                                    "content has been confirmed against real source material. It is NOT a "
+                                    "comprehensive presentation of all STUK YVL guides. Sourcing the "
+                                    "remaining guides is a separate project to be scheduled later."),
         # Completion checklist page strings
         "taydennys_heading":  "Completion Checklist",
         "taydennys_subtitle": ("The following items require completion before the application is submitted to the authority. "
@@ -7233,6 +7296,15 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Osäkerhetshantering",
         "raqs_lbl_kattavuus":      "Innehållsdjup",
         "raqs_lbl_valmisteluaste": "Ansökningsberedskap",
+        "yvl_memo_heading":       "YVL-efterlevnadspromemoria",
+        "yvl_memo_partial_label": "DELVIS TÄCKNING",
+        "yvl_memo_covered_label": "Täckta YVL-anvisningar (källinnehåll bekräftat):",
+        "yvl_memo_pending_label": "YVL-anvisningar som ännu inte täcks (källmaterial saknas):",
+        "yvl_memo_disclaimer":    ("Denna promemoria täcker för närvarande endast de YVL-anvisningar som "
+                                    "anges ovan, vars innehåll har bekräftats mot verkligt källmaterial. Den "
+                                    "är INTE en heltäckande presentation av alla STUKs YVL-anvisningar. "
+                                    "Anskaffning av källmaterial för återstående anvisningar är ett separat "
+                                    "projekt som schemaläggs senare."),
         # Completion checklist page strings
         "taydennys_heading":  "Kompletteringslista",
         "taydennys_subtitle": ("Följande punkter kräver komplettering innan ansökan lämnas in till myndigheten. "
@@ -7265,6 +7337,15 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Usikkerhedshåndtering",
         "raqs_lbl_kattavuus":      "Indholdsdybde",
         "raqs_lbl_valmisteluaste": "Ansøgningsberedskab",
+        "yvl_memo_heading":       "YVL-overensstemmelsesnotat",
+        "yvl_memo_partial_label": "DELVIS DÆKNING",
+        "yvl_memo_covered_label": "Dækkede YVL-anvisninger (kildeindhold bekræftet):",
+        "yvl_memo_pending_label": "YVL-anvisninger, der endnu ikke er dækket (kildemateriale afventer):",
+        "yvl_memo_disclaimer":    ("Dette notat dækker i øjeblikket kun de ovenfor angivne YVL-anvisninger, "
+                                    "hvis indhold er bekræftet mod reelt kildemateriale. Det er IKKE en "
+                                    "fuldstændig fremstilling af alle STUKs YVL-anvisninger. Indhentning af "
+                                    "kildemateriale til de resterende anvisninger er et separat projekt, der "
+                                    "planlægges senere."),
         "sec1": "1. Projektbeskrivelse",             "sec2": "2. Begrundelse og behov",
         "sec3": "3. Nødvendige tilladelser og myndigheder", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Bilagsliste",                    "sec6": "6. Næste skridt",
@@ -7360,6 +7441,15 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Usikkerhetshåndtering",
         "raqs_lbl_kattavuus":      "Innholdsdybde",
         "raqs_lbl_valmisteluaste": "Søknadsberedskap",
+        "yvl_memo_heading":       "YVL-samsvarsnotat",
+        "yvl_memo_partial_label": "DELVIS DEKNING",
+        "yvl_memo_covered_label": "Dekkede YVL-veiledninger (kildeinnhold bekreftet):",
+        "yvl_memo_pending_label": "YVL-veiledninger som ennå ikke er dekket (kildemateriale mangler):",
+        "yvl_memo_disclaimer":    ("Dette notatet dekker for øyeblikket kun YVL-veiledningene oppført "
+                                    "ovenfor, hvis innhold er bekreftet mot reelt kildemateriale. Det er "
+                                    "IKKE en fullstendig fremstilling av alle STUKs YVL-veiledninger. "
+                                    "Innhenting av kildemateriale for de gjenværende veiledningene er et "
+                                    "eget prosjekt som planlegges senere."),
         "sec1": "1. Prosjektbeskrivelse",            "sec2": "2. Begrunnelse og behov",
         "sec3": "3. Nødvendige tillatelser og myndigheter", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Vedleggsliste",                  "sec6": "6. Neste steg",
@@ -7456,6 +7546,16 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Zarządzanie niepewnością",
         "raqs_lbl_kattavuus":      "Głębokość treści",
         "raqs_lbl_valmisteluaste": "Gotowość wniosku",
+        "yvl_memo_heading":       "Memorandum zgodności z YVL",
+        "yvl_memo_partial_label": "CZĘŚCIOWY ZAKRES",
+        "yvl_memo_covered_label": "Objęte wytyczne YVL (treść źródłowa potwierdzona):",
+        "yvl_memo_pending_label": "Wytyczne YVL jeszcze nieobjęte (pozyskiwanie materiału źródłowego w toku):",
+        "yvl_memo_disclaimer":    ("Niniejsze memorandum obejmuje obecnie wyłącznie wytyczne YVL wymienione "
+                                    "powyżej, których treść została potwierdzona na podstawie rzeczywistego "
+                                    "materiału źródłowego. NIE stanowi ono wyczerpującej prezentacji "
+                                    "wszystkich wytycznych YVL STUK. Pozyskanie materiału źródłowego dla "
+                                    "pozostałych wytycznych jest odrębnym projektem, który zostanie "
+                                    "zaplanowany później."),
         "sec1": "1. Opis projektu",                  "sec2": "2. Uzasadnienie i potrzeba",
         "sec3": "3. Wymagane zezwolenia i organy",   "sec4": "4. Podstawy prawne",
         "sec5": "5. Lista załączników",              "sec6": "6. Następne kroki",
@@ -7562,6 +7662,15 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Unsicherheitsmanagement",
         "raqs_lbl_kattavuus":      "Inhaltstiefe",
         "raqs_lbl_valmisteluaste": "Antragsreife",
+        "yvl_memo_heading":       "YVL-Konformitätsvermerk",
+        "yvl_memo_partial_label": "TEILWEISE ABDECKUNG",
+        "yvl_memo_covered_label": "Abgedeckte YVL-Richtlinien (Quellinhalt bestätigt):",
+        "yvl_memo_pending_label": "Noch nicht abgedeckte YVL-Richtlinien (Quellmaterial ausstehend):",
+        "yvl_memo_disclaimer":    ("Dieser Vermerk deckt derzeit nur die oben aufgeführten YVL-Richtlinien "
+                                    "ab, deren Inhalt anhand von echtem Quellmaterial bestätigt wurde. Er "
+                                    "ist KEINE umfassende Darstellung aller STUK-YVL-Richtlinien. Die "
+                                    "Beschaffung von Quellmaterial für die verbleibenden Richtlinien ist ein "
+                                    "separates, später zu planendes Projekt."),
         "sec1": "1. Projektbeschreibung",            "sec2": "2. Begründung und Bedarf",
         "sec3": "3. Erforderliche Genehmigungen",    "sec4": "4. Rechtsgrundlagen",
         "sec5": "5. Anlagenverzeichnis",             "sec6": "6. Nächste Schritte",
@@ -7732,6 +7841,14 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "raqs_lbl_epävarmuus":     "Neapibrėžtumo valdymas",
         "raqs_lbl_kattavuus":      "Turinio išsamumas",
         "raqs_lbl_valmisteluaste": "Paraiškos parengtumas",
+        "yvl_memo_heading":       "YVL atitikties memorandumas",
+        "yvl_memo_partial_label": "DALINĖ APRĖPTIS",
+        "yvl_memo_covered_label": "Aprėptos YVL gairės (šaltinio turinys patvirtintas):",
+        "yvl_memo_pending_label": "Dar neaprėptos YVL gairės (šaltinio medžiagos rinkimas vyksta):",
+        "yvl_memo_disclaimer":    ("Šis memorandumas šiuo metu apima tik aukščiau išvardytas YVL gaires, "
+                                    "kurių turinys patvirtintas remiantis realia šaltinio medžiaga. Tai NĖRA "
+                                    "išsamus visų STUK YVL gairių pristatymas. Likusių gairių šaltinio "
+                                    "medžiagos rinkimas yra atskiras, vėliau planuojamas projektas."),
         "taydennys_heading":  "Papildymo kontrolinis sąrašas",
         "taydennys_subtitle": ("Šiuos punktus būtina papildyti prieš teikiant paraišką institucijai. "
                                "Šiuos punktus taip pat rasite tekste kaip oranžines [BŪTINA] žymas."),
@@ -9523,6 +9640,236 @@ def _raqs_page(review: dict, st: dict, lang: str = "FI") -> list:
     return [PageBreak(), box]
 
 
+def _yvl_source_text(source: str) -> str:
+    """Pull the FULL text of one ingested source document, in original chunk
+    order, from the active RAG collection -- NOT a similarity search. The
+    YVL Compliance Memo needs comprehensive coverage of the guides we
+    actually have (STUK's own "broad, not selective" instruction for this
+    specific annex), not a top-K excerpt the way the main draft's RAG
+    context is built. Returns "" if the source isn't in the active
+    collection (e.g. the v2 collection, which currently has zero YVL
+    content) -- caller must handle that gracefully, never fabricate.
+    """
+    try:
+        col = _get_chroma_col()
+        res = col.get(where={"source": source}, include=["documents"])
+    except Exception:
+        return ""
+    ids  = res.get("ids") or []
+    docs = res.get("documents") or []
+    if not ids:
+        return ""
+
+    def _chunk_idx(id_: str) -> int:
+        m = re.search(r"_(\d+)$", id_)
+        return int(m.group(1)) if m else 0
+
+    ordered = sorted(zip(ids, docs), key=lambda p: _chunk_idx(p[0]))
+    return "\n".join(doc for _, doc in ordered)
+
+
+def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
+    """Generate the YVL Compliance Memo annex -- a separate Claude call, own
+    RAG scoping (full source text, not similarity search), own system prompt
+    (comprehensive, not selective, unlike _generate_sections()'s main body)
+    -- same architectural shape as _raqs_review()/_raqs_page(), per STUK's
+    explicit instruction (2026-08-25, Antti Tynkkynen) that YVL compliance
+    needs a dedicated document, not inline citations.
+
+    Returns None (no-op, no Claude call, no cost) unless hanketyyppi is
+    SMR/smr_bess AND country=="FI" -- see _YVL_MEMO_HANKE_TYPES's comment:
+    YVL is STUK's own guideline series, meaningless outside Finland (the
+    same reasoning already enforced one layer down by _rag_context()'s own
+    country filter, which excludes FI-tagged chunks -- this is a second,
+    explicit gate, not reliance on that alone).
+
+    INTERIM, HONESTLY-SCOPED VERSION (2026-08-25): only 3 of STUK's 46 YVL
+    guides have real ingested source text (YVL A.1, B.1, C.1 -- see
+    _YVL_MEMO_COVERED). This writes comprehensively for those 3 and ONLY
+    those 3 -- the "not yet covered" list is built entirely in Python from
+    _yvl_pending_codes(), never left to the model to enumerate, so the
+    honesty disclaimer can never depend on the model correctly remembering
+    or inventing STUK's guide catalogue. Full sourcing of the remaining
+    guides is a separate, later, explicitly-scheduled project -- not
+    started here.
+    """
+    if inp.hanketyyppi not in _YVL_MEMO_HANKE_TYPES:
+        return None
+    if (getattr(inp, "country", "FI") or "FI") != "FI":
+        return None
+
+    lang = getattr(inp, "lang", "FI") or "FI"
+    generation_id = getattr(inp, "generation_id", "") or ""
+
+    # Cost & resource guardrail (TASO 1), same pattern as _raqs_review()/
+    # _generate_sections() -- fail cleanly before spending on a call this
+    # generation has no budget left for.
+    if generation_id:
+        _n_calls = _retrieval_trace.count_claude_calls(generation_id)
+        if _n_calls >= _CLAUDE_CALL_CAP:
+            _retrieval_trace.log_guardrail_hit(
+                generation_id=generation_id,
+                guard_type="claude_call_cap",
+                count_at_trip=_n_calls,
+                cap=_CLAUDE_CALL_CAP,
+                detail="call_type=yvl_memo",
+            )
+            raise GenerationCapError("claude_call", generation_id, _n_calls, _CLAUDE_CALL_CAP)
+
+    guide_blocks = []
+    for code, title in _YVL_MEMO_COVERED.items():
+        text = _yvl_source_text(f"YVL_{code}")
+        if text:
+            guide_blocks.append(f"=== YVL {code} — {title} ===\n{text}")
+    if not guide_blocks:
+        # Defensive -- e.g. active collection has none of this content
+        # today. Nothing real to write about; skip rather than fabricate
+        # a memo with no grounded source text at all.
+        logger.warning("[yvl_memo] no source text found for any covered guide -- skipping")
+        return None
+
+    pending = _yvl_pending_codes()
+    covered_list = ", ".join(f"YVL {c} ({t})" for c, t in _YVL_MEMO_COVERED.items())
+
+    system_prompt = (
+        "Olet STUK-vaatimustenmukaisuusasiantuntija. Kirjoita YVL-vaatimustenmukaisuusmuistio "
+        "SMR-hankkeelle. TÄRKEÄÄ, toisin kuin muu tämän järjestelmän tuottama teksti: tämän "
+        "muistion tulee olla LAAJA JA KATTAVA, ei valikoiva tai tiivis — käsittele jokainen "
+        "annettu YVL-ohje perusteellisesti, viittaa ohjeen tosiasialliseen sisältöön (luvut, "
+        "kohdat, konkreettiset vaatimukset) alla annetusta lähdetekstistä.\n\n"
+        f"KÄSITELTÄVÄT OHJEET (VAIN nämä — älä käsittele mitään muuta YVL-ohjetta): {covered_list}\n\n"
+        "EHDOTON KIELTO: Älä missään tapauksessa kirjoita vaatimustenmukaisuusarviota, "
+        "yhteenvetoa tai edes mainintaa mistään muusta YVL-ohjeesta kuin yllä listatuista "
+        "kolmesta — et saa käyttää omaa tietämystäsi STUKin muista YVL-ohjeista tämän "
+        "dokumentin sisällössä, edes yleisluontoisesti. Jos hankkeen jokin osa-alue liittyisi "
+        "johonkin kattamattomaan ohjeeseen, älä yritä paikata aukkoa omalla tiedolla — jätä se "
+        "mainitsematta tässä dokumentissa (kattamattomien ohjeiden lista lisätään dokumenttiin "
+        "erikseen, deterministisesti, sinun tekstisi jälkeen — älä itse kirjoita sellaista "
+        "listaa).\n\n"
+        "Rakenne: yksi selkeästi otsikoitu alaosio per ohje (## YVL <koodi> — <otsikko>), "
+        "joka kattaa: (1) ohjeen keskeiset vaatimukset hankkeelle, (2) miten hanke täyttää tai "
+        "aikoo täyttää ne, (3) mahdolliset avoimet kohdat joissa vaatimustenmukaisuus vaatii "
+        "vielä hankekohtaista lisätyötä (merkitse [TÄYDENNETTÄVÄ – ...])."
+        + ("\n\n" + _LANG_INSTRUCTIONS[lang] if lang != "FI" and lang in _LANG_INSTRUCTIONS else "")
+    )
+
+    project_block = (
+        f"Hanketyyppi: {inp.hanketyyppi}\nTeho: {inp.teho_mw} MW\nKunta: {inp.kunta}\n"
+        f"Hakija: {inp.hakija}\nKiinteistötunnus: {_clean_kt(inp.kiinteistotunnus)}"
+    )
+    # Static across every SMR/smr_bess FI generation (always the same 3
+    # guides' full text) -- cached separately from the per-request project
+    # block above, same "stable context vs. varying task" cache split
+    # _generate_sections() already uses.
+    guide_text_block = (
+        "LÄHDETEKSTI (YVL-ohjeiden todellinen sisältö, käytä VAIN tätä äläkä omaa "
+        "tietämystäsi):\n\n" + "\n\n---\n\n".join(guide_blocks)
+    )
+
+    try:
+        claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
+        with claude.messages.stream(
+            model=_MODEL_ID,
+            max_tokens=8000,
+            system=[{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}],
+            messages=[{"role": "user", "content": [
+                {"type": "text", "text": guide_text_block, "cache_control": {"type": "ephemeral"}},
+                {"type": "text", "text": project_block},
+            ]}],
+        ) as stream:
+            raw_parts = [text for text in stream.text_stream]
+            resp = stream.get_final_message()
+    except Exception as exc:
+        logger.warning("[yvl_memo] generation failed, skipping annex: %s", exc)
+        return None
+
+    raw = unicodedata.normalize("NFC", "".join(raw_parts))
+    if generation_id:
+        _u = resp.usage
+        _retrieval_trace.log_api_call(
+            generation_id=generation_id,
+            call_type="yvl_memo",
+            model=_MODEL_ID,
+            input_tokens=_u.input_tokens,
+            cache_creation_input_tokens=getattr(_u, "cache_creation_input_tokens", 0) or 0,
+            cache_read_input_tokens=getattr(_u, "cache_read_input_tokens", 0) or 0,
+            output_tokens=_u.output_tokens,
+        )
+
+    return {
+        "memo_text": raw,
+        "covered":   list(_YVL_MEMO_COVERED.items()),
+        "pending":   pending,
+    }
+
+
+def _yvl_memo_page(memo: dict, st: dict, lang: str = "FI") -> list:
+    """Build the YVL Compliance Memo annex page(s): PageBreak, then a
+    hardcoded (never AI-generated) partial-coverage disclaimer box first --
+    covered vs. pending guides, both built deterministically from
+    _YVL_MEMO_COVERED/_yvl_pending_codes() (via the `memo` dict
+    _yvl_compliance_memo() returns), never from the model's own output --
+    so the honesty guarantee doesn't depend on the model following
+    instructions. The AI-generated compliance narrative follows below via
+    the same _para_text() renderer the main body sections already use.
+
+    Deliberately different color (amber, not RAQS's blue) so a partial-
+    coverage annex never visually reads as a clean pass.
+    """
+    C_FILL = colors.HexColor("#fff4e5")
+    C_BD   = colors.HexColor("#a65c00")
+    C_HDR  = colors.HexColor("#a65c00")
+
+    heading_style = ParagraphStyle(
+        "yvl_hdr", fontSize=13, fontName=PDF_FONT_BOLD, textColor=C_HDR, spaceAfter=4,
+    )
+    badge_style = ParagraphStyle(
+        "yvl_badge", fontSize=10, fontName=PDF_FONT_BOLD, textColor=colors.white,
+        alignment=TA_CENTER, leading=13,
+    )
+    label_style = ParagraphStyle(
+        "yvl_lbl", fontSize=9, fontName=PDF_FONT_BOLD, textColor=C_HDR,
+        spaceBefore=8, spaceAfter=2, leading=12,
+    )
+    list_style = ParagraphStyle(
+        "yvl_list", fontSize=8.5, textColor=colors.HexColor("#333333"), leading=12,
+    )
+    disc_style = ParagraphStyle(
+        "yvl_disc", fontSize=8, fontName=PDF_FONT_BOLD, textColor=colors.HexColor("#7a3e00"),
+        leading=12, spaceBefore=8,
+    )
+
+    badge = Table([[Paragraph(_s(lang, "yvl_memo_partial_label"), badge_style)]],
+                  colWidths=[5.0 * cm])
+    badge.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), C_BD),
+        ("PADDING",    (0, 0), (-1, -1), 6),
+    ]))
+
+    covered_text = "; ".join(f"YVL {c} — {t}" for c, t in memo["covered"])
+
+    disclaimer_elems: list = [
+        Paragraph(_s(lang, "yvl_memo_heading"), heading_style),
+        badge,
+        Spacer(1, 4),
+        Paragraph(_s(lang, "yvl_memo_covered_label"), label_style),
+        Paragraph(_latin1_safe(covered_text), list_style),
+        Paragraph(_s(lang, "yvl_memo_pending_label"), label_style),
+        Paragraph(_latin1_safe(memo["pending"]), list_style),
+        Paragraph(_s(lang, "yvl_memo_disclaimer"), disc_style),
+    ]
+    disclaimer_box = Table([[disclaimer_elems]], colWidths=[16.2 * cm], splitByRow=1)
+    disclaimer_box.setStyle(TableStyle([
+        ("BOX",        (0, 0), (-1, -1), 2.0, C_BD),
+        ("BACKGROUND", (0, 0), (-1, -1), C_FILL),
+        ("PADDING",    (0, 0), (-1, -1), 14),
+    ]))
+
+    body_elems = _para_text(memo["memo_text"], st)
+
+    return [PageBreak(), disclaimer_box, Spacer(1, 6 * mm)] + body_elems
+
+
 def generate_pdf(
     inp: ApplicationInput,
     sections: dict,
@@ -10235,6 +10582,15 @@ def generate_pdf(
     _gaps = _extract_gaps(sections)
     if _gaps:
         for _elem in _taydennyslista_page(_gaps, st, lang):
+            story.append(_elem)
+
+    # ── YVL Compliance Memo (STUK, 2026-08-25) — SMR/smr_bess, country=="FI" ──
+    # only; _yvl_compliance_memo() itself no-ops (returns None, no Claude call)
+    # for every other case. Placed before RAQS so the annex reads as part of
+    # the formal dossier, not trailing after the AI's own self-critique page.
+    _yvl_memo = _yvl_compliance_memo(inp)
+    if _yvl_memo:
+        for _elem in _yvl_memo_page(_yvl_memo, st, lang):
             story.append(_elem)
 
     # ── RAQS: reviewing agent — Haiku-arvio sisällön laadusta ────────────────
