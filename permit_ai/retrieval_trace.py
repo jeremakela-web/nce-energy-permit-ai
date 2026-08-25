@@ -590,6 +590,27 @@ def get_cost_for_range(start_date: str, end_date: Optional[str] = None) -> dict:
         conn.close()
 
 
+def _fetch_raqs_row(conn: sqlite3.Connection, generation_id: str) -> Optional[dict]:
+    """Shared by get_trace() and get_raqs_outcome(): the latest
+    retrieval_trace_raqs row for one generation_id, with scores_json/
+    flagged_json unpacked into `scores`/`flagged`. None if RAQS never ran
+    (or logging failed) for this generation_id. `conn` must already have
+    row_factory = sqlite3.Row set.
+    """
+    raqs_rows = [
+        dict(row) for row in conn.execute(
+            "SELECT * FROM retrieval_trace_raqs WHERE generation_id = ? ORDER BY id",
+            (generation_id,),
+        )
+    ]
+    if not raqs_rows:
+        return None
+    raqs = raqs_rows[-1]
+    raqs["scores"] = json.loads(raqs.pop("scores_json") or "{}")
+    raqs["flagged"] = json.loads(raqs.pop("flagged_json") or "[]")
+    return raqs
+
+
 def get_trace(generation_id: str) -> dict:
     """Read-only fetch: all retrieval calls + the latest RAQS outcome + cost +
     any guardrail trips for one generation_id.
@@ -606,17 +627,7 @@ def get_trace(generation_id: str) -> dict:
         for r in retrievals:
             r["chunks"] = json.loads(r.pop("chunks_json") or "[]")
 
-        raqs_rows = [
-            dict(row) for row in conn.execute(
-                "SELECT * FROM retrieval_trace_raqs WHERE generation_id = ? ORDER BY id",
-                (generation_id,),
-            )
-        ]
-        raqs = None
-        if raqs_rows:
-            raqs = raqs_rows[-1]
-            raqs["scores"] = json.loads(raqs.pop("scores_json") or "{}")
-            raqs["flagged"] = json.loads(raqs.pop("flagged_json") or "[]")
+        raqs = _fetch_raqs_row(conn, generation_id)
 
         guardrail_hits = [
             dict(row) for row in conn.execute(
@@ -633,6 +644,28 @@ def get_trace(generation_id: str) -> dict:
             "guardrail_hits": guardrail_hits,
             "checkpoints": get_checkpoints(generation_id),
         }
+    finally:
+        conn.close()
+
+
+def get_raqs_outcome(generation_id: str) -> Optional[dict]:
+    """Read-only fetch: just the latest RAQS outcome for one generation_id —
+    the same shape as get_trace()'s "raqs" key, without the cost of also
+    querying retrievals/guardrail_hits/checkpoints. Added for the customer-
+    facing /api/proofread/{job_id} endpoint (backend/main.py), which needs
+    only this piece, not the full internal trace get_trace() assembles for
+    /api/admin/retrieval-trace.
+
+    Returns None if RAQS never ran (or its logging failed) for this
+    generation_id — callers should treat None as "not available yet", not
+    as an error.
+    """
+    if not generation_id:
+        return None
+    conn = _connect()
+    try:
+        conn.row_factory = sqlite3.Row
+        return _fetch_raqs_row(conn, generation_id)
     finally:
         conn.close()
 

@@ -1673,12 +1673,23 @@ async def proofread_status(job_id: str):
             },
         )
     _completed_steps = {c["step"] for c in _retrieval_trace.get_checkpoints(job_id)}
+    # 2026-08-25: RAQS outcome (5 criteria scores + overall + any low-
+    # confidence flags) was computed and stored (retrieval_trace_raqs table)
+    # for every completed generation, but never surfaced here — this
+    # endpoint already queries generation_checkpoint for the raqs_final step
+    # (above, for `stage`) without exposing its content. Additive only:
+    # existing fields are unchanged; `raqs` is a new key, always present,
+    # null until the job is actually done (no point querying while running —
+    # the RAQS pass hasn't happened yet) or if RAQS logging failed for this
+    # generation_id (see get_raqs_outcome()'s docstring — never an error).
+    _raqs = _retrieval_trace.get_raqs_outcome(job_id) if _status == "done" else None
     return {
         "status": _status,
         "error": job.get("error"),
         "debug_sections": job.get("debug_sections"),
         "phase_status": job.get("phase_status"),
         "stage": _compute_generation_stage(_status, _completed_steps),
+        "raqs": _raqs,
     }
 
 
