@@ -6143,15 +6143,23 @@ _YVL_MEMO_COVERED: dict[str, str] = {
 }
 
 
-def _yvl_pending_codes() -> str:
-    """Every YVL guide NOT in _YVL_MEMO_COVERED, grouped by series, as a
-    single display string (e.g. 'A.2, A.3, ... | B.2, B.3, ... | ...').
-    Codes only -- never invents a translated/English title for a guide we
-    have no real source text for; STUK's own guide codes are language-
-    invariant, safe to show regardless of output `lang`."""
+def _yvl_pending_codes(covered: Optional[set] = None) -> str:
+    """Every YVL guide NOT in `covered` (default: _YVL_MEMO_COVERED's keys),
+    grouped by series, as a single display string (e.g. 'A.2, A.3, ... |
+    B.2, B.3, ... | ...'). Codes only -- never invents a translated/English
+    title for a guide we have no real source text for; STUK's own guide
+    codes are language-invariant, safe to show regardless of output `lang`.
+
+    `covered` override (2026-08-25): _yvl_compliance_memo() passes the
+    guides that ACTUALLY produced a section in a given run, not the static
+    intended set -- if one guide's own Claude call fails, it must show up
+    here as pending, not be silently treated as covered just because it's
+    normally one of the 3 we have source text for.
+    """
+    _covered = covered if covered is not None else set(_YVL_MEMO_COVERED)
     groups = []
     for series, codes in _YVL_GUIDE_SERIES.items():
-        pending = [c for c in codes if c not in _YVL_MEMO_COVERED]
+        pending = [c for c in codes if c not in _covered]
         if pending:
             groups.append(", ".join(f"YVL {c}" for c in pending))
     return "  |  ".join(groups)
@@ -7083,6 +7091,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "sisältö on vahvistettu lähdeaineistosta. Se EI ole kattava esitys kaikista "
                                     "STUKin YVL-ohjeista. Puuttuvien ohjeiden lähdeaineiston hankinta on "
                                     "erillinen, myöhemmin aikataulutettava projekti."),
+        "yvl_memo_truncated_notice": ("[HUOM: Tämä {code}-osio jouduttiin katkaisemaan kesken tilarajoitusten "
+                                       "vuoksi ennen kuin kaikki ohjeen vaatimukset ehdittiin käsitellä. Osio "
+                                       "on täydennettävä myöhemmin.]"),
         # Täydennyslista (completion checklist) page strings
         "taydennys_heading":  "Täydennyslista",
         "taydennys_subtitle": ("Alla olevat kohdat vaativat täydentämistä ennen hakemuksen jättämistä "
@@ -7196,6 +7207,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "content has been confirmed against real source material. It is NOT a "
                                     "comprehensive presentation of all STUK YVL guides. Sourcing the "
                                     "remaining guides is a separate project to be scheduled later."),
+        "yvl_memo_truncated_notice": ("[NOTE: This {code} section had to be cut off due to length limits "
+                                       "before all of the guide's requirements could be covered. This "
+                                       "section needs to be completed later.]"),
         # Completion checklist page strings
         "taydennys_heading":  "Completion Checklist",
         "taydennys_subtitle": ("The following items require completion before the application is submitted to the authority. "
@@ -7305,6 +7319,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "är INTE en heltäckande presentation av alla STUKs YVL-anvisningar. "
                                     "Anskaffning av källmaterial för återstående anvisningar är ett separat "
                                     "projekt som schemaläggs senare."),
+        "yvl_memo_truncated_notice": ("[OBS: Detta {code}-avsnitt fick avbrytas på grund av "
+                                       "utrymmesbegränsningar innan alla anvisningens krav hann behandlas. "
+                                       "Avsnittet behöver kompletteras senare.]"),
         # Completion checklist page strings
         "taydennys_heading":  "Kompletteringslista",
         "taydennys_subtitle": ("Följande punkter kräver komplettering innan ansökan lämnas in till myndigheten. "
@@ -7346,6 +7363,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "fuldstændig fremstilling af alle STUKs YVL-anvisninger. Indhentning af "
                                     "kildemateriale til de resterende anvisninger er et separat projekt, der "
                                     "planlægges senere."),
+        "yvl_memo_truncated_notice": ("[BEMÆRK: Dette {code}-afsnit måtte afbrydes på grund af "
+                                       "pladsbegrænsninger, før alle vejledningens krav nåede at blive "
+                                       "behandlet. Afsnittet skal færdiggøres senere.]"),
         "sec1": "1. Projektbeskrivelse",             "sec2": "2. Begrundelse og behov",
         "sec3": "3. Nødvendige tilladelser og myndigheder", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Bilagsliste",                    "sec6": "6. Næste skridt",
@@ -7450,6 +7470,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "IKKE en fullstendig fremstilling av alle STUKs YVL-veiledninger. "
                                     "Innhenting av kildemateriale for de gjenværende veiledningene er et "
                                     "eget prosjekt som planlegges senere."),
+        "yvl_memo_truncated_notice": ("[MERK: Denne {code}-delen måtte avbrytes på grunn av "
+                                       "plassbegrensninger før alle veiledningens krav rakk å bli "
+                                       "behandlet. Delen må fullføres senere.]"),
         "sec1": "1. Prosjektbeskrivelse",            "sec2": "2. Begrunnelse og behov",
         "sec3": "3. Nødvendige tillatelser og myndigheter", "sec4": "4. Lovhenvisninger",
         "sec5": "5. Vedleggsliste",                  "sec6": "6. Neste steg",
@@ -7556,6 +7579,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "wszystkich wytycznych YVL STUK. Pozyskanie materiału źródłowego dla "
                                     "pozostałych wytycznych jest odrębnym projektem, który zostanie "
                                     "zaplanowany później."),
+        "yvl_memo_truncated_notice": ("[UWAGA: Niniejszą sekcję {code} trzeba było przerwać z powodu "
+                                       "ograniczeń długości, zanim omówiono wszystkie wymagania wytycznej. "
+                                       "Sekcję należy uzupełnić później.]"),
         "sec1": "1. Opis projektu",                  "sec2": "2. Uzasadnienie i potrzeba",
         "sec3": "3. Wymagane zezwolenia i organy",   "sec4": "4. Podstawy prawne",
         "sec5": "5. Lista załączników",              "sec6": "6. Następne kroki",
@@ -7671,6 +7697,10 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "ist KEINE umfassende Darstellung aller STUK-YVL-Richtlinien. Die "
                                     "Beschaffung von Quellmaterial für die verbleibenden Richtlinien ist ein "
                                     "separates, später zu planendes Projekt."),
+        "yvl_memo_truncated_notice": ("[HINWEIS: Dieser Abschnitt {code} musste aufgrund von "
+                                       "Längenbeschränkungen abgebrochen werden, bevor alle Anforderungen "
+                                       "der Richtlinie behandelt werden konnten. Der Abschnitt muss später "
+                                       "vervollständigt werden.]"),
         "sec1": "1. Projektbeschreibung",            "sec2": "2. Begründung und Bedarf",
         "sec3": "3. Erforderliche Genehmigungen",    "sec4": "4. Rechtsgrundlagen",
         "sec5": "5. Anlagenverzeichnis",             "sec6": "6. Nächste Schritte",
@@ -7849,6 +7879,9 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
                                     "kurių turinys patvirtintas remiantis realia šaltinio medžiaga. Tai NĖRA "
                                     "išsamus visų STUK YVL gairių pristatymas. Likusių gairių šaltinio "
                                     "medžiagos rinkimas yra atskiras, vėliau planuojamas projektas."),
+        "yvl_memo_truncated_notice": ("[PASTABA: Šią {code} skiltį teko nutraukti dėl vietos apribojimų, "
+                                       "prieš aptariant visus gairės reikalavimus. Skiltį reikės papildyti "
+                                       "vėliau.]"),
         "taydennys_heading":  "Papildymo kontrolinis sąrašas",
         "taydennys_subtitle": ("Šiuos punktus būtina papildyti prieš teikiant paraišką institucijai. "
                                "Šiuos punktus taip pat rasite tekste kaip oranžines [BŪTINA] žymas."),
@@ -9669,12 +9702,13 @@ def _yvl_source_text(source: str) -> str:
 
 
 def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
-    """Generate the YVL Compliance Memo annex -- a separate Claude call, own
-    RAG scoping (full source text, not similarity search), own system prompt
-    (comprehensive, not selective, unlike _generate_sections()'s main body)
-    -- same architectural shape as _raqs_review()/_raqs_page(), per STUK's
-    explicit instruction (2026-08-25, Antti Tynkkynen) that YVL compliance
-    needs a dedicated document, not inline citations.
+    """Generate the YVL Compliance Memo annex -- ONE Claude call PER covered
+    guide (see the 2026-08-25 live-test note below for why), own RAG scoping
+    (full source text per guide, not similarity search), own system prompt
+    per call (comprehensive, not selective, unlike _generate_sections()'s
+    main body) -- same architectural shape as _raqs_review()/_raqs_page(),
+    per STUK's explicit instruction (2026-08-25, Antti Tynkkynen) that YVL
+    compliance needs a dedicated document, not inline citations.
 
     Returns None (no-op, no Claude call, no cost) unless hanketyyppi is
     SMR/smr_bess AND country=="FI" -- see _YVL_MEMO_HANKE_TYPES's comment:
@@ -9683,15 +9717,43 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
     country filter, which excludes FI-tagged chunks -- this is a second,
     explicit gate, not reliance on that alone).
 
-    INTERIM, HONESTLY-SCOPED VERSION (2026-08-25): only 3 of STUK's 46 YVL
-    guides have real ingested source text (YVL A.1, B.1, C.1 -- see
-    _YVL_MEMO_COVERED). This writes comprehensively for those 3 and ONLY
-    those 3 -- the "not yet covered" list is built entirely in Python from
-    _yvl_pending_codes(), never left to the model to enumerate, so the
-    honesty disclaimer can never depend on the model correctly remembering
-    or inventing STUK's guide catalogue. Full sourcing of the remaining
-    guides is a separate, later, explicitly-scheduled project -- not
-    started here.
+    2026-08-25 LIVE-TEST FINDINGS -- two rounds of real bugs found and
+    fixed here, not just parameter tuning:
+
+    (1) Why this is one call per guide, not one combined call: the first
+    version made a single call covering all 3 guides in one prompt. Two
+    real live runs both failed to reach every guide -- the first
+    (max_tokens=8000) spent the entire budget on YVL A.1 alone and never
+    reached B.1/C.1; a retry at max_tokens=32000 plus an explicit "balance
+    across all three" instruction still only reached A.1 and part of B.1
+    before cutting off mid-sentence, C.1 entirely missing. Splitting into
+    one call per guide makes reaching every guide a Python-level guarantee
+    (a for-loop over exactly 3 known guides) rather than something hoped
+    for from one call self-pacing across all of them.
+
+    (2) Why there is a deterministic stop_reason=="max_tokens" backstop
+    below, not just a bigger number: even after splitting into one call per
+    guide, real live runs at 16000, 24000, and 32000 tokens *each* still
+    ended with YVL C.1's own individual call cutting off mid-sentence (its
+    source text is the smallest of the three, ~44K chars vs A.1/B.1's
+    ~190K each, yet needed the most output room -- output length is not
+    proportional to source length or reliably boundable by raising
+    max_tokens alone). Verified live that the backstop itself works: when
+    32000 was hit, it correctly appended an honest, Python-generated
+    truncation notice instead of leaving a broken sentence. max_tokens is
+    now 48000 for headroom (reduces how often the backstop triggers in
+    practice), but the backstop, not this number, is what actually
+    guarantees the memo never silently looks complete when it isn't.
+
+    INTERIM, HONESTLY-SCOPED VERSION: only 3 of STUK's 46 YVL guides have
+    real ingested source text (YVL A.1, B.1, C.1 -- see _YVL_MEMO_COVERED).
+    `covered` in the returned dict reflects guides that ACTUALLY produced a
+    section in THIS run, not the static intended set -- if one guide's call
+    fails (API error, no source text found), it is honestly reported as
+    pending instead, never silently claimed as covered. The pending list is
+    built entirely in Python (_yvl_pending_codes()), never left to any
+    model to enumerate. Full sourcing of the remaining guides is a
+    separate, later, explicitly-scheduled project -- not started here.
     """
     if inp.hanketyyppi not in _YVL_MEMO_HANKE_TYPES:
         return None
@@ -9701,105 +9763,135 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
     lang = getattr(inp, "lang", "FI") or "FI"
     generation_id = getattr(inp, "generation_id", "") or ""
 
-    # Cost & resource guardrail (TASO 1), same pattern as _raqs_review()/
-    # _generate_sections() -- fail cleanly before spending on a call this
-    # generation has no budget left for.
-    if generation_id:
-        _n_calls = _retrieval_trace.count_claude_calls(generation_id)
-        if _n_calls >= _CLAUDE_CALL_CAP:
-            _retrieval_trace.log_guardrail_hit(
-                generation_id=generation_id,
-                guard_type="claude_call_cap",
-                count_at_trip=_n_calls,
-                cap=_CLAUDE_CALL_CAP,
-                detail="call_type=yvl_memo",
-            )
-            raise GenerationCapError("claude_call", generation_id, _n_calls, _CLAUDE_CALL_CAP)
-
-    guide_blocks = []
-    for code, title in _YVL_MEMO_COVERED.items():
-        text = _yvl_source_text(f"YVL_{code}")
-        if text:
-            guide_blocks.append(f"=== YVL {code} — {title} ===\n{text}")
-    if not guide_blocks:
-        # Defensive -- e.g. active collection has none of this content
-        # today. Nothing real to write about; skip rather than fabricate
-        # a memo with no grounded source text at all.
-        logger.warning("[yvl_memo] no source text found for any covered guide -- skipping")
-        return None
-
-    pending = _yvl_pending_codes()
-    covered_list = ", ".join(f"YVL {c} ({t})" for c, t in _YVL_MEMO_COVERED.items())
-
-    system_prompt = (
-        "Olet STUK-vaatimustenmukaisuusasiantuntija. Kirjoita YVL-vaatimustenmukaisuusmuistio "
-        "SMR-hankkeelle. TÄRKEÄÄ, toisin kuin muu tämän järjestelmän tuottama teksti: tämän "
-        "muistion tulee olla LAAJA JA KATTAVA, ei valikoiva tai tiivis — käsittele jokainen "
-        "annettu YVL-ohje perusteellisesti, viittaa ohjeen tosiasialliseen sisältöön (luvut, "
-        "kohdat, konkreettiset vaatimukset) alla annetusta lähdetekstistä.\n\n"
-        f"KÄSITELTÄVÄT OHJEET (VAIN nämä — älä käsittele mitään muuta YVL-ohjetta): {covered_list}\n\n"
-        "EHDOTON KIELTO: Älä missään tapauksessa kirjoita vaatimustenmukaisuusarviota, "
-        "yhteenvetoa tai edes mainintaa mistään muusta YVL-ohjeesta kuin yllä listatuista "
-        "kolmesta — et saa käyttää omaa tietämystäsi STUKin muista YVL-ohjeista tämän "
-        "dokumentin sisällössä, edes yleisluontoisesti. Jos hankkeen jokin osa-alue liittyisi "
-        "johonkin kattamattomaan ohjeeseen, älä yritä paikata aukkoa omalla tiedolla — jätä se "
-        "mainitsematta tässä dokumentissa (kattamattomien ohjeiden lista lisätään dokumenttiin "
-        "erikseen, deterministisesti, sinun tekstisi jälkeen — älä itse kirjoita sellaista "
-        "listaa).\n\n"
-        "Rakenne: yksi selkeästi otsikoitu alaosio per ohje (## YVL <koodi> — <otsikko>), "
-        "joka kattaa: (1) ohjeen keskeiset vaatimukset hankkeelle, (2) miten hanke täyttää tai "
-        "aikoo täyttää ne, (3) mahdolliset avoimet kohdat joissa vaatimustenmukaisuus vaatii "
-        "vielä hankekohtaista lisätyötä (merkitse [TÄYDENNETTÄVÄ – ...])."
-        + ("\n\n" + _LANG_INSTRUCTIONS[lang] if lang != "FI" and lang in _LANG_INSTRUCTIONS else "")
-    )
-
     project_block = (
         f"Hanketyyppi: {inp.hanketyyppi}\nTeho: {inp.teho_mw} MW\nKunta: {inp.kunta}\n"
         f"Hakija: {inp.hakija}\nKiinteistötunnus: {_clean_kt(inp.kiinteistotunnus)}"
     )
-    # Static across every SMR/smr_bess FI generation (always the same 3
-    # guides' full text) -- cached separately from the per-request project
-    # block above, same "stable context vs. varying task" cache split
-    # _generate_sections() already uses.
-    guide_text_block = (
-        "LÄHDETEKSTI (YVL-ohjeiden todellinen sisältö, käytä VAIN tätä äläkä omaa "
-        "tietämystäsi):\n\n" + "\n\n---\n\n".join(guide_blocks)
+    lang_suffix = (
+        "\n\n" + _LANG_INSTRUCTIONS[lang] if lang != "FI" and lang in _LANG_INSTRUCTIONS else ""
     )
 
-    try:
-        claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
-        with claude.messages.stream(
-            model=_MODEL_ID,
-            max_tokens=8000,
-            system=[{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}],
-            messages=[{"role": "user", "content": [
-                {"type": "text", "text": guide_text_block, "cache_control": {"type": "ephemeral"}},
-                {"type": "text", "text": project_block},
-            ]}],
-        ) as stream:
-            raw_parts = [text for text in stream.text_stream]
-            resp = stream.get_final_message()
-    except Exception as exc:
-        logger.warning("[yvl_memo] generation failed, skipping annex: %s", exc)
-        return None
+    memo_sections: list[str] = []
+    actual_covered: list[tuple[str, str]] = []
 
-    raw = unicodedata.normalize("NFC", "".join(raw_parts))
-    if generation_id:
-        _u = resp.usage
-        _retrieval_trace.log_api_call(
-            generation_id=generation_id,
-            call_type="yvl_memo",
-            model=_MODEL_ID,
-            input_tokens=_u.input_tokens,
-            cache_creation_input_tokens=getattr(_u, "cache_creation_input_tokens", 0) or 0,
-            cache_read_input_tokens=getattr(_u, "cache_read_input_tokens", 0) or 0,
-            output_tokens=_u.output_tokens,
+    for code, title in _YVL_MEMO_COVERED.items():
+        # Cost & resource guardrail (TASO 1), checked before EACH per-guide
+        # call (this function now makes up to 3 Claude calls per
+        # generation, one per covered guide) -- same fail-clean-before-
+        # spending pattern as _raqs_review()/_generate_sections().
+        if generation_id:
+            _n_calls = _retrieval_trace.count_claude_calls(generation_id)
+            if _n_calls >= _CLAUDE_CALL_CAP:
+                _retrieval_trace.log_guardrail_hit(
+                    generation_id=generation_id,
+                    guard_type="claude_call_cap",
+                    count_at_trip=_n_calls,
+                    cap=_CLAUDE_CALL_CAP,
+                    detail=f"call_type=yvl_memo_{code}",
+                )
+                raise GenerationCapError("claude_call", generation_id, _n_calls, _CLAUDE_CALL_CAP)
+
+        text = _yvl_source_text(f"YVL_{code}")
+        if not text:
+            # Defensive -- e.g. active collection has none of this guide's
+            # content today. Skip this one guide rather than fabricate;
+            # it falls through to the pending list below, honestly.
+            logger.warning("[yvl_memo] no source text found for YVL %s -- treating as pending", code)
+            continue
+
+        system_prompt = (
+            "Olet STUK-vaatimustenmukaisuusasiantuntija. Kirjoita LAAJA JA KATTAVA "
+            f"vaatimustenmukaisuusosio YVL {code} -ohjeelle ({title}) SMR-hankkeelle. "
+            "TÄRKEÄÄ, toisin kuin muu tämän järjestelmän tuottama teksti: tämän osion tulee "
+            "olla kattava, ei valikoiva tai tiivis — käsittele ohjeen tosiasiallinen sisältö "
+            "perusteellisesti alla annetusta lähdetekstistä (luvut, kohdat, konkreettiset "
+            "vaatimukset).\n\n"
+            f"EHDOTON KIELTO: Älä käsittele tai edes mainitse mitään MUUTA YVL-ohjetta kuin "
+            f"YVL {code} — et saa käyttää omaa tietämystäsi STUKin muista YVL-ohjeista tämän "
+            "osion sisällössä, edes yleisluontoisesti tai ohimennen viittauksena.\n\n"
+            f"Aloita vastauksesi rivillä '## YVL {code} — {title}'. Kata: (1) ohjeen keskeiset "
+            "vaatimukset hankkeelle, (2) miten hanke täyttää tai aikoo täyttää ne, "
+            "(3) mahdolliset avoimet kohdat joissa vaatimustenmukaisuus vaatii vielä "
+            "hankekohtaista lisätyötä (merkitse [TÄYDENNETTÄVÄ – ...]).\n\n"
+            "TIIVEYS SISÄLLÖN LAAJUUDESSA: 'Kattava' tarkoittaa, ettei mitään lähdetekstin "
+            "todellista vaatimusta jätetä käsittelemättä — ei sitä, että jokaista yksittäistä "
+            "vaatimusta pitäisi havainnollistaa useilla toistuvilla laskuesimerkeillä tai "
+            "hypoteettisilla skenaarioilla. Käsittele jokainen vaatimus napakasti mutta "
+            "täydellisesti: yksi konkreettinen sovellutus hankkeeseen riittää per vaatimus, "
+            "ei useita vaihtoehtoisia muotoiluja samasta asiasta."
+            + lang_suffix
+        )
+        guide_text_block = (
+            f"LÄHDETEKSTI (YVL {code}:n todellinen sisältö, käytä VAIN tätä äläkä omaa "
+            f"tietämystäsi):\n\n{text}"
         )
 
+        try:
+            claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
+            with claude.messages.stream(
+                model=_MODEL_ID,
+                # 2026-08-25 (live-test finding, iterated four times): 8000
+                # (one combined call), then 16000, 24000, and 32000 (one call
+                # per guide) *all* still ended with a real run cutting a
+                # guide off mid-sentence -- confirmed C.1 specifically (its
+                # source text is the smallest of the three, ~44K chars vs
+                # A.1/B.1's ~190K each, yet needed the most room) still hits
+                # even 32000 given how thorough the model gets on this guide.
+                # Output length is not reliably boundable by raising this
+                # number alone -- stopped chasing it further. 48000 gives
+                # real additional margin to reduce how often this happens in
+                # practice, but the stop_reason check below, not this
+                # number, is the actual guarantee against a silently-
+                # incomplete section -- verified live: even when 32000 was
+                # hit, the backstop correctly appended the honest truncation
+                # notice instead of leaving a broken sentence.
+                max_tokens=48000,
+                system=[{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}],
+                messages=[{"role": "user", "content": [
+                    {"type": "text", "text": guide_text_block, "cache_control": {"type": "ephemeral"}},
+                    {"type": "text", "text": project_block},
+                ]}],
+            ) as stream:
+                raw_parts = [t for t in stream.text_stream]
+                resp = stream.get_final_message()
+        except Exception as exc:
+            logger.warning("[yvl_memo] generation failed for YVL %s -- treating as pending: %s", code, exc)
+            continue
+
+        section_text = unicodedata.normalize("NFC", "".join(raw_parts))
+        if getattr(resp, "stop_reason", None) == "max_tokens":
+            # Deterministic backstop -- never rely on the model to notice or
+            # announce its own truncation. Three real live runs (see the
+            # max_tokens comment above) confirmed a fixed budget cannot be
+            # trusted to always be enough, no matter how generous; this is
+            # the actual honesty guarantee, not the token number. Same
+            # engineering principle as the covered/pending disclaimer this
+            # function already builds deterministically in Python.
+            section_text += "\n\n" + _s(lang, "yvl_memo_truncated_notice").format(code=f"YVL {code}")
+            logger.warning("[yvl_memo] YVL %s hit max_tokens -- appended truncation notice", code)
+        memo_sections.append(section_text)
+        actual_covered.append((code, title))
+
+        if generation_id:
+            _u = resp.usage
+            _retrieval_trace.log_api_call(
+                generation_id=generation_id,
+                call_type=f"yvl_memo_{code}",
+                model=_MODEL_ID,
+                input_tokens=_u.input_tokens,
+                cache_creation_input_tokens=getattr(_u, "cache_creation_input_tokens", 0) or 0,
+                cache_read_input_tokens=getattr(_u, "cache_read_input_tokens", 0) or 0,
+                output_tokens=_u.output_tokens,
+            )
+
+    if not memo_sections:
+        logger.warning("[yvl_memo] no guide sections were generated in this run -- skipping annex entirely")
+        return None
+
     return {
-        "memo_text": raw,
-        "covered":   list(_YVL_MEMO_COVERED.items()),
-        "pending":   pending,
+        "memo_text": "\n\n---\n\n".join(memo_sections),
+        "covered":   actual_covered,
+        "pending":   _yvl_pending_codes(covered={c for c, _ in actual_covered}),
     }
 
 
