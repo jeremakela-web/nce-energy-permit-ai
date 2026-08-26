@@ -769,7 +769,8 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               "DA": "Planloven",
                               "NO": "Plan- og bygningsloven",
                               "LV": "Teritorijas attīstības plānošanas likums (2011)",
-                              "EE": "Planeerimisseadus (PlanS, 2015)"},
+                              "EE": "Planeerimisseadus (PlanS, 2015)",
+                              "DE": "Baugesetzbuch (BauGB)"},
     "Rakentamislaki":       {"SE": "Plan- och bygglagen (2010:900)",
                               "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)",
                               "LT": "Statybos įstatymas",
@@ -778,7 +779,15 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # zoning and building) -- not a separate act, matching SE.
                               "NO": "Plan- og bygningsloven",
                               "LV": "Būvniecības likums (2013)",
-                              "EE": "Ehitusseadustik (EhS, 2015)"},
+                              "EE": "Ehitusseadustik (EhS, 2015)",
+                              # DE: Landesbauordnung (LBauO) -- like NO/SE above, not a
+                              # separate act from MRL's equivalent (BauGB handles zoning,
+                              # LBauO handles building permits -- two acts, same split as
+                              # FI, just federal/Land instead of one national law). Varies
+                              # by Bundesland (16 separate Landesbauordnungen, all based on
+                              # the shared Musterbauordnung/MBO template) -- flag local
+                              # verification the same way LV/LT flag municipal variation.
+                              "DE": "Landesbauordnung (LBauO, je nach Bundesland)"},
     "YVA-laki":             {"SE": "Miljöbalken kap. 6 (miljöbedömningar)",
                               "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)",
                               "LT": "PAV įstatymas",
@@ -787,7 +796,8 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # not a separate act -- confirmed via regjeringen.no.
                               "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",
                               "LV": "Likums \"Par ietekmes uz vidi novērtējumu\" (1998)",
-                              "EE": "KMH-KSH seadus (RT I, 04.01.2013, 10)"},
+                              "EE": "KMH-KSH seadus (RT I, 04.01.2013, 10)",
+                              "DE": "UVPG (Gesetz über die Umweltverträglichkeitsprüfung)"},
     "YSL":                  {"SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",
                               "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)",
                               "LT": "Aplinkos apsaugos įstatymas",
@@ -814,7 +824,14 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # keskkonnaluba (environmental permit, below it). KeÜS was
                               # previously over-cited as the primary permit law in
                               # _COUNTRY_LUVAT["EE"]; corrected there too.
-                              "EE": "Tööstusheite seadus (2013)"},
+                              "EE": "Tööstusheite seadus (2013)",
+                              # DE: BImSchG -- already extensively and correctly used
+                              # throughout the pre-existing _COUNTRY_LUVAT["DE"] content
+                              # (Germany's IED/industrial-emissions implementation runs
+                              # through BImSchG § 4 plus the 4. BImSchV ordinance); no
+                              # correction needed, unlike EE's KeÜS mix-up -- just wiring
+                              # it into this table for the first time.
+                              "DE": "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"},
     "Vesilaki":             {"SE": "Miljöbalken kap. 11 (vattenverksamhet)",
                               "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)",
                               "LT": "Vandens įstatymas",
@@ -832,7 +849,8 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # the original enactment date -- confirmed the 2019 date is
                               # the real one. Genuinely new to this codebase: no vesivoima
                               # row existed in _COUNTRY_LUVAT["EE"] before this build.
-                              "EE": "Veeseadus (2019)"},
+                              "EE": "Veeseadus (2019)",
+                              "DE": "Wasserhaushaltsgesetz (WHG)"},
     "Pelastuslaki":         {"SE": "Lag (2003:778) om skydd mot olyckor",
                               "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)",
                               "LT": "Priešgaisrinės saugos įstatymas",
@@ -854,7 +872,14 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # either -- that's rescue-service personnel/organisation.
                               # Three real, distinct, easily-conflated laws; this is the
                               # only one of the three the code actually needs.
-                              "EE": "Tuleohutuse seadus (2010)"},
+                              "EE": "Tuleohutuse seadus (2010)",
+                              # DE: like PL/LT's dam-safety finding, confirmed NO separate
+                              # federal Brandschutzgesetz exists -- fire safety runs
+                              # through the Landesbauordnungen (per-Bundesland, based on
+                              # the shared Musterbauordnung/MBO template), same act as
+                              # Rakentamislaki's DE mapping above. Confirmed via
+                              # baunetzwissen.de/planradar.de, cross-checked.
+                              "DE": "Landesbauordnung (Bauordnungsrecht der Länder)"},
     # Ydinenergialaki: each country's nuclear situation is genuinely
     # different -- deliberately NOT templated off one another, per explicit
     # instruction. See DA_NO_LAW_CITATION_RESEARCH.md / LT_LAW_CITATION_RESEARCH.md.
@@ -899,6 +924,32 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
     #    an already-in-force one. State the exact status (adopted 17.06.2026,
     #    in force 01.01.2027) explicitly everywhere this appears -- never
     #    collapse it to either "no law" or "law is in force today".
+    #  - DE: a sixth, distinct case -- closer to DA's severity than to LV/NO's,
+    #    but with a real regulator DA lacks. Germany completed its nuclear
+    #    phase-out (Atomausstieg) 15.04.2023 -- all plants shut down. The
+    #    amended Atomgesetz (AtG) now explicitly PROHIBITS new commercial
+    #    nuclear power plants for electricity generation -- not "difficult",
+    #    an outright statutory ban, same severity class as DA's. One real
+    #    nuance kept, not dropped: fission installations for non-electricity
+    #    purposes (process heat, hydrogen, industrial steam) are NOT
+    #    explicitly banned and would in principle be licensable -- but none
+    #    has ever been licensed, so this is a theoretical opening, not a
+    #    demonstrated pathway; state both facts together. The pre-existing
+    #    _COUNTRY_LUVAT["DE"]/_COUNTRY_LIITTEET["DE"] SMR/smr_de/smr_bess rows
+    #    previously presented AtG §7 as a real, if hard, licensing route with
+    #    only a vague "Bundestagsbeschluss ggf. erforderlich" hedge -- that
+    #    UNDERSTATED the real severity; corrected here and there. Real
+    #    regulator: BASE (Bundesamt für die Sicherheit der nuklearen
+    #    Entsorgung), under BMUKN -- but its actual current remit is
+    #    repository/waste-management supervision (Morsleben, Konrad, Asse II),
+    #    not new-build licensing (there is none to license) -- same
+    #    "real regulator, remit doesn't cover what's being asked" shape as
+    #    LT's VATESI. Also corrected: the ministry was cited as "BMUV"
+    #    throughout the pre-existing DE content -- confirmed stale, renamed
+    #    to BMUKN (Bundesministerium für Umwelt, Klimaschutz, Naturschutz und
+    #    nukleare Sicherheit) under the Merz cabinet since 06.05.2025, over a
+    #    year before this research (2026-08-26) -- see
+    #    DE_LAW_CITATION_RESEARCH.md.
     "Ydinenergialaki":      {"SE": "Lag (1984:3) om kärnteknisk verksamhet",
                               "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)",
                               "LT": ("Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE "
@@ -924,7 +975,18 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                                      "koosseisus alates 1.1.2027; reaktori ehitamise otsus vajab eraldi "
                                      "Riigikogu heakskiitu. Ärge esitage seda kui juba kehtivat "
                                      "litsentsimissüsteemi ega kui puuduvat õigusraamistikku — täpne staatus "
-                                     "on \"vastu võetud, jõustub 1.1.2027\"")},
+                                     "on \"vastu võetud, jõustub 1.1.2027\""),
+                              "DE": ("Das geänderte Atomgesetz (AtG) VERBIETET den Neubau kommerzieller "
+                                     "Kernkraftwerke zur Stromerzeugung — Deutschland hat den Atomausstieg "
+                                     "am 15.04.2023 vollzogen (letzte 3 Kraftwerke abgeschaltet). Kein "
+                                     "Genehmigungsweg für ein neues kommerzielles Kraftwerk zur "
+                                     "Stromerzeugung, vergleichbar mit Dänemarks Verbot. Kernspaltungsanlagen "
+                                     "für Nicht-Strom-Zwecke (Prozesswärme, Wasserstoff) sind nicht "
+                                     "ausdrücklich verboten, aber noch nie genehmigt worden — theoretisch "
+                                     "möglich, nicht demonstriert. Zuständige Behörde für das verbleibende "
+                                     "Aufsichtsfeld (Endlagerung/Rückbau, NICHT Neubau): BASE (Bundesamt für "
+                                     "die Sicherheit der nuklearen Entsorgung), unter BMUKN (nicht mehr BMUV, "
+                                     "seit 06.05.2025 umbenannt)")},
     # Patoturvallisuuslaki: PL, LT and DA deliberately have no entry.
     # PL/LT: neither country has a separate dam-safety act (verified, see
     # PL_LAW_CITATION_RESEARCH.md / LT_LAW_CITATION_RESEARCH.md); dam safety
@@ -947,11 +1009,23 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
     # Tööstusheite seadus, Veeseadus, Päästeseadus/Tuleohutuse seadus, and
     # the nuclear framework were checked -- see EE_LAW_CITATION_RESEARCH.md's
     # scope-boundary section). Left unresearched, not guessed as absent.
+    # DE: a third shape, distinct from both PL/LT's "no law, no named
+    # standard" and NO/LV's "dedicated law" -- confirmed no separate federal
+    # dam-safety act, but a real, specific, NAMED technical standard exists:
+    # DIN 19700 ("Stauanlagen", Part 11 covers Talsperren specifically),
+    # applied through the general Wasserhaushaltsgesetz (WHG) plus Land-level
+    # Landeswassergesetze for size/class-based supervision. Worth citing the
+    # standard explicitly rather than collapsing to "just WHG" -- see
+    # DE_LAW_CITATION_RESEARCH.md.
     "Patoturvallisuuslaki": {"SE": "Förordning (2014:214) om dammsäkerhet",
                               "NO": "Damsikkerhetsforskriften (2009, nr. 1600) — NVE tilsyn",
                               "LV": ("Likums \"Par hidroelektrostaciju hidrotehnisko būvju drošumu\" "
                                      "(2000/2001) — A klases būvēm uzrauga Būvniecības valsts kontroles "
-                                     "birojs (BVKB)")},
+                                     "birojs (BVKB)"),
+                              "DE": ("Wasserhaushaltsgesetz (WHG) i.V.m. DIN 19700 (Stauanlagen, Teil 11 "
+                                     "Talsperren) — keine eigenständige Bundes-Talsperrengesetzgebung; "
+                                     "Überwachung nach Größen-/Klassenkriterien zusätzlich in den "
+                                     "Landeswassergesetzen geregelt")},
 }
 _LAW_CITATION_NUMS: dict[str, str] = {
     "MRL": "132/1999", "Rakentamislaki": "751/2023", "YVA-laki": "252/2017",
@@ -1011,6 +1085,15 @@ _STUK_REPLACEMENT: dict[str, str] = {
     "LV": "Radiācijas drošības centrs (Valsts vides dienesta pakļautībā)",
     "EE": ("TTJA tuumaregulaator (Tuumaenergia ja -ohutuse seadus, vastu võetud 17.06.2026, "
            "jõustub 1.1.2027 — hetkel veel jõustumata)"),
+    # DE: BASE is real (Bundesamt für die Sicherheit der nuklearen Entsorgung,
+    # under BMUKN -- renamed from BMUV 06.05.2025), but deliberately doesn't
+    # say it licenses new plants -- the amended Atomgesetz bans new
+    # commercial nuclear power generation outright; BASE's actual remit is
+    # repository/decommissioning oversight. See the Ydinenergialaki comment
+    # in _LAW_CITATION_REPLACEMENT above for the full status.
+    "DE": ("BASE (Bundesamt für die Sicherheit der nuklearen Entsorgung, unter BMUKN) — "
+           "Neubau kommerzieller KKW zur Stromerzeugung ist per Atomgesetz verboten, "
+           "BASE beaufsichtigt Endlagerung/Rückbau, nicht Neugenehmigungen"),
 }
 _STUK_RE = re.compile(r'\bSTUK\w*')
 
@@ -4083,6 +4166,12 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Untere Naturschutzbehörde (Artenschutzrechtliche Prüfung, BNatSchG § 44)",
             "Gemeinde / Landkreis (Bauleitplanung, Baugenehmigung)",
         ],
+        # 2026-08-26: key_laws/prompt_prefix corrected after real research
+        # (see DE_LAW_CITATION_RESEARCH.md) -- two real findings: the
+        # ministry citation was stale (BMUV -> BMUKN, renamed 06.05.2025),
+        # and the nuclear line understated Germany's real legal status (a
+        # statutory ban on new commercial power-generating plants, not just
+        # "nuclear facilities, SMR" as a normal permit category).
         "key_laws": [
             "Bundes-Immissionsschutzgesetz BImSchG § 4 (immission control permit)",
             "Gesetz über die Umweltverträglichkeitsprüfung UVPG (UVP / EIA)",
@@ -4090,7 +4179,14 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Windenergieflächenbedarfsgesetz WindBG (wind area targets per Land)",
             "Energiewirtschaftsgesetz EnWG (grid connection = Netzanschluss)",
             "Baugesetzbuch BauGB (land-use planning = Bauleitplanung)",
-            "Atomgesetz AtG (nuclear facilities, SMR)",
+            "Wasserhaushaltsgesetz WHG (water-law permits; dam safety via WHG "
+            "+ DIN 19700 technical standard, no separate federal dam-safety act)",
+            "Landesbauordnung LBauO (building permit AND fire safety — both "
+            "run through the same Land-level law, no separate federal "
+            "Brandschutzgesetz exists; varies by Bundesland)",
+            "Atomgesetz AtG (BANS new commercial nuclear power plants for "
+            "electricity generation — Atomausstieg completed 15.04.2023; "
+            "NOT a normal SMR permit pathway, see prompt notes below)",
             "Bundeswaldgesetz BWaldG (forest clearance)",
         ],
         "prompt_prefix": (
@@ -4107,8 +4203,37 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "UVPG (environmental impact assessment = UVP-Bericht, replaces Finnish YVA-ohjelma/selostus), "
             "BNatSchG § 44 (species protection = artenschutzrechtliche Prüfung / saP), "
             "WindBG (wind area designation per Land, replaces Finnish kaavoitus context), "
-            "EnWG (grid connection), BauGB + Bauordnungsrecht der Länder (building permit = Baugenehmigung), "
-            "Atomgesetz AtG (nuclear only), BWaldG (forest clearance = Waldumwandlung).\n"
+            "EnWG (grid connection), BauGB + Bauordnungsrecht der Länder (building permit = Baugenehmigung, "
+            "AND fire safety = Brandschutz — no separate federal Brandschutzgesetz exists, both run through "
+            "the same Landesbauordnung, varies by Bundesland), "
+            "WHG (Wasserhaushaltsgesetz, water-law permits; dam safety runs through WHG + the DIN 19700 "
+            "technical standard, no separate federal dam-safety act), "
+            "Atomgesetz AtG, BWaldG (forest clearance = Waldumwandlung).\n"
+            "Key laws — explicit FI->DE mapping (replace the Finnish citation with the matching German one "
+            "below, never leave the Finnish law name/number in the output): "
+            "MRL 132/1999 -> Baugesetzbuch (BauGB); "
+            "Rakentamislaki 751/2023 -> Landesbauordnung (LBauO, je nach Bundesland); "
+            "YVA-laki 252/2017 -> UVPG; "
+            "YSL 527/2014 -> Bundes-Immissionsschutzgesetz (BImSchG, § 4); "
+            "Vesilaki 587/2011 -> Wasserhaushaltsgesetz (WHG); "
+            "Pelastuslaki 379/2011 -> Landesbauordnung (Bauordnungsrecht der Länder — no separate federal "
+            "fire-safety act); "
+            "Patoturvallisuuslaki 494/2009 -> Wasserhaushaltsgesetz (WHG) i.V.m. DIN 19700 (Stauanlagen, "
+            "Teil 11 Talsperren) — no separate federal dam-safety act, but a real named technical standard; "
+            "Sähkömarkkinalaki 588/2013 -> Energiewirtschaftsgesetz (EnWG).\n"
+            "SMR/nuclear -- IMPORTANT, state this precisely: the amended Atomgesetz (AtG) EXPLICITLY BANS "
+            "new commercial nuclear power plants for electricity generation. Germany completed its nuclear "
+            "phase-out (Atomausstieg) on 15.04.2023 (last 3 plants shut down). This is NOT a normal, if "
+            "difficult, AtG §7 licensing pathway -- there is no licensing route for a new commercial "
+            "power-generating reactor, comparable in severity to Denmark's outright statutory ban. One real "
+            "nuance: fission installations for NON-electricity purposes (process heat, hydrogen, industrial "
+            "steam) are not explicitly banned and would in principle be licensable, but none has ever been "
+            "licensed -- state this as a theoretical opening, not a demonstrated pathway. The real federal "
+            "regulator for what remains active is BASE (Bundesamt für die Sicherheit der nuklearen "
+            "Entsorgung, under BMUKN) -- but its actual remit is repository/decommissioning oversight "
+            "(Morsleben, Konrad, Asse II), not new-build licensing, since there is none to license. The "
+            "ministry is BMUKN (Bundesministerium für Umwelt, Klimaschutz, Naturschutz und nukleare "
+            "Sicherheit) -- NOT BMUV, which was renamed under the Merz cabinet on 06.05.2025.\n"
             "Required annexes for tuulivoima_maa (wind onshore): "
             "1. Übersichtslageplan und Detaillageplan (site location maps), "
             "2. Schallimmissionsprognose / Schallgutachten (noise impact study per TA Lärm), "
@@ -4120,7 +4245,8 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "8. Radar- und Richtfunkprüfung (radar / microwave link clearance, Bundeswehr / Bundesnetzagentur), "
             "9. Standsicherheitsnachweis (structural safety certificate, Bauordnungsrecht), "
             "10. Brandschutzkonzept (fire safety concept).\n"
-            "Replace ALL Finnish law references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Finavia, "
+            "Replace ALL Finnish law references (MRL, YSL, YVA-laki, Vesilaki, Pelastuslaki, "
+            "Patoturvallisuuslaki, Ydinenergialaki, ELY-keskus, Tukes, Traficom, Finavia, "
             "Fingrid) with the German equivalents listed above (Fingrid → Bundesnetzagentur/BNetzA for "
             "grid connection). Note: Germany has no single federal equivalent to Tukes (technical/electrical "
             "safety oversight is split between Länder-level Gewerbeaufsichtsämter and certified inspection "
@@ -4571,8 +4697,17 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
     },
     # ── Deutschland ──────────────────────────────────────────────────────────────
     "DE": {
+        # 2026-08-26 correction: rows below previously presented AtG §7 as a
+        # real (if hard) licensing route with only a vague "Bundestagsbeschluss
+        # ggf. erforderlich" hedge -- that understated the real severity. The
+        # amended Atomgesetz explicitly BANS new commercial power-generating
+        # plants (Atomausstieg completed 15.04.2023); ministry citation was
+        # also stale (BMUV -> BMUKN, renamed 06.05.2025). See the
+        # Ydinenergialaki comment in _LAW_CITATION_REPLACEMENT above and
+        # DE_LAW_CITATION_RESEARCH.md.
         "SMR": [
-            ("Standortgenehmigung / AtG-Genehmigung", "BMUV / Länderaufsichtsbehörde",         "Atomgesetz (AtG, BGBl. I S. 1553/1959)"),
+            ("⚠️ AtG VERBIETET Neubau kommerzieller KKW zur Stromerzeugung", "Bundestag müsste das Gesetz ändern", "Atomgesetz (AtG, BGBl. I S. 1553/1959) — Atomausstieg vollzogen 15.04.2023"),
+            ("Standortgenehmigung / AtG-Genehmigung (nur Nicht-Strom-Zwecke, theoretisch)", "BASE (Bundesamt für die Sicherheit der nuklearen Entsorgung) / BMUKN", "Atomgesetz (AtG) — noch nie für ein neues Vorhaben genehmigt"),
             ("UVP-Prüfung",                       "Genehmigungsbehörde (Länder)",               "UVPG (Gesetz über die Umweltverträglichkeitsprüfung)"),
             ("Baugenehmigung (ydinlaitos)",        "Landesbaubehörde",                          "Landesbauordnung (LBauO, je nach Bundesland)"),
             ("Wasserrechtliche Erlaubnis",         "Untere Wasserbehörde (Land)",               "Wasserhaushaltsgesetz (WHG, § 8)"),
@@ -4581,6 +4716,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
         "BESS": [
             ("Baugenehmigung",                     "Untere Baubehörde (Landkreis/Stadt)",       "Landesbauordnung (LBauO)"),
             ("BImSchG-Genehmigung (tarvitt.)",     "Immissionsschutzbehörde (Land)",            "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
+            ("Brandschutzkonzept (NFPA 855 / VdS 3500)", "Feuerwehr / Bauaufsichtsbehörde",     "Landesbauordnung (Bauordnungsrecht der Länder) — keine eigenständige Brandschutzgesetzgebung"),
             ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB) / VNB",    "Energiewirtschaftsgesetz (EnWG, § 17)"),
             ("UVP (tarvitt.)",                     "Genehmigungsbehörde",                       "UVPG"),
             ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB)"),
@@ -4632,7 +4768,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Bauleitplanung",                     "Gemeinde",                                  "Baugesetzbuch (BauGB, § 1)"),
         ],
         "smr_bess": [
-            ("Standortgenehmigung / AtG-Genehmigung", "BMUV / Länderaufsichtsbehörde",         "Atomgesetz (AtG)"),
+            ("⚠️ AtG VERBIETET Neubau kommerzieller KKW zur Stromerzeugung", "Bundestag müsste das Gesetz ändern", "Atomgesetz (AtG) — Atomausstieg vollzogen 15.04.2023; SMR-Komponente betroffen"),
             ("BImSchG-Genehmigung (BESS-osuus)",   "Immissionsschutzbehörde",                   "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"),
             ("Baugenehmigung",                     "Untere Baubehörde",                         "Landesbauordnung (LBauO)"),
             ("Wasserrechtliche Erlaubnis",         "Untere Wasserbehörde",                      "Wasserhaushaltsgesetz (WHG, § 8)"),
@@ -4645,7 +4781,8 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Verkkoliityntäsopimus",              "Übertragungsnetzbetreiber (ÜNB)",           "Energiewirtschaftsgesetz (EnWG)"),
         ],
         "smr_de": [
-            ("Standortgenehmigung / AtG-Genehmigung", "BMUV / Länderaufsichtsbehörde",         "Atomgesetz (AtG, BGBl. I S. 1553/1959)"),
+            ("⚠️ AtG VERBIETET Neubau kommerzieller KKW zur Stromerzeugung", "Bundestag müsste das Gesetz ändern", "Atomgesetz (AtG, BGBl. I S. 1553/1959) — Atomausstieg vollzogen 15.04.2023"),
+            ("Standortgenehmigung / AtG-Genehmigung (nur Nicht-Strom-Zwecke, theoretisch)", "BASE (Bundesamt für die Sicherheit der nuklearen Entsorgung) / BMUKN", "Atomgesetz (AtG) — noch nie für ein neues Vorhaben genehmigt"),
             ("UVP-Prüfung",                        "Genehmigungsbehörde (Länder)",               "UVPG (Gesetz über die Umweltverträglichkeitsprüfung)"),
             ("Baugenehmigung (ydinlaitos)",         "Landesbaubehörde",                          "Landesbauordnung (LBauO, je nach Bundesland)"),
             ("Wasserrechtliche Erlaubnis",          "Untere Wasserbehörde (Land)",               "Wasserhaushaltsgesetz (WHG, § 8)"),
@@ -5688,20 +5825,20 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
         "SMR": [
             "Übersichtslageplan (M 1:25 000)",
             "Maankäyttöselvitys PDF (NCE)",
-            "⚠️ Genehmigungsantrag nach Atomgesetz (AtG § 7) — Bundesaufsicht BMUV",
-            "Vorläufige Sicherheitsanalyse (Probabilistische Sicherheitsanalyse PSA)",
+            "⚠️ Atomgesetz (AtG) VERBIETET den Neubau kommerzieller KKW zur Stromerzeugung — Atomausstieg vollzogen 15.04.2023, kein Genehmigungsweg für ein neues Kraftwerk zur Stromerzeugung",
+            "Vorläufige Sicherheitsanalyse (Probabilistische Sicherheitsanalyse PSA) — nur relevant falls Nicht-Strom-Zweck (theoretisch, nie demonstriert)",
             "UVP-Bericht (UVPG — Schutzgüter inkl. radioaktive Emissionen)",
             "Hydrogeologisches Gutachten (Kühlwasserbedarf / Grundwasserschutz)",
             "Netzanschlussplanung (Übertragungsnetzbetreiber — EnWG)",
             "Bauleitplanung / Raumordnungsverfahren (BauGB — Standortfestlegung)",
             "Handelsregisterauszug des Antragstellers",
-            "⚠️ Bundestagsbeschluss ggf. erforderlich — kein vereinfachtes Genehmigungsverfahren",
+            "⚠️ Gesetzesänderung durch den Bundestag wäre erforderlich — kein bestehendes Genehmigungsverfahren für ein neues Kraftwerk",
         ],
         "smr_bess": [
             "Übersichtslageplan (M 1:25 000)",
             "Maankäyttöselvitys PDF (NCE)",
-            "⚠️ Genehmigungsantrag nach Atomgesetz (AtG § 7) — Bundesaufsicht BMUV",
-            "Vorläufige Sicherheitsanalyse PSA (SMR-Komponente)",
+            "⚠️ Atomgesetz (AtG) VERBIETET den Neubau kommerzieller KKW zur Stromerzeugung — Atomausstieg vollzogen 15.04.2023; SMR-Komponente betroffen, BESS-Komponente nicht",
+            "Vorläufige Sicherheitsanalyse PSA (SMR-Komponente) — nur relevant falls Nicht-Strom-Zweck (theoretisch, nie demonstriert)",
             "Brandschutzkonzept BESS (NFPA 855 / VdS 3500)",
             "UVP-Bericht (UVPG)",
             "Netzanschlussplanung (Übertragungsnetzbetreiber — EnWG)",
@@ -5720,6 +5857,39 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "UVP-Bericht (falls erforderlich)",
             "PUE- und Energieeffizienznachweis",
             "Handelsregisterauszug des Antragstellers",
+        ],
+        # 2026-08-26 build-out: vesivoima, hybridi, ymparistolupa were
+        # missing entirely (DE previously had only 7 of the standard 10
+        # _COUNTRY_LIITTEET keys, despite _COUNTRY_LUVAT["DE"] already
+        # having real vesivoima/hybridi content to build these from). Same
+        # target set as LV/EE's builds.
+        "vesivoima": [
+            "Übersichtslageplan und Detaillageplan",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Wasserrechtliche Erlaubnis / Bewilligung (Untere Wasserbehörde) — WHG § 8 ff.",
+            "Stauanlagensicherheitsnachweis (DIN 19700, Teil 11 Talsperren) — bei Talsperren",
+            "UVP-Bericht (UVPG)",
+            "BImSchG-Genehmigung (tarvitt.)",
+            "Baugenehmigung (Untere Baubehörde — LBauO)",
+            "Netzanschlussbegehren (Übertragungsnetzbetreiber — EnWG)",
+            "Handelsregisterauszug des Antragstellers",
+        ],
+        "hybridi": [
+            "Übersichtslageplan und Detaillageplan",
+            "Maankäyttöselvitys PDF (NCE)",
+            "BImSchG-Genehmigung (Hauptanlage) — § 4",
+            "Brandschutzkonzept (BESS-Anteil, NFPA 855 / VdS 3500) — Landesbauordnung",
+            "UVP-Bericht (UVPG, sofern erforderlich)",
+            "Baugenehmigung (Untere Baubehörde — LBauO)",
+            "Netzanschlussbegehren (Übertragungsnetzbetreiber / VNB — EnWG § 17)",
+            "Bauleitplanung (Gemeinde — BauGB)",
+            "Handelsregisterauszug des Antragstellers",
+        ],
+        "ymparistolupa": [
+            "BImSchG-Genehmigungsantrag (§ 4) oder einfache Anzeige, je nach Anlagengröße",
+            "UVP-Bericht (UVPG, sofern erforderlich)",
+            "Handelsregisterauszug des Antragstellers",
+            "Vollmacht (sofern ein Bevollmächtigter den Antragsteller vertritt)",
         ],
     },
     # 2026-08-23 (item 4, LT research — see LT_LAW_CITATION_RESEARCH.md):
@@ -7276,34 +7446,34 @@ _LUPA_TRANS: dict[str, dict[str, str]] = {
 }
 
 _LAW_TRANS: dict[str, dict[str, str]] = {
-    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",                      "DA": "Miljøbeskyttelsesloven",                   "NO": "Forurensningsloven",                    "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)", "LT": "Aplinkos apsaugos įstatymas", "LV": "Likums \"Par piesārņojumu\" (2001)", "EE": "Tööstusheite seadus (2013)"},
-    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Plan- och bygglagen (2010:900)",    "DA": "Byggeloven / Planloven",        "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414) / Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas", "LV": "Būvniecības likums (2013) / Teritorijas attīstības plānošanas likums (2011)", "EE": "Ehitusseadustik (EhS, 2015) / Planeerimisseadus (PlanS, 2015)"},
-    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Plan- och bygglagen (2010:900)",                                   "DA": "Byggeloven",                                     "NO": "Plan- og bygningsloven",                              "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)", "EE": "Ehitusseadustik (EhS, 2015)"},
-    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Plan- och bygglagen (2010:900)",                             "DA": "Byggeloven",                               "NO": "Plan- og bygningsloven",                        "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)", "EE": "Ehitusseadustik (EhS, 2015)"},
-    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Lag (2003:778) om skydd mot olyckor",                        "DA": "Beredskabsloven",                    "NO": "Brann- og eksplosjonsvernloven",                    "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)", "LT": "Priešgaisrinės saugos įstatymas", "LV": "Ugunsdrošības, ugunsdzēsības un glābšanas darbu likums (spēkā no 13.11.2025)", "EE": "Tuleohutuse seadus (2010)"},
+    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",                      "DA": "Miljøbeskyttelsesloven",                   "NO": "Forurensningsloven",                    "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)", "LT": "Aplinkos apsaugos įstatymas", "LV": "Likums \"Par piesārņojumu\" (2001)", "EE": "Tööstusheite seadus (2013)", "DE": "Bundes-Immissionsschutzgesetz (BImSchG, § 4)"},
+    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Plan- och bygglagen (2010:900)",    "DA": "Byggeloven / Planloven",        "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414) / Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas", "LV": "Būvniecības likums (2013) / Teritorijas attīstības plānošanas likums (2011)", "EE": "Ehitusseadustik (EhS, 2015) / Planeerimisseadus (PlanS, 2015)", "DE": "Landesbauordnung (LBauO) / Baugesetzbuch (BauGB)"},
+    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Plan- och bygglagen (2010:900)",                                   "DA": "Byggeloven",                                     "NO": "Plan- og bygningsloven",                              "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)", "EE": "Ehitusseadustik (EhS, 2015)", "DE": "Landesbauordnung (LBauO, je nach Bundesland)"},
+    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Plan- och bygglagen (2010:900)",                             "DA": "Byggeloven",                               "NO": "Plan- og bygningsloven",                        "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)", "EE": "Ehitusseadustik (EhS, 2015)", "DE": "Landesbauordnung (LBauO, je nach Bundesland)"},
+    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Lag (2003:778) om skydd mot olyckor",                        "DA": "Beredskabsloven",                    "NO": "Brann- og eksplosjonsvernloven",                    "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)", "LT": "Priešgaisrinės saugos įstatymas", "LV": "Ugunsdrošības, ugunsdzēsības un glābšanas darbu likums (spēkā no 13.11.2025)", "EE": "Tuleohutuse seadus (2010)", "DE": "Landesbauordnung (Bauordnungsrecht der Länder)"},
     "Sähkömarkkinalaki 588/2013":                           {"EN": "Electricity Market Act (588/2013)",                                    "SE": "Elmarknadslagen (588/2013)",                           "DA": "Elmarkedsloven (588/2013)",                               "NO": "Energiloven (588/2013)",                           "PL": "Ustawa o rynku energii elektrycznej (588/2013)"},
     "Maa-aineslaki 555/1981":                               {"EN": "Extractable Land Resources Act (555/1981)",                            "SE": "Marktäktslagen (555/1981)",                            "DA": "Råstofloven (555/1981)",                                  "NO": "Mineralressursloven (555/1981)",                   "PL": "Ustawa o kopalinach pospolitych (555/1981)"},
-    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                                 "DA": "Miljøvurderingsloven",                                    "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",                              "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas", "LV": "Likums \"Par ietekmes uz vidi novērtējumu\" (1998)", "EE": "KMH-KSH seadus (2013)"},
+    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                                 "DA": "Miljøvurderingsloven",                                    "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",                              "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas", "LV": "Likums \"Par ietekmes uz vidi novērtējumu\" (1998)", "EE": "KMH-KSH seadus (2013)", "DE": "UVPG"},
     "YVA-laki 252/2017 (kynnykset ylittyessä)":            {"EN": "EIA Act 252/2017 (when thresholds exceeded)",                          "SE": "Miljöbalken kap. 6 (miljöbedömningar), vid tröskelöverskridning",        "DA": "Miljøvurderingsloven, når grænseværdier overskrides",      "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning), når terskler overskrides",    "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227), gdy progi są przekroczone", "LT": "PAV įstatymas, kai viršijamos ribinės vertės"},
     "YVA-laki 252/2017 (≥50 ha hankkeet)":                 {"EN": "EIA Act 252/2017 (≥50 ha projects)",                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                 "DA": "Miljøvurderingsloven",                   "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",           "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas"},
-    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)", "EE": "Planeerimisseadus (PlanS, 2015)"},
+    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)", "EE": "Planeerimisseadus (PlanS, 2015)", "DE": "Baugesetzbuch (BauGB)"},
     "MRL 132/1999 § 137":                                   {"EN": "Land Use and Building Act 132/1999, § 137",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
     "MRL 197 §":                                            {"EN": "Land Use and Building Act, § 197",                                     "SE": "Plan- och bygglagen, § 197",                           "DA": "Planlægningsloven, § 197",                                "NO": "Plan- og bygningsloven, § 197",                    "PL": "Ustawa o zagospodarowaniu przestrzennym, § 197"},
     "MRL 132/1999 § 91a":                                   {"EN": "Land Use and Building Act 132/1999, § 91a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
     "MRL 132/1999 § 9":                                     {"EN": "Land Use and Building Act 132/1999, § 9",                              "SE": "Plan- och bygglagen (2010:900)",                    "DA": "Planloven",                         "NO": "Plan- og bygningsloven",            "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
-    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (2010:900)",                       "DA": "Planloven",                            "NO": "Plan- og bygningsloven",                "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)", "EE": "Planeerimisseadus (PlanS, 2015)"},
+    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (2010:900)",                       "DA": "Planloven",                            "NO": "Plan- og bygningsloven",                "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)", "EE": "Planeerimisseadus (PlanS, 2015)", "DE": "Baugesetzbuch (BauGB)"},
     "Ilmailulaki 864/2014":                                 {"EN": "Aviation Act (864/2014)",                                              "SE": "Luftfartslagen (864/2014)",                            "DA": "Luftfartsloven (864/2014)",                               "NO": "Luftfartsloven (864/2014)",                        "PL": "Ustawa lotnicza (864/2014)"},
     "Maakaari 540/1995":                                    {"EN": "Code of Real Estate (540/1995)",                                       "SE": "Jordabalken (540/1995)",                               "DA": "Tinglysningsloven (540/1995)",                            "NO": "Eiendomsloven (540/1995)",                         "PL": "Ustawa o nieruchomościach (540/1995)"},
-    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                               "DA": "Vandløbsloven",                                    "NO": "Vannressursloven",                      "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)", "EE": "Veeseadus (2019)"},
-    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                          "DA": "Vandløbsloven",                               "NO": "Vannressursloven",                 "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)", "EE": "Veeseadus (2019)"},
+    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                               "DA": "Vandløbsloven",                                    "NO": "Vannressursloven",                      "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)", "EE": "Veeseadus (2019)", "DE": "Wasserhaushaltsgesetz (WHG)"},
+    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                          "DA": "Vandløbsloven",                               "NO": "Vannressursloven",                 "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)", "EE": "Veeseadus (2019)", "DE": "Wasserhaushaltsgesetz (WHG)"},
     "Merilaki 674/1994":                                    {"EN": "Maritime Act (674/1994)",                                              "SE": "Sjölagen (674/1994)",                                  "DA": "Søloven (674/1994)",                                      "NO": "Sjøloven (674/1994)",                              "PL": "Kodeks morski (674/1994)"},
     "Merenkulkulaki 1672/2009":                             {"EN": "Maritime Navigation Act (1672/2009)",                                  "SE": "Sjöfartslagen (1672/2009)",                            "DA": "Søfartsloven (1672/2009)",                                "NO": "Navigasjonsloven (1672/2009)",                     "PL": "Ustawa o żegludze morskiej (1672/2009)"},
     "Laki alueiden käytöstä":                               {"EN": "Act on Land Use",                                                      "SE": "Lagen om områdesanvändning",                           "DA": "Lov om arealanvendelse",                                  "NO": "Lov om arealbruk",                                 "PL": "Ustawa o użytkowaniu gruntów"},
     "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126":    {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999 §§ 125–126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggeloven / Planloven", "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
     "Rakentamislaki 751/2023 / MRL 132/1999 § 126":         {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999, § 126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggeloven / Planloven", "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
-    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast"},
-    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast"},
-    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast"},
+    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast", "DE": "Atomgesetz (AtG) — verbietet den Neubau kommerzieller KKW zur Stromerzeugung (Atomausstieg vollzogen 15.04.2023); Aufsicht für verbleibende Endlagerung/Rückbau: BASE, unter BMUKN"},
+    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast", "DE": "Atomgesetz (AtG) — verbietet den Neubau kommerzieller KKW zur Stromerzeugung (Atomausstieg vollzogen 15.04.2023); Aufsicht für verbleibende Endlagerung/Rückbau: BASE, unter BMUKN"},
+    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast", "DE": "Atomgesetz (AtG) — verbietet den Neubau kommerzieller KKW zur Stromerzeugung (Atomausstieg vollzogen 15.04.2023); Aufsicht für verbleibende Endlagerung/Rückbau: BASE, unter BMUKN"},
     "Kalastuslaki 379/2015":                                {"EN": "Fisheries Act (379/2015)",                                             "SE": "Fiskelagen (379/2015)",                                "DA": "Fiskeriloven (379/2015)",                                 "NO": "Fiskeloven (379/2015)",                            "PL": "Ustawa o rybołówstwie (379/2015)"},
     "Säteilylaki 859/2018":                                 {"EN": "Radiation Act (859/2018)",                                             "SE": "Strålningslagen (859/2018)",                           "DA": "Strålingsloven (859/2018)",                               "NO": "Strålevernloven (859/2018)",                       "PL": "Ustawa prawo atomowe (859/2018)"},
     "Kemikaaliturvallisuuslaki 390/2005":                   {"EN": "Chemicals Safety Act (390/2005)",                                      "SE": "Kemikaliesäkerhetslagen (390/2005)",                   "DA": "Kemikaliesikkerhedsloven (390/2005)",                     "NO": "Kjemikaliesikkerhetsloven (390/2005)",             "PL": "Ustawa o bezpieczeństwie chemicznym (390/2005)"},
@@ -8532,8 +8702,14 @@ _NATIONAL_SUPERVISORS: dict[str, dict[str, str]] = {
         "tuulivoima_maa": "Immissionsschutzbehörde (Länder), Luftfahrtbundesamt/Bundeswehr (Hindernisbeurteilung), BNetzA",
         "tuulivoima_meri":"BSH (Bundesamt für Seeschifffahrt und Hydrographie), BNetzA, Wasser- und Schifffahrtsamt",
         "aurinkovoima":   "Untere Baubehörde (Landkreis/Stadt), BNetzA (Netz), Gewerbeaufsichtsamt",
-        "SMR":            "BMUV / Länderaufsichtsbehörde (Atomgesetz AtG), BMWi, Bundestag (Genehmigung)",
-        "smr_bess":       "BMUV / Länderaufsichtsbehörde (AtG), BNetzA, Immissionsschutzbehörde",
+        # 2026-08-26 correction: both ministry names were stale -- BMUV and
+        # BMWi were both renamed 06.05.2025 under the Merz cabinet (BMUV ->
+        # BMUKN; BMWi -> BMWK in 2021 -> BMWE in 2025, current minister
+        # Katherina Reiche). Also: AtG bans new commercial power-generating
+        # plants outright, not a normal permit path -- see
+        # DE_LAW_CITATION_RESEARCH.md.
+        "SMR":            "⚠️ AtG verbietet Neubau zur Stromerzeugung — BASE / BMUKN, BMWE, Bundestag (Gesetzesänderung nötig)",
+        "smr_bess":       "⚠️ AtG verbietet Neubau (SMR-Teil) — BASE / BMUKN (SMR), BNetzA, Immissionsschutzbehörde (BESS-Teil unbetroffen)",
         "vesivoima":      "Wasserbehörde (Land), Umweltbundesamt (UBA), BNetzA",
         "_generic":       "Untere Baubehörde (Landkreis/Stadt), Immissionsschutzbehörde (Länder)",
     },
