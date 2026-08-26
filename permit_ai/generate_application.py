@@ -749,13 +749,27 @@ def _fix_hardcoded_ely(text: str, country: str) -> str:
 # paragraph number next to the (now correct) target-country act would read
 # as a claim about THAT act's own section numbering, which would be a new,
 # separate fabrication risk.
+# 2026-08-26 EE sourcing note: riigiteataja.ee (Estonia's official gazette) is
+# JS-rendered -- same known blocker as LT's e-seimas.lrs.lt and DA's
+# retsinformation.dk (see project-manual-sourcing-backlog memory). WebFetch
+# against it returns only a loading shell, no primary text. Every EE entry
+# added below (and in _LAW_TRANS, _STUK_REPLACEMENT, _COUNTRY_LUVAT["EE"],
+# _COUNTRY_LIITTEET["EE"]) was cross-checked across 2+ independent secondary
+# sources per fact instead (Kliimaministeerium, Riigikogu press releases,
+# k6k.ee/Keskkonnaõiguse Keskus, indexed Riigi Teataja search snippets) --
+# not verified against directly-fetched primary text the way LV's were.
+# Treat as a genuinely lower-confidence sourcing tier; revisit with direct
+# primary-text verification if riigiteataja.ee ever becomes fetchable
+# (same "flag, don't silently upgrade confidence" treatment as DA's
+# Patoturvallisuuslaki gap below).
 _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
     "MRL":                  {"SE": "Plan- och bygglagen (2010:900)",
                               "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)",
                               "LT": "Teritorijų planavimo įstatymas",
                               "DA": "Planloven",
                               "NO": "Plan- og bygningsloven",
-                              "LV": "Teritorijas attīstības plānošanas likums (2011)"},
+                              "LV": "Teritorijas attīstības plānošanas likums (2011)",
+                              "EE": "Planeerimisseadus (PlanS, 2015)"},
     "Rakentamislaki":       {"SE": "Plan- och bygglagen (2010:900)",
                               "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)",
                               "LT": "Statybos įstatymas",
@@ -763,7 +777,8 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # NO: same law as MRL above (Plan- og bygningsloven merges
                               # zoning and building) -- not a separate act, matching SE.
                               "NO": "Plan- og bygningsloven",
-                              "LV": "Būvniecības likums (2013)"},
+                              "LV": "Būvniecības likums (2013)",
+                              "EE": "Ehitusseadustik (EhS, 2015)"},
     "YVA-laki":             {"SE": "Miljöbalken kap. 6 (miljöbedömningar)",
                               "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)",
                               "LT": "PAV įstatymas",
@@ -771,7 +786,8 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # NO: EIA is chapter 14 of the same Plan- og bygningsloven,
                               # not a separate act -- confirmed via regjeringen.no.
                               "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",
-                              "LV": "Likums \"Par ietekmes uz vidi novērtējumu\" (1998)"},
+                              "LV": "Likums \"Par ietekmes uz vidi novērtējumu\" (1998)",
+                              "EE": "KMH-KSH seadus (RT I, 04.01.2013, 10)"},
     "YSL":                  {"SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",
                               "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)",
                               "LT": "Aplinkos apsaugos įstatymas",
@@ -785,7 +801,20 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # Annex 1, B/C in MK noteikumi Nr. 1082's annexes. Confirmed
                               # via vvd.gov.lv and likumi.lv, not assumed from the existing
                               # (wrong) content.
-                              "LV": "Likums \"Par piesārņojumu\" (2001)"},
+                              "LV": "Likums \"Par piesārņojumu\" (2001)",
+                              # EE: same shape as LV above -- NOT Keskkonnaseadustiku
+                              # üldosa seadus (KeÜS), which is the general framework act
+                              # (adopted 16.02.2011, RT I 28.02.2011,1 -- confirmed real,
+                              # phased in-force through 2017, but only defines the general
+                              # permit concept). The actual operative industrial/IPPC
+                              # permit-granting law is Tööstusheite seadus (adopted
+                              # 24.04.2013, RT I 16.05.2013, in force 01.06.2013,
+                              # implements EU IED 2010/75/EU) -- grants kompleksluba
+                              # (integrated permit, above IED capacity threshold) or
+                              # keskkonnaluba (environmental permit, below it). KeÜS was
+                              # previously over-cited as the primary permit law in
+                              # _COUNTRY_LUVAT["EE"]; corrected there too.
+                              "EE": "Tööstusheite seadus (2013)"},
     "Vesilaki":             {"SE": "Miljöbalken kap. 11 (vattenverksamhet)",
                               "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)",
                               "LT": "Vandens įstatymas",
@@ -795,7 +824,15 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # DA_NO_LAW_CITATION_RESEARCH.md.
                               "DA": "Vandløbsloven",
                               "NO": "Vannressursloven",
-                              "LV": "Ūdens apsaimniekošanas likums (2002)"},
+                              "LV": "Ūdens apsaimniekošanas likums (2002)",
+                              # EE: Veeseadus -- a real 2019 recodification (passed
+                              # 30.01.2019, in force 01.10.2019), NOT the older 1994
+                              # Veeseadus it replaced. A later substantive amendment
+                              # (13.09.2021, in force 01.10.2021) is easy to mistake for
+                              # the original enactment date -- confirmed the 2019 date is
+                              # the real one. Genuinely new to this codebase: no vesivoima
+                              # row existed in _COUNTRY_LUVAT["EE"] before this build.
+                              "EE": "Veeseadus (2019)"},
     "Pelastuslaki":         {"SE": "Lag (2003:778) om skydd mot olyckor",
                               "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)",
                               "LT": "Priešgaisrinės saugos įstatymas",
@@ -805,7 +842,19 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                               # is now repealed -- the current law entered into force
                               # 13.11.2025 (confirmed via lvportals.lv/iem.gov.lv, not
                               # assumed from the old, now-wrong name).
-                              "LV": "Ugunsdrošības, ugunsdzēsības un glābšanas darbu likums (spēkā no 13.11.2025)"},
+                              "LV": "Ugunsdrošības, ugunsdzēsības un glābšanas darbu likums (spēkā no 13.11.2025)",
+                              # EE: Tuleohutuse seadus (adopted 05.05.2010, RT I 2010,
+                              # 24, 116, in force 01.09.2010) -- the concept was already
+                              # right in _COUNTRY_LUVAT["EE"], just misspelled as one word
+                              # ("Tuleohutusseadus") without the genitive space; corrected
+                              # there too. NOT Päästeseadus (2010, RT I 2010, 24, 115, a
+                              # same-day companion act) -- that law governs the Rescue
+                              # Board's rescue-operation powers, not fire-safety technical
+                              # requirements/permits. NOT Päästeteenistuse seadus (2022)
+                              # either -- that's rescue-service personnel/organisation.
+                              # Three real, distinct, easily-conflated laws; this is the
+                              # only one of the three the code actually needs.
+                              "EE": "Tuleohutuse seadus (2010)"},
     # Ydinenergialaki: each country's nuclear situation is genuinely
     # different -- deliberately NOT templated off one another, per explicit
     # instruction. See DA_NO_LAW_CITATION_RESEARCH.md / LT_LAW_CITATION_RESEARCH.md.
@@ -827,6 +876,29 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
     #    and _STUK_REPLACEMENT["LV"] both previously claimed Latvia has "no
     #    nuclear regulatory framework at all" -- confirmed WRONG (2026-08-26
     #    research), not just incomplete; fixed here and in both those places.
+    #  - EE: a fifth, distinct case -- NOT "no framework" (the previous
+    #    content) and NOT a fully operative system either. Tuumaenergia ja
+    #    -ohutuse seadus (Nuclear Energy and Safety Act, TEOS, bill 856 SE)
+    #    passed its THIRD READING in the Riigikogu on 17.06.2026 (63 in
+    #    favour, 10 against, 1 abstention) -- a real, completed legislative
+    #    event, not a live draft. It is NOT YET IN FORCE as of today
+    #    (2026-08-26); entry into force is a firm, already-scheduled date:
+    #    01.01.2027. Creates a tiered licensing system (preliminary
+    #    assessment -> construction permit -> testing permit -> operating
+    #    permit -> decommissioning permit) and an independent nuclear
+    #    regulator inside TTJA (Tarbijakaitse ja Tehnilise Järelevalve Amet)
+    #    -- TTJA is already a cited EE authority (electrical/technical
+    #    equipment safety, Tukes-equivalent); the nuclear regulator is a new
+    #    function added to it from 01.01.2027, not a new body. Any decision
+    #    to actually BUILD a plant needs separate Riigikogu approval (added
+    #    during passage) -- the law creates the licensing framework, not
+    #    construction authorisation itself. Realistic commercial timeline is
+    #    still "mid-2030s at the earliest" per its own supporting coverage --
+    #    same "real framework, no first-of-kind commercial process yet"
+    #    shape as LV/NO, just with an adopted-but-not-in-force law instead of
+    #    an already-in-force one. State the exact status (adopted 17.06.2026,
+    #    in force 01.01.2027) explicitly everywhere this appears -- never
+    #    collapse it to either "no law" or "law is in force today".
     "Ydinenergialaki":      {"SE": "Lag (1984:3) om kärnteknisk verksamhet",
                               "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)",
                               "LT": ("Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE "
@@ -843,7 +915,16 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
                                      "drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav "
                                      "komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta "
                                      "SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam "
-                                     "komerciālajam objektam vēl nav dokumentēts")},
+                                     "komerciālajam objektam vēl nav dokumentēts"),
+                              "EE": ("Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu võttis vastu "
+                                     "17.06.2026 (III lugemine, 63 poolt), kuid seadus EI OLE VEEL JÕUS: "
+                                     "jõustub 1. jaanuaril 2027. Loob astmelise loamenetluse (eelhinnang, "
+                                     "ehitusluba, katseluba, kasutusluba, dekomisjoneerimisluba) ja uue "
+                                     "tuumaregulaatori TTJA (Tarbijakaitse ja Tehnilise Järelevalve Amet) "
+                                     "koosseisus alates 1.1.2027; reaktori ehitamise otsus vajab eraldi "
+                                     "Riigikogu heakskiitu. Ärge esitage seda kui juba kehtivat "
+                                     "litsentsimissüsteemi ega kui puuduvat õigusraamistikku — täpne staatus "
+                                     "on \"vastu võetud, jõustub 1.1.2027\"")},
     # Patoturvallisuuslaki: PL, LT and DA deliberately have no entry.
     # PL/LT: neither country has a separate dam-safety act (verified, see
     # PL_LAW_CITATION_RESEARCH.md / LT_LAW_CITATION_RESEARCH.md); dam safety
@@ -861,6 +942,11 @@ _LAW_CITATION_REPLACEMENT: dict[str, dict[str, str]] = {
     # hidrotehnisko būvju drošumu" (2000/2001), still in force, with a real
     # tiered authority structure (BVKB for Class A, municipal commissions
     # for B/C).
+    # EE also deliberately has no entry (2026-08-26): dam safety was
+    # explicitly out of scope for this research pass (only KeÜS,
+    # Tööstusheite seadus, Veeseadus, Päästeseadus/Tuleohutuse seadus, and
+    # the nuclear framework were checked -- see EE_LAW_CITATION_RESEARCH.md's
+    # scope-boundary section). Left unresearched, not guessed as absent.
     "Patoturvallisuuslaki": {"SE": "Förordning (2014:214) om dammsäkerhet",
                               "NO": "Damsikkerhetsforskriften (2009, nr. 1600) — NVE tilsyn",
                               "LV": ("Likums \"Par hidroelektrostaciju hidrotehnisko būvju drošumu\" "
@@ -909,9 +995,22 @@ def _fix_hardcoded_law_citations(text: str, country: str) -> str:
 # comment for the fuller NO-style framing (real law + real regulator + genuine
 # current SMR interest via the US-Latvia FIRST project, no first-of-kind
 # licensing process demonstrated yet).
+# 2026-08-26 correction: EE previously had no entry here at all -- SMR/BESS
+# generation for EE didn't rely on this backstop before, since
+# _COUNTRY_LUVAT["EE"]'s SMR/smr_ee rows already wrote EE-specific text
+# directly rather than inheriting a Finnish EN card with "STUK" in it. Added
+# proactively in case any future EE card falls back to the generic EN
+# template. Deliberately does NOT say TTJA "is" the nuclear regulator today
+# -- TEOS (Tuumaenergia ja -ohutuse seadus) was adopted 17.06.2026 but only
+# enters into force 01.01.2027; see the Ydinenergialaki comment above for the
+# full status. Sourced from cross-checked secondary sources, not fetched
+# primary text (riigiteataja.ee is JS-rendered) -- see the sourcing-tier note
+# above _LAW_CITATION_REPLACEMENT.
 _STUK_REPLACEMENT: dict[str, str] = {
     "LT": "VATESI (Valstybinė atominės energetikos saugos inspekcija)",
     "LV": "Radiācijas drošības centrs (Valsts vides dienesta pakļautībā)",
+    "EE": ("TTJA tuumaregulaator (Tuumaenergia ja -ohutuse seadus, vastu võetud 17.06.2026, "
+           "jõustub 1.1.2027 — hetkel veel jõustumata)"),
 }
 _STUK_RE = re.compile(r'\bSTUK\w*')
 
@@ -3671,15 +3770,44 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "Terviseamet (Health Board — radiation, nuclear)",
             "Transpordiamet (Transport Administration — aviation, maritime)",
             "TTJA (Tehnilise Järelevalve Amet — Technical Regulatory Authority; "
-            "electrical/technical equipment safety, equivalent to Finnish Tukes)",
+            "electrical/technical equipment safety, equivalent to Finnish Tukes; "
+            "from 01.01.2027 also hosts Estonia's new independent nuclear regulator "
+            "under TEOS, see key_laws below)",
         ],
+        # 2026-08-26: key_laws corrected/expanded after real research (see
+        # EE_LAW_CITATION_RESEARCH.md) -- sourced from cross-checked secondary
+        # sources, not fetched primary text, since riigiteataja.ee is
+        # JS-rendered (same blocker as LT/DA); lower-confidence sourcing tier,
+        # see the note above _LAW_CITATION_REPLACEMENT.
         "key_laws": [
             "Elektrituruseadus (ETS, RT I 2012) — electricity market, production license",
-            "Keskkonnaseadustiku üldosa seadus (KeÜS) — general environmental framework",
+            "Keskkonnaseadustiku üldosa seadus (KeÜS, RT I 28.02.2011,1) — general "
+            "environmental framework, defines the general permit concept only",
+            # Correction: KeÜS alone was previously (wrongly) cited as the
+            # operative permit law for industrial facilities. Tööstusheite
+            # seadus is the actual operating-permit law (kompleksluba /
+            # keskkonnaluba above/below the IED capacity threshold).
+            "Tööstusheite seadus (RT I 16.05.2013, in force 01.06.2013) — the "
+            "operative industrial/IPPC permit-granting law (implements EU IED "
+            "2010/75/EU); this is what actually grants the permit, not KeÜS alone",
             "KMH-KSH seadus (RT I 2013) — EIA (Keskkonnamõju hindamine)",
             "Ehitusseadustik (EhS, RT I 2015) — building code, construction permit",
             "Planeerimisseadus (PlanS, RT I 2015) — spatial planning, detailed plan",
             "Energiamajanduse korralduse seadus (ESOS) — energy sector organisation",
+            "Veeseadus (RT I 2019, in force 01.10.2019) — water-law permits; "
+            "genuinely new to this file, no vesivoima row existed before",
+            # Correction: was misspelled "Tuleohutusseadus" (one word) in the
+            # per-hanketyyppi tables; real name is two words, genitive case.
+            "Tuleohutuse seadus (RT I 2010, in force 01.09.2010) — fire safety "
+            "requirements/inspections (NOT Päästeseadus, a same-day companion "
+            "act governing the Rescue Board's rescue-operation powers instead)",
+            # Major correction: was previously described as "no nuclear power
+            # law yet (draft under development)" -- that's stale. The law has
+            # been ADOPTED, just isn't in force yet. State both facts.
+            "Tuumaenergia ja -ohutuse seadus (TEOS) — adopted by Riigikogu "
+            "17.06.2026 (third reading, 63-10-1), ENTERS INTO FORCE 01.01.2027 "
+            "(not yet in force as of writing); creates a tiered nuclear "
+            "licensing system and a new nuclear regulator inside TTJA",
         ],
         "prompt_prefix": (
             "IMPORTANT — COUNTRY: This project is located in ESTONIA (Eesti). "
@@ -3700,8 +3828,29 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "KMH-KSH seadus (EIA = Keskkonnamõju hindamine / KMH), "
             "Ehitusseadustik EhS (building permit = ehitusluba), "
             "Planeerimisseadus PlanS (spatial plan = detailplaneering), "
-            "Keskkonnaseadustiku üldosa seadus KeÜS (environmental code general part), "
+            "Keskkonnaseadustiku üldosa seadus KeÜS (environmental code general part — "
+            "defines the general permit concept only, NOT the operative industrial "
+            "permit law, see Tööstusheite seadus below), "
+            "Tööstusheite seadus (the actual industrial/IPPC permit-granting law — "
+            "kompleksluba/keskkonnaluba, implements EU IED 2010/75/EU), "
+            "Veeseadus (water-law permits), "
+            "Tuleohutuse seadus (fire safety — NOT Päästeseadus, a different, "
+            "same-day companion law about the Rescue Board's operational powers), "
             "Energiamajanduse korralduse seadus ESOS (energy sector organisation + NECP targets).\n"
+            "Key laws — explicit FI→EE mapping (replace the Finnish citation with the "
+            "matching Estonian one below, never leave the Finnish law name/number in "
+            "the output): "
+            "MRL 132/1999 -> Planeerimisseadus (PlanS, 2015); "
+            "Rakentamislaki 751/2023 -> Ehitusseadustik (EhS, 2015); "
+            "YVA-laki 252/2017 -> KMH-KSH seadus (RT I, 04.01.2013, 10); "
+            "YSL 527/2014 -> Tööstusheite seadus (2013; NOT Keskkonnaseadustiku üldosa "
+            "seadus/KeÜS alone, which is the general framework act, not the "
+            "permit-granting one); "
+            "Vesilaki 587/2011 -> Veeseadus (2019); "
+            "Pelastuslaki 379/2011 -> Tuleohutuse seadus (2010; NOT Päästeseadus); "
+            "Patoturvallisuuslaki 494/2009 -> [Requires verification against Estonian "
+            "regulations] — not yet researched, do not invent a law name; "
+            "Sähkömarkkinalaki 588/2013 -> Elektrituruseadus (ETS, RT I 2012).\n"
             "Key market facts: National wind target ~1,200 MW by 2030 (baseline ~310 MW 2020); "
             "solar target ~415 MW by 2030 (baseline ~100 MW 2020); "
             "offshore wind combined permit (ühisluba) replaces former 3-step process; "
@@ -3709,9 +3858,20 @@ _COUNTRY_CONFIG: dict[str, dict] = {
             "small rooftop solar < 15 kW household / < 50 kW commercial: simplified path "
             "(ehitusteatis + teatis to Konkurentsiamet, no full license). "
             "BESS: no dedicated BESS regulation — general ETS framework applies. "
-            "SMR: no nuclear power law yet (draft Tuumaenergia seadus under development) — "
-            "regWarning status, fundamental legislative gap.\n"
-            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, ELY-keskus, Tukes, Traficom, Fingrid) "
+            "SMR/nuclear: Estonia's Tuumaenergia ja -ohutuse seadus (TEOS) was ADOPTED "
+            "by the Riigikogu on 17.06.2026 (third reading, 63 in favour, 10 against, "
+            "1 abstention) — this is NOT a live draft, it is a completed legislative "
+            "act. It is NOT YET IN FORCE as of today; entry into force is a firm, "
+            "already-scheduled date of 01.01.2027. TEOS creates a tiered licensing "
+            "system (preliminary assessment -> construction permit -> testing permit "
+            "-> operating permit -> decommissioning permit) and a new independent "
+            "nuclear regulator inside TTJA, operating from 01.01.2027. Any decision "
+            "to actually build a plant requires separate Riigikogu approval. State "
+            "the exact status explicitly — 'adopted 17.06.2026, in force 01.01.2027' "
+            "— never collapse this to either 'no nuclear law exists' or 'a live "
+            "nuclear licensing system operates today'.\n"
+            "Replace ALL Finnish law/entity references (MRL, YSL, YVA-laki, Vesilaki, Pelastuslaki, "
+            "Ydinenergialaki, ELY-keskus, Tukes, Traficom, Fingrid, STUK) "
             "with the Estonian equivalents listed above (Keskkonnaamet, TTJA, Transpordiamet, Elering AS). "
             "Mark uncertain items: [Requires verification against Estonian regulations].\n\n"
         ),
@@ -4552,29 +4712,38 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
         # ── BESS ──────────────────────────────────────────────────────────────
         "BESS": [
             ("Rakentamislupa (ehitusluba)",         "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS, RT I 2015) §19"),
-            ("Paloturvallisuuslupa (Päästeamet)",  "Päästeamet (Estonian Rescue Board)",          "Tuleohutusseadus (Fire Safety Act)"),
+            ("Paloturvallisuuslupa (Päästeamet)",  "Päästeamet (Estonian Rescue Board)",          "Tuleohutuse seadus (Fire Safety Act, RT I 2010)"),
             ("Elektrienergia tootmise luba (tarvitt.)", "Konkurentsiamet (Competition Authority)", "Elektrituruseadus (ETS, RT I 2012) §14 (jos >1 MW)"),
             ("YVA-menettely (KMH) (tarvitt.)",     "Keskkonnaamet",                               "KMH-KSH seadus §7 — ei erillistä BESS-lakia"),
             ("Verkkoliityntäsopimus (liitumisleping)", "Elektrilevi OÜ / Elering AS",             "Elektrituruseadus (ETS) §§73-83; RfG 2016/631 + DCC 2016/1388"),
             ("Kasutusluba (use permit)",            "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS) §§61-75"),
         ],
-        # ── SMR — regWarning: no nuclear law in Estonia ───────────────────────
+        # ── SMR — regWarning: TEOS adopted 17.06.2026, in force 01.01.2027 ─────
+        # 2026-08-26 correction: previous rows said the nuclear law "puuttuu —
+        # draft laki" (missing, draft) -- stale. Tuumaenergia ja -ohutuse
+        # seadus (TEOS) passed its third Riigikogu reading 17.06.2026 (63-10-1)
+        # and IS adopted, but is NOT YET IN FORCE (entry into force 01.01.2027).
+        # See EE_LAW_CITATION_RESEARCH.md and the Ydinenergialaki comment in
+        # _LAW_CITATION_REPLACEMENT above for the full status. Sourced from
+        # cross-checked secondary sources (riigiteataja.ee is JS-rendered) —
+        # lower-confidence sourcing tier, see the note above
+        # _LAW_CITATION_REPLACEMENT.
         "SMR": [
-            ("⚠️ Tuumaenergia seadus puuttuu — draft laki",  "Riigikogu (Parliament) — lakia ei hyväksytty",  "Kiirgusseadus (RT I 2019) — kattaa vain säteilykäytön; ei reaktorilupaa"),
-            ("Periaatepäätös (Riigikogu otsus, tarvittaessa)", "Riigikogu (Parliament of Estonia)", "Vaatii parlamentin päätöksen — ei vakiintunutta menettelyä"),
+            ("⚠️ TEOS vastu võetud 17.06.2026, EI OLE VEEL JÕUS", "Riigikogu (Parliament) — jõustub 1.1.2027", "Tuumaenergia ja -ohutuse seadus (TEOS) — tuumaregulaator TTJA koosseisus alates 1.1.2027"),
+            ("Periaatepäätös (Riigikogu erikorraldus, tarvittaessa)", "Riigikogu (Parliament of Estonia)", "TEOS § — reaktori ehitamise otsus vajab eraldi Riigikogu heakskiitu"),
             ("YVA-menettely (KMH)",                "Keskkonnaamet / Riigikogu",                   "KMH-KSH seadus (RT I, 04.01.2013, 10) §6 — pakollinen ydinlaitoksille"),
             ("Riigi eriplaneering",                "Rahandusministeerium / Riigikogu",             "Planeerimisseadus (PlanS, RT I 2015) §9"),
-            ("Rakentamislupa (ehitusluba, tarvitt.)", "Kohaliku omavalitsuse / kansallinen viranomainen", "Ehitusseadustik (EhS) — ei ydinlaitoskohtaisia säännöksiä"),
+            ("Rakentamislupa (ehitusluba, tarvitt.)", "Kohaliku omavalitsuse / TTJA tuumaregulaator", "Ehitusseadustik (EhS) + TEOS astmeline loamenetlus (alates 1.1.2027)"),
             ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
             ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS (TSO)",                        "Elektrituruseadus (ETS) §§73-83"),
         ],
         # ── SMR variant alias ─────────────────────────────────────────────────
         "smr_ee": [
-            ("⚠️ Tuumaenergia seadus puuttuu — draft laki",  "Riigikogu (Parliament) — lakia ei hyväksytty",  "Kiirgusseadus (RT I 2019) — kattaa vain säteilykäytön; ei reaktorilupaa"),
-            ("Periaatepäätös (Riigikogu otsus, tarvittaessa)", "Riigikogu (Parliament of Estonia)", "Vaatii parlamentin päätöksen — ei vakiintunutta menettelyä"),
+            ("⚠️ TEOS vastu võetud 17.06.2026, EI OLE VEEL JÕUS", "Riigikogu (Parliament) — jõustub 1.1.2027", "Tuumaenergia ja -ohutuse seadus (TEOS) — tuumaregulaator TTJA koosseisus alates 1.1.2027"),
+            ("Periaatepäätös (Riigikogu erikorraldus, tarvittaessa)", "Riigikogu (Parliament of Estonia)", "TEOS § — reaktori ehitamise otsus vajab eraldi Riigikogu heakskiitu"),
             ("YVA-menettely (KMH)",                "Keskkonnaamet / Riigikogu",                   "KMH-KSH seadus (RT I, 04.01.2013, 10) §6 — pakollinen ydinlaitoksille"),
             ("Riigi eriplaneering",                "Rahandusministeerium / Riigikogu",             "Planeerimisseadus (PlanS, RT I 2015) §9"),
-            ("Rakentamislupa (ehitusluba, tarvitt.)", "Kohaliku omavalitsuse / kansallinen viranomainen", "Ehitusseadustik (EhS) — ei ydinlaitoskohtaisia säännöksiä"),
+            ("Rakentamislupa (ehitusluba, tarvitt.)", "Kohaliku omavalitsuse / TTJA tuumaregulaator", "Ehitusseadustik (EhS) + TEOS astmeline loamenetlus (alates 1.1.2027)"),
             ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
             ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS (TSO)",                        "Elektrituruseadus (ETS) §§73-83"),
         ],
@@ -4589,7 +4758,11 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
         # ── Teollisuus ────────────────────────────────────────────────────────
         "teollisuus": [
             ("Detailplaneering (tarvitt.)",         "Kohaliku omavalitsuse volikogu",             "Planeerimisseadus (PlanS, RT I 2015)"),
-            ("Keskkonnaluba (environmental permit)", "Keskkonnaamet (Environmental Board)",        "Keskkonnaseadustiku üldosa seadus (KeÜS, RT I 2011)"),
+            # Correction 2026-08-26: KeÜS alone was previously cited here, but
+            # it only defines the general permit concept -- the operative
+            # industrial/IPPC permit-granting law is Tööstusheite seadus
+            # (kompleksluba/keskkonnaluba above/below the IED threshold).
+            ("Keskkonnaluba (environmental permit)", "Keskkonnaamet (Environmental Board)",        "Tööstusheite seadus (2013) / Keskkonnaseadustiku üldosa seadus (KeÜS, RT I 2011)"),
             ("YVA-menettely (KMH) (tarvitt.)",      "Keskkonnaamet",                              "KMH-KSH seadus (RT I, 04.01.2013, 10)"),
             ("Rakentamislupa (ehitusluba)",          "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS, RT I 2015) §19"),
             ("Kasutusluba (use permit)",             "Kohaliku omavalitsuse (Municipality)",      "Ehitusseadustik (EhS) §§61-75"),
@@ -4610,7 +4783,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
         # ── Maatalous ─────────────────────────────────────────────────────────
         "maatalous": [
             ("Rakentamislupa tai ehitusteatis",     "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS, RT I 2015) §§19-26"),
-            ("Keskkonnaluba (tarvitt., suuret tilat)", "Keskkonnaamet",                           "Keskkonnaseadustiku üldosa seadus (KeÜS) — IPPC-kynnys"),
+            ("Keskkonnaluba (tarvitt., suuret tilat)", "Keskkonnaamet",                           "Tööstusheite seadus (2013) — IPPC-kynnys / kompleksluba"),
             ("Põllumajandusamet maakasutusluba",   "Põllumajandusamet (Agricultural Board)",     "Maaparandusseadus — jos maankäyttö muuttuu"),
         ],
         # ── Hybridi (BESS + wind/solar) ───────────────────────────────────────
@@ -4618,7 +4791,7 @@ _COUNTRY_LUVAT: dict[str, dict[str, list[tuple[str, str, str]]]] = {
             ("Detailplaneering",                   "Kohaliku omavalitsuse volikogu",              "Planeerimisseadus (PlanS, RT I 2015)"),
             ("YVA-menettely (KMH)",                "Keskkonnaamet (Environmental Board)",         "KMH-KSH seadus (RT I, 04.01.2013, 10)"),
             ("Rakentamislupa (ehitusluba)",         "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS, RT I 2015) §19"),
-            ("Paloturvallisuuslupa (BESS-osuus)",  "Päästeamet (Estonian Rescue Board)",          "Tuleohutusseadus (Fire Safety Act)"),
+            ("Paloturvallisuuslupa (BESS-osuus)",  "Päästeamet (Estonian Rescue Board)",          "Tuleohutuse seadus (Fire Safety Act, RT I 2010)"),
             ("Elektrienergia tootmise luba",        "Konkurentsiamet (Competition Authority)",    "Elektrituruseadus (ETS, RT I 2012) §14"),
             ("Verkkoliityntäsopimus (liitumisleping)", "Elering AS / Elektrilevi OÜ",             "Elektrituruseadus (ETS) §§73-83; RfG 2016/631"),
             ("Kasutusluba (use permit)",            "Kohaliku omavalitsuse (Municipality)",       "Ehitusseadustik (EhS) §§61-75"),
@@ -5343,25 +5516,25 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
         "SMR": [
             "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
             "Maankäyttöselvitys PDF (NCE)",
-            "⚠️ Kiirgusseaduse alusel kiirguspraktika litsents (Terviseamet) — ydinlaitokselle ei ole voimassa olevaa lupakategoriaa",
+            "⚠️ Tuumaenergia ja -ohutuse seadus (TEOS) vastu võetud 17.06.2026, EI OLE VEEL JÕUS — jõustub 1.1.2027; enne seda ei ole reaktori loamenetlus TTJA kaudu veel avatud",
             "KMH aruanne (Keskkonnamõju hindamise aruanne) — KMH-KSH seadus §6",
             "Riigi eriplaneering (national spatial plan) — Planeerimisseadus §9",
             "Hüdrogeoloogiline uuring (jahutusvee ressurss / cooling water resource)",
             "Liitumisleping Elering AS-iga (grid connection agreement)",
             "Äriregistri väljavõte (Company Registry extract)",
             "Volikiri (if representative acts on behalf of applicant)",
-            "⚠️ Tuumaenergia seadus (nuclear law) ei ole vastu võetud — tarvitaan erillinen oikeudellinen selvitys",
+            "⚠️ TEOS jõustub alles 1.1.2027 — kuni selleni ei ole täielikku tuumaseadusandlikku raamistikku rakendatav; ehitusotsus vajab lisaks eraldi Riigikogu heakskiitu",
         ],
         "smr_ee": [
             "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
             "Maankäyttöselvitys PDF (NCE)",
-            "⚠️ Kiirgusseaduse alusel kiirguspraktika litsents (Terviseamet) — ydinlaitokselle ei ole voimassa olevaa lupakategoriaa",
+            "⚠️ Tuumaenergia ja -ohutuse seadus (TEOS) vastu võetud 17.06.2026, EI OLE VEEL JÕUS — jõustub 1.1.2027; enne seda ei ole reaktori loamenetlus TTJA kaudu veel avatud",
             "KMH aruanne (Keskkonnamõju hindamise aruanne) — KMH-KSH seadus §6",
             "Riigi eriplaneering (national spatial plan) — Planeerimisseadus §9",
             "Hüdrogeoloogiline uuring (jahutusvee ressurss / cooling water resource)",
             "Liitumisleping Elering AS-iga (grid connection agreement)",
             "Äriregistri väljavõte (Company Registry extract)",
-            "⚠️ Tuumaenergia seadus (nuclear law) ei ole vastu võetud — tarvitaan erillinen oikeudellinen selvitys",
+            "⚠️ TEOS jõustub alles 1.1.2027 — kuni selleni ei ole täielikku tuumaseadusandlikku raamistikku rakendatav; ehitusotsus vajab lisaks eraldi Riigikogu heakskiitu",
         ],
         "tuulivoima_maa": [
             "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
@@ -5401,6 +5574,61 @@ _COUNTRY_LIITTEET: dict[str, dict[str, list[str]]] = {
             "Keskkonnamõju hindamine (vajadusel)",
             "PUE ja energiatõhususe aruanne",
             "Äriregistri väljavõte (Company Registry extract)",
+        ],
+        # 2026-08-26 build-out: BESS, aurinkovoima, vesivoima, hybridi,
+        # ymparistolupa were missing entirely (EE previously had only 5 of
+        # the standard 10 _COUNTRY_LIITTEET keys). Same shape and content
+        # depth as LV's own build. Sourced from cross-checked secondary
+        # sources (riigiteataja.ee is JS-rendered) -- lower-confidence
+        # sourcing tier, see the note above _LAW_CITATION_REPLACEMENT.
+        "BESS": [
+            "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Ehitusluba — Ehitusseadustik (EhS, RT I 2015) §19",
+            "Keskkonnaluba või teavitus (suurusest olenevalt) — Tööstusheite seadus (2013)",
+            "Tuleohutusdokumentatsioon (NFPA 855 / EN 50604-1) — Tuleohutuse seadus (RT I 2010)",
+            "Detailplaneering",
+            "Liitumisleping Elering AS-iga / Elektrilevi OÜ-ga",
+            "Äriregistri väljavõte (Company Registry extract)",
+            "Volikiri (if representative acts on behalf of applicant)",
+        ],
+        "aurinkovoima": [
+            "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "Ehitusluba — Ehitusseadustik (EhS, RT I 2015) §19",
+            "KMH aruanne (tarvitt., suurte objektide puhul) — KMH-KSH seadus §7",
+            "Detailplaneering (tarvitt.)",
+            "Liitumisleping Elektrilevi OÜ-ga / Elering AS-iga",
+            "Äriregistri väljavõte (Company Registry extract)",
+            "Volikiri (if representative acts on behalf of applicant)",
+        ],
+        "vesivoima": [
+            "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "KMH aruanne — KMH-KSH seadus",
+            "Veekasutusluba — Veeseadus (RT I 2019)",
+            "Liitumisleping Elering AS-iga",
+            "Äriregistri väljavõte (Company Registry extract)",
+            "Volikiri (if representative acts on behalf of applicant)",
+        ],
+        "hybridi": [
+            "Asukohakaart / Sijaintikartta (mõõtkava 1:20 000)",
+            "Maankäyttöselvitys PDF (NCE)",
+            "KMH aruanne (suurusest ja tuulekomponendist olenevalt) — KMH-KSH seadus",
+            "Keskkonnaluba või teavitus (BESS ja tootmisosa) — Tööstusheite seadus (2013)",
+            "Tuleohutusdokumentatsioon (BESS-osa) — Tuleohutuse seadus (RT I 2010)",
+            "Detailplaneering",
+            "Ehitusluba — Ehitusseadustik (EhS, RT I 2015) §19",
+            "Integreeritud liitumisleping Elering AS-iga / Elektrilevi OÜ-ga",
+            "Äriregistri väljavõte (Company Registry extract)",
+            "Volikiri (if representative acts on behalf of applicant)",
+        ],
+        "ymparistolupa": [
+            "Keskkonnaluba või valdkondlik luba — Tööstusheite seadus (2013) / "
+            "Keskkonnaseadustiku üldosa seadus (KeÜS)",
+            "KMH aruanne (tarvitt.) — KMH-KSH seadus",
+            "Äriregistri väljavõte (Company Registry extract)",
+            "Volikiri (if representative acts on behalf of applicant)",
         ],
     },
     "DE": {
@@ -7048,34 +7276,34 @@ _LUPA_TRANS: dict[str, dict[str, str]] = {
 }
 
 _LAW_TRANS: dict[str, dict[str, str]] = {
-    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",                      "DA": "Miljøbeskyttelsesloven",                   "NO": "Forurensningsloven",                    "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)", "LT": "Aplinkos apsaugos įstatymas", "LV": "Likums \"Par piesārņojumu\" (2001)"},
-    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Plan- och bygglagen (2010:900)",    "DA": "Byggeloven / Planloven",        "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414) / Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas", "LV": "Būvniecības likums (2013) / Teritorijas attīstības plānošanas likums (2011)"},
-    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Plan- och bygglagen (2010:900)",                                   "DA": "Byggeloven",                                     "NO": "Plan- og bygningsloven",                              "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)"},
-    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Plan- och bygglagen (2010:900)",                             "DA": "Byggeloven",                               "NO": "Plan- og bygningsloven",                        "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)"},
-    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Lag (2003:778) om skydd mot olyckor",                        "DA": "Beredskabsloven",                    "NO": "Brann- og eksplosjonsvernloven",                    "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)", "LT": "Priešgaisrinės saugos įstatymas", "LV": "Ugunsdrošības, ugunsdzēsības un glābšanas darbu likums (spēkā no 13.11.2025)"},
+    "YSL 527/2014":                                         {"EN": "Environmental Protection Act (YSL 527/2014)",                          "SE": "Miljöbalken kap. 9 (miljöfarlig verksamhet)",                      "DA": "Miljøbeskyttelsesloven",                   "NO": "Forurensningsloven",                    "PL": "Prawo ochrony środowiska (Dz.U. 2001 nr 62 poz. 627)", "LT": "Aplinkos apsaugos įstatymas", "LV": "Likums \"Par piesārņojumu\" (2001)", "EE": "Tööstusheite seadus (2013)"},
+    "Rakentamislaki 751/2023 / MRL 132/1999":               {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999)",       "SE": "Plan- och bygglagen (2010:900)",    "DA": "Byggeloven / Planloven",        "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414) / Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas", "LV": "Būvniecības likums (2013) / Teritorijas attīstības plānošanas likums (2011)", "EE": "Ehitusseadustik (EhS, 2015) / Planeerimisseadus (PlanS, 2015)"},
+    "Rakentamislaki 751/2023":                               {"EN": "Building Act 751/2023",                                                "SE": "Plan- och bygglagen (2010:900)",                                   "DA": "Byggeloven",                                     "NO": "Plan- og bygningsloven",                              "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)", "EE": "Ehitusseadustik (EhS, 2015)"},
+    "Rakentamislaki 751/2023, 44 §":                        {"EN": "Building Act 751/2023, § 44",                                          "SE": "Plan- och bygglagen (2010:900)",                             "DA": "Byggeloven",                               "NO": "Plan- og bygningsloven",                        "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas", "LV": "Būvniecības likums (2013)", "EE": "Ehitusseadustik (EhS, 2015)"},
+    "Pelastuslaki 379/2011, 15 §":                          {"EN": "Rescue Services Act 379/2011, § 15",                                   "SE": "Lag (2003:778) om skydd mot olyckor",                        "DA": "Beredskabsloven",                    "NO": "Brann- og eksplosjonsvernloven",                    "PL": "Ustawa o ochronie przeciwpożarowej (Dz.U. 1991 nr 81 poz. 351)", "LT": "Priešgaisrinės saugos įstatymas", "LV": "Ugunsdrošības, ugunsdzēsības un glābšanas darbu likums (spēkā no 13.11.2025)", "EE": "Tuleohutuse seadus (2010)"},
     "Sähkömarkkinalaki 588/2013":                           {"EN": "Electricity Market Act (588/2013)",                                    "SE": "Elmarknadslagen (588/2013)",                           "DA": "Elmarkedsloven (588/2013)",                               "NO": "Energiloven (588/2013)",                           "PL": "Ustawa o rynku energii elektrycznej (588/2013)"},
     "Maa-aineslaki 555/1981":                               {"EN": "Extractable Land Resources Act (555/1981)",                            "SE": "Marktäktslagen (555/1981)",                            "DA": "Råstofloven (555/1981)",                                  "NO": "Mineralressursloven (555/1981)",                   "PL": "Ustawa o kopalinach pospolitych (555/1981)"},
-    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                                 "DA": "Miljøvurderingsloven",                                    "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",                              "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas", "LV": "Likums \"Par ietekmes uz vidi novērtējumu\" (1998)"},
+    "YVA-laki 252/2017":                                    {"EN": "EIA Act (252/2017)",                                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                                 "DA": "Miljøvurderingsloven",                                    "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",                              "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas", "LV": "Likums \"Par ietekmes uz vidi novērtējumu\" (1998)", "EE": "KMH-KSH seadus (2013)"},
     "YVA-laki 252/2017 (kynnykset ylittyessä)":            {"EN": "EIA Act 252/2017 (when thresholds exceeded)",                          "SE": "Miljöbalken kap. 6 (miljöbedömningar), vid tröskelöverskridning",        "DA": "Miljøvurderingsloven, når grænseværdier overskrides",      "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning), når terskler overskrides",    "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227), gdy progi są przekroczone", "LT": "PAV įstatymas, kai viršijamos ribinės vertės"},
     "YVA-laki 252/2017 (≥50 ha hankkeet)":                 {"EN": "EIA Act 252/2017 (≥50 ha projects)",                                   "SE": "Miljöbalken kap. 6 (miljöbedömningar)",                 "DA": "Miljøvurderingsloven",                   "NO": "Plan- og bygningsloven kapittel 14 (konsekvensutredning)",           "PL": "Ustawa OOŚ (Dz.U. 2008 nr 199 poz. 1227)", "LT": "PAV įstatymas"},
-    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)"},
+    "MRL 132/1999 § 77a":                                   {"EN": "Land Use and Building Act 132/1999, § 77a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)", "EE": "Planeerimisseadus (PlanS, 2015)"},
     "MRL 132/1999 § 137":                                   {"EN": "Land Use and Building Act 132/1999, § 137",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
     "MRL 197 §":                                            {"EN": "Land Use and Building Act, § 197",                                     "SE": "Plan- och bygglagen, § 197",                           "DA": "Planlægningsloven, § 197",                                "NO": "Plan- og bygningsloven, § 197",                    "PL": "Ustawa o zagospodarowaniu przestrzennym, § 197"},
     "MRL 132/1999 § 91a":                                   {"EN": "Land Use and Building Act 132/1999, § 91a",                            "SE": "Plan- och bygglagen (2010:900)",                  "DA": "Planloven",                       "NO": "Plan- og bygningsloven",          "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
     "MRL 132/1999 § 9":                                     {"EN": "Land Use and Building Act 132/1999, § 9",                              "SE": "Plan- och bygglagen (2010:900)",                    "DA": "Planloven",                         "NO": "Plan- og bygningsloven",            "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas"},
-    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (2010:900)",                       "DA": "Planloven",                            "NO": "Plan- og bygningsloven",                "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)"},
+    "MRL 132/1999":                                         {"EN": "Land Use and Building Act (132/1999)",                                 "SE": "Plan- och bygglagen (2010:900)",                       "DA": "Planloven",                            "NO": "Plan- og bygningsloven",                "PL": "Ustawa o planowaniu i zagospodarowaniu przestrzennym (Dz.U. 2003 nr 80 poz. 717)", "LT": "Teritorijų planavimo įstatymas", "LV": "Teritorijas attīstības plānošanas likums (2011)", "EE": "Planeerimisseadus (PlanS, 2015)"},
     "Ilmailulaki 864/2014":                                 {"EN": "Aviation Act (864/2014)",                                              "SE": "Luftfartslagen (864/2014)",                            "DA": "Luftfartsloven (864/2014)",                               "NO": "Luftfartsloven (864/2014)",                        "PL": "Ustawa lotnicza (864/2014)"},
     "Maakaari 540/1995":                                    {"EN": "Code of Real Estate (540/1995)",                                       "SE": "Jordabalken (540/1995)",                               "DA": "Tinglysningsloven (540/1995)",                            "NO": "Eiendomsloven (540/1995)",                         "PL": "Ustawa o nieruchomościach (540/1995)"},
-    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                               "DA": "Vandløbsloven",                                    "NO": "Vannressursloven",                      "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)"},
-    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                          "DA": "Vandløbsloven",                               "NO": "Vannressursloven",                 "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)"},
+    "Vesilaki 587/2011":                                    {"EN": "Water Act (587/2011)",                                                 "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                               "DA": "Vandløbsloven",                                    "NO": "Vannressursloven",                      "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)", "EE": "Veeseadus (2019)"},
+    "Vesilaki 587/2011 § 3:2":                              {"EN": "Water Act 587/2011, § 3:2",                                            "SE": "Miljöbalken kap. 11 (vattenverksamhet)",                          "DA": "Vandløbsloven",                               "NO": "Vannressursloven",                 "PL": "Prawo wodne (Dz.U. 2017 poz. 1566)", "LT": "Vandens įstatymas", "LV": "Ūdens apsaimniekošanas likums (2002)", "EE": "Veeseadus (2019)"},
     "Merilaki 674/1994":                                    {"EN": "Maritime Act (674/1994)",                                              "SE": "Sjölagen (674/1994)",                                  "DA": "Søloven (674/1994)",                                      "NO": "Sjøloven (674/1994)",                              "PL": "Kodeks morski (674/1994)"},
     "Merenkulkulaki 1672/2009":                             {"EN": "Maritime Navigation Act (1672/2009)",                                  "SE": "Sjöfartslagen (1672/2009)",                            "DA": "Søfartsloven (1672/2009)",                                "NO": "Navigasjonsloven (1672/2009)",                     "PL": "Ustawa o żegludze morskiej (1672/2009)"},
     "Laki alueiden käytöstä":                               {"EN": "Act on Land Use",                                                      "SE": "Lagen om områdesanvändning",                           "DA": "Lov om arealanvendelse",                                  "NO": "Lov om arealbruk",                                 "PL": "Ustawa o użytkowaniu gruntów"},
     "Rakentamislaki 751/2023 / MRL 132/1999 § 125–126":    {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999 §§ 125–126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggeloven / Planloven", "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
     "Rakentamislaki 751/2023 / MRL 132/1999 § 126":         {"EN": "Building Act / Land Use and Building Act (751/2023 / 132/1999, § 126)", "SE": "Plan- och bygglagen (2010:900)", "DA": "Byggeloven / Planloven", "NO": "Plan- og bygningsloven", "PL": "Prawo budowlane (Dz.U. 1994 nr 89 poz. 414)", "LT": "Statybos įstatymas / Teritorijų planavimo įstatymas"},
-    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts"},
-    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts"},
-    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts"},
+    "Ydinenergialaki 990/1987 § 11":                        {"EN": "Nuclear Energy Act 990/1987, § 11",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast"},
+    "YEL 990/1987 § 18":                                    {"EN": "Nuclear Energy Act 990/1987, § 18",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast"},
+    "YEL 990/1987 § 20":                                    {"EN": "Nuclear Energy Act 990/1987, § 20",                                   "SE": "Lag (1984:3) om kärnteknisk verksamhet",                        "DA": "Danmark har lovfæstet forbud mod kerneenergiproduktion (lov af 1985) — der findes ingen tilladelsesproces for nye atomkraftanlæg",                        "NO": "Atomenergiloven (1972) og DSA (Direktoratet for strålevern og atomsikkerhet) — Norge har aldri hatt kommersielt kjernekraftverk, men reelle kommersielle SMR-forslag er under vurdering (nettstedsvalg pågår); en fullstendig lisensieringsprosess for et førstegangs kommersielt anlegg er ikke dokumentert ennå",                   "PL": "Prawo atomowe (Dz.U. 2001 nr 3 poz. 18)", "LT": "Branduolinės energijos įstatymas (VATESI — šiuo metu tik Ignalinos AE eksploatacijos nutraukimo ir radioaktyviųjų atliekų priežiūra; naujo branduolinio objekto statybai reikėtų naujo teisinio pagrindo)", "LV": "Likums \"Par radiācijas drošību un kodoldrošību\" (2000) un Radiācijas drošības centrs (Valsts vides dienesta pakļautībā) — Latvijai nav komerciālas kodolelektrostacijas, taču ASV-Latvijas FIRST projekts pēta SMR ieviešanas iespējas; pilnīgs licencēšanas process pirmajam komerciālajam objektam vēl nav dokumentēts", "EE": "Tuumaenergia ja -ohutuse seadus (TEOS) — Riigikogu vastu võtnud 17.06.2026, EI OLE VEEL JÕUS, jõustub 1.1.2027; tuumaregulaator TTJA koosseisus alates samast kuupäevast"},
     "Kalastuslaki 379/2015":                                {"EN": "Fisheries Act (379/2015)",                                             "SE": "Fiskelagen (379/2015)",                                "DA": "Fiskeriloven (379/2015)",                                 "NO": "Fiskeloven (379/2015)",                            "PL": "Ustawa o rybołówstwie (379/2015)"},
     "Säteilylaki 859/2018":                                 {"EN": "Radiation Act (859/2018)",                                             "SE": "Strålningslagen (859/2018)",                           "DA": "Strålingsloven (859/2018)",                               "NO": "Strålevernloven (859/2018)",                       "PL": "Ustawa prawo atomowe (859/2018)"},
     "Kemikaaliturvallisuuslaki 390/2005":                   {"EN": "Chemicals Safety Act (390/2005)",                                      "SE": "Kemikaliesäkerhetslagen (390/2005)",                   "DA": "Kemikaliesikkerhedsloven (390/2005)",                     "NO": "Kjemikaliesikkerhetsloven (390/2005)",             "PL": "Ustawa o bezpieczeństwie chemicznym (390/2005)"},
