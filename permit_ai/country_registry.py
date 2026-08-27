@@ -35,12 +35,53 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Callable, Literal
 
-from permit_ai import generate_application as ga
+# Flat import, deliberately NOT `from permit_ai import generate_application` --
+# backend/main.py puts permit_ai/ itself directly on sys.path (see its own
+# "permit_ai-moduuli on ~/bess_tool/permit_ai/ -- lisätään polkuun" comment)
+# and imports this huge module as flat `generate_application`, registering it
+# in sys.modules under that bare name. Importing it here as
+# `permit_ai.generate_application` instead would load a SECOND, distinct
+# module object -- same file, but a different set of dict instances in
+# memory (double the chromadb/anthropic/sentence_transformers import cost,
+# and any future runtime mutation of one wouldn't be visible through the
+# other). Any caller of this file must ensure permit_ai/ is on sys.path
+# before importing (backend/main.py already does; scripts/validate_country_
+# coverage.py does it explicitly for standalone use).
+import generate_application as ga
 from permit_ai.supported_locales import _SUPPORTED_COUNTRIES, _SUPPORTED_LANGUAGES  # noqa: F401 (re-exported)
 
 Axis = Literal["country", "language"]
 Severity = Literal["HARD", "SOFT"]
 Granularity = Literal["whole", "per_row"]
+
+# ── Country -> default language, when a caller doesn't set one explicitly ──
+# HARD-checked artifact (see _COVERAGE_MANIFEST below): every code in
+# _SUPPORTED_COUNTRIES must have an entry here, no exceptions, no silent
+# fallback-to-FI-by-omission the way individual endpoints used to do it.
+#
+# 2026-08-27 (Serkov frontend-testing finding, EE/ET asymmetry): country
+# code and language code are NOT always the same two letters -- Estonia is
+# "EE" as a country but "ET" as a language, and neither
+# ApplicationRequest/_B2BReportRequest/IFCApprovalRequest ever cross-checked
+# them server-side. A request with country="EE" and no explicit lang could
+# silently default to "FI" (each field had its own independent "FI"
+# default), producing a document with correct Estonian law citations but no
+# language instruction applied -- no error anywhere to catch it. This table
+# is the single source of truth callers must derive `lang` from when it's
+# not explicitly set; see backend/main.py's three endpoint fixes for the
+# actual derivation call sites.
+_COUNTRY_DEFAULT_LANG: dict[str, str] = {
+    "FI": "FI", "SE": "SE", "DA": "DA", "NO": "NO", "PL": "PL",
+    "DE": "DE", "EE": "ET", "LV": "LV", "LT": "LT",
+}
+
+
+def default_lang_for_country(country: str) -> str:
+    """The language a request should use when the caller didn't set one
+    explicitly, given its country. Falls back to "FI" for an unrecognised
+    country code, matching every other fallback convention in this
+    codebase -- never raises, since this sits on a request-handling path."""
+    return _COUNTRY_DEFAULT_LANG.get(country, "FI")
 
 
 @dataclass
@@ -133,6 +174,7 @@ _COVERAGE_MANIFEST: list[CoverageSpec] = [
                  granularity="per_row", exclude_from_required=frozenset({"FI"})),
 
     # ── Country axis, whole-dict, HARD ──────────────────────────────────────
+    CoverageSpec("_COUNTRY_DEFAULT_LANG", _COUNTRY_DEFAULT_LANG, "country", "HARD"),
     CoverageSpec("_COUNTRY_CONFIG", ga._COUNTRY_CONFIG, "country", "HARD"),
     # See module docstring: HARD at "does the country key exist at all" --
     # the finer (country x hanketyyppi) allowlist is a deliberate TODO.

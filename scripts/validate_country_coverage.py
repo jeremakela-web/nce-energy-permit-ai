@@ -22,7 +22,15 @@ import os
 import sys
 from dataclasses import dataclass
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, _REPO_ROOT)
+# country_registry.py does a flat `import generate_application` (not
+# `permit_ai.generate_application`) to match backend/main.py's own import
+# convention and avoid double-loading the module under two different names
+# -- see country_registry.py's own comment. permit_ai/ needs to be on
+# sys.path directly for that flat import to resolve when this script runs
+# standalone, same as backend/main.py arranges for itself at startup.
+sys.path.insert(0, os.path.join(_REPO_ROOT, "permit_ai"))
 
 from permit_ai.country_registry import (  # noqa: E402
     _COVERAGE_MANIFEST,

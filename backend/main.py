@@ -66,6 +66,7 @@ from generate_application import (
     InsufficientSourcesError, GenerationCapError,
 )
 import generate_application as _gen_app_module
+from country_registry import default_lang_for_country as _default_lang_for_country
 import retrieval_trace as _retrieval_trace
 import manual_source_freshness as _manual_source_freshness
 import source_drift as _source_drift
@@ -740,7 +741,12 @@ class ApplicationRequest(BaseModel):
     sijainti_ymparistovaikutukset: Optional[str]   = None
     hankkeen_vaihe:               Optional[str]   = None
     kohdeviranomainen:            Optional[str]   = None
-    lang:                         Optional[str]   = "FI"
+    # 2026-08-27: default changed from "FI" to None so an omitted lang is
+    # distinguishable from an explicitly-chosen "FI" -- see
+    # generate_application_endpoint(), which derives the real default from
+    # `country` via country_registry.default_lang_for_country() instead of
+    # blindly defaulting to Finnish (the EE/ET asymmetry fix).
+    lang:                         Optional[str]   = None
     country:                      Optional[str]   = "FI"
     session_id:                   Optional[str]   = ""
     hanke_id:                     Optional[str]   = ""   # RTB cockpit linkitys
@@ -1176,6 +1182,14 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         if not ok:
             raise HTTPException(status_code=400, detail=err)
 
+    # 2026-08-27 (EE/ET asymmetry fix): lang is derived from country when
+    # the caller didn't set it explicitly, instead of independently
+    # defaulting to "FI" -- country="EE" with no lang now correctly resolves
+    # to "ET", not a silently-Finnish document. See country_registry.py's
+    # _COUNTRY_DEFAULT_LANG for the full mapping and rationale.
+    _country_resolved = req.country or "FI"
+    _lang_resolved     = req.lang or _default_lang_for_country(_country_resolved)
+
     inp = ApplicationInput(
         hanketyyppi                   = req.hanketyyppi,
         kiinteistotunnus              = req.kiinteistotunnus,
@@ -1188,8 +1202,8 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
         sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset or "",
         hankkeen_vaihe                = req.hankkeen_vaihe or "",
         kohdeviranomainen             = req.kohdeviranomainen or "",
-        lang                          = req.lang or "FI",
-        country                       = req.country or "FI",
+        lang                          = _lang_resolved,
+        country                       = _country_resolved,
         ifc_floor_area                = req.ifc_floor_area or 0.0,
         ifc_building_height           = req.ifc_building_height or 0.0,
         ifc_fire_rating               = req.ifc_fire_rating or "",
@@ -1219,7 +1233,7 @@ async def generate_application_endpoint(request: Request, req: ApplicationReques
 
     _proofread_store[job_id] = {
         "status": "pending", "pdf_bytes": None, "error": None,
-        "lang":          req.lang or "FI",
+        "lang":          _lang_resolved,
         "hanketyyppi":   req.hanketyyppi or "doc",
         "kunta":         req.kunta or "hanke",
         "session_id":    req.session_id or "",
@@ -2858,7 +2872,9 @@ class IFCApprovalRequest(BaseModel):
     kapasiteetti_mwh:  float = 0.0
     kunta:             str
     hakija:            str
-    lang:              str = "FI"
+    # 2026-08-27: default changed from "FI" to None -- see approve_ifc(),
+    # which derives the real default from `country` (EE/ET asymmetry fix).
+    lang:              Optional[str] = None
     country:           str = "FI"
     hankkeen_vaihe:    str = ""
     kohdeviranomainen: str = ""
@@ -2880,6 +2896,11 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
 
     approved = req.approved_fields
 
+    # 2026-08-27 (EE/ET asymmetry fix): same derivation as
+    # generate_application_endpoint() -- see that function's comment.
+    _country_resolved = req.country or "FI"
+    _lang_resolved     = req.lang or _default_lang_for_country(_country_resolved)
+
     # Rakenna ApplicationInput IFC-esitäyttöarvoilla
     inp = ApplicationInput(
         hanketyyppi                   = req.hanketyyppi,
@@ -2888,8 +2909,8 @@ async def approve_ifc(request: Request, req: IFCApprovalRequest):
         kapasiteetti_mwh              = req.kapasiteetti_mwh,
         kunta                         = req.kunta,
         hakija                        = req.hakija,
-        lang                          = req.lang,
-        country                       = req.country,
+        lang                          = _lang_resolved,
+        country                       = _country_resolved,
         hankkeen_vaihe                = req.hankkeen_vaihe,
         kohdeviranomainen             = req.kohdeviranomainen,
         ifc_floor_area                = float(approved.get("floor_area_total") or 0),
@@ -3148,7 +3169,10 @@ class _B2BReportRequest(BaseModel):
     sijainti_ymparistovaikutukset: str = ""
     hankkeen_vaihe:               str = ""
     kohdeviranomainen:            str = ""
-    lang:                         str = "FI"
+    # 2026-08-27: default changed from "FI" to None -- see
+    # b2b_generate_report(), which derives the real default from `country`
+    # (EE/ET asymmetry fix).
+    lang:                         Optional[str] = None
     country:                      str = "FI"
     y_tunnus:                     str = ""
     osoite:                       str = ""
@@ -3189,6 +3213,11 @@ async def b2b_generate_report(
     if req.hanketyyppi not in allowed:
         raise HTTPException(status_code=400, detail=f"hanketyyppi oltava: {', '.join(sorted(allowed))}")
 
+    # 2026-08-27 (EE/ET asymmetry fix): same derivation as
+    # generate_application_endpoint() -- see that function's comment.
+    _country_resolved = req.country or "FI"
+    _lang_resolved     = req.lang or _default_lang_for_country(_country_resolved)
+
     inp = ApplicationInput(
         hanketyyppi                   = req.hanketyyppi,
         kiinteistotunnus              = req.kiinteistotunnus,
@@ -3199,8 +3228,8 @@ async def b2b_generate_report(
         sijainti_ymparistovaikutukset = req.sijainti_ymparistovaikutukset,
         hankkeen_vaihe                = req.hankkeen_vaihe,
         kohdeviranomainen             = req.kohdeviranomainen,
-        lang                          = req.lang,
-        country                       = req.country,
+        lang                          = _lang_resolved,
+        country                       = _country_resolved,
         y_tunnus                      = req.y_tunnus,
         osoite                        = req.osoite,
         logo_path                     = logo_path,
