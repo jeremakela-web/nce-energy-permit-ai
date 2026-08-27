@@ -47,8 +47,19 @@ from typing import Callable, Literal
 # other). Any caller of this file must ensure permit_ai/ is on sys.path
 # before importing (backend/main.py already does; scripts/validate_country_
 # coverage.py does it explicitly for standalone use).
+# Same flat-import reasoning as generate_application above -- and there's a
+# second, sharper reason here: `backend/main.py` runs as `cd backend &&
+# uvicorn main:app`, which puts backend/ itself on sys.path ahead of
+# anything main.py inserts explicitly. backend/permit_ai.py (a real,
+# unrelated RAG-query module, `from permit_ai import query_permit_ai, ...`)
+# then becomes the module bound to the bare name "permit_ai" in
+# sys.modules -- a plain module with no __path__, not the permit_ai/
+# directory. Any subsequent `from permit_ai.<submodule> import ...`
+# anywhere in the process fails with "'permit_ai' is not a package",
+# because Python finds that already-cached, wrong "permit_ai" first. Found
+# live via a failed Render deploy (2026-08-27) when this was still dotted.
 import generate_application as ga
-from permit_ai.supported_locales import _SUPPORTED_COUNTRIES, _SUPPORTED_LANGUAGES  # noqa: F401 (re-exported)
+from supported_locales import _SUPPORTED_COUNTRIES, _SUPPORTED_LANGUAGES  # noqa: F401 (re-exported)
 
 Axis = Literal["country", "language"]
 Severity = Literal["HARD", "SOFT"]
