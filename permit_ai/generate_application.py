@@ -8873,7 +8873,15 @@ def _s(lang: str, key: str, country: str = "FI") -> str:
     defaults to "FI", under which all four backstops are no-ops (verified) --
     so every other _s() call site is unaffected unless it opts in by passing
     country explicitly, same safe-by-default shape as _t_liite()."""
-    _lang = "EN" if lang in ("EE", "ET", "LV") else lang
+    # 2026-08-27 correction: "EE" removed from this set. It's a country
+    # code, never a legitimate value for `lang` -- its presence here was
+    # defensive patching around the exact EE/ET confusion fixed at the
+    # source in backend/main.py (country="EE" no longer silently defaults
+    # lang to "FI"; it now derives "ET" via country_registry's
+    # _COUNTRY_DEFAULT_LANG). Real gap this line still covers: _PDF_STRINGS
+    # genuinely has no "ET" or "LV" entries (confirmed directly against the
+    # dict), so those two still need the EN fallback.
+    _lang = "EN" if lang in ("ET", "LV") else lang
     d = _PDF_STRINGS.get(_lang) or _PDF_STRINGS["FI"]
     text = d.get(key) or _PDF_STRINGS["FI"].get(key, key)
     text = _fix_hardcoded_traficom(text, country)
