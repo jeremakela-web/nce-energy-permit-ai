@@ -33,13 +33,21 @@ import re
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_REPO_ROOT))
+# permit_ai/ also needs to be on sys.path directly so this matches the flat
+# `from supported_locales import ...` convention used throughout permit_ai/
+# (dotted `permit_ai.X` imports break whenever backend/main.py is also on
+# the path, since backend/permit_ai.py -- an unrelated RAG-query module --
+# shadows the bare "permit_ai" name there; not a risk for this standalone
+# script today, but matching the convention avoids relying on that).
+sys.path.insert(0, str(_REPO_ROOT / "permit_ai"))
 
 # Deliberately imports the lightweight, zero-dependency supported_locales
 # module, NOT country_registry -- this is a pure-JS/HTML check and has no
 # reason to require country_registry's generate_application import chain
 # (chromadb, torch, etc.) just to read two constant tuples.
-from permit_ai.supported_locales import _SUPPORTED_LANGUAGES  # noqa: E402
+from supported_locales import _SUPPORTED_LANGUAGES  # noqa: E402
 
 _DEFAULT_PATH = Path(__file__).resolve().parent.parent / "backend" / "static" / "index.html"
 

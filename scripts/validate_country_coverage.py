@@ -24,15 +24,19 @@ from dataclasses import dataclass
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _REPO_ROOT)
-# country_registry.py does a flat `import generate_application` (not
-# `permit_ai.generate_application`) to match backend/main.py's own import
-# convention and avoid double-loading the module under two different names
-# -- see country_registry.py's own comment. permit_ai/ needs to be on
-# sys.path directly for that flat import to resolve when this script runs
-# standalone, same as backend/main.py arranges for itself at startup.
+# permit_ai/'s contents are imported flat throughout this codebase (e.g.
+# `import generate_application`, not `permit_ai.generate_application`) --
+# country_registry.py follows the same convention internally, and it's not
+# just a style choice: `permit_ai.<submodule>` dotted imports genuinely
+# break when backend/main.py is on the import path, because
+# backend/permit_ai.py (a real, unrelated RAG-query module) shadows the
+# bare name "permit_ai" there, leaving it bound to a plain module with no
+# __path__. Matching that convention here too, rather than relying on this
+# script happening not to collide with it. permit_ai/ needs to be on
+# sys.path directly for the flat imports below to resolve.
 sys.path.insert(0, os.path.join(_REPO_ROOT, "permit_ai"))
 
-from permit_ai.country_registry import (  # noqa: E402
+from country_registry import (  # noqa: E402
     _COVERAGE_MANIFEST,
     _SUPPORTED_COUNTRIES,
     _SUPPORTED_LANGUAGES,
