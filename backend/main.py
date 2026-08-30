@@ -436,7 +436,19 @@ def _build_arq_worker(redis_settings):
         max_jobs=2,           # max 2 concurrent permit generations
         handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
         poll_delay=0.5,
-        job_timeout=900,       # 15 min — covers RAG+Claude+proofread+PDF
+        # 2026-08-30: bumped from 900s (15 min) to 1500s (25 min) after a real
+        # live SMR + full YVL Compliance Memo run (3 sequential Claude calls,
+        # one per covered guide, up to max_tokens=48000 each -- see
+        # _yvl_compliance_memo()'s own docstring) got hard-killed by the old
+        # 900s ceiling mid-PDF-assembly (checkpoints: retrieval+draft+
+        # proofread together took only 4m2s; the YVL memo + RAQS window alone
+        # exceeded the remaining ~11 min with zero Claude calls yet
+        # completed). 900s predates the YVL memo's 3-call design (PR #119,
+        # 2026-08-25) -- this value was never re-validated against it.
+        # Temporary bump for the 2026-08-30 rerun verification; see
+        # RAQS_CHANGE_MANAGEMENT_PROPOSAL.md follow-up notes for the
+        # permanent-vs-revert decision once real prior-incident data is in.
+        job_timeout=1500,
     )
 
 
