@@ -436,21 +436,22 @@ def _build_arq_worker(redis_settings):
         max_jobs=2,           # max 2 concurrent permit generations
         handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
         poll_delay=0.5,
-        # 2026-08-30: reverted the same-day 900s -> 1500s bump. Real evidence
-        # (two live SMR + full YVL Compliance Memo test runs) showed 1500s
-        # isn't a fix either -- one single YVL memo call (of 3 sequential
-        # ones) alone measured at 12m1s (37,550 output tokens). The real fix
-        # is architectural (parallelizing the 3 per-guide calls -- see
-        # RAQS_CHANGE_MANAGEMENT_PROPOSAL.md follow-up notes), not a bigger
-        # ceiling: leaving job_timeout raised in the meantime means every
-        # SMR/smr_bess generation can tie up an ARQ worker slot (max_jobs=2,
-        # so potentially half of total capacity) for up to 25 min while that
-        # investigation is pending -- reverting to 900s until the real fix
-        # lands, at the cost of SMR/smr_bess + full YVL memo generations
-        # continuing to fail (a pre-existing gap since PR #119, 2026-08-25,
-        # confirmed via production logs to have hit zero real customer jobs
-        # so far -- only this session's own test runs).
-        job_timeout=900,
+        # 2026-08-30: the real fix (parallelizing the YVL Compliance Memo's 3
+        # per-guide calls -- see YVL_MEMO_PARALLELIZATION_PROPOSAL.md) has
+        # shipped, but two live confirming runs since then both still hit the
+        # reverted 900s ceiling with zero YVL-memo calls yet logged as
+        # complete -- consistent with real ~3x concurrent speedup (single-
+        # call benchmark: 12m1s) landing just past 900s, not proof the fix
+        # failed, but not proof it worked either; no completed run exists
+        # yet to confirm real overlapping call timestamps. Estimated real
+        # need: ~3.5min (retrieval+draft+proofread) + ~12-13min (concurrent
+        # YVL, bounded by the slowest single call) + ~1-2min (RAQS) + PDF
+        # assembly =~ 17-19min. Bumping to 1200s (20 min) -- modest,
+        # evidence-based, not the earlier 1500s guess -- for ONE more
+        # confirming run. Same revert-after discipline as before: this is
+        # not a standing decision, see the run's real outcome before
+        # deciding permanent-vs-revert.
+        job_timeout=1200,
     )
 
 
