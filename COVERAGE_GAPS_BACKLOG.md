@@ -115,6 +115,28 @@ architecture-tool labels (`h3_arch`, `arch_desc`, `arch_tool_polygon`,
 Estonian, Latvian, or Lithuanian user. Same bug shape as everything else in
 this document, live today, previously undocumented.
 
+## 5. Security hygiene — `/api/admin/retrieval-trace/{generation_id}` takes `secret` as a query parameter
+
+Found 2026-08-30 while live-verifying the YVL memo parallelization work.
+`GET /api/admin/retrieval-trace/{generation_id}?secret=...` (`backend/main.py`,
+`admin_retrieval_trace()`) authenticates via `ADMIN_SECRET` passed as a query
+string parameter, not a header. Confirmed the real consequence, not just a
+theoretical one: every call landed in Render's own plaintext access logs with
+the full secret value visible in the URL
+(`GET /api/admin/retrieval-trace/{id}?secret=<real value> HTTP/1.1`) —
+anyone with log access (or anything downstream that ingests/forwards access
+logs, proxies, browser history if ever called from a browser, etc.) sees the
+real `ADMIN_SECRET` in plaintext, unlike a header-based value which normal
+access-log formats don't capture. Not exploited, not urgent — this endpoint
+is admin-only diagnostic tooling, not customer-facing — but a real gap
+between "requires a secret" and "keeps that secret out of logs by
+construction." Fix: same `Authorization: Bearer <token>` header pattern
+already used by `_check_ingest_auth()` for `INGEST_SECRET` elsewhere in
+`main.py` — that one is already correct, this one isn't consistent with it.
+Same fix pattern is worth checking against any other admin endpoint using
+`secret: str = ""` as a query param (not audited yet — this was found
+incidentally, not via a deliberate sweep).
+
 ## Suggested next step
 
 Once this backlog is picked up: run both validators for real first
