@@ -3272,6 +3272,20 @@ _HANKE_CFG = {
 # ─────────────────────────────────────────────────────────────────────────────
 from source_policy import is_chunk_relevant as _is_chunk_relevant
 import retrieval_trace as _retrieval_trace
+# rtb_store.py / smr_change_log.py live in backend/, not permit_ai/. In the
+# real running app backend/ is already on sys.path (the process is launched
+# as `cd backend && uvicorn main:app` -- see backend/permit_ai.py's own
+# docstring for the same fact, discovered while fixing the PR #128 import
+# collision), but this module is also imported standalone by scripts/
+# validate_country_coverage.py (via country_registry.py), which does NOT
+# put backend/ on sys.path. Inserting it here, relative to this file rather
+# than relying on the caller's cwd, makes both of rtb_store/smr_change_log's
+# stdlib-only imports resolve regardless of how generate_application.py was
+# reached -- same defensive self-sufficiency as line 54's own sys.path
+# insert for this file's own directory.
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "backend"))
+import rtb_store as _rtb_store
+import smr_change_log as _smr_change_log
 
 def _apply_source_cap(
     candidates: list[tuple],
@@ -7922,6 +7936,32 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yvl_memo_truncated_notice": ("[HUOM: Tämä {code}-osio jouduttiin katkaisemaan kesken tilarajoitusten "
                                        "vuoksi ennen kuin kaikki ohjeen vaatimukset ehdittiin käsitellä. Osio "
                                        "on täydennettävä myöhemmin.]"),
+        # SMR change-management log (STUK, 2026-08-25, YVL A.3 §305-306) --
+        # renders backend/smr_change_log.py's recorded changes, if any exist
+        # for this hanke_id. Deterministic table, never AI-generated.
+        "change_log_heading":  "Muutostenhallintaloki",
+        "change_log_subtitle": ("Hankkeeseen kirjatut muutokset ja niiden STUK-käsittelyn tila "
+                                 "(YVL A.3 §305-306: turvallisuusmerkittävät muutokset vaativat "
+                                 "STUKin ennakkohyväksynnän, vähäiset muutokset ennakkoilmoituksen, "
+                                 "molemmat ennen toimeenpanoa)."),
+        "change_log_col_version":      "Versio",
+        "change_log_col_date":         "Pvm",
+        "change_log_col_desc":         "Muutos",
+        "change_log_col_significance": "Merkittävyys",
+        "change_log_col_status":       "Tila",
+        "change_log_col_approver":     "Käsittelijä",
+        "change_log_col_implemented":  "Toteutettu",
+        "change_log_sig_significant":  "Turvallisuusmerkittävä",
+        "change_log_sig_minor":        "Vähäinen",
+        "change_log_status_pending_stuk_approval":     "Odottaa STUK-hyväksyntää",
+        "change_log_status_approved":                  "STUK hyväksynyt",
+        "change_log_status_pending_stuk_notification": "Odottaa STUK-ilmoitusta",
+        "change_log_status_notified":                  "STUKille ilmoitettu",
+        "change_log_disclaimer": ("Tämä loki on hankkeen sisäinen muutostenhallinnan tietue, ei STUKille "
+                                   "jätettävä muodollinen asiakirja sellaisenaan. YVL A.3 §306 koskee "
+                                   "kirjaimellisesti johtamisjärjestelmän muutoksia; tätä lokia sovelletaan "
+                                   "hakemukseen kirjattuihin muutoksiin STUKin kanssa 2026-08-25 vahvistetun "
+                                   "menettelyn mukaisesti."),
         # Täydennyslista (completion checklist) page strings
         "taydennys_heading":  "Täydennyslista",
         "taydennys_subtitle": ("Alla olevat kohdat vaativat täydentämistä ennen hakemuksen jättämistä "
@@ -8038,6 +8078,31 @@ _PDF_STRINGS: dict[str, dict[str, str]] = {
         "yvl_memo_truncated_notice": ("[NOTE: This {code} section had to be cut off due to length limits "
                                        "before all of the guide's requirements could be covered. This "
                                        "section needs to be completed later.]"),
+        # SMR change-management log (STUK, 2026-08-25, YVL A.3 §305-306) --
+        # renders backend/smr_change_log.py's recorded changes, if any exist
+        # for this hanke_id. Deterministic table, never AI-generated.
+        "change_log_heading":  "Change Management Log",
+        "change_log_subtitle": ("Changes recorded against this project and their STUK review status "
+                                 "(YVL A.3 §305-306: safety-significant changes require STUK pre-approval, "
+                                 "minor changes require prior notification, both before implementation)."),
+        "change_log_col_version":      "Version",
+        "change_log_col_date":         "Date",
+        "change_log_col_desc":         "Change",
+        "change_log_col_significance": "Significance",
+        "change_log_col_status":       "Status",
+        "change_log_col_approver":     "Reviewer",
+        "change_log_col_implemented":  "Implemented",
+        "change_log_sig_significant":  "Safety-significant",
+        "change_log_sig_minor":        "Minor",
+        "change_log_status_pending_stuk_approval":     "Pending STUK approval",
+        "change_log_status_approved":                  "STUK approved",
+        "change_log_status_pending_stuk_notification": "Pending STUK notification",
+        "change_log_status_notified":                  "STUK notified",
+        "change_log_disclaimer": ("This log is the project's internal change-management record, not a "
+                                   "formal document to be filed with STUK as-is. YVL A.3 §306 literally "
+                                   "concerns management-system changes; this log applies that mechanism to "
+                                   "changes recorded against the application, per the procedure confirmed "
+                                   "with STUK on 2026-08-25."),
         # Completion checklist page strings
         "taydennys_heading":  "Completion Checklist",
         "taydennys_subtitle": ("The following items require completion before the application is submitted to the authority. "
@@ -10804,6 +10869,145 @@ def _yvl_memo_page(memo: dict, st: dict, lang: str = "FI") -> list:
     return [PageBreak(), disclaimer_box, Spacer(1, 6 * mm)] + body_elems
 
 
+def _change_log_lookup(inp: "ApplicationInput") -> Optional[dict]:
+    """Best-effort read of backend/smr_change_log.py's recorded changes for
+    this project, for rendering as a PDF annex. Same gate as
+    _yvl_compliance_memo() (_YVL_MEMO_HANKE_TYPES, country=="FI") -- the
+    module's own docstring scopes it to SMR/smr_bess FI-only, same reasoning
+    as the YVL memo (STUK's own mechanic, meaningless for other countries'
+    national nuclear-safety authorities).
+
+    Unlike _yvl_compliance_memo(), this makes no Claude call -- it's a plain
+    disk read of an existing JSON store, so there's no cost guardrail to
+    check and no reason to ever raise: any error (missing file, corrupt
+    JSON, unexpected shape) is swallowed and treated as "nothing recorded
+    yet," never blocking generation.
+
+    hanke_id is derived the same deterministic way as two of the three real
+    call sites in backend/main.py (`rtb_store.make_hanke_id(y_tunnus,
+    kiinteistotunnus)`) -- the one gap this doesn't cover is a caller that
+    explicitly overrides hanke_id via `req.hanke_id` (main.py's third call
+    site), since ApplicationInput carries no hanke_id field today. Flagged
+    here rather than silently assumed away: for the common case (no
+    explicit override) this finds the right log; for the rare explicit-
+    override case, this page just won't find anything to render (same as if
+    nothing had been recorded), not a wrong or misleading result.
+    """
+    if inp.hanketyyppi not in _YVL_MEMO_HANKE_TYPES:
+        return None
+    if (getattr(inp, "country", "FI") or "FI") != "FI":
+        return None
+    try:
+        hanke_id = _rtb_store.make_hanke_id(
+            getattr(inp, "y_tunnus", "") or "", getattr(inp, "kiinteistotunnus", "") or ""
+        )
+        if not hanke_id:
+            return None
+        log = _smr_change_log.get_log(hanke_id)
+    except Exception:
+        return None
+    if not log.get("found") or not log.get("changes"):
+        return None
+    return log
+
+
+def _change_log_page(log: dict, st: dict, lang: str = "FI") -> list:
+    """Build the SMR change-management log annex page: PageBreak, then a
+    deterministic table of recorded changes (never AI-generated -- this is
+    a direct rendering of backend/smr_change_log.py's JSON records). Own
+    color (teal/slate) so it doesn't visually read as either RAQS's
+    self-critique (navy) or the YVL memo's partial-coverage warning
+    (amber) -- this page is neither; it's a factual record.
+    """
+    C_FILL = colors.HexColor("#e8f5f3")
+    C_BD   = colors.HexColor("#0f6657")
+    C_HDR  = colors.HexColor("#0f6657")
+
+    heading_style = ParagraphStyle(
+        "cl_hdr", fontSize=13, fontName=PDF_FONT_BOLD, textColor=C_HDR, spaceAfter=4,
+    )
+    sub_style = ParagraphStyle(
+        "cl_sub", fontSize=8, textColor=colors.HexColor("#555555"), leading=11, spaceAfter=10,
+    )
+    col_hdr_style = ParagraphStyle(
+        "cl_col", fontSize=8, fontName=PDF_FONT_BOLD, textColor=colors.white, leading=11,
+    )
+    cell_style = ParagraphStyle(
+        "cl_cell", fontSize=8, textColor=colors.HexColor("#333333"), leading=11,
+    )
+    disc_style = ParagraphStyle(
+        "cl_disc", fontSize=7, textColor=colors.HexColor("#888888"), leading=10, spaceBefore=8,
+    )
+
+    sig_label = {
+        "significant": _s(lang, "change_log_sig_significant"),
+        "minor":       _s(lang, "change_log_sig_minor"),
+    }
+    status_label = {
+        "pending_stuk_approval":     _s(lang, "change_log_status_pending_stuk_approval"),
+        "approved":                  _s(lang, "change_log_status_approved"),
+        "pending_stuk_notification": _s(lang, "change_log_status_pending_stuk_notification"),
+        "notified":                  _s(lang, "change_log_status_notified"),
+    }
+
+    def _short_date(iso: Optional[str]) -> str:
+        if not iso:
+            return "—"
+        return iso[:10]
+
+    header_row = [
+        Paragraph(_s(lang, "change_log_col_version"), col_hdr_style),
+        Paragraph(_s(lang, "change_log_col_date"), col_hdr_style),
+        Paragraph(_s(lang, "change_log_col_desc"), col_hdr_style),
+        Paragraph(_s(lang, "change_log_col_significance"), col_hdr_style),
+        Paragraph(_s(lang, "change_log_col_status"), col_hdr_style),
+        Paragraph(_s(lang, "change_log_col_approver"), col_hdr_style),
+        Paragraph(_s(lang, "change_log_col_implemented"), col_hdr_style),
+    ]
+    rows = [header_row]
+    for rec in log["changes"]:
+        rows.append([
+            Paragraph(str(rec.get("version", "")), cell_style),
+            Paragraph(_short_date(rec.get("date")), cell_style),
+            Paragraph(_latin1_safe(rec.get("change_description", "")), cell_style),
+            Paragraph(sig_label.get(rec.get("significance"), rec.get("significance", "")), cell_style),
+            Paragraph(status_label.get(rec.get("approval_status"), rec.get("approval_status", "")), cell_style),
+            Paragraph(_latin1_safe(rec.get("approver") or "—"), cell_style),
+            Paragraph(_short_date(rec.get("implemented_at")), cell_style),
+        ])
+
+    log_tbl = Table(
+        rows,
+        colWidths=[1.3*cm, 2.0*cm, 5.4*cm, 2.6*cm, 2.9*cm, 2.5*cm, 1.9*cm],
+        repeatRows=1,
+    )
+    log_tbl.setStyle(TableStyle([
+        ("BACKGROUND",     (0, 0), (-1, 0), C_HDR),
+        ("VALIGN",         (0, 0), (-1, -1), "MIDDLE"),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2faf8")]),
+        ("TOPPADDING",     (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING",  (0, 0), (-1, -1), 5),
+        ("LEFTPADDING",    (0, 0), (-1, -1), 5),
+        ("RIGHTPADDING",   (0, 0), (-1, -1), 5),
+        ("GRID",           (0, 0), (-1, -1), 0.5, colors.HexColor("#c7e3de")),
+    ]))
+
+    body_elems: list = [
+        Paragraph(_s(lang, "change_log_heading"), heading_style),
+        Paragraph(_s(lang, "change_log_subtitle"), sub_style),
+        log_tbl,
+        Paragraph(_s(lang, "change_log_disclaimer"), disc_style),
+    ]
+
+    box = Table([[body_elems]], colWidths=[16.2 * cm], splitByRow=1)
+    box.setStyle(TableStyle([
+        ("BOX",        (0, 0), (-1, -1), 2.0, C_BD),
+        ("BACKGROUND", (0, 0), (-1, -1), C_FILL),
+        ("PADDING",    (0, 0), (-1, -1), 14),
+    ]))
+    return [PageBreak(), box]
+
+
 def generate_pdf(
     inp: ApplicationInput,
     sections: dict,
@@ -11525,6 +11729,16 @@ def generate_pdf(
     _yvl_memo = _yvl_compliance_memo(inp)
     if _yvl_memo:
         for _elem in _yvl_memo_page(_yvl_memo, st, lang):
+            story.append(_elem)
+
+    # ── Change-management log (STUK, 2026-08-25, YVL A.3 §305-306) —────────
+    # SMR/smr_bess, country=="FI" only; renders backend/smr_change_log.py's
+    # recorded changes for this hanke_id, if any. Deterministic, no Claude
+    # call. Placed after the YVL memo, before RAQS -- same "formal dossier,
+    # not AI self-critique" ordering reasoning as the YVL memo above.
+    _change_log = _change_log_lookup(inp)
+    if _change_log:
+        for _elem in _change_log_page(_change_log, st, lang):
             story.append(_elem)
 
     # ── RAQS: reviewing agent — Haiku-arvio sisällön laadusta ────────────────
