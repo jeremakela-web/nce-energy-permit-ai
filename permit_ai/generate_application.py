@@ -559,6 +559,12 @@ def _get_chroma_col():
 # retrieval so only one _rag_context runs at a time (Claude API calls run concurrently —
 # they are a remote service and don't share any in-process state).
 import threading as _threading
+# 2026-08-30: used by _yvl_memo_one_guide()/_yvl_compliance_memo() to run the
+# 3 per-guide YVL Compliance Memo Claude calls concurrently instead of
+# sequentially -- see those functions' docstrings for why (real timing data
+# showed the sequential version needed 30-45+ min, far past this app's ARQ
+# job_timeout).
+import concurrent.futures
 _RAG_LOCK = _threading.Lock()
 
 # TEMPORARY diagnostic instrumentation (2026-07-25) — investigating the recurring
@@ -10608,6 +10614,188 @@ def _yvl_source_text(source: str) -> str:
     return "\n".join(doc for _, doc in ordered)
 
 
+def _yvl_memo_one_guide(
+    code: str,
+    title: str,
+    *,
+    project_block: str,
+    lang_suffix: str,
+    lang: str,
+    generation_id: str,
+    cap_event: "_threading.Event",
+    cap_lock: "_threading.Lock",
+    guardrail_logged: "_threading.Event",
+) -> dict:
+    """One YVL guide's compliance section -- the unit of work
+    _yvl_compliance_memo() below runs concurrently (one call per guide, up
+    to 3 at once) via ThreadPoolExecutor. Extracted 2026-08-30 from what used
+    to be a single sequential for-loop, after real timing data showed one
+    guide's call alone (YVL A.1) took 12m1s -- the 3-call sequential path
+    realistically needs 30-45+ min, well past this app's ARQ job_timeout.
+    Running the 3 independent per-guide calls concurrently instead cuts that
+    phase's wall-clock time roughly 3x (bounded by the slowest single call,
+    not the sum of all three).
+
+    Returns {"code", "title", "status", "section_text"} where status is:
+      "ok"           -- section generated successfully.
+      "no_source"    -- this guide has no ingested source text (unchanged
+                         from before -- honestly falls through to "pending").
+      "cap"          -- skipped or aborted mid-stream because the
+                         per-generation Claude-call cap tripped (see below).
+      "rate_limited" -- still hitting HTTP 429 after in-place backoff
+                         retries -- caller should retry this one guide
+                         sequentially, alone, after the concurrent batch.
+      "error"        -- any other failure; treated as pending, same as the
+                         original sequential version's behavior.
+
+    Cap-guardrail cancellation, not just a documented tradeoff: cap_event/
+    cap_lock/guardrail_logged are shared across all concurrent workers for
+    this generation. Before starting (and before each rate-limit retry) a
+    worker checks cap_event and bails out immediately if set. While
+    streaming, it re-checks cap_event every 50 chunks and, if set mid-
+    stream, calls stream.close() and abandons the section rather than
+    running an already-in-flight call to completion -- real cost savings,
+    not just skipping calls that hadn't started yet. Whichever worker's
+    completed call first pushes the per-generation call count to/past
+    _CLAUDE_CALL_CAP sets cap_event so every other worker (in-flight or
+    about to retry) stops at its next check; guardrail_logged ensures the
+    guardrail-hit row is written exactly once, not once per worker.
+    """
+    if cap_event.is_set():
+        return {"code": code, "title": title, "status": "cap", "section_text": ""}
+
+    text = _yvl_source_text(f"YVL_{code}")
+    if not text:
+        # Defensive -- e.g. active collection has none of this guide's
+        # content today. Skip this one guide rather than fabricate;
+        # it falls through to the pending list below, honestly.
+        logger.warning("[yvl_memo] no source text found for YVL %s -- treating as pending", code)
+        return {"code": code, "title": title, "status": "no_source", "section_text": ""}
+
+    system_prompt = (
+        "Olet STUK-vaatimustenmukaisuusasiantuntija. Kirjoita LAAJA JA KATTAVA "
+        f"vaatimustenmukaisuusosio YVL {code} -ohjeelle ({title}) SMR-hankkeelle. "
+        "TÄRKEÄÄ, toisin kuin muu tämän järjestelmän tuottama teksti: tämän osion tulee "
+        "olla kattava, ei valikoiva tai tiivis — käsittele ohjeen tosiasiallinen sisältö "
+        "perusteellisesti alla annetusta lähdetekstistä (luvut, kohdat, konkreettiset "
+        "vaatimukset).\n\n"
+        f"EHDOTON KIELTO: Älä käsittele tai edes mainitse mitään MUUTA YVL-ohjetta kuin "
+        f"YVL {code} — et saa käyttää omaa tietämystäsi STUKin muista YVL-ohjeista tämän "
+        "osion sisällössä, edes yleisluontoisesti tai ohimennen viittauksena.\n\n"
+        f"Aloita vastauksesi rivillä '## YVL {code} — {title}'. Kata: (1) ohjeen keskeiset "
+        "vaatimukset hankkeelle, (2) miten hanke täyttää tai aikoo täyttää ne, "
+        "(3) mahdolliset avoimet kohdat joissa vaatimustenmukaisuus vaatii vielä "
+        "hankekohtaista lisätyötä (merkitse [TÄYDENNETTÄVÄ – ...]).\n\n"
+        "TIIVEYS SISÄLLÖN LAAJUUDESSA: 'Kattava' tarkoittaa, ettei mitään lähdetekstin "
+        "todellista vaatimusta jätetä käsittelemättä — ei sitä, että jokaista yksittäistä "
+        "vaatimusta pitäisi havainnollistaa useilla toistuvilla laskuesimerkeillä tai "
+        "hypoteettisilla skenaarioilla. Käsittele jokainen vaatimus napakasti mutta "
+        "täydellisesti: yksi konkreettinen sovellutus hankkeeseen riittää per vaatimus, "
+        "ei useita vaihtoehtoisia muotoiluja samasta asiasta."
+        + lang_suffix
+    )
+    guide_text_block = (
+        f"LÄHDETEKSTI (YVL {code}:n todellinen sisältö, käytä VAIN tätä äläkä omaa "
+        f"tietämystäsi):\n\n{text}"
+    )
+
+    # 2026-08-30: in-place backoff retries for HTTP 429 (anthropic.RateLimitError)
+    # specifically -- (0.0, 3.0, 8.0) means an initial attempt plus 2 retries,
+    # still inside the concurrent phase. Any other exception fails this guide
+    # immediately (unchanged from the original sequential behavior); only
+    # rate-limiting gets a retry, and only a bounded one.
+    resp = None
+    raw_parts: list[str] = []
+    for wait_s in (0.0, 3.0, 8.0):
+        if wait_s:
+            _time.sleep(wait_s)
+        if cap_event.is_set():
+            return {"code": code, "title": title, "status": "cap", "section_text": ""}
+        try:
+            claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
+            with claude.messages.stream(
+                model=_MODEL_ID,
+                # 2026-08-25 (live-test finding, iterated four times): 8000
+                # (one combined call), then 16000, 24000, and 32000 (one call
+                # per guide) *all* still ended with a real run cutting a
+                # guide off mid-sentence -- confirmed C.1 specifically (its
+                # source text is the smallest of the three, ~44K chars vs
+                # A.1/B.1's ~190K each, yet needed the most room) still hits
+                # even 32000 given how thorough the model gets on this guide.
+                # Output length is not reliably boundable by raising this
+                # number alone -- stopped chasing it further. 48000 gives
+                # real additional margin to reduce how often this happens in
+                # practice, but the stop_reason check below, not this
+                # number, is the actual guarantee against a silently-
+                # incomplete section -- verified live: even when 32000 was
+                # hit, the backstop correctly appended the honest truncation
+                # notice instead of leaving a broken sentence.
+                max_tokens=48000,
+                system=[{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}],
+                messages=[{"role": "user", "content": [
+                    {"type": "text", "text": guide_text_block, "cache_control": {"type": "ephemeral"}},
+                    {"type": "text", "text": project_block},
+                ]}],
+            ) as stream:
+                raw_parts = []
+                for i, t in enumerate(stream.text_stream):
+                    raw_parts.append(t)
+                    if i % 50 == 0 and cap_event.is_set():
+                        stream.close()
+                        return {"code": code, "title": title, "status": "cap", "section_text": ""}
+                resp = stream.get_final_message()
+            break  # success
+        except anthropic.RateLimitError as exc:
+            logger.warning("[yvl_memo] YVL %s rate-limited, will retry: %s", code, exc)
+            continue
+        except Exception as exc:
+            logger.warning("[yvl_memo] generation failed for YVL %s -- treating as pending: %s", code, exc)
+            return {"code": code, "title": title, "status": "error", "section_text": ""}
+    else:
+        # Exhausted in-place backoff retries, still rate-limited -- caller
+        # retries this one guide sequentially after the concurrent batch.
+        return {"code": code, "title": title, "status": "rate_limited", "section_text": ""}
+
+    section_text = unicodedata.normalize("NFC", "".join(raw_parts))
+    if getattr(resp, "stop_reason", None) == "max_tokens":
+        # Deterministic backstop -- never rely on the model to notice or
+        # announce its own truncation. Three real live runs (see the
+        # max_tokens comment above) confirmed a fixed budget cannot be
+        # trusted to always be enough, no matter how generous; this is
+        # the actual honesty guarantee, not the token number. Same
+        # engineering principle as the covered/pending disclaimer this
+        # function already builds deterministically in Python.
+        section_text += "\n\n" + _s(lang, "yvl_memo_truncated_notice").format(code=f"YVL {code}")
+        logger.warning("[yvl_memo] YVL %s hit max_tokens -- appended truncation notice", code)
+
+    if generation_id:
+        _u = resp.usage
+        _retrieval_trace.log_api_call(
+            generation_id=generation_id,
+            call_type=f"yvl_memo_{code}",
+            model=_MODEL_ID,
+            input_tokens=_u.input_tokens,
+            cache_creation_input_tokens=getattr(_u, "cache_creation_input_tokens", 0) or 0,
+            cache_read_input_tokens=getattr(_u, "cache_read_input_tokens", 0) or 0,
+            output_tokens=_u.output_tokens,
+        )
+        _n_calls = _retrieval_trace.count_claude_calls(generation_id)
+        if _n_calls >= _CLAUDE_CALL_CAP and not cap_event.is_set():
+            cap_event.set()
+            with cap_lock:
+                if not guardrail_logged.is_set():
+                    guardrail_logged.set()
+                    _retrieval_trace.log_guardrail_hit(
+                        generation_id=generation_id,
+                        guard_type="claude_call_cap",
+                        count_at_trip=_n_calls,
+                        cap=_CLAUDE_CALL_CAP,
+                        detail=f"call_type=yvl_memo_{code}",
+                    )
+
+    return {"code": code, "title": title, "status": "ok", "section_text": section_text}
+
+
 def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
     """Generate the YVL Compliance Memo annex -- ONE Claude call PER covered
     guide (see the 2026-08-25 live-test note below for why), own RAG scoping
@@ -10661,6 +10849,18 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
     built entirely in Python (_yvl_pending_codes()), never left to any
     model to enumerate. Full sourcing of the remaining guides is a
     separate, later, explicitly-scheduled project -- not started here.
+
+    2026-08-30: the 3 per-guide calls now run CONCURRENTLY (ThreadPoolExecutor),
+    not sequentially -- see _yvl_memo_one_guide()'s own docstring for the full
+    reasoning (real timing data: one guide's call alone took 12m1s) and the
+    cap-guardrail cancellation design. The up-front cap pre-check below
+    preserves the original sequential version's exact behavior for the "cap
+    already exhausted before this batch starts" case (immediate abort, zero
+    wasted work); the mid-batch cap_event mechanism handles the new case this
+    version introduces (retries pushing the count over cap during the batch).
+    Either way, hitting the cap still aborts the WHOLE generation via
+    GenerationCapError, exactly as before -- concurrency changes how quickly
+    and cheaply that abort happens, not whether it happens.
     """
     if inp.hanketyyppi not in _YVL_MEMO_HANKE_TYPES:
         return None
@@ -10678,118 +10878,85 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
         "\n\n" + _LANG_INSTRUCTIONS[lang] if lang != "FI" and lang in _LANG_INSTRUCTIONS else ""
     )
 
+    # Up-front cap pre-check -- same semantics as the original sequential
+    # loop's very first iteration: if the cap is already at/over budget
+    # before this batch even starts (e.g. draft+proofread already used it
+    # up), abort the whole generation immediately, exactly as before, with
+    # zero wasted work.
+    if generation_id:
+        _n_calls = _retrieval_trace.count_claude_calls(generation_id)
+        if _n_calls >= _CLAUDE_CALL_CAP:
+            _retrieval_trace.log_guardrail_hit(
+                generation_id=generation_id,
+                guard_type="claude_call_cap",
+                count_at_trip=_n_calls,
+                cap=_CLAUDE_CALL_CAP,
+                detail="call_type=yvl_memo_batch_start",
+            )
+            raise GenerationCapError("claude_call", generation_id, _n_calls, _CLAUDE_CALL_CAP)
+
+    cap_event        = _threading.Event()
+    cap_lock         = _threading.Lock()
+    guardrail_logged = _threading.Event()
+
+    guides = list(_YVL_MEMO_COVERED.items())  # [(code, title), ...] fixed order
+    results: dict[str, dict] = {}
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(guides)) as executor:
+        futures = {
+            executor.submit(
+                _yvl_memo_one_guide, code, title,
+                project_block=project_block, lang_suffix=lang_suffix, lang=lang,
+                generation_id=generation_id, cap_event=cap_event, cap_lock=cap_lock,
+                guardrail_logged=guardrail_logged,
+            ): (code, title)
+            for code, title in guides
+        }
+        for future in concurrent.futures.as_completed(futures):
+            code, title = futures[future]
+            try:
+                results[code] = future.result()
+            except Exception as exc:
+                # Defensive -- _yvl_memo_one_guide itself catches everything
+                # it knows about; only reached for a genuinely unexpected
+                # worker crash.
+                logger.warning("[yvl_memo] worker for YVL %s crashed unexpectedly: %s", code, exc)
+                results[code] = {"code": code, "title": title, "status": "error", "section_text": ""}
+
+    # Sequential retry fallback: any guide still "rate_limited" after
+    # in-place backoff during the concurrent phase gets ONE more attempt,
+    # run alone (no concurrency) after a longer cooldown -- on the theory
+    # that concurrent pressure on the API was itself the trigger. This is
+    # "retry that specific call sequentially rather than fail the whole
+    # batch," not just falling back to pending on the first 429.
+    _needs_retry = {code for code, r in results.items() if r["status"] == "rate_limited"}
+    if _needs_retry and not cap_event.is_set():
+        _time.sleep(15.0)
+        for code, title in guides:
+            if code not in _needs_retry or cap_event.is_set():
+                continue
+            logger.warning("[yvl_memo] YVL %s: retrying sequentially after concurrent rate-limiting", code)
+            results[code] = _yvl_memo_one_guide(
+                code, title,
+                project_block=project_block, lang_suffix=lang_suffix, lang=lang,
+                generation_id=generation_id, cap_event=cap_event, cap_lock=cap_lock,
+                guardrail_logged=guardrail_logged,
+            )
+
+    if cap_event.is_set():
+        raise GenerationCapError(
+            "claude_call", generation_id,
+            _retrieval_trace.count_claude_calls(generation_id) if generation_id else 0,
+            _CLAUDE_CALL_CAP,
+        )
+
     memo_sections: list[str] = []
     actual_covered: list[tuple[str, str]] = []
-
-    for code, title in _YVL_MEMO_COVERED.items():
-        # Cost & resource guardrail (TASO 1), checked before EACH per-guide
-        # call (this function now makes up to 3 Claude calls per
-        # generation, one per covered guide) -- same fail-clean-before-
-        # spending pattern as _raqs_review()/_generate_sections().
-        if generation_id:
-            _n_calls = _retrieval_trace.count_claude_calls(generation_id)
-            if _n_calls >= _CLAUDE_CALL_CAP:
-                _retrieval_trace.log_guardrail_hit(
-                    generation_id=generation_id,
-                    guard_type="claude_call_cap",
-                    count_at_trip=_n_calls,
-                    cap=_CLAUDE_CALL_CAP,
-                    detail=f"call_type=yvl_memo_{code}",
-                )
-                raise GenerationCapError("claude_call", generation_id, _n_calls, _CLAUDE_CALL_CAP)
-
-        text = _yvl_source_text(f"YVL_{code}")
-        if not text:
-            # Defensive -- e.g. active collection has none of this guide's
-            # content today. Skip this one guide rather than fabricate;
-            # it falls through to the pending list below, honestly.
-            logger.warning("[yvl_memo] no source text found for YVL %s -- treating as pending", code)
-            continue
-
-        system_prompt = (
-            "Olet STUK-vaatimustenmukaisuusasiantuntija. Kirjoita LAAJA JA KATTAVA "
-            f"vaatimustenmukaisuusosio YVL {code} -ohjeelle ({title}) SMR-hankkeelle. "
-            "TÄRKEÄÄ, toisin kuin muu tämän järjestelmän tuottama teksti: tämän osion tulee "
-            "olla kattava, ei valikoiva tai tiivis — käsittele ohjeen tosiasiallinen sisältö "
-            "perusteellisesti alla annetusta lähdetekstistä (luvut, kohdat, konkreettiset "
-            "vaatimukset).\n\n"
-            f"EHDOTON KIELTO: Älä käsittele tai edes mainitse mitään MUUTA YVL-ohjetta kuin "
-            f"YVL {code} — et saa käyttää omaa tietämystäsi STUKin muista YVL-ohjeista tämän "
-            "osion sisällössä, edes yleisluontoisesti tai ohimennen viittauksena.\n\n"
-            f"Aloita vastauksesi rivillä '## YVL {code} — {title}'. Kata: (1) ohjeen keskeiset "
-            "vaatimukset hankkeelle, (2) miten hanke täyttää tai aikoo täyttää ne, "
-            "(3) mahdolliset avoimet kohdat joissa vaatimustenmukaisuus vaatii vielä "
-            "hankekohtaista lisätyötä (merkitse [TÄYDENNETTÄVÄ – ...]).\n\n"
-            "TIIVEYS SISÄLLÖN LAAJUUDESSA: 'Kattava' tarkoittaa, ettei mitään lähdetekstin "
-            "todellista vaatimusta jätetä käsittelemättä — ei sitä, että jokaista yksittäistä "
-            "vaatimusta pitäisi havainnollistaa useilla toistuvilla laskuesimerkeillä tai "
-            "hypoteettisilla skenaarioilla. Käsittele jokainen vaatimus napakasti mutta "
-            "täydellisesti: yksi konkreettinen sovellutus hankkeeseen riittää per vaatimus, "
-            "ei useita vaihtoehtoisia muotoiluja samasta asiasta."
-            + lang_suffix
-        )
-        guide_text_block = (
-            f"LÄHDETEKSTI (YVL {code}:n todellinen sisältö, käytä VAIN tätä äläkä omaa "
-            f"tietämystäsi):\n\n{text}"
-        )
-
-        try:
-            claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
-            with claude.messages.stream(
-                model=_MODEL_ID,
-                # 2026-08-25 (live-test finding, iterated four times): 8000
-                # (one combined call), then 16000, 24000, and 32000 (one call
-                # per guide) *all* still ended with a real run cutting a
-                # guide off mid-sentence -- confirmed C.1 specifically (its
-                # source text is the smallest of the three, ~44K chars vs
-                # A.1/B.1's ~190K each, yet needed the most room) still hits
-                # even 32000 given how thorough the model gets on this guide.
-                # Output length is not reliably boundable by raising this
-                # number alone -- stopped chasing it further. 48000 gives
-                # real additional margin to reduce how often this happens in
-                # practice, but the stop_reason check below, not this
-                # number, is the actual guarantee against a silently-
-                # incomplete section -- verified live: even when 32000 was
-                # hit, the backstop correctly appended the honest truncation
-                # notice instead of leaving a broken sentence.
-                max_tokens=48000,
-                system=[{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}],
-                messages=[{"role": "user", "content": [
-                    {"type": "text", "text": guide_text_block, "cache_control": {"type": "ephemeral"}},
-                    {"type": "text", "text": project_block},
-                ]}],
-            ) as stream:
-                raw_parts = [t for t in stream.text_stream]
-                resp = stream.get_final_message()
-        except Exception as exc:
-            logger.warning("[yvl_memo] generation failed for YVL %s -- treating as pending: %s", code, exc)
-            continue
-
-        section_text = unicodedata.normalize("NFC", "".join(raw_parts))
-        if getattr(resp, "stop_reason", None) == "max_tokens":
-            # Deterministic backstop -- never rely on the model to notice or
-            # announce its own truncation. Three real live runs (see the
-            # max_tokens comment above) confirmed a fixed budget cannot be
-            # trusted to always be enough, no matter how generous; this is
-            # the actual honesty guarantee, not the token number. Same
-            # engineering principle as the covered/pending disclaimer this
-            # function already builds deterministically in Python.
-            section_text += "\n\n" + _s(lang, "yvl_memo_truncated_notice").format(code=f"YVL {code}")
-            logger.warning("[yvl_memo] YVL %s hit max_tokens -- appended truncation notice", code)
-        memo_sections.append(section_text)
-        actual_covered.append((code, title))
-
-        if generation_id:
-            _u = resp.usage
-            _retrieval_trace.log_api_call(
-                generation_id=generation_id,
-                call_type=f"yvl_memo_{code}",
-                model=_MODEL_ID,
-                input_tokens=_u.input_tokens,
-                cache_creation_input_tokens=getattr(_u, "cache_creation_input_tokens", 0) or 0,
-                cache_read_input_tokens=getattr(_u, "cache_read_input_tokens", 0) or 0,
-                output_tokens=_u.output_tokens,
-            )
+    for code, title in guides:
+        r = results.get(code)
+        if r and r["status"] == "ok":
+            memo_sections.append(r["section_text"])
+            actual_covered.append((code, title))
 
     if not memo_sections:
         logger.warning("[yvl_memo] no guide sections were generated in this run -- skipping annex entirely")
