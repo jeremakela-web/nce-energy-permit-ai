@@ -55,6 +55,7 @@ from report import generate_bess_report
 from permit_ai import query_permit_ai, query_permit_ai_chat
 import permit_ai as _permit_ai_module
 import rtb_store as _rtb
+import smr_change_log as _change_log
 
 # permit_ai-moduuli on ~/bess_tool/permit_ai/ — lisätään polkuun
 import sys as _sys
@@ -2655,6 +2656,85 @@ async def rtb_cockpit():
     """RTB Compliance Cockpit -sivu."""
     path = os.path.join(_STATIC_DIR, "rtb.html")
     return FileResponse(path)
+
+
+# ── SMR change-management log (STUK, 2026-08-25, YVL A.3 §305-306) ──────────
+# Wiring for backend/smr_change_log.py, built 2026-08-25 (PR #118) but never
+# wired to any endpoint until now -- schema/persistence + 14 functional
+# self-tests only, per that PR's own explicit scope note. See
+# RAQS_CHANGE_MANAGEMENT_PROPOSAL.md for why this is built on
+# smr_change_log.py's own JSON-file store (same live pattern as rtb_store.py
+# above) rather than the dormant tenant_db Postgres layer. hanke_id follows
+# the same identity as the RTB cockpit (rtb_store.make_hanke_id), so a
+# project's change log and its RTB status compose under one id.
+
+class ChangeLogAddRequest(BaseModel):
+    change_description: str
+    significance:        str   # "significant" | "minor" -- human judgement call,
+                                 # see smr_change_log.py's module docstring (§326a)
+    dependencies:        str = ""
+    hanketyyppi:          str = ""
+
+
+class ChangeLogActorRequest(BaseModel):
+    approver: str   # significant: whoever gave STUK approval; minor: whoever
+                     # confirmed STUK was notified — see smr_change_log.py
+
+
+@app.get("/api/smr-change-log/{hanke_id}")
+async def get_smr_change_log(hanke_id: str):
+    """Read-only. Never raises -- returns found=False if nothing recorded
+    yet, matching rtb_summary()'s own not-found convention."""
+    return JSONResponse(_change_log.get_log(hanke_id))
+
+
+@app.post("/api/smr-change-log/{hanke_id}/changes")
+async def add_smr_change(hanke_id: str, req: ChangeLogAddRequest):
+    try:
+        record = _change_log.add_change(
+            hanke_id,
+            change_description=req.change_description,
+            significance=req.significance,
+            dependencies=req.dependencies,
+            hanketyyppi=req.hanketyyppi,
+        )
+    except _change_log.ChangeLogError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return JSONResponse(record)
+
+
+@app.post("/api/smr-change-log/{hanke_id}/changes/{change_id}/approve")
+async def approve_smr_change(hanke_id: str, change_id: str, req: ChangeLogActorRequest):
+    """Significant changes only (SS306, first sentence) — raises 400 if the
+    change is 'minor' (those are notified, not approved; see notify below)."""
+    try:
+        record = _change_log.approve_change(hanke_id, change_id, approver=req.approver)
+    except _change_log.ChangeLogError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return JSONResponse(record)
+
+
+@app.post("/api/smr-change-log/{hanke_id}/changes/{change_id}/notify")
+async def notify_smr_change(hanke_id: str, change_id: str, req: ChangeLogActorRequest):
+    """Minor changes only (SS306, second sentence) — raises 400 if the
+    change is 'significant' (those require approval, not notification)."""
+    try:
+        record = _change_log.notify_change(hanke_id, change_id, approver=req.approver)
+    except _change_log.ChangeLogError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return JSONResponse(record)
+
+
+@app.post("/api/smr-change-log/{hanke_id}/changes/{change_id}/implement")
+async def implement_smr_change(hanke_id: str, change_id: str):
+    """Enforces SS306's 'before their implementation' clause for real —
+    raises 400 unless the change has already reached its track's ready
+    state (approved for significant, notified for minor)."""
+    try:
+        record = _change_log.mark_implemented(hanke_id, change_id)
+    except _change_log.ChangeLogError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return JSONResponse(record)
 
 
 # ── Admin: RAG-indeksointi ────────────────────────────────────────────────────
