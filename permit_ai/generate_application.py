@@ -95,6 +95,46 @@ class GenerationCapError(RuntimeError):
         )
 
 
+class GenerationDeadlineExceeded(RuntimeError):
+    """Raised when an internal, cooperative soft deadline trips inside the
+    YVL Compliance Memo's concurrent batch (see AbortSignal below and
+    _yvl_memo_one_guide()'s docstring). 2026-08-31: real fix for the
+    orphaned-thread problem (COVERAGE_GAPS_BACKLOG.md item 6) -- Python
+    cannot force-stop a running OS thread (asyncio.to_thread()'s underlying
+    concurrent.futures.Future only cancels if the work hasn't started), so
+    the only real fix is cooperative: an internal watchdog (backend/main.py,
+    arq_task_generate_permit) sets AbortSignal well before ARQ's own hard
+    job_timeout, and this exception is what a caller sees when a worker
+    actually honored that signal and stopped cleanly -- as opposed to the
+    old behavior, where nothing stopped, the thread ran to completion (or
+    to ARQ's hard kill) regardless, and the result was silently discarded.
+    """
+    def __init__(self, generation_id: str, guides_completed: list[str]):
+        self.generation_id    = generation_id
+        self.guides_completed = guides_completed
+        super().__init__(
+            f"GENERATION_DEADLINE_EXCEEDED: generation_id={generation_id} -- internal "
+            f"soft deadline tripped, stopped cleanly before ARQ's own hard job_timeout "
+            f"(guides completed before stopping: {guides_completed or 'none'})"
+        )
+
+
+@dataclass
+class AbortSignal:
+    """Shared cooperative-cancellation signal, checked at the same
+    checkpoints _yvl_memo_one_guide() already had for the cost-cap guardrail
+    (before starting, before each rate-limit retry, every 50 chunks
+    mid-stream) -- this just gives those checkpoints a second possible
+    trigger (a time-based watchdog) alongside the original one (the
+    per-generation Claude-call cap), via `reason` rather than two separate
+    events to check everywhere. `reason` is set once, alongside `event.set()`
+    -- "cost_cap" | "deadline" -- so the orchestrator (_yvl_compliance_memo)
+    knows which exception to raise once the batch unwinds.
+    """
+    event: "_threading.Event"
+    reason: str = ""
+
+
 class PhaseContentNotAvailableError(Exception):
     """Raised when a hanketyyppi has a real, declared later phase (per
     _PHASE_RAG_QUERIES[hanketyyppi] — e.g. SMR's kayttolupa/purku) but no
@@ -10622,7 +10662,7 @@ def _yvl_memo_one_guide(
     lang_suffix: str,
     lang: str,
     generation_id: str,
-    cap_event: "_threading.Event",
+    signal: "AbortSignal",
     cap_lock: "_threading.Lock",
     guardrail_logged: "_threading.Event",
 ) -> dict:
@@ -10648,20 +10688,26 @@ def _yvl_memo_one_guide(
       "error"        -- any other failure; treated as pending, same as the
                          original sequential version's behavior.
 
-    Cap-guardrail cancellation, not just a documented tradeoff: cap_event/
-    cap_lock/guardrail_logged are shared across all concurrent workers for
-    this generation. Before starting (and before each rate-limit retry) a
-    worker checks cap_event and bails out immediately if set. While
-    streaming, it re-checks cap_event every 50 chunks and, if set mid-
-    stream, calls stream.close() and abandons the section rather than
-    running an already-in-flight call to completion -- real cost savings,
-    not just skipping calls that hadn't started yet. Whichever worker's
+    Cancellation, not just a documented tradeoff: signal/cap_lock/
+    guardrail_logged are shared across all concurrent workers for this
+    generation. Before starting (and before each rate-limit retry) a worker
+    checks signal.event and bails out immediately if set. While streaming,
+    it re-checks signal.event every 50 chunks and, if set mid-stream, calls
+    stream.close() and abandons the section rather than running an
+    already-in-flight call to completion -- real cost savings, not just
+    skipping calls that hadn't started yet. 2026-08-31: signal.event now has
+    two possible triggers, not just the cost cap -- whichever worker's
     completed call first pushes the per-generation call count to/past
-    _CLAUDE_CALL_CAP sets cap_event so every other worker (in-flight or
-    about to retry) stops at its next check; guardrail_logged ensures the
-    guardrail-hit row is written exactly once, not once per worker.
+    _CLAUDE_CALL_CAP sets it (reason="cost_cap"), same as before; separately,
+    an external time-based watchdog (backend/main.py) can set it too
+    (reason="deadline") well before ARQ's own hard job_timeout -- see
+    GenerationDeadlineExceeded's docstring. Either way every other worker
+    (in-flight or about to retry) stops at its next check; guardrail_logged
+    ensures the cost-cap guardrail-hit row specifically is written exactly
+    once, not once per worker (irrelevant to the deadline trigger, which
+    isn't a cost guardrail and has nothing to log there).
     """
-    if cap_event.is_set():
+    if signal.event.is_set():
         return {"code": code, "title": title, "status": "cap", "section_text": ""}
 
     text = _yvl_source_text(f"YVL_{code}")
@@ -10709,7 +10755,7 @@ def _yvl_memo_one_guide(
     for wait_s in (0.0, 3.0, 8.0):
         if wait_s:
             _time.sleep(wait_s)
-        if cap_event.is_set():
+        if signal.event.is_set():
             return {"code": code, "title": title, "status": "cap", "section_text": ""}
         try:
             claude = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"), timeout=600.0)
@@ -10740,7 +10786,7 @@ def _yvl_memo_one_guide(
                 raw_parts = []
                 for i, t in enumerate(stream.text_stream):
                     raw_parts.append(t)
-                    if i % 50 == 0 and cap_event.is_set():
+                    if i % 50 == 0 and signal.event.is_set():
                         stream.close()
                         return {"code": code, "title": title, "status": "cap", "section_text": ""}
                 resp = stream.get_final_message()
@@ -10780,8 +10826,9 @@ def _yvl_memo_one_guide(
             output_tokens=_u.output_tokens,
         )
         _n_calls = _retrieval_trace.count_claude_calls(generation_id)
-        if _n_calls >= _CLAUDE_CALL_CAP and not cap_event.is_set():
-            cap_event.set()
+        if _n_calls >= _CLAUDE_CALL_CAP and not signal.event.is_set():
+            signal.reason = signal.reason or "cost_cap"
+            signal.event.set()
             with cap_lock:
                 if not guardrail_logged.is_set():
                     guardrail_logged.set()
@@ -10796,7 +10843,9 @@ def _yvl_memo_one_guide(
     return {"code": code, "title": title, "status": "ok", "section_text": section_text}
 
 
-def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
+def _yvl_compliance_memo(
+    inp: "ApplicationInput", signal: Optional["AbortSignal"] = None,
+) -> Optional[dict]:
     """Generate the YVL Compliance Memo annex -- ONE Claude call PER covered
     guide (see the 2026-08-25 live-test note below for why), own RAG scoping
     (full source text per guide, not similarity search), own system prompt
@@ -10853,14 +10902,21 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
     2026-08-30: the 3 per-guide calls now run CONCURRENTLY (ThreadPoolExecutor),
     not sequentially -- see _yvl_memo_one_guide()'s own docstring for the full
     reasoning (real timing data: one guide's call alone took 12m1s) and the
-    cap-guardrail cancellation design. The up-front cap pre-check below
-    preserves the original sequential version's exact behavior for the "cap
-    already exhausted before this batch starts" case (immediate abort, zero
-    wasted work); the mid-batch cap_event mechanism handles the new case this
-    version introduces (retries pushing the count over cap during the batch).
-    Either way, hitting the cap still aborts the WHOLE generation via
+    cancellation design. The up-front cap pre-check below preserves the
+    original sequential version's exact behavior for the "cap already
+    exhausted before this batch starts" case (immediate abort, zero wasted
+    work); the mid-batch signal mechanism handles the new case this version
+    introduces (retries pushing the count over cap during the batch). Either
+    way, hitting the cap still aborts the WHOLE generation via
     GenerationCapError, exactly as before -- concurrency changes how quickly
     and cheaply that abort happens, not whether it happens.
+
+    2026-08-31: `signal`, if given by the caller (arq_task_generate_permit's
+    internal deadline watchdog -- see GenerationDeadlineExceeded's
+    docstring), is the same AbortSignal threaded through to every worker.
+    If omitted (any other caller, e.g. a direct/test invocation), a fresh
+    one is created locally so the cost-cap mechanism works exactly as
+    before, unchanged, with no external deadline concept in play.
     """
     if inp.hanketyyppi not in _YVL_MEMO_HANKE_TYPES:
         return None
@@ -10895,7 +10951,8 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
             )
             raise GenerationCapError("claude_call", generation_id, _n_calls, _CLAUDE_CALL_CAP)
 
-    cap_event        = _threading.Event()
+    if signal is None:
+        signal = AbortSignal(event=_threading.Event())
     cap_lock         = _threading.Lock()
     guardrail_logged = _threading.Event()
 
@@ -10907,7 +10964,7 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
             executor.submit(
                 _yvl_memo_one_guide, code, title,
                 project_block=project_block, lang_suffix=lang_suffix, lang=lang,
-                generation_id=generation_id, cap_event=cap_event, cap_lock=cap_lock,
+                generation_id=generation_id, signal=signal, cap_lock=cap_lock,
                 guardrail_logged=guardrail_logged,
             ): (code, title)
             for code, title in guides
@@ -10930,20 +10987,23 @@ def _yvl_compliance_memo(inp: "ApplicationInput") -> Optional[dict]:
     # "retry that specific call sequentially rather than fail the whole
     # batch," not just falling back to pending on the first 429.
     _needs_retry = {code for code, r in results.items() if r["status"] == "rate_limited"}
-    if _needs_retry and not cap_event.is_set():
+    if _needs_retry and not signal.event.is_set():
         _time.sleep(15.0)
         for code, title in guides:
-            if code not in _needs_retry or cap_event.is_set():
+            if code not in _needs_retry or signal.event.is_set():
                 continue
             logger.warning("[yvl_memo] YVL %s: retrying sequentially after concurrent rate-limiting", code)
             results[code] = _yvl_memo_one_guide(
                 code, title,
                 project_block=project_block, lang_suffix=lang_suffix, lang=lang,
-                generation_id=generation_id, cap_event=cap_event, cap_lock=cap_lock,
+                generation_id=generation_id, signal=signal, cap_lock=cap_lock,
                 guardrail_logged=guardrail_logged,
             )
 
-    if cap_event.is_set():
+    if signal.event.is_set():
+        if signal.reason == "deadline":
+            _completed = [code for code, r in results.items() if r["status"] == "ok"]
+            raise GenerationDeadlineExceeded(generation_id, _completed)
         raise GenerationCapError(
             "claude_call", generation_id,
             _retrieval_trace.count_claude_calls(generation_id) if generation_id else 0,
@@ -11185,6 +11245,7 @@ def generate_pdf(
     logo_path: Optional[str] = None,
     footer_name: Optional[str] = None,
     is_final: bool = True,
+    signal: Optional["AbortSignal"] = None,
 ) -> bytes:
     """Rakenna PDF ja palauta bytes.
 
@@ -11893,7 +11954,7 @@ def generate_pdf(
     # only; _yvl_compliance_memo() itself no-ops (returns None, no Claude call)
     # for every other case. Placed before RAQS so the annex reads as part of
     # the formal dossier, not trailing after the AI's own self-critique page.
-    _yvl_memo = _yvl_compliance_memo(inp)
+    _yvl_memo = _yvl_compliance_memo(inp, signal=signal)
     if _yvl_memo:
         for _elem in _yvl_memo_page(_yvl_memo, st, lang):
             story.append(_elem)
@@ -11940,7 +12001,9 @@ def generate_pdf(
 # Pääfunktio
 # ─────────────────────────────────────────────────────────────────────────────
 
-def generate_application_draft(inp: ApplicationInput) -> tuple:
+def generate_application_draft(
+    inp: ApplicationInput, signal: Optional["AbortSignal"] = None,
+) -> tuple:
     """Generoi luonnos (sections + sources) ilman oikolukua. Palauttaa
     (None, sections, sources).
 
@@ -11953,7 +12016,17 @@ def generate_application_draft(inp: ApplicationInput) -> tuple:
     pass (a Haiku call) pure dead work every generation paid for. Removed;
     first element is now always None but kept so every caller's existing
     `pdf_bytes, sections, sources = ...`-style unpack still works unchanged.
+
+    2026-08-31: `signal` (see AbortSignal/GenerationDeadlineExceeded) is
+    checked once here, defensively, before the retrieval+draft Claude call.
+    This path has been fast and reliable in every real timing measurement so
+    far (never the actual cause of a timeout) -- this isn't the primary fix
+    (that's _yvl_compliance_memo()'s mid-stream checks), just consistency:
+    the same cooperative mechanism applies everywhere a Claude call happens
+    in this pipeline, not only where the risk has been observed historically.
     """
+    if signal is not None and signal.event.is_set():
+        raise GenerationDeadlineExceeded(inp.generation_id or "", [])
     _LAST_TIMING.clear()
     _LAST_TIMING["hanketyyppi"] = inp.hanketyyppi
     _LAST_TIMING["country"] = inp.country
@@ -11992,8 +12065,19 @@ def apply_proofread_to_pdf(
     warning_flag: bool = False,
     prec_chunks: Optional[list] = None,
     prec_sources: Optional[list] = None,
+    signal: Optional["AbortSignal"] = None,
 ) -> bytes:
-    """Oikolue sections Claudella ja rakenna lopullinen PDF."""
+    """Oikolue sections Claudella ja rakenna lopullinen PDF.
+
+    2026-08-31: `signal` passed straight through to generate_pdf() (which
+    passes it to _yvl_compliance_memo(), the only place in this call chain
+    with real mid-execution interruptibility today -- see
+    GenerationDeadlineExceeded's docstring). Checked once here too, before
+    the proofread Claude call, for the same defense-in-depth reasoning as
+    generate_application_draft()'s own check.
+    """
+    if signal is not None and signal.event.is_set():
+        raise GenerationDeadlineExceeded(inp.generation_id or "", [])
     _lang = inp.lang or "FI"
     sections = _proofread_sections(sections, generation_id=inp.generation_id)
     # 2026-08-23: granular checkpoints added below, narrowing the stuck-job
@@ -12022,6 +12106,7 @@ def apply_proofread_to_pdf(
         inp, sections, sources,
         warning_flag, prec_chunks or [], prec_sources or [],
         # is_final defaults to True — this is the human-facing deliverable PDF.
+        signal=signal,
     )
     _LAST_TIMING["t10c_generate_pdf_done"] = _time.monotonic()
     return pdf
