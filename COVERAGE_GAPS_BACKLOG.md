@@ -137,6 +137,64 @@ Same fix pattern is worth checking against any other admin endpoint using
 `secret: str = ""` as a query param (not audited yet — this was found
 incidentally, not via a deliberate sweep).
 
+## 6. Reliability/cost — ARQ `job_timeout` doesn't stop the underlying generation thread; it keeps running (and spending) after the client sees "failed"
+
+Found 2026-08-30/31 while live-verifying the YVL memo parallelization work
+(4 real timeout hits across 2 days made this visible). `arq_task_generate_permit`
+(`backend/main.py`) does `pdf = await asyncio.to_thread(apply_proofread_to_pdf, ...)`.
+When ARQ's `job_timeout` expires, `asyncio.wait_for()` cancels the *asyncio Task*
+awaiting that thread — but `asyncio.to_thread()` runs on a real OS thread via
+`concurrent.futures.ThreadPoolExecutor`, and Python cannot force-kill a running
+thread. The thread keeps executing to completion regardless, making real,
+billed Claude API calls the whole way, while the client-visible job status is
+already frozen at `"status": "error", "error": "CancelledError: "` the moment
+the timeout fires — permanently, nothing ever updates it afterward even though
+the thread keeps making genuine progress.
+
+Confirmed with real data, not inferred: two 2026-08-30 test jobs (`ef3ff6af34`,
+`2cbfcd04c2`) both show Claude API calls completing in `retrieval_trace`'s cost
+log **minutes after** their reported kill time — `2cbfcd04c2` is the clearest
+case: killed at 1200.00s, yet `yvl_memo_A.1` and the entire RAQS review both
+completed successfully ~3 minutes later. The orphaned thread ran the *whole
+pipeline* to real completion — very likely including full PDF assembly — and
+none of it was ever surfaced to the client; the result is silently discarded
+when the thread's `run_in_executor` future tries to resolve against an
+already-cancelled asyncio Task. Two earlier same-day jobs (`b56fa4719c`,
+`d4d140add7`) only show partial orphaned completion (one YVL guide each,
+not all three) — consistent with a subsequent deploy's process restart
+actually killing those specific orphaned threads before they got further,
+which a real deploy (unlike ARQ's own soft cancellation) genuinely can do.
+
+Real cost impact, not theoretical: summed real `retrieval_trace` cost data
+across 5 test attempts (2026-08-30/31) = **$7.51**, most of it from orphaned
+work that produced nothing usable. This isn't unique to the YVL-memo case —
+every hanketyyppi's generation goes through the same `asyncio.to_thread()`
+call, so any timeout on any generation, past or future, has silently spent
+money on discarded work with zero record of it beyond digging through
+`retrieval_trace` by hand.
+
+Related, not yet a confirmed second bug but worth checking together: ARQ's
+`retry_jobs=True`/`max_tries=5` defaults are unoverridden in
+`_build_arq_worker()`. Confirmed (real ARQ source + real production logs,
+2026-08-31) that a `job_timeout` expiry itself does NOT trigger a retry
+(it raises `TimeoutError`, which ARQ's retry check excludes) — no retry has
+happened on any of the 5 test jobs so far. But ARQ's retry path does fire on
+a bare `asyncio.CancelledError` (e.g. the worker process itself being torn
+down mid-job, such as a deploy landing while a generation is running) —
+combined with this same orphaned-thread issue, THAT specific scenario could
+genuinely double-bill (orphaned thread completes AND a retry re-runs the
+whole thing). Not observed happening, just a real adjacent risk sharing the
+same root cause.
+
+Not fixed here — tracked for whenever it's prioritized. Real fix needs
+actual engineering thought (a cooperative-cancellation mechanism checked
+periodically inside `apply_proofread_to_pdf()`/`generate_pdf()` — similar in
+spirit to this session's own `cap_event` mechanism in `_yvl_memo_one_guide()`,
+just triggered by the ARQ-level timeout instead of the cost cap — or,
+more simply, treating a large `job_timeout` as acceptable and instead making
+sure a thread that DOES finish after the "official" deadline still gets its
+result surfaced somewhere retrievable, rather than silently discarded).
+
 ## Suggested next step
 
 Once this backlog is picked up: run both validators for real first
