@@ -436,22 +436,25 @@ def _build_arq_worker(redis_settings):
         max_jobs=2,           # max 2 concurrent permit generations
         handle_signals=False,  # uvicorn owns SIGTERM — don't let ARQ shadow it
         poll_delay=0.5,
-        # 2026-08-30: the real fix (parallelizing the YVL Compliance Memo's 3
-        # per-guide calls -- see YVL_MEMO_PARALLELIZATION_PROPOSAL.md) has
-        # shipped, but two live confirming runs since then both still hit the
-        # reverted 900s ceiling with zero YVL-memo calls yet logged as
-        # complete -- consistent with real ~3x concurrent speedup (single-
-        # call benchmark: 12m1s) landing just past 900s, not proof the fix
-        # failed, but not proof it worked either; no completed run exists
-        # yet to confirm real overlapping call timestamps. Estimated real
-        # need: ~3.5min (retrieval+draft+proofread) + ~12-13min (concurrent
-        # YVL, bounded by the slowest single call) + ~1-2min (RAQS) + PDF
-        # assembly =~ 17-19min. Bumping to 1200s (20 min) -- modest,
-        # evidence-based, not the earlier 1500s guess -- for ONE more
-        # confirming run. Same revert-after discipline as before: this is
-        # not a standing decision, see the run's real outcome before
-        # deciding permanent-vs-revert.
-        job_timeout=1200,
+        # 2026-08-31: bumped 1200s -> 1800s. The 1200s confirming run
+        # (2cbfcd04c2) proved real concurrency directly (yvl_memo_C.1 and
+        # yvl_memo_B.1 completed only 1m41s apart) and got all the way
+        # through RAQS via an orphaned thread ~3 min after ARQ's own kill --
+        # i.e. the real total need was ~1384s, not drastically more than
+        # 1200s, but real per-guide durations under concurrent load ran
+        # notably longer than the earlier isolated single-call benchmark
+        # (13m42s and 15m23s-truncated observed here, vs 12m1s isolated) --
+        # 1800s gives real margin above the one genuine measurement, on the
+        # principle that a completed run reporting as a false failure is
+        # strictly worse than a longer worker-slot hold. (Considered and
+        # rejected swapping the YVL memo calls to Haiku for the speed win --
+        # real side-by-side test on YVL C.1 showed a concrete, not
+        # hypothetical, quality loss: 58 individually-cited requirement
+        # numbers under Sonnet vs 0 under Haiku, plus a live example of an
+        # unflagged, invented-looking numeric material spec where Sonnet
+        # correctly flagged the equivalent claim [TÄYDENNETTÄVÄ] -- exactly
+        # the failure mode PR #119's honesty discipline exists to prevent.)
+        job_timeout=1800,
     )
 
 
