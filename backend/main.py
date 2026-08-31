@@ -420,8 +420,12 @@ _ARQ_WORKER_TASK = None   # asyncio.Task | None — the supervisor task, tracked
 # discards the result) — see ORPHANED_THREAD_COOPERATIVE_CANCELLATION_
 # PROPOSAL.md for the full reasoning. 300s gives ample room for even a slow
 # mid-stream check interval to resolve after the watchdog fires.
-_GENERATION_JOB_TIMEOUT_S = 1800
-_DEADLINE_BUFFER_S        = 300
+_GENERATION_JOB_TIMEOUT_S = 700   # TEMPORARY 2026-08-31 test value -- see below
+_DEADLINE_BUFFER_S        = 300   # TEMPORARY 2026-08-31 test value -- see below
+# TEMPORARY, deliberately shrunk for a live deadline-trigger test against the
+# real Anthropic API (effective watchdog fires at 700-300=400s, solidly
+# within the YVL memo phase for this hanketyyppi) -- reverting to 1800/300
+# immediately after one confirming run. Not a permanent change.
 
 # 2026-08-31: dedicated executor for the two heavy synchronous generation
 # calls in arq_task_generate_permit(), submitted to directly (concurrent.
