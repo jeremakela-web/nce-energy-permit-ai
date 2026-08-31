@@ -159,11 +159,15 @@ completed successfully ~3 minutes later. The orphaned thread ran the *whole
 pipeline* to real completion — very likely including full PDF assembly — and
 none of it was ever surfaced to the client; the result is silently discarded
 when the thread's `run_in_executor` future tries to resolve against an
-already-cancelled asyncio Task. Two earlier same-day jobs (`b56fa4719c`,
-`d4d140add7`) only show partial orphaned completion (one YVL guide each,
-not all three) — consistent with a subsequent deploy's process restart
-actually killing those specific orphaned threads before they got further,
-which a real deploy (unlike ARQ's own soft cancellation) genuinely can do.
+already-cancelled asyncio Task. `b56fa4719c` shows only partial orphaned
+completion (one YVL guide, not all three) — its A.1 call completed at
+07:35:47, itself already 5m24s *after* ARQ had marked the job terminally
+failed at 07:30:23 — and the next deploy (PR #134) landed 12 minutes later
+at 07:47:21. Plausible (not proven by a direct log line, unlike the rest of
+this entry) that this specific deploy's process restart cut off that
+orphaned thread mid-B.1, which a real deploy (unlike ARQ's own soft
+cancellation) genuinely can do -- real wasted work either way, whichever
+guide it was mid-generating when torn down.
 
 Real cost impact, not theoretical: summed real `retrieval_trace` cost data
 across 5 test attempts (2026-08-30/31) = **$7.51**, most of it from orphaned
@@ -173,18 +177,26 @@ call, so any timeout on any generation, past or future, has silently spent
 money on discarded work with zero record of it beyond digging through
 `retrieval_trace` by hand.
 
-Related, not yet a confirmed second bug but worth checking together: ARQ's
+Checked and ruled out for this specific window, not just asserted: ARQ's
 `retry_jobs=True`/`max_tries=5` defaults are unoverridden in
-`_build_arq_worker()`. Confirmed (real ARQ source + real production logs,
-2026-08-31) that a `job_timeout` expiry itself does NOT trigger a retry
-(it raises `TimeoutError`, which ARQ's retry check excludes) — no retry has
-happened on any of the 5 test jobs so far. But ARQ's retry path does fire on
-a bare `asyncio.CancelledError` (e.g. the worker process itself being torn
-down mid-job, such as a deploy landing while a generation is running) —
-combined with this same orphaned-thread issue, THAT specific scenario could
-genuinely double-bill (orphaned thread completes AND a retry re-runs the
-whole thing). Not observed happening, just a real adjacent risk sharing the
-same root cause.
+`_build_arq_worker()`, and its retry path *does* fire on a bare
+`asyncio.CancelledError` (distinct from the `TimeoutError`-wrapped kind a
+`job_timeout` expiry produces, which ARQ's retry check excludes and which
+is confirmed via real ARQ source + zero duplicate "START" log lines across
+all 5 test jobs to never have retried). A bare `CancelledError` — e.g. the
+worker process being torn down by a deploy while `run_job()` is still
+*actively* executing, before its own `job_timeout` has fired — genuinely
+would trigger a retry, which combined with this same orphaned-thread issue
+could double-bill for real (orphaned thread completes AND a retry re-runs
+the whole thing from scratch). Cross-checked every deploy from PR #135's
+revert (2026-08-30) through today against every test job's real ARQ-active
+window (start → its own `job_timeout` firing, confirmed via real
+timestamps, not the later orphaned-completion tail): zero overlaps, margins
+15s-23min. This specific compounding scenario did not occur in any of the 5
+real test attempts — the $7.51 total is genuinely complete, no hidden
+retry-driven duplicate calls hiding in it. Still a real latent risk for
+whenever a deploy DOES land mid-job in the future, sharing the same root
+cause as the orphaned-thread issue above and worth fixing together.
 
 Not fixed here — tracked for whenever it's prioritized. Real fix needs
 actual engineering thought (a cooperative-cancellation mechanism checked
