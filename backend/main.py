@@ -10,9 +10,11 @@ Käynnistys:
 
 import asyncio
 import base64
+import concurrent.futures
 import dataclasses
 import email.mime.multipart
 import email.mime.text
+import functools
 import io
 import json
 import logging
@@ -24,7 +26,8 @@ import time
 import unicodedata
 import uuid
 from collections import defaultdict
-from threading import Thread, Lock
+from datetime import datetime, timezone
+from threading import Thread, Lock, Event
 from typing import Optional
 
 import requests as _requests
@@ -65,6 +68,7 @@ from generate_application import (
     generate_application, generate_application_draft, apply_proofread_to_pdf,
     ApplicationInput, _get_embed_model, _get_chroma_col,
     InsufficientSourcesError, GenerationCapError,
+    AbortSignal, GenerationDeadlineExceeded,
 )
 import generate_application as _gen_app_module
 from country_registry import default_lang_for_country as _default_lang_for_country
@@ -406,6 +410,39 @@ app.include_router(_tenant_router)
 _ARQ_POOL = None          # arq.ArqRedis | None — None = Redis unavailable, fall back to Thread
 _ARQ_WORKER_TASK = None   # asyncio.Task | None — the supervisor task, tracked for clean shutdown
 
+# 2026-08-31: single source of truth for both ARQ's own hard job_timeout
+# (_build_arq_worker() below) and arq_task_generate_permit()'s internal
+# cooperative deadline watchdog — previously job_timeout was only hardcoded
+# once, inside the Worker(...) call; a second, independent hardcoded copy
+# for the watchdog would have been a real risk of drift. _DEADLINE_BUFFER_S
+# is the real margin between the watchdog firing (cooperative, clean,
+# between/within Claude calls) and ARQ's own hard ceiling (uncooperative,
+# discards the result) — see ORPHANED_THREAD_COOPERATIVE_CANCELLATION_
+# PROPOSAL.md for the full reasoning. 300s gives ample room for even a slow
+# mid-stream check interval to resolve after the watchdog fires.
+_GENERATION_JOB_TIMEOUT_S = 1800
+_DEADLINE_BUFFER_S        = 300
+
+# 2026-08-31: dedicated executor for the two heavy synchronous generation
+# calls in arq_task_generate_permit(), submitted to directly (concurrent.
+# futures.ThreadPoolExecutor.submit()) rather than via asyncio.to_thread()/
+# loop.run_in_executor(). This is deliberate, not just a style choice: a
+# plain asyncio.Future (what run_in_executor returns) transitions to
+# CANCELLED the instant .cancel() is called on it, even if the underlying
+# thread is still running -- so a done-callback attached to THAT future
+# fires immediately with cancelled()==True, never seeing the real late
+# result. Submitting directly gives a raw concurrent.futures.Future whose
+# own eventual resolution is independent of whatever happens to any asyncio
+# wrapper awaiting it elsewhere (confirmed: this is what actually lets the
+# late-completion capture below work at all). max_workers=4 -- max_jobs=2
+# means at most 2 ARQ jobs run concurrently, each submitting one heavy call
+# at a time (draft, then pdf, never both at once), so 4 gives headroom for
+# an occasional still-finishing late/orphaned call from a just-timed-out job
+# without starving a new one.
+_GENERATION_EXECUTOR = concurrent.futures.ThreadPoolExecutor(
+    max_workers=4, thread_name_prefix="generation",
+)
+
 
 def _build_arq_worker(redis_settings):
     from arq import cron
@@ -454,7 +491,15 @@ def _build_arq_worker(redis_settings):
         # unflagged, invented-looking numeric material spec where Sonnet
         # correctly flagged the equivalent claim [TÄYDENNETTÄVÄ] -- exactly
         # the failure mode PR #119's honesty discipline exists to prevent.)
-        job_timeout=1800,
+        #
+        # 2026-08-31: this is now a pure backstop, not the primary control --
+        # arq_task_generate_permit() runs its own internal cooperative
+        # deadline watchdog at _GENERATION_JOB_TIMEOUT_S - _DEADLINE_BUFFER_S,
+        # which should always fire first and let the job stop cleanly
+        # (GenerationDeadlineExceeded) before this hard ceiling is ever
+        # reached. Value unchanged from the evidence above; see
+        # ORPHANED_THREAD_COOPERATIVE_CANCELLATION_PROPOSAL.md.
+        job_timeout=_GENERATION_JOB_TIMEOUT_S,
     )
 
 
@@ -1489,16 +1534,76 @@ async def arq_task_generate_permit(
 
         inp = ApplicationInput(**inp_dict)
 
-        draft_bytes, sections, sources = await asyncio.to_thread(
-            generate_application_draft, inp
-        )
-        print(f"[arq] {job_id} draft done, sections={list(sections.keys())}", flush=True)
-        _proofread_store[job_id]["debug_sections"] = {
-            k: len(v) for k, v in sections.items() if isinstance(v, str)
-        }
+        # 2026-08-31: cooperative-cancellation watchdog + late-completion
+        # capture (COVERAGE_GAPS_BACKLOG.md item 6;
+        # ORPHANED_THREAD_COOPERATIVE_CANCELLATION_PROPOSAL.md). `signal` is
+        # threaded through generate_application_draft()/apply_proofread_to_pdf()
+        # down into _yvl_compliance_memo()'s already-existing mid-stream
+        # checkpoints -- the watchdog sets it with real margin
+        # (_DEADLINE_BUFFER_S) before ARQ's own hard job_timeout, so the
+        # common case is now a clean, cooperative stop
+        # (GenerationDeadlineExceeded, caught below) instead of an orphaned
+        # thread silently running past a client-visible "failed" status.
+        _job_start = time.monotonic()
+        _signal = AbortSignal(event=Event())
 
-        pdf = await asyncio.to_thread(apply_proofread_to_pdf, inp, sections, sources)
-        print(f"[arq] {job_id} pdf done len={len(pdf) if pdf else 0}", flush=True)
+        async def _deadline_watchdog() -> None:
+            _remaining = _GENERATION_JOB_TIMEOUT_S - _DEADLINE_BUFFER_S - (time.monotonic() - _job_start)
+            if _remaining > 0:
+                await asyncio.sleep(_remaining)
+            _signal.reason = _signal.reason or "deadline"
+            _signal.event.set()
+
+        _watchdog_task = asyncio.get_running_loop().create_task(_deadline_watchdog())
+
+        def _capture_late_result(kind: str, fut: "concurrent.futures.Future") -> None:
+            # Fires whenever the underlying thread actually finishes,
+            # independent of whether the code below awaiting it was itself
+            # cancelled by ARQ's own hard job_timeout (the rare backstop
+            # case -- see _GENERATION_EXECUTOR's own docstring for why this
+            # only works because we submit to it directly, not via
+            # asyncio.to_thread()/run_in_executor()). Turns "money spent for
+            # nothing" into "still possibly retrievable" for that rare case.
+            if fut.cancelled():
+                return
+            if fut.exception() is not None:
+                return  # failed for its own reason -- nothing usable to save
+            entry = _proofread_store.get(job_id)
+            # "running" means the normal await below is still in progress (or
+            # about to consume) THIS future's result -- true for a completely
+            # ordinary, on-time completion, since "status" only flips away
+            # from "running" once at the very end of the whole job, not
+            # after each individual future. Anything else (done/error/
+            # cap_exceeded/insufficient_sources/timeout_soft_abort) means the
+            # job already reached a terminal state through some OTHER path
+            # by the time this future resolved -- a genuinely late arrival.
+            if entry is None or entry.get("status") == "running":
+                return
+            late: dict = {"kind": kind, "completed_at": datetime.now(timezone.utc).isoformat()}
+            if kind == "pdf":
+                late["pdf_bytes"] = fut.result()
+            entry["late_completion"] = late
+            print(f"[arq] {job_id} LATE COMPLETION captured ({kind}) after official status was already set", flush=True)
+
+        try:
+            _draft_future = _GENERATION_EXECUTOR.submit(
+                generate_application_draft, inp, signal=_signal
+            )
+            _draft_future.add_done_callback(functools.partial(_capture_late_result, "draft"))
+            draft_bytes, sections, sources = await asyncio.wrap_future(_draft_future)
+            print(f"[arq] {job_id} draft done, sections={list(sections.keys())}", flush=True)
+            _proofread_store[job_id]["debug_sections"] = {
+                k: len(v) for k, v in sections.items() if isinstance(v, str)
+            }
+
+            _pdf_future = _GENERATION_EXECUTOR.submit(
+                apply_proofread_to_pdf, inp, sections, sources, signal=_signal
+            )
+            _pdf_future.add_done_callback(functools.partial(_capture_late_result, "pdf"))
+            pdf = await asyncio.wrap_future(_pdf_future)
+            print(f"[arq] {job_id} pdf done len={len(pdf) if pdf else 0}", flush=True)
+        finally:
+            _watchdog_task.cancel()
 
         _proofread_store[job_id]["pdf_bytes"] = pdf
         _proofread_store[job_id]["status"] = "done"
@@ -1568,6 +1673,24 @@ async def arq_task_generate_permit(
         _proofread_store[job_id]["cap_limit"] = exc.cap
         _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id,
                    f"CAP_HIT:{exc.kind}={exc.count}/{exc.cap}")
+
+    except GenerationDeadlineExceeded as exc:
+        # 2026-08-31: the cooperative-cancellation watchdog tripped and a
+        # worker stopped itself cleanly, between/within Claude calls --
+        # this is the real fix for the orphaned-thread problem
+        # (COVERAGE_GAPS_BACKLOG.md item 6). This is NOT ARQ's own hard
+        # job_timeout firing (that raises TimeoutError -> CancelledError,
+        # caught by the BaseException branch below, re-raised, and treated
+        # as a hard ARQ failure) -- this is our own internal deadline,
+        # tripped with real margin (_DEADLINE_BUFFER_S) before that hard
+        # ceiling, so the coroutine returns normally here: no re-raise, ARQ
+        # sees a genuinely completed job, and no thread keeps running past
+        # this point silently spending money on discarded work.
+        _proofread_store[job_id]["status"] = "timeout_soft_abort"
+        _proofread_store[job_id]["error"] = str(exc)
+        _proofread_store[job_id]["guides_completed"] = exc.guides_completed
+        _log_usage(client_ip, hanketyyppi, country, hankkeen_vaihe, job_id,
+                   f"DEADLINE_SOFT_ABORT:guides={len(exc.guides_completed)}")
 
     except Exception as exc:
         import traceback as _tb
@@ -1723,7 +1846,40 @@ async def proofread_status(job_id: str):
         "phase_status": job.get("phase_status"),
         "stage": _compute_generation_stage(_status, _completed_steps),
         "raqs": _raqs,
+        # 2026-08-31: true only in the rare case a background thread kept
+        # running past this job's own official status (e.g. the cooperative
+        # watchdog missed it, or ARQ's hard job_timeout fired first) and
+        # then genuinely finished anyway -- see _capture_late_result() in
+        # arq_task_generate_permit(). Deliberately not including the actual
+        # bytes/content here (this is a lightweight status poll) -- fetch
+        # via GET /api/proofread/{job_id}/late-completion if true.
+        "late_completion_available": "late_completion" in job,
     }
+
+
+@app.get("/api/proofread/{job_id}/late-completion")
+async def proofread_late_completion(job_id: str):
+    """Retrieve a background thread's late-arriving result, if one exists --
+    see _capture_late_result() in arq_task_generate_permit() and
+    COVERAGE_GAPS_BACKLOG.md item 6. Rare: only populated when the official
+    job status was already set (error/timeout_soft_abort/cap_exceeded) but
+    the underlying generation thread kept running afterward and genuinely
+    finished. Not the normal completion path — GET /api/proofread/{job_id}
+    /download is that; this exists so a late success isn't a total loss."""
+    job = _proofread_store.get(job_id)
+    if job is None or "late_completion" not in job:
+        raise HTTPException(status_code=404, detail="No late completion recorded for this job")
+    late = job["late_completion"]
+    if late.get("kind") != "pdf" or not late.get("pdf_bytes"):
+        return {"kind": late.get("kind"), "completed_at": late.get("completed_at"),
+                "note": "draft-stage late completion only — no PDF to download"}
+    prefix = _FILE_PREFIX.get(job.get("lang", "FI"), "hakemus")
+    filename = f"{prefix}_late_{_fn(job.get('hanketyyppi', 'doc'))}_{job_id}.pdf"
+    return Response(
+        content=late["pdf_bytes"],
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 _FILE_PREFIX = {"FI": "hakemus", "EN": "application", "SE": "ansökan",
