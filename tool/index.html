@@ -1,0 +1,2088 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Permit AI — Nordic Clean Energy</title>
+<meta name="description" content="NCE Energy — institutional-grade Nordic clean energy development: wind, solar, BESS, SMR. Permit AI tool for project developers." />
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="NCE Permit AI">
+<meta property="og:description" content="Regulatory Intelligence for Energy, Construction and Infrastructure Projects">
+<meta property="og:image" content="https://ncenergy.fi/images/nce_og_image.png">
+<meta property="og:url" content="https://ncenergy.fi">
+<meta property="og:site_name" content="NCE Permit AI">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NCE Permit AI">
+<meta name="twitter:description" content="Regulatory Intelligence for Energy, Construction and Infrastructure Projects">
+<meta name="twitter:image" content="https://ncenergy.fi/images/nce_og_image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/css/styles.css" />
+</head> 
+
+
+<body class="tool">
+
+
+
+<!-- ============================================================
+     TOOL VIEW (ncenergy.fi/tool)
+============================================================ -->
+<section id="view-tool" class="view tool-view" aria-hidden="true">
+
+<div class="tool-video-bg-wrapper">
+    <video class="tool-bg-video vid-active" muted playsinline preload="auto">
+      <source src="../assets/video/tool-forest.webm" type="video/webm">
+      <source src="../assets/video/tool-forest.mp4" type="video/mp4">
+    </video>
+    <video class="tool-bg-video vid-hidden" muted playsinline preload="auto">
+      <source src="../assets/video/tool-forest.webm" type="video/webm">
+      <source src="../assets/video/tool-forest.mp4" type="video/mp4">
+    </video>
+    <div class="tool-video-overlay"></div>
+  </div>
+
+
+  <!-- <div class="tool-bg" id="toolBg" data-accent="wind"></div> -->
+  <!-- <div class="tool-bg-overlay"></div> -->
+  <!-- <div class="tool-grid-overlay" id="toolGridOverlay"></div> -->
+
+  <header class="site-header tool-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="#top" class="brand">
+        <img src="images/nce_logo.svg" alt="">
+      </a>
+      <nav class="primary-nav" aria-label="Primary">
+        <a href="#projects" data-i18n="nav.projects">Projects</a>
+        <a href="#approach" data-i18n="nav.approach">Permission</a>
+        <a href="#tool" data-i18n="nav.tool" data-jump="tool">Permit AI</a>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-switcher" id="langSwitcher">
+          <button class="lang-current" aria-haspopup="listbox" aria-expanded="false">
+            <span id="langLabel">EN</span>
+            <svg viewBox="0 0 12 8" width="10" height="6" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+          <ul class="lang-menu" role="listbox">
+            <li role="option" data-lang="en">EN — English</li>
+            <li role="option" data-lang="fi">FI — Suomi</li>
+          </ul>
+        </div>
+        <!-- <button class="btn-pill" data-jump="tool" data-i18n="cta.openTool">← Back to site</button> -->
+        <a href="../index.html" class="btn-pill" data-jump0="tool" data-i18n="cta.openTool">← Back to site</a>
+      </div>
+    </div>
+  </header>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="tool-card">
+
+
+
+
+
+
+
+<div class="permit-layout">
+
+    <div class="permit-left">
+
+
+
+    <span class="tag" data-i18n="tool.tag">NCE PERMIT AI · v1.44</span>
+
+    <h2 class="serif-h2 light" data-i18n="tool.h2">Generate your <em>permit application</em>.</h2>
+   
+
+
+
+    <p class="tool-card-sub light" data-i18n="tool.sub">Select a project type and generate a structured regulatory draft in minutes.</p>
+
+
+
+        <!-- TYPE PICKER -->
+
+<div class="type-picker attention" id="typePicker" role="tablist">
+
+    <button class="tp-btn active" data-type="wind" role="tab">
+        <span class="tp-ic">◴</span><span data-i18n="tool.t.wind">Wind</span>
+    </button>
+
+    <button class="tp-btn" data-type="solar">
+        <span class="tp-ic">☼</span><span>Solar</span>
+    </button>
+
+    <button class="tp-btn" data-type="bess">
+        <span class="tp-ic">▤</span><span>BESS</span>
+    </button>
+
+    <button class="tp-btn" data-type="smr">
+        <span class="tp-ic">⌬</span><span>SMR</span>
+    </button>
+
+
+    <button class="tp-btn tp-more" id="moreTypesBtn">
+        <span class="tp-ic">+</span>
+        <span>More...</span>
+    </button>
+
+</div>
+
+
+
+
+
+
+<div
+class="project-selector"
+id="projectSelector">
+
+
+<div class="selector-head">
+
+    <div>
+        <span class="selector-kicker">
+            ADDITIONAL PROJECT TYPES
+        </span>
+
+        <h3>Select project type</h3>
+
+        <p>
+            Choose the asset category for permit generation.
+        </p>
+    </div>
+
+    <button class="selector-close" id="selectorClose">
+        ← Back
+    </button>
+
+</div>
+
+
+<div class="project-grid">
+
+    <button class="project-option" data-type="hydro">
+
+        <strong>Hydro</strong>
+        <span>Hydropower</span>
+
+    </button>
+
+    <button class="project-option" data-type="residential">
+
+        <strong>Residential</strong>
+        <span>Residential Building</span>
+
+    </button>
+
+    <button class="project-option" data-type="industrial">
+
+        <strong>Industrial</strong>
+        <span>Industrial Building</span>
+
+    </button>
+
+</div>
+
+</div>
+
+
+
+        <!-- FORM -->
+<!-- <form class="tool-form" id="permitForm">
+
+
+<input type="hidden" id="hanke_tyyppi" value="bess">
+
+
+  <div class="form-row">
+      <label>
+          <span>Applicant</span>
+          <input type="text" id="hakija" class=" ">
+      </label>
+
+      <label>
+          <span>Business ID</span>
+          <input type="text" id="y_tunnus">
+      </label>
+  </div>
+
+
+  <div class="form-row">
+      <label>
+          <span>Address</span>
+          <input type="text" id="osoite">
+      </label>
+
+      <label>
+          <span>Property ID</span>
+          <input type="text" id="kunta">
+      </label>
+  </div>
+
+
+  <div class="form-row">
+      <label>
+          <span>Municipality</span>
+          <input type="text" id="osoite">
+      </label>
+
+      <label>
+          <span>Total power (MW)</span>
+          <input type="text" id="kunta">
+      </label>
+  </div>
+
+
+  <label>
+      <span>Location / environmental impacts</span>
+      <input type="text" id="">
+  </label>
+
+
+
+
+  <div class="dyn_forms" id="dynamicFields">
+    dynamicFields...
+  </div>
+
+
+  <button type="submit" class="btn-hero">
+      Generate Permit Application
+  </button>
+
+</form>
+
+ -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- FORM -->
+<form class="tool-form" id="permitForm">
+
+    <input type="hidden" id="hanke_tyyppi" value="tuulivoima_maa">
+
+    <div class="form-row">
+
+        <label>
+            <span>Applicant</span>
+            <input type="text" id="hakija">
+        </label>
+
+        <label>
+            <span>Business ID</span>
+            <input type="text" id="y_tunnus">
+        </label>
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label>
+            <span>Address</span>
+            <input type="text" id="osoite">
+        </label>
+
+        <label>
+            <span>Property ID</span>
+            <input type="text" id="kiinteistotunnus">
+        </label>
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label>
+            <span>Municipality</span>
+            <input type="text" id="kunta">
+        </label>
+
+        <label>
+            <span>Total Power (MW)</span>
+            <input type="number" step="0.1" id="teho_mw">
+        </label>
+
+    </div>
+
+
+    <label>
+        <span>Location / Environmental Impacts</span>
+        <input type="text" id="sijainti_ymparistovaikutukset">
+    </label>
+
+
+    <div class="form-row">
+
+        <label>
+            <span>Capacity (MWh)</span>
+            <input type="number" step="0.1" id="kapasiteetti_mwh">
+        </label>
+
+        <label>
+            <span>Project Phase</span>
+            <select id="hankkeen_vaihe">
+                <option value="esiselvitys">Pre-study</option>
+                <option value="lupavaihe">Permitting</option>
+                <option value="rakentaminen">Construction</option>
+            </select>
+        </label>
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label>
+            <span>Target Authority</span>
+            <input type="text" id="kohdeviranomainen">
+        </label>
+
+        <label>
+            <span>Project ID</span>
+            <input type="text" id="hanke_id">
+        </label>
+
+    </div>
+
+
+    <div class="dyn_forms" id="dynamicFields"></div>
+
+
+    <button type="submit" class="btn-hero">
+        Generate Permit Application
+    </button>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+        <!-- FORM -->
+
+    </div>
+
+
+<aside class="permit-right">
+
+    <div class="project-preview">
+
+        <div class="project-image bg-windland"></div>
+
+        <div class="project-overlay"></div>
+
+<!--         <div class="project-country">
+            🇫🇮 Finland
+        </div>  -->
+
+<div class="project-country attention111111" id="countrySelector">
+
+    <button class="country-current" id="countryCurrent">
+
+        <span id="countryFlag">🇫🇮</span>
+
+        <span id="countryName">
+            Finland
+        </span>
+
+    </button>
+
+    <div class="country-menu">
+
+        <button data-country="FI">🇫🇮 Finland</button>
+        <button data-country="SE" class="disabled">🇸🇪 Sweden</button>
+        <button data-country="DK" class="disabled">🇩🇰 Denmark</button>
+        <button data-country="NO" class="disabled">🇳🇴 Norway</button>
+        <button data-country="PL">🇵🇱 Poland</button>
+        <button data-country="DE" class="disabled">🇩🇪 Germany</button>
+        <button data-country="EE" class="disabled">🇪🇪 Estonia</button>
+        <button data-country="LV" class="disabled">🇱🇻 Latvia</button>
+        <button data-country="LT">🇱🇹 Lithuania</button>
+
+    </div>
+
+</div>
+<!-- 
+<div class="project-country1 attention1" id="countrySelector">
+
+    <button class="country-btn active" data-country="FI">
+        🇫🇮
+    </button>
+
+    <button class="country-btn" data-country="SE">
+        🇸🇪
+    </button>
+
+    <button class="country-btn" data-country="DK">
+        🇩🇰
+    </button>
+
+    <button class="country-btn" data-country="NO">
+        🇳🇴
+    </button>
+
+    <button class="country-btn" data-country="PL">
+        🇵🇱
+    </button>
+
+    <button class="country-btn" data-country="DE">
+        🇩🇪
+    </button>
+
+</div> -->
+
+
+
+        <div class="project-bottom">
+
+            <span class="project-code" id="projectCode">01</span>
+
+            <h3 id="projectTitle">Wind — Land</h3>
+
+            <p class="project-meta" id="projectMeta">
+                Onshore Wind · 50–600 MW
+               
+            </p>
+
+            <div class="permit-tags" id="permitTags">
+
+<!--                 <span>Building Permit</span>
+                <span>Grid Connection</span>
+                <span>Chemical Permit</span> -->
+
+            </div>
+
+            <div class="country-flags" id="countryFlags">
+
+                <span>🇫🇮</span>
+                <span>🇸🇪</span>
+                <span>🇩🇰</span>
+                <span>🇳🇴</span>
+                <span>🇵🇱</span>
+                <span>🇩🇪</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!--     <aside class="permit-right">
+
+        <div class="project-preview">
+
+            <div class="project-image bg-bess"></div>
+
+            <div class="project-info">
+
+                <span class="project-code">01</span>
+
+                <h3>BESS</h3>
+
+                <p>
+                    Battery Energy Storage
+                    · 50–800 MWh
+                </p>
+
+            </div>
+
+            <div class="country-switch">
+
+                <button class="active">🇫🇮</button>
+                <button>🇸🇪</button>
+                <button>🇩🇰</button>
+                <button>🇳🇴</button>
+                <button>🇵🇱</button>
+                <button>🇩🇪</button>
+
+            </div>
+
+            <div class="permit-tags">
+
+                <span>Building Permit</span>
+                <span>Grid Connection</span>
+                <span>Chemical Permit</span>
+
+            </div>
+
+        </div>
+
+    </aside> -->
+
+</div>
+
+
+
+
+  </div>
+  <!-- tool-card -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- step2 -->
+
+
+<div id="generationPanel" class="generation-panel tool-card" style="display:none;">
+
+    <div class="generation-head">
+        <div>
+            <div class="generation-title">
+                AI GENERATION IN PROGRESS
+            </div>
+            <div class="generation-subtitle">
+                RAG + Claude is analyzing your project and preparing the regulatory draft
+            </div>
+        </div>
+
+        <div id="generationElapsed">00:00</div>
+    </div>
+
+    <div class="generation-steps">
+
+        <div class="generation-step waiting" data-step="1">
+            <div class="step-circle">1</div>
+            <strong>Analyze</strong>
+            <small>Understanding project</small>
+            <span>WAITING</span>
+        </div>
+
+        <div class="generation-step waiting" data-step="2">
+            <div class="step-circle">2</div>
+            <strong>Retrieve</strong>
+            <small>Searching regulations</small>
+            <span>WAITING</span>
+        </div>
+
+        <div class="generation-step waiting" data-step="3">
+            <div class="step-circle">3</div>
+            <strong>Compare</strong>
+            <small>Matching requirements</small>
+            <span>WAITING</span>
+        </div>
+
+        <div class="generation-step waiting" data-step="4">
+            <div class="step-circle">4</div>
+            <strong>Assess</strong>
+            <small>Risk &amp; impact</small>
+            <span>WAITING</span>
+        </div>
+
+        <div class="generation-step waiting" data-step="5">
+            <div class="step-circle">5</div>
+            <strong>Recommend</strong>
+            <small>Building draft</small>
+            <span>WAITING</span>
+        </div>
+
+        <div class="generation-step waiting" data-step="6">
+            <div class="step-circle">6</div>
+            <strong>Lifecycle</strong>
+            <small>Phase-lock check</small>
+            <span>WAITING</span>
+        </div>
+
+    </div>
+
+
+<!-- Живая информация о процессе -->
+<div class="generation-live">
+
+    <div class="live-activity">
+
+        <div class="live-title">
+            LIVE ACTIVITY
+        </div>
+
+        <div id="liveActivity">
+            <div class="live-item">
+                <span class="live-dot"></span>
+                <span>Starting generation...</span>
+                <small>—</small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="data-sources">
+
+        <div class="live-title">
+            DATA SOURCES
+        </div>
+
+        <div class="source-row">
+            <span>Regulatory chunks</span>
+            <strong id="sourceChunks">8446</strong>
+        </div>
+
+        <div class="source-row">
+            <span>Countries</span>
+            <strong id="sourceCountries">9</strong>
+        </div>
+
+        <div class="source-row">
+            <span>EU layer</span>
+            <strong id="sourceEuLayer">active</strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+    <div class="generation-status" id="generationStatus">
+        Starting generation...
+    </div>
+
+    <div class="generation-job">
+        Job ID: <span id="generationJobId">—</span>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- step3 -->
+<!-- =========================
+     RAQS QUALITY
+========================= -->
+<div class="results-row" id="resultsRow" style="display:none;">
+<section class="result-section" id="raqsSection">
+
+    <div class="result-section-title">
+        <span>2. RAQS — QUALITY ASSESSMENT</span>
+        <small>5 quality criteria with overall score</small>
+    </div>
+
+    <div class="raqs-card">
+
+        <div class="raqs-head">
+            <span>RAQS QUALITY SCORE</span>
+            <span class="raqs-live">LIVE</span>
+        </div>
+
+        <div class="raqs-body">
+
+            <div class="raqs-score">
+                <strong id="raqsScore">—</strong>
+                <small>/100</small>
+            </div>
+
+            <div class="raqs-bars">
+
+                <div class="raqs-row">
+                    <span>Citations</span>
+                    <i><b id="raqsCitations"></b></i>
+                    <em id="raqsCitationsValue">—</em>
+                </div>
+
+                <div class="raqs-row">
+                    <span>Permit Coverage</span>
+                    <i><b id="raqsCoverage"></b></i>
+                    <em id="raqsCoverageValue">—</em>
+                </div>
+
+                <div class="raqs-row">
+                    <span>Uncertainty</span>
+                    <i><b id="raqsUncertainty"></b></i>
+                    <em id="raqsUncertaintyValue">—</em>
+                </div>
+
+                <div class="raqs-row">
+                    <span>Comprehensiveness</span>
+                    <i><b id="raqsComprehensiveness"></b></i>
+                    <em id="raqsComprehensivenessValue">—</em>
+                </div>
+
+                <div class="raqs-row">
+                    <span>Readiness</span>
+                    <i><b id="raqsReadiness"></b></i>
+                    <em id="raqsReadinessValue">—</em>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="raqs-warning" id="raqsWarning">
+
+            <span>!</span>
+
+            <div>
+                <strong>UNCERTAINTY DETECTED</strong>
+                <small id="raqsWarningText">
+                    Expert verification may be required.
+                </small>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     RESULT
+========================= -->
+
+<section class="result-section" id="resultSection">
+
+    <div class="result-section-title">
+        <span>3. RESULT &amp; ACTIONS</span>
+        <small>Generated draft + mandatory expert review</small>
+    </div>
+
+    <div class="result-card">
+
+        <div class="result-head">
+
+            <span>PERMIT APPLICATION DRAFT</span>
+
+            <span class="result-review">
+                EXPERT REVIEW
+            </span>
+
+        </div>
+
+        <div class="result-file">
+
+            <div class="pdf-icon">
+                <img src="../assets/images/pdf.svg" alt="">
+            </div>
+
+            <div class="result-file-info">
+
+                <strong>Permit Application Draft</strong>
+
+                <span id="resultProject">
+                    Wind Power (Onshore) · Finland · 50 MW
+                </span>
+
+                <small id="resultGenerated">
+                    Generated: —
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="result-actions">
+
+            <a
+                id="downloadPdf"
+                class="result-btn result-primary"
+                href="#"
+                target="_blank"
+                download
+            >
+                ↓ &nbsp; DOWNLOAD PDF
+            </a>
+
+            <button
+                class="result-btn"
+                type="button"
+                id="viewSummary"
+            >
+                VIEW SUMMARY &nbsp; ◉
+            </button>
+
+        </div>
+
+        <div class="review-warning">
+
+            <span>!</span>
+
+            <div>
+                <strong>AI-GENERATED DRAFT</strong>
+
+                <p>
+                    This document requires expert review
+                    before official submission.
+                </p>
+            </div>
+
+        </div>
+
+        <button
+            class="review-btn"
+            type="button"
+            id="markReviewed"
+        >
+            ✓ &nbsp; MARK AS REVIEWED
+        </button>
+
+    </div>
+
+</section>
+</div>
+
+
+
+
+
+
+
+
+<div class="result-summary" id="resultSummary">
+
+    <div class="summary-item">
+        <span>Project type</span>
+        <strong id="summaryType">—</strong>
+    </div>
+
+    <div class="summary-item">
+        <span>Applicant</span>
+        <strong id="summaryApplicant">—</strong>
+    </div>
+
+    <div class="summary-item">
+        <span>Business ID</span>
+        <strong id="summaryBusinessId">—</strong>
+    </div>
+
+    <div class="summary-item">
+        <span>Property ID</span>
+        <strong id="summaryProperty">—</strong>
+    </div>
+
+    <div class="summary-item">
+        <span>Municipality</span>
+        <strong id="summaryMunicipality">—</strong>
+    </div>
+
+    <div class="summary-item">
+        <span>Total power</span>
+        <strong id="summaryPower">—</strong>
+    </div>
+
+    <div class="summary-item">
+        <span>Project phase</span>
+        <strong id="summaryPhase">—</strong>
+    </div>
+
+    <div class="summary-item">
+        <span>Target authority</span>
+        <strong id="summaryAuthority">—</strong>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+</div>  
+<!-- step2 -->
+
+
+
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+  
+/* Контейнер-обертка для полноэкранного видео-фона */
+.tool-video-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  /* Аппаратное ускорение */
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Общие стили для обоих видео */
+.tool-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 1.6s ease-in-out; /* Плавность склейки тумана */
+}
+
+/* Состояния активности для кроссфейда */
+.tool-bg-video.vid-active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.tool-bg-video.vid-hidden {
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Мягкий темный оверлей по ТЗ (45%) */
+.tool-video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 26, 38, 0.45); /* Твой базовый --navy-ink */
+  z-index: 3; /* Ложится поверх обоих видео, но под контент */
+  pointer-events: none;
+}
+
+/* Убедись, что сама карточка и шапка лежат выше видео-фона */
+.tool-header,
+.tool-card {
+  /*position: relative;*/
+  z-index: 10;
+}
+
+</style>
+
+
+
+<script src="../assets/js/script.js" defer></script>
+
+
+<script>
+  
+document.addEventListener('DOMContentLoaded', () => {
+  setupForestCrossfade();
+});
+
+function setupForestCrossfade() {
+  const v1 = document.querySelector('.tool-video-bg-wrapper .vid-active');
+  const v2 = document.querySelector('.tool-video-bg-wrapper .vid-hidden');
+
+  if (!v1 || !v2) return;
+
+  // Длина видео в секундах
+  const videoDuration = 22; 
+  // Время в секундах, за сколько до конца видео начнется наплыв (кроссфейд)
+  const fadeBuffer = 2.2; 
+  const triggerTime = videoDuration - fadeBuffer;
+
+  // Запускаем первое видео
+  v1.play().catch(err => console.log("Autoplay blocked:", err));
+
+  // Каждые 300мс проверяем тайминги
+  setInterval(() => {
+    // Если первое видео подходит к концу
+    if (v1.classList.contains('vid-active') && v1.currentTime >= triggerTime) {
+      if (v2.paused) {
+        v2.currentTime = 0;
+        v2.play().catch(() => {});
+        
+        // Меняем местами видимость
+        v2.classList.remove('vid-hidden');
+        v2.classList.add('vid-active');
+        
+        v1.classList.remove('vid-active');
+        v1.classList.add('vid-hidden');
+        
+        // Гасим старое видео после завершения css-анимации
+        setTimeout(() => { v1.pause(); }, 1600);
+      }
+    }
+    
+    // Если второе видео подходит к концу
+    else if (v2.classList.contains('vid-active') && v2.currentTime >= triggerTime) {
+      if (v1.paused) {
+        v1.currentTime = 0;
+        v1.play().catch(() => {});
+        
+        // Переключаем обратно
+        v1.classList.remove('vid-hidden');
+        v1.classList.add('vid-active');
+        
+        v2.classList.remove('vid-active');
+        v2.classList.add('vid-hidden');
+        
+        // Гасим
+        setTimeout(() => { v2.pause(); }, 1600);
+      }
+    }
+  }, 300);
+}
+
+
+
+// DATA
+const FLAGS = {
+
+    FI: "🇫🇮",
+    SE: "🇸🇪",
+    NO: "🇳🇴",
+    DA: "🇩🇰",
+    DK: "🇩🇰",
+    PL: "🇵🇱",
+    DE: "🇩🇪",
+    EE: "🇪🇪",
+    LV: "🇱🇻",
+    LT: "🇱🇹"
+
+};
+
+
+
+const PROJECTS = {
+
+  wind: {
+    code: "01",
+    name: "Wind",
+    title: "Wind Power (Onshore)",
+    meta: "Onshore Wind · 50–600 MW",
+    imageClass:"bg-windland",
+    description:
+      "Wind Power (onshore) — Land-based wind power project",
+    permits_off: [
+      "Construction Permit",
+      "Environmental Permit",
+      "EIA (≥10 turbines / ≥45 MW)",
+      "Zoning Area"
+    ],
+    countries:["FI","SE","DA","NO","PL","DE"]
+  },
+  solar: {
+    code: "02",
+    name: "Solar",
+    title: "Solar Power",
+    meta: "Utility PV · 10–400 MW",
+    imageClass:"bg-solar",
+    description:
+      "Solar panel project",
+    permits_off:[
+      "Construction permit","Environmental permit (large project)"
+    ],
+    countries:["FI","SE","DA","NO","PL","DE"]
+  },
+
+  bess: {
+
+    code: "03",
+
+    name: "BESS",
+
+    title: "Battery Energy Storage Project",
+
+    meta: "50–800 MWh",
+
+    imageClass:"bg-bess",
+
+    description:
+      "Battery Energy Storage Project",
+
+    permits_off:[
+
+      "Construction permit","Chemical permit (Tukes)","Grid connection (Fingrid/dist.)"
+
+    ],
+
+    countries:["FI","SE","DA","NO","PL","DE"]
+
+  }, 
+
+  smr: {
+
+    code: "04",
+
+    name: "SMR",
+
+    title: "Small Modular Reactor",
+
+    meta: "50–300 MW",
+
+    imageClass:"bg-smr",
+
+    description:
+      "Small Modular Reactor project (pre-licensing)",
+
+    permits_off:[
+
+      "Principle decision (TEM)",
+      "Construction licence (STUK)",
+      "Operating licence (STUK)",
+      "EIA"
+
+    ],
+
+    countries:["FI","SE","DA","NO","PL","DE"]
+
+  },
+
+  windsea: {
+
+    code: "05",
+
+    name: "Wind — Sea",
+
+    title: "Offshore Wind",
+
+    meta: "500 MW–2 GW",
+
+    imageClass:"bg-windsea",
+
+    description:
+      "Offshore wind power project",
+
+    permits_off:[
+
+      "Water permit (Luova)","EIA","Environmental permit","Construction permit (offshore)"
+
+    ],
+
+    countries:["FI","SE","DA","NO","PL","DE"]
+
+  },
+
+  hydro: {
+
+    code: "06",
+
+    name: "Hydro",
+
+    title: "Hydropower",
+
+    meta: "5–60 MW",
+
+    imageClass:"bg-hydro",
+
+    description:
+      "Hydroelectric project",
+
+    permits_off:[
+
+      "Water permit (Luova)","Environmental permit","Construction permit"
+
+    ],
+
+    countries:["FI","SE","DA","NO","PL","DE"]
+
+  },
+
+  residential: {
+
+    code: "07",
+
+    name: "Residential",
+
+    title: "Housing Development",
+
+    meta: "5–6 MW",
+
+    imageClass:"bg-residential",
+
+    description:
+      "Residential Building — permit application",
+
+    permits_off:[
+
+      "Construction permit"
+
+    ],
+
+    countries:["FI","SE","DA","NO","PL","DE"]
+
+  },
+
+  industrial: {
+
+    code: "08",
+
+    name: "Industrial",
+
+    title: "Manufacturing & Processing",
+
+    meta: "5–6 MW",
+
+    imageClass:"bg-industrial",
+
+    description:
+      "Industrial Building — permit application",
+
+    permits_off:[
+
+      "Construction permit",
+      "Environmental permit (possible)",
+
+    ],
+
+    countries:["FI","SE","DA","NO","PL","DE"]
+
+  },
+
+};
+// DATA
+
+
+
+// DYN FIELDS
+const DYNAMIC_FIELDS = {
+
+    wind: [
+
+        {
+            label:'Total Power (MW)',
+            id:'power_mw',
+            type:'number'
+        },
+
+        {
+            label:'Turbine Count',
+            id:'turbines',
+            type:'number'
+        }
+
+    ],
+
+    solar: [
+
+        {
+            label:'Installed Capacity (MWp)',
+            id:'capacity_mwp',
+            type:'number'
+        },
+
+        {
+            label:'Area (ha)',
+            id:'area_ha',
+            type:'number'
+        }
+
+    ],
+bess: [
+
+    {
+        label:'Power (MW)',
+        id:'power_mw',
+        type:'number'
+    },
+
+    {
+        label:'Capacity (MWh)',
+        id:'capacity_mwh',
+        type:'number'
+    },
+
+    {
+        label:'Grid Connection',
+        id:'grid_connection',
+        type:'select',
+
+        options:[
+            '110 kV',
+            '220 kV',
+            '400 kV',
+            'DSO',
+            'Fingrid'
+        ]
+    }
+
+],
+
+    smr: [
+
+        {
+            label:'Thermal Power (MW)',
+            id:'thermal_power',
+            type:'number'
+        },
+
+        {
+            label:'Reactor Type',
+            id:'reactor_type',
+            type:'text'
+        }
+
+    ],
+    hydro: [
+
+
+        {
+            label:'Reactor Type',
+            id:'reactor_type',
+            type:'text'
+        }
+
+    ],
+residential: [
+
+        {
+            label:'Floors',
+            id:'floor_num',
+            type:'number'
+        }
+
+
+
+    ],
+    industrial:[
+
+        {
+            label:'Intended use',
+            id:'int_use',
+
+            type:'select',
+
+            options:[
+                'Factory',
+                'Warehouse',
+                'Processing Plant',
+                'Manufacturing',
+                'Other'
+            ]
+        },
+
+        {
+            label:'Building volume (m³)',
+            id:'build_volume',
+            type:'number'
+        }
+
+    ],
+
+};
+// DYN FIELDS
+
+
+
+const moreBtn =
+document.getElementById('moreTypesBtn');
+
+const selector =
+document.getElementById('projectSelector');
+
+const main =
+document.getElementById('permitMain');
+
+const closeBtn =
+document.getElementById('selectorClose');
+
+moreBtn.addEventListener('click',()=>{
+
+    selector.classList.add('open');
+
+    main.classList.add('selector-open');
+
+});
+
+closeBtn.addEventListener('click', () => {
+
+    selector.classList.remove('open');
+
+});
+
+
+
+document
+.querySelectorAll('.tp-btn[data-type]')
+.forEach(btn=>{
+
+    btn.addEventListener('mouseenter',()=>{
+
+        renderProject(
+            btn.dataset.type
+        );
+
+    });
+
+    btn.addEventListener('mouseleave',()=>{
+
+        renderProject(
+            currentProject
+        );
+
+    });
+
+});
+document
+.querySelectorAll('.tp-btn[data-type]')
+.forEach(btn=>{
+
+    btn.addEventListener('click',()=>{
+
+        currentProject =
+            btn.dataset.type;
+
+        renderProject(
+            currentProject
+        );
+        renderDynamicFields(currentProject);
+        document
+        .getElementById('hanke_tyyppi')
+        .value =
+        currentProject;
+
+    });
+
+});
+
+
+document
+.querySelectorAll('.project-option')
+.forEach(card=>{
+
+    card.addEventListener('mouseenter',()=>{
+
+        renderProject(
+            card.dataset.type
+        );
+
+    });
+
+    card.addEventListener('mouseleave',()=>{
+
+        renderProject(
+            currentProject
+        );
+
+    });
+
+
+card.addEventListener('click',()=>{
+
+    currentProject =
+        card.dataset.type;
+
+    renderProject(currentProject);
+    renderDynamicFields(currentProject);
+
+    // loadPermits();
+
+    document.getElementById('hanke_tyyppi').value =
+        currentProject;
+
+    selector.classList.remove('open');
+
+});
+
+});
+
+
+// card.addEventListener('click',()=>{
+
+//     currentProject =
+//         card.dataset.type;
+
+//     renderProject(
+//         currentProject
+//     );
+
+//     selector.classList.remove('open');
+
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const TYPE_MAP = {
+
+    // ENERGY
+
+    wind: 'tuulivoima_maa',
+    offshore_wind: 'tuulivoima_meri',
+
+    solar: 'aurinkovoima',
+
+    bess: 'bess',
+
+    smr: 'smr',
+
+    hydro: 'vesivoima',
+
+    datacenter: 'datakeskus',
+
+
+    // BUILDINGS
+
+    residential: 'asuinrakennus',
+
+    industrial: 'teollisuus',
+
+    agriculture: 'maatalous',
+
+    commercial: 'liikerakennus',
+
+
+    // OTHER
+
+    environmental: 'ymparistolupa',
+
+    other: 'muu'
+
+};
+
+const COUNTRY_NAMES = {
+
+    FI: 'Finland',
+    SE: 'Sweden',
+    DK: 'Denmark',
+    NO: 'Norway',
+    PL: 'Poland',
+    DE: 'Germany',
+    EE: 'Estonia',
+    LV: 'Latvia',
+    LT: 'Lithuania'
+
+};
+
+const COUNTRY_FLAGS = {
+
+    FI: '🇫🇮',
+    SE: '🇸🇪',
+    DK: '🇩🇰',
+    NO: '🇳🇴',
+    PL: '🇵🇱',
+    DE: '🇩🇪',
+    EE: '🇪🇪',
+    LV: '🇱🇻',
+    LT: '🇱🇹'
+
+};
+
+let currentProject = 'wind';
+let currentCountry = 'FI';
+
+
+// const country = 'FI';
+// const type = 'bess';
+
+
+
+
+
+
+
+
+
+
+let PERMITS_DB = {};
+
+
+
+
+
+// async function loadPermits(){
+
+//     const apiType = TYPE_MAP[currentProject];
+
+//     const projectData =
+//         PERMITS_DB?.[currentCountry]?.[apiType];
+
+//     if(!projectData) return;
+
+//     const permits = [
+
+//         ...(projectData.esiselvitys?.luvat || []),
+//         ...(projectData.lupavaihe?.luvat || []),
+//         ...(projectData.rakentaminen?.luvat || [])
+
+//     ];
+
+//     const uniquePermits =
+//         [...new Set(permits)];
+
+//     document.getElementById('permitTags').innerHTML =
+//         uniquePermits
+//             .slice(0,8)
+//             .map(item => `<span>${item}</span>`)
+//             .join('');
+// }
+
+
+
+
+
+
+
+// TYPE RENDER
+function renderProject(type){
+
+    const p = PROJECTS[type];
+
+    if(!p) return;
+
+    document.getElementById('projectCode')
+        .textContent = p.code;
+
+    document.getElementById('projectTitle')
+        .textContent = p.title;
+
+    document.getElementById('projectMeta')
+        .textContent = p.meta;
+    
+    const previewImage =
+    document.querySelector('.project-image');
+
+    previewImage.className = `project-image ${p.imageClass}`;
+
+
+const apiType =
+    TYPE_MAP[type];
+
+const projectData =
+    PERMITS_DB?.[currentCountry]?.[apiType];
+
+if(!projectData) return;
+
+let permits = [];
+
+if(projectData){
+
+    permits = [
+
+        ...(projectData.esiselvitys?.luvat || []),
+        ...(projectData.lupavaihe?.luvat || []),
+        ...(projectData.rakentaminen?.luvat || [])
+
+    ];
+
+    permits = [...new Set(permits)];
+
+}
+
+document.getElementById('permitTags').innerHTML =
+    permits
+        .slice(0,8)
+        .map(x => `<span>${x}</span>`)
+        .join('');
+    // document.getElementById('permitTags').innerHTML =
+    //     p.permits
+    //     .map(x => `<span>${x}</span>`)
+    //     .join('');
+
+    document.getElementById('countryFlags').innerHTML =
+        p.countries
+        .map(c => `<span>${FLAGS[c]}</span>`)
+        .join('');
+}
+
+
+
+
+// TYPE RENDER
+
+
+
+
+
+
+
+async function loadPermitsDB(){
+
+    const response = await fetch(
+        'https://ai.ncenergy.fi/api/permits'
+    );
+
+    PERMITS_DB = await response.json();
+
+    renderProject(currentProject);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+loadPermitsDB();
+
+
+
+
+
+
+
+const countrySelector =
+    document.getElementById('countrySelector');
+
+const countryCurrent =
+    document.getElementById('countryCurrent');
+
+countryCurrent.addEventListener('click',()=>{
+ console.log('CLICK');
+    countrySelector.classList.toggle('open');
+
+});
+
+document
+.querySelectorAll('.country-menu button')
+.forEach(btn=>{
+
+    btn.addEventListener('click',()=>{
+
+        currentCountry =
+            btn.dataset.country;
+
+        document.getElementById('countryFlag')
+            .textContent =
+            COUNTRY_FLAGS[currentCountry];
+
+        document.getElementById('countryName')
+            .textContent =
+            COUNTRY_NAMES[currentCountry];
+
+        countrySelector.classList.remove('open');
+
+        // loadPermits();
+        renderProject(currentProject);
+        renderDynamicFields(currentProject);
+
+    });
+
+});
+// document
+// .querySelectorAll('.country-btn')
+// .forEach(btn=>{
+
+//     btn.addEventListener('click',()=>{
+
+//         currentCountry =
+//             btn.dataset.country;
+
+//         document
+//         .querySelectorAll('.country-btn')
+//         .forEach(x=>x.classList.remove('active'));
+
+//         btn.classList.add('active');
+
+//         loadPermits();
+
+//     });
+
+// });
+
+
+
+function renderDynamicFields(type){
+
+    const fields = 
+        DYNAMIC_FIELDS[type] || [];
+
+    const container =
+        document.getElementById('dynamicFields');
+
+    container.innerHTML =
+
+        fields.map(field => {
+
+            let control = '';
+
+            if(field.type === 'select'){
+
+                control = `
+
+                    <select id="${field.id}">
+
+                        <option value="">
+                            Select...
+                        </option>
+
+                        ${
+                            field.options
+                                .map(option => `
+                                    <option value="${option}">
+                                        ${option}
+                                    </option>
+                                `)
+                                .join('')
+                        }
+
+                    </select>
+
+                `;
+
+            }else{
+
+                control = `
+
+                    <input
+                        type="${field.type}"
+                        id="${field.id}"
+                    >
+
+                `;
+
+            }
+
+            return `
+
+                <label>
+
+                    <span>${field.label}</span>
+
+                    ${control}
+
+                </label>
+
+            `;
+
+        }).join('');
+
+}
+
+renderDynamicFields(currentProject);
+
+
+
+
+document
+    .getElementById('viewSummary')
+    .addEventListener('click', function () {
+
+        document
+            .getElementById('resultSummary')
+            .classList.toggle('open');
+
+    });
+
+
+
+</script>
+
+
+
+
+<!-- 
+
+<script>
+
+
+const PROJECT_TYPES = {
+
+    wind: 'tuulivoima_maa',
+    solar: 'aurinkovoima',
+    bess: 'BESS',
+    smr: 'SMR',
+
+    hydro: 'vesivoima',
+    residential: 'asuinrakennus',
+    industrial: 'teollisuus',
+    agriculture: 'maatalous',
+    commercial: 'liikerakennus',
+    datacenter: 'datakeskus',
+    hybrid: 'hybridi',
+    other: 'muu'
+
+};
+
+
+document.getElementById('permitForm').addEventListener('submit', function(e) {
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const payload = {
+
+        hanketyyppi:
+                PROJECT_TYPES[
+        document.getElementById('hanke_tyyppi').value
+    ],
+
+        kiinteistotunnus:
+            document.getElementById('kiinteistotunnus').value,
+
+        kunta:
+            document.getElementById('kunta').value,
+
+        hakija:
+            document.getElementById('hakija').value,
+
+        teho_mw:
+            Number(document.getElementById('teho_mw').value) || 0,
+
+        kapasiteetti_mwh:
+            Number(document.getElementById('kapasiteetti_mwh').value) || 0,
+
+        y_tunnus:
+            document.getElementById('y_tunnus').value,
+
+        osoite:
+            document.getElementById('osoite').value,
+
+        sijainti_ymparistovaikutukset:
+            document.getElementById('sijainti_ymparistovaikutukset').value,
+
+        hankkeen_vaihe:
+            document.getElementById('hankkeen_vaihe').value,
+
+        kohdeviranomainen:
+            document.getElementById('kohdeviranomainen').value,
+
+        lang: currentCountry === 'EE' ? 'ET' : 'EN',
+
+        country:
+            currentCountry,
+
+        session_id:
+            'sess_' + Math.random().toString(36).substring(2, 18),
+
+        hanke_id:
+            document.getElementById('hanke_id').value
+
+    };
+
+
+    console.log('FORM PAYLOAD:', payload);
+
+    alert(
+        JSON.stringify(payload, null, 4)
+    );
+
+    return false;
+
+}, true);
+
+</script>
+
+
+ -->
+
+
+
+<script src="../assets/js/generation.js"></script>
+
+
+
+
+</body>
+</html>
