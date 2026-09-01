@@ -176,17 +176,49 @@ Also includes header `X-Job-Id: 3f9a2b1c4d`.
 
 ### `GET /api/proofread/{job_id}`
 
-Poll job status after `POST /api/generate-application`.
+Poll job status after `POST /api/generate-application`. Recommended poll interval: 5-10s — a
+real generation can now legitimately take up to ~20-25 minutes (SMR/smr_bess in particular;
+see the YVL Compliance Memo note under `stage` below), so don't apply a short client-side
+give-up timeout — keep polling until a terminal `status` arrives.
 
-**Response 200 — in progress**
+**Response 200 — full shape (2026-08-31; `phase_status`/`stage`/`raqs`/`late_completion_available`
+are additive — always present, `null`/`false` when not yet applicable, never removed)**
 ```json
-{ "status": "pending", "error": null, "debug_sections": null }
+{
+  "status": "done",
+  "error": null,
+  "debug_sections": { "kuvaus": 1842, "perustelut": 1204, "luvat_teksti": 980, "toimenpiteet": 640 },
+  "phase_status": null,
+  "stage": "complete",
+  "raqs": {
+    "id": 28,
+    "generation_id": "60a92f2509",
+    "created_at": "2026-08-31T07:51:54.677442+00:00",
+    "overall": 3.2,
+    "scores": {
+      "viittaukset":    { "pisteet": 3, "perustelu": "..." },
+      "lupakattavuus":  { "pisteet": 4, "perustelu": "..." },
+      "epävarmuus":     { "pisteet": 2, "perustelu": "..." },
+      "kattavuus":      { "pisteet": 4, "perustelu": "..." },
+      "valmisteluaste": { "pisteet": 3, "perustelu": "..." }
+    },
+    "flagged": [ { "criterion": "epävarmuus", "pisteet": 2, "perustelu": "..." } ]
+  },
+  "late_completion_available": false
+}
 ```
 
-**Response 200 — complete**
-```json
-{ "status": "done", "error": null, "debug_sections": { "hankkeen_kuvaus": 1842, "perustelut": 1204 } }
-```
+| Field | Meaning |
+|---|---|
+| `status` | See status value table below |
+| `error` | `null`, or a message string for any non-success terminal status |
+| `debug_sections` | Character counts per drafted section; `null` until drafting starts |
+| `phase_status` | Phase-lock auto-advance result, if `session_id`/`hankkeen_vaihe` were sent and phase-lock is enabled; otherwise `null` |
+| `stage` | Real, computed progress marker — see values below. Use this for a progress UI, not a fixed-duration client-side timer |
+| `raqs` | RAQS quality self-review (5 criteria, 1-5 each, `overall` = average, `flagged` = any criterion ≤2). `null` until `status=="done"`, or if RAQS logging itself failed for this generation (rare, never blocks the PDF) |
+| `late_completion_available` | Almost always `false`. `true` only in the rare case a background thread kept running past this job's own already-set terminal status and genuinely finished anyway (e.g. an internal cooperative deadline check missed a narrow window). If `true`, fetch `GET /api/proofread/{job_id}/late-completion` — the normal `/download` endpoint won't have it, since the job's official status was never `"done"` |
+
+**`status` values**
 
 | `status` value | Meaning |
 |---|---|
@@ -195,6 +227,20 @@ Poll job status after `POST /api/generate-application`.
 | `done` | PDF ready for download |
 | `error` | Generation failed; `error` field contains message |
 | `insufficient_sources` | RAG knowledge base lacked sources for this type/country |
+| `cap_exceeded` | A per-generation Claude-API-call safety cap tripped (very rare — a resource guardrail, not a normal outcome) |
+| `timeout_soft_abort` | An internal generation-time budget was exceeded and the job stopped itself cleanly (as opposed to a hard failure) — currently only reachable for SMR/smr_bess, `country=="FI"` generations, which run a much longer YVL Compliance Memo pass; `error` contains details, `guides_completed` (if present) lists which parts finished first |
+
+**`stage` values** (only meaningful while `status=="running"`; once `status` reaches any
+terminal value, treat that as authoritative over `stage`)
+
+| `stage` value | Meaning |
+|---|---|
+| `retrieval` | Fetching regulatory source material |
+| `draft` | Drafting the application sections |
+| `proofread` | AI proofreading pass |
+| `raqs_final` | Final quality review — for SMR/smr_bess FI generations, this stage also covers the YVL Compliance Memo (3 regulatory-guide sections), which is why this stage can run considerably longer than the others for that project type |
+| `finalizing` | PDF assembly, right before completion |
+| `complete` | Same meaning as `status=="done"` |
 
 **Response 422 — insufficient_sources**
 ```json
@@ -207,6 +253,21 @@ Poll job status after `POST /api/generate-application`.
   }
 }
 ```
+
+---
+
+### `GET /api/proofread/{job_id}/late-completion`
+
+Rare-path endpoint — only relevant if `late_completion_available: true` was seen on a prior
+poll (see above). Retrieves a background generation that kept running after its own job
+already reported a terminal (non-`done`) status, and then genuinely finished. Not part of the
+normal completion flow — don't poll this speculatively.
+
+**Response 200** — if the late result was a PDF: `Content-Type: application/pdf`, same
+`Content-Disposition` shape as `/download`. If it was only the draft stage finishing late (no
+PDF), returns JSON: `{ "kind": "draft", "completed_at": "...", "note": "draft-stage late completion only — no PDF to download" }`.
+
+**Response 404** — no late completion recorded for this job (the normal case).
 
 ---
 
