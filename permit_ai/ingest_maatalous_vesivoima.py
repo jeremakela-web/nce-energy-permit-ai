@@ -59,6 +59,17 @@ CHUNK_CHARS = 1500
 OVERLAP     = 200
 BATCH       = 32
 
+# Added 2026-09-03: dual-write to permit_docs_v2. Found via PR #77 review
+# (Priority-2 closing sources) that this file wrote v1 (MiniLM) only —
+# invisible to real production retrieval, which has queried permit_docs_v2
+# (mpnet) exclusively since well before this file's original content was
+# first ingested. Same bug class independently named for this exact file
+# in PR #88's audit (2026-08-17), never actually fixed at the source.
+# Matches the dual-write pattern already used by backend/latvia_ingestion.py,
+# lithuania_ingestion.py, poland_ingestion.py, caruna_ingestion.py.
+EMBED_MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
+COLLECTION_V2  = "permit_docs_v2"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # INLINE documents -- (doc_id, source_label, url_or_None, text)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1668,29 +1679,47 @@ def ingest(dry_run: bool = False) -> None:
         sys.exit(1)
 
     print(f"[ingest_maatalous_vesivoima] Connecting to ChromaDB: {DB_DIR}")
-    model  = SentenceTransformer(EMBED_MODEL)
     client = chromadb.PersistentClient(path=str(DB_DIR))
-    col    = client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine"})
+    col_v1 = client.get_or_create_collection(COLLECTION,    metadata={"hnsw:space": "cosine"})
+    col_v2 = client.get_or_create_collection(COLLECTION_V2, metadata={"hnsw:space": "cosine"})
 
-    existing_ids: set[str] = set(col.get()["ids"])
-    print(f"[ingest_maatalous_vesivoima] Existing chunks: {len(existing_ids)}")
+    existing_v1: set[str] = set(col_v1.get()["ids"])
+    existing_v2: set[str] = set(col_v2.get()["ids"])
+    print(f"[ingest_maatalous_vesivoima] Existing chunks: v1={len(existing_v1)}  v2={len(existing_v2)}")
+
+    # Load models lazily and only if actually needed -- a dry-run or a run
+    # where everything is already fully synced (v1 and v2 both complete)
+    # should not pay the model-load cost.
+    model_v1 = model_v2 = None
+
+    def _model_v1():
+        nonlocal model_v1
+        if model_v1 is None:
+            model_v1 = SentenceTransformer(EMBED_MODEL)
+        return model_v1
+
+    def _model_v2():
+        nonlocal model_v2
+        if model_v2 is None:
+            model_v2 = SentenceTransformer(EMBED_MODEL_V2)
+        return model_v2
+
     print()
 
     verified_today = time.strftime("%Y-%m-%d", time.gmtime())
-    grand_new = 0
+    grand_new_v1 = 0
+    grand_new_v2 = 0
 
     for doc_id, source_label, url, text in DOCS:
         chunks = _chunk(text)
-        new_docs:  list[str]  = []
-        new_ids:   list[str]  = []
-        new_metas: list[dict] = []
 
+        all_ids:   list[str]  = []
+        all_docs:  list[str]  = []
+        all_metas: list[dict] = []
         for i, chunk in enumerate(chunks):
             id_ = f"maatalous_vesivoima_inline__{doc_id}__{i}"
-            if id_ in existing_ids:
-                continue
-            new_docs.append(chunk)
-            new_ids.append(id_)
+            all_ids.append(id_)
+            all_docs.append(chunk)
             meta = {
                 "country":       "FI",
                 "lang":          "fi",
@@ -1702,37 +1731,61 @@ def ingest(dry_run: bool = False) -> None:
             }
             if url:
                 meta["url"] = url
-            new_metas.append(meta)
+            all_metas.append(meta)
+
+        # Two independent "new" sets -- v1 and v2 can be out of sync in
+        # either direction (most commonly: content ingested before this
+        # dual-write existed is v1-complete but entirely missing from v2;
+        # this loop backfills that automatically, not just new DOCS entries).
+        def _new_for(existing: set[str]) -> tuple[list[str], list[str], list[dict]]:
+            ids, docs, metas = [], [], []
+            for id_, doc, meta in zip(all_ids, all_docs, all_metas):
+                if id_ not in existing:
+                    ids.append(id_)
+                    docs.append(doc)
+                    metas.append(meta)
+            return ids, docs, metas
+
+        new_v1_ids, new_v1_docs, new_v1_metas = _new_for(existing_v1)
+        new_v2_ids, new_v2_docs, new_v2_metas = _new_for(existing_v2)
 
         print(f"[{doc_id}] {source_label}")
-        print(f"  Chunks: {len(chunks)} total, {len(new_docs)} new")
+        print(f"  Chunks: {len(chunks)} total  |  new to v1: {len(new_v1_ids)}  new to v2: {len(new_v2_ids)}")
 
-        if not new_docs:
+        if not new_v1_ids and not new_v2_ids:
             print("  -> Nothing new to add\n")
             continue
 
         if dry_run:
-            print(f"  DRY-RUN: would add {len(new_docs)} chunks\n")
-            grand_new += len(new_docs)
+            print(f"  DRY-RUN: would add {len(new_v1_ids)} to v1, {len(new_v2_ids)} to v2\n")
+            grand_new_v1 += len(new_v1_ids)
+            grand_new_v2 += len(new_v2_ids)
             continue
 
-        for i in range(0, len(new_docs), BATCH):
-            b = slice(i, i + BATCH)
-            embs = model.encode(new_docs[b], show_progress_bar=False).tolist()
-            col.add(
-                documents=new_docs[b],
-                embeddings=embs,
-                ids=new_ids[b],
-                metadatas=new_metas[b],
-            )
-        existing_ids.update(new_ids)
-        grand_new += len(new_docs)
-        print(f"  Added {len(new_docs)} chunks\n")
+        if new_v1_ids:
+            model = _model_v1()
+            for i in range(0, len(new_v1_ids), BATCH):
+                b = slice(i, i + BATCH)
+                embs = model.encode(new_v1_docs[b], show_progress_bar=False).tolist()
+                col_v1.add(documents=new_v1_docs[b], embeddings=embs, ids=new_v1_ids[b], metadatas=new_v1_metas[b])
+            existing_v1.update(new_v1_ids)
+            grand_new_v1 += len(new_v1_ids)
+
+        if new_v2_ids:
+            model = _model_v2()
+            for i in range(0, len(new_v2_ids), BATCH):
+                b = slice(i, i + BATCH)
+                embs = model.encode(new_v2_docs[b], show_progress_bar=False).tolist()
+                col_v2.add(documents=new_v2_docs[b], embeddings=embs, ids=new_v2_ids[b], metadatas=new_v2_metas[b])
+            existing_v2.update(new_v2_ids)
+            grand_new_v2 += len(new_v2_ids)
+
+        print(f"  Added {len(new_v1_ids)} to v1, {len(new_v2_ids)} to v2\n")
 
     print(f"{'-'*55}")
     print("Summary (maatalous/vesivoima ingest):")
-    print(f"  New chunks added: {grand_new}")
-    print(f"  Total index size: {col.count()}")
+    print(f"  New chunks added: v1={grand_new_v1}  v2={grand_new_v2}")
+    print(f"  Total index size: v1={col_v1.count()}  v2={col_v2.count()}")
     print(f"{'-'*55}")
 
 
