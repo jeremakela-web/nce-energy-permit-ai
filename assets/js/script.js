@@ -164,12 +164,189 @@
       "footer.tag": "Finland · Sweden · Denmark · Norway · Poland · Germany",
 
       "tool.tag": "Permit AI · v1.4",
-      "tool.h2.html": "Define your <em>asset</em>.",
+      "tool.h2.html": "Generate your <em>permit application</em>.",
       "tool.sub": "Select a project type — the assistant will tailor jurisdictional flow, filings and timeline.",
       "tool.t.wind": "Wind",
       "tool.t.solar": "Solar",
       "tool.t.bess": "BESS",
       "tool.t.smr": "SMR",
+
+
+"tool.more": "+ MORE...",
+"tool.moreLabel": "MORE",
+
+"tool.selector.kicker": "ADDITIONAL PROJECT TYPES",
+"tool.selector.title": "Select project type",
+"tool.selector.text": "Choose the asset category for permit generation.",
+"tool.selector.back": "← Back",
+
+"tool.form.applicant": "Applicant",
+"tool.form.business": "Business ID",
+"tool.form.address": "Address",
+"tool.form.property": "Property ID",
+"tool.form.municipality": "Municipality",
+"tool.form.power": "Total Power (MW)",
+"tool.form.location": "Location / Environmental Impacts",
+"tool.form.capacity": "Capacity (MWh)",
+"tool.form.phase": "Project Phase",
+"tool.form.authority": "Target Authority",
+"tool.form.projectId": "Project ID",
+
+"tool.form.preStudy": "Pre-study",
+"tool.form.permitting": "Permitting",
+"tool.form.construction": "Construction",
+
+"tool.generate": "Generate Permit Application",
+
+
+
+"tool.generation.title": "AI GENERATION IN PROGRESS",
+"tool.generation.subtitle": "RAG + Claude is analyzing your project and preparing the regulatory draft",
+
+"tool.generation.analyze": "Analyze",
+"tool.generation.analyze.sub": "Understanding project",
+
+"tool.generation.retrieve": "Retrieve",
+"tool.generation.retrieve.sub": "Searching regulations",
+
+"tool.generation.compare": "Compare",
+"tool.generation.compare.sub": "Matching requirements",
+
+"tool.generation.assess": "Assess",
+"tool.generation.assess.sub": "Risk & impact",
+
+"tool.generation.recommend": "Recommend",
+"tool.generation.recommend.sub": "Building draft",
+
+"tool.generation.lifecycle": "Lifecycle",
+"tool.generation.lifecycle.sub": "Phase-lock check",
+
+"tool.generation.waiting": "WAITING",
+
+"tool.generation.liveActivity": "LIVE ACTIVITY",
+"tool.generation.starting": "Starting generation...",
+
+"tool.generation.dataSources": "DATA SOURCES",
+"tool.generation.regulatoryChunks": "Regulatory chunks",
+"tool.generation.countries": "Countries",
+"tool.generation.euLayer": "EU layer",
+"tool.generation.active": "active",
+
+"tool.generation.status": "Starting generation...",
+"tool.generation.jobId": "Job ID:",
+
+
+"tool.raqs.sectionTitle": "2. RAQS — QUALITY ASSESSMENT",
+"tool.raqs.sectionSubtitle": "5 quality criteria with overall score",
+
+"tool.raqs.title": "RAQS QUALITY SCORE",
+"tool.raqs.live": "LIVE",
+
+"tool.raqs.citations": "Citations",
+"tool.raqs.coverage": "Permit Coverage",
+"tool.raqs.uncertainty": "Uncertainty",
+"tool.raqs.comprehensiveness": "Comprehensiveness",
+"tool.raqs.readiness": "Readiness",
+
+"tool.raqs.warning": "UNCERTAINTY DETECTED",
+"tool.raqs.warningText": "Expert verification may be required.",
+
+
+"tool.result.sectionTitle": "3. RESULT & ACTIONS",
+"tool.result.sectionSubtitle": "Generated draft + mandatory expert review",
+
+"tool.result.title": "PERMIT APPLICATION DRAFT",
+"tool.result.review": "EXPERT REVIEW",
+
+"tool.result.fileTitle": "Permit Application Draft",
+"tool.result.generated": "Generated:",
+
+"tool.result.download": "↓ DOWNLOAD PDF",
+"tool.result.summary": "VIEW SUMMARY ◉",
+
+"tool.result.warning": "AI-GENERATED DRAFT",
+"tool.result.warningText": "This document requires expert review before official submission.",
+
+"tool.result.markReviewed": "✓ MARK AS REVIEWED",
+
+
+"tool.project.wind": "Wind",
+"tool.project.wind.title": "Wind Power (Onshore)",
+"tool.project.wind.meta": "Onshore Wind · 50–600 MW",
+"tool.project.wind.description": "Wind Power (onshore) — Land-based wind power project",
+
+"tool.project.solar": "Solar",
+"tool.project.solar.title": "Solar Power",
+"tool.project.solar.meta": "Utility PV · 10–400 MW",
+"tool.project.solar.description": "Solar panel project",
+
+"tool.project.bess": "BESS",
+"tool.project.bess.title": "Battery Energy Storage Project",
+"tool.project.bess.meta": "50–800 MWh",
+"tool.project.bess.description": "Battery Energy Storage Project",
+
+"tool.project.smr": "SMR",
+"tool.project.smr.title": "Small Modular Reactor",
+"tool.project.smr.meta": "50–300 MW",
+"tool.project.smr.description": "Small Modular Reactor project (pre-licensing)",
+
+"tool.project.windsea": "Wind — Sea",
+"tool.project.windsea.title": "Offshore Wind",
+"tool.project.windsea.meta": "500 MW–2 GW",
+"tool.project.windsea.description": "Offshore wind power project",
+
+"tool.project.hydro": "Hydro",
+"tool.project.hydro.title": "Hydropower",
+"tool.project.hydro.meta": "5–60 MW",
+"tool.project.hydro.description": "Hydroelectric project",
+
+"tool.project.residential": "Residential",
+"tool.project.residential.title": "Housing Development",
+"tool.project.residential.meta": "5–6 MW",
+"tool.project.residential.description": "Residential Building — permit application",
+
+"tool.project.industrial": "Industrial",
+"tool.project.industrial.title": "Manufacturing & Processing",
+"tool.project.industrial.meta": "5–6 MW",
+"tool.project.industrial.description": "Industrial Building — permit application",
+
+"tool.project.agriculture": "Agriculture",
+"tool.project.agriculture.title": "Farm Infrastructure",
+"tool.project.agriculture.meta": "5–6 MW",
+"tool.project.agriculture.description": "Agriculture Building — permit application",
+
+"tool.project.commercial": "Commercial",
+"tool.project.commercial.title": "Office & Retail Development",
+"tool.project.commercial.meta": "5–6 MW",
+"tool.project.commercial.description": "Commercial Building — permit application",
+
+"tool.project.other": "Other Project",
+"tool.project.other.title": "Custom Development",
+"tool.project.other.meta": "5–6 MW",
+"tool.project.other.description": "Custom Development Building — permit application",
+
+"tool.dynamic.wind.power": "Total Power (MW)",
+"tool.dynamic.wind.turbines": "Turbine Count",
+
+"tool.dynamic.solar.capacity": "Installed Capacity (MWp)",
+"tool.dynamic.solar.area": "Area (ha)",
+
+"tool.dynamic.bess.power": "Power (MW)",
+"tool.dynamic.bess.capacity": "Capacity (MWh)",
+"tool.dynamic.bess.grid": "Grid Connection",
+
+"tool.dynamic.smr.thermalPower": "Thermal Power (MW)",
+"tool.dynamic.smr.reactorType": "Reactor Type",
+
+"tool.dynamic.hydro.reactorType": "Water Power Type",
+
+"tool.dynamic.residential.floors": "Floors",
+
+"tool.dynamic.industrial.intendedUse": "Intended Use",
+"tool.dynamic.industrial.buildingVolume": "Building Volume (m³)",
+
+"tool.dynamic.select": "Select...",
+
       "tool.f.name": "Project name",
       "tool.f.jur": "Jurisdiction",
       "tool.f.cap": "Capacity (MW)",
@@ -349,13 +526,185 @@
     "footer.tag": "Suomi · Ruotsi · Tanska · Norja · Puola · Saksa",
 
     "tool.tag": "Permit AI · v1.4",
-    "tool.h2.html": "Määritä <em>hankkeesi</em>",
+    "tool.h2.html": "Luo <em>lupahakemuksesi</em>.",
     "tool.sub": "Valitse projektityyppi — järjestelmä mukauttaa luvituspolun, vaatimukset ja aikataulun automaattisesti.",
 
     "tool.t.wind": "Tuulivoima",
     "tool.t.solar": "Aurinkovoima",
     "tool.t.bess": "BESS",
     "tool.t.smr": "SMR",
+
+
+"tool.more": "+ LISÄÄ...",
+"tool.moreLabel": "LISÄÄ",
+
+"tool.selector.kicker": "MUUT PROJEKTITYYPIT",
+"tool.selector.title": "Valitse projektityyppi",
+"tool.selector.text": "Valitse hanketyyppi lupahakemuksen luomista varten.",
+"tool.selector.back": "← Takaisin",
+
+
+"tool.form.applicant": "Hakija",
+"tool.form.business": "Y-tunnus",
+"tool.form.address": "Osoite",
+"tool.form.property": "Kiinteistötunnus",
+"tool.form.municipality": "Kunta",
+"tool.form.power": "Kokonaisteho (MW)",
+"tool.form.location": "Sijainti / ympäristövaikutukset",
+"tool.form.capacity": "Kapasiteetti (MWh)",
+"tool.form.phase": "Hankkeen vaihe",
+"tool.form.authority": "Kohdeviranomainen",
+"tool.form.projectId": "Hanketunnus",
+
+"tool.form.preStudy": "Esiselvitys",
+"tool.form.permitting": "Lupavaihe",
+"tool.form.construction": "Rakentaminen",
+
+"tool.generate": "Luo lupahakemus",
+
+"tool.generation.title": "AI-GENEROINTI KÄYNNISSÄ",
+"tool.generation.subtitle": "RAG + Claude analysoi hankettasi ja valmistelee lupaluonnosta",
+
+"tool.generation.analyze": "Analysoi",
+"tool.generation.analyze.sub": "Hankkeen ymmärtäminen",
+
+"tool.generation.retrieve": "Hae",
+"tool.generation.retrieve.sub": "Säädösten haku",
+
+"tool.generation.compare": "Vertaa",
+"tool.generation.compare.sub": "Vaatimusten täsmäytys",
+
+"tool.generation.assess": "Arvioi",
+"tool.generation.assess.sub": "Riskit ja vaikutukset",
+
+"tool.generation.recommend": "Suosittele",
+"tool.generation.recommend.sub": "Luonnoksen laatiminen",
+
+"tool.generation.lifecycle": "Elinkaari",
+"tool.generation.lifecycle.sub": "Vaihelukituksen tarkistus",
+
+"tool.generation.waiting": "ODOTTAA",
+
+"tool.generation.liveActivity": "REAALIAIKAINEN TOIMINTA",
+"tool.generation.starting": "Generointi käynnistyy...",
+
+"tool.generation.dataSources": "TIETOLÄHTEET",
+"tool.generation.regulatoryChunks": "Sääntelyaineiston osiot",
+"tool.generation.countries": "Maat",
+"tool.generation.euLayer": "EU-TASO",
+"tool.generation.active": "aktiivinen",
+
+"tool.generation.status": "Generointi käynnistyy...",
+"tool.generation.jobId": "Työtunnus:",
+
+"tool.raqs.sectionTitle": "2. RAQS — LAADUNARVIOINTI",
+"tool.raqs.sectionSubtitle": "5 laatukriteeriä ja kokonaispistemäärä",
+
+"tool.raqs.title": "RAQS-LAATUPISTEET",
+"tool.raqs.live": "LIVE",
+
+"tool.raqs.citations": "Lähdeviitteet",
+"tool.raqs.coverage": "Lupavaatimusten kattavuus",
+"tool.raqs.uncertainty": "Epävarmuus",
+"tool.raqs.comprehensiveness": "Kattavuus",
+"tool.raqs.readiness": "Valmius",
+
+"tool.raqs.warning": "EPÄVARMUUTTA HAVAITTU",
+"tool.raqs.warningText": "Asiantuntijan tarkistus voi olla tarpeen.",
+
+"tool.result.sectionTitle": "3. TULOS JA TOIMENPITEET",
+"tool.result.sectionSubtitle": "Luotu luonnos + pakollinen asiantuntijatarkistus",
+
+"tool.result.title": "LUPAHAKEMUSLUONNOS",
+"tool.result.review": "ASIANTUNTIJATARKISTUS",
+
+"tool.result.fileTitle": "Lupahakemusluonnos",
+"tool.result.generated": "Luotu:",
+
+"tool.result.download": "↓ LATAA PDF",
+"tool.result.summary": "NÄYTÄ YHTEENVETO ◉",
+
+"tool.result.warning": "TEKOÄLYN TUOTTAMA LUONNOS",
+"tool.result.warningText": "Asiantuntijan on tarkistettava tämä asiakirja ennen virallista jättämistä.",
+
+"tool.result.markReviewed": "✓ MERKITSE TARKISTETUKSI",
+
+"tool.project.wind": "Tuulivoima",
+"tool.project.wind.title": "Maatuulivoima",
+"tool.project.wind.meta": "Maatuulivoima · 50–600 MW",
+"tool.project.wind.description": "Maatuulivoimahanke — maalla sijaitseva tuulivoimahanke",
+
+"tool.project.solar": "Aurinkovoima",
+"tool.project.solar.title": "Aurinkovoima",
+"tool.project.solar.meta": "Aurinkovoima · 10–400 MW",
+"tool.project.solar.description": "Aurinkopaneelihanke",
+
+"tool.project.bess": "BESS",
+"tool.project.bess.title": "Akk energiavarastohanke",
+"tool.project.bess.meta": "50–800 MWh",
+"tool.project.bess.description": "Akk energiavarastohanke",
+
+"tool.project.smr": "SMR",
+"tool.project.smr.title": "Pieni modulaarinen reaktori",
+"tool.project.smr.meta": "50–300 MW",
+"tool.project.smr.description": "Pienen modulaarisen reaktorin hanke (ennakkolupavaihe)",
+
+"tool.project.windsea": "Merituulivoima",
+"tool.project.windsea.title": "Merituulivoima",
+"tool.project.windsea.meta": "500 MW–2 GW",
+"tool.project.windsea.description": "Merituulivoimahanke",
+
+"tool.project.hydro": "Vesivoima",
+"tool.project.hydro.title": "Vesivoima",
+"tool.project.hydro.meta": "5–60 MW",
+"tool.project.hydro.description": "Vesivoimahanke",
+
+"tool.project.residential": "Asuinrakentaminen",
+"tool.project.residential.title": "Asuinrakennushanke",
+"tool.project.residential.meta": "5–6 MW",
+"tool.project.residential.description": "Asuinrakennus — lupahakemus",
+
+"tool.project.industrial": "Teollisuus",
+"tool.project.industrial.title": "Teollisuus- ja tuotantorakentaminen",
+"tool.project.industrial.meta": "5–6 MW",
+"tool.project.industrial.description": "Teollisuusrakennus — lupahakemus",
+
+"tool.project.agriculture": "Maatalous",
+"tool.project.agriculture.title": "Maatalouden infrastruktuuri",
+"tool.project.agriculture.meta": "5–6 MW",
+"tool.project.agriculture.description": "Maatalousrakennus — lupahakemus",
+
+"tool.project.commercial": "Liikerakentaminen",
+"tool.project.commercial.title": "Toimisto- ja liiketilarakentaminen",
+"tool.project.commercial.meta": "5–6 MW",
+"tool.project.commercial.description": "Liikerakennus — lupahakemus",
+
+"tool.project.other": "Muu hanke",
+"tool.project.other.title": "Muu kehityshanke",
+"tool.project.other.meta": "5–6 MW",
+"tool.project.other.description": "Muu rakennushanke — lupahakemus",
+
+"tool.dynamic.wind.power": "Kokonaisteho (MW)",
+"tool.dynamic.wind.turbines": "Turbiinien määrä",
+
+"tool.dynamic.solar.capacity": "Asennettu kapasiteetti (MWp)",
+"tool.dynamic.solar.area": "Pinta-ala (ha)",
+
+"tool.dynamic.bess.power": "Teho (MW)",
+"tool.dynamic.bess.capacity": "Kapasiteetti (MWh)",
+"tool.dynamic.bess.grid": "Verkkoliitäntä",
+
+"tool.dynamic.smr.thermalPower": "Lämpöteho (MW)",
+"tool.dynamic.smr.reactorType": "Reaktorityyppi",
+
+"tool.dynamic.hydro.reactorType": "Vesivoiman tyyppi",
+
+"tool.dynamic.residential.floors": "Kerrosten määrä",
+
+"tool.dynamic.industrial.intendedUse": "Käyttötarkoitus",
+"tool.dynamic.industrial.buildingVolume": "Rakennuksen tilavuus (m³)",
+
+"tool.dynamic.select": "Valitse...",
 
     "tool.f.name": "Projektin nimi",
     "tool.f.jur": "Toimivalta-alue",
@@ -395,6 +744,10 @@
 
   let currentLang = "en";
 
+  window.translate = function(key) {
+      return I18N[currentLang]?.[key] || key;
+  };
+
   function applyI18n() {
 
     document.documentElement.lang = currentLang;
@@ -416,8 +769,18 @@
     });
 
     // hero slides label
-    const idx = parseInt(document.getElementById("pagerIndex").textContent, 10) || 1;
-    document.getElementById("pagerName").textContent = dict["hero.slides"][idx - 1];
+    // const idx = parseInt(document.getElementById("pagerIndex").textContent, 10) || 1;
+    // document.getElementById("pagerName").textContent = dict["hero.slides"][idx - 1];
+    
+    // hero slides label
+    const pagerIndex = document.getElementById("pagerIndex");
+    const pagerName = document.getElementById("pagerName");
+    
+    if (pagerIndex && pagerName && dict["hero.slides"]) {
+        const idx = parseInt(pagerIndex.textContent, 10) || 1;
+        pagerName.textContent = dict["hero.slides"][idx - 1];
+    }
+
     // cards
     // renderCards();
     // lang labels
