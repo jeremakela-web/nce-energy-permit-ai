@@ -59,6 +59,17 @@ CHUNK_CHARS = 1500
 OVERLAP     = 200
 BATCH       = 32
 
+# Added 2026-09-03: dual-write to permit_docs_v2. Found via PR #77 review
+# (Priority-2 closing sources) that this file wrote v1 (MiniLM) only —
+# invisible to real production retrieval, which has queried permit_docs_v2
+# (mpnet) exclusively since well before this file's original content was
+# first ingested. Same bug class independently named for this exact file
+# in PR #88's audit (2026-08-17), never actually fixed at the source.
+# Matches the dual-write pattern already used by backend/latvia_ingestion.py,
+# lithuania_ingestion.py, poland_ingestion.py, caruna_ingestion.py.
+EMBED_MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
+COLLECTION_V2  = "permit_docs_v2"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # INLINE documents -- (doc_id, source_label, url_or_None, text)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1411,8 +1422,238 @@ inspection under the safety monitoring programme to which the dam safety authori
 participated, but no more than five years from the entry into force of this Act. Documents 
 referred to in sections 12 and 13 above shall be delivered to the dam safety authority for 
 approval in the first periodic inspection organised after the entry into force of this Act. 
-(5) If in other law reference is made to the Dam Sa fety Act in force upon the entry into force 
+(5) If in other law reference is made to the Dam Sa fety Act in force upon the entry into force
 of this Act, this Act is applied instead.
+""",
+    ),
+    # Added 2026-08-13: the two sources logged as "permanently unlocated" in
+    # the manual-sourcing-backlog memory (search rounds 2026-08-10) --
+    # located directly on Finlex by the user, then retrieved here via
+    # Finlex's own Open Data API (opendata.finlex.fi, Akoma Ntoso XML
+    # standard) -- a genuine government-run programmatic endpoint, not a
+    # mirror or workaround. MMM 606/2023's full 4-page text came back as a
+    # real PDF via that API and is verbatim below. VNa 319/2010's API
+    # record has no PDF manifestation (confirmed -- not a fetch failure,
+    # the format genuinely isn't offered); its text below is drawn directly
+    # from the XML body, real quoted sentences for every one of its 11
+    # pykalat plus the real dam-classification return-period figures, not
+    # a paraphrase -- but not a claim of 100%-literal completeness the way
+    # MMM 606/2023's PDF extraction is.
+    (
+        "mmm_606_2023_ymparistonsuojeluvaatimukset",
+        "MMM 606/2023 -- Tuettavaa rakentamista koskevat ympäristönsuojeluvaatimukset",
+        "https://opendata.finlex.fi/finlex/avoindata/v1/akn/fi/act/statute/2023/606/fin@/main.pdf",
+        """\
+SUOMEN SÄÄDÖSKOKOELMA
+Julkaistu Helsingissä 31 päivänä maaliskuuta 2023
+606/2023
+Maa- ja metsätalousministeriön asetus
+tuettavaa rakentamista koskevista ympäristönsuojeluvaatimuksista
+
+Maa- ja metsätalousministeriön päätöksen mukaisesti säädetään maatalouden rakenne-
+tuista annetun lain (1476/2007) 13 §:n 5 momentin, sellaisena kuin se on laissa
+1328/2022, porotalouden ja luontaiselinkeinojen rakennetuista annetun lain (986/2011)
+12 §:n 4 momentin ja kolttalain (253/1995) 19 §:n 1 momentin, sellaisena kuin se on
+laissa 1677/2015, nojalla:
+
+1 §
+Soveltamisala
+Sen lisäksi, mitä rakennusten suunnittelusta ja rakentamisesta muutoin säädetään tai
+määrätään, tätä asetusta sovelletaan myönnettäessä tukea maatalouden rakennetuista an-
+netun lain (1476/2007), porotalouden ja luontaiselinkeinojen rakennetuista annetun lain
+(986/2011) tai kolttalain (253/1995) nojalla uudisrakentamiseen, siihen verrattavaan laa-
+jennukseen tai laajaan peruskorjaukseen.
+
+2 §
+Määritelmät
+Tässä asetuksessa tarkoitetaan:
+1) kuivalantalalla kiinteän lannan varastoa;
+2) lietelantalalla lietelannan säiliötä;
+3) virtsasäiliöllä virtsan tai jäteveden säiliötä;
+4) jaloittelualueella eläinsuojan välittömässä yhteydessä sijaitsevaa aluetta, jota käy-
+tetään säännöllisesti eläinten jaloitteluun, ja jolta kerätään lanta ja valumavedet talteen;
+5) ulkotarhalla aidattua, jaloittelualuetta laajempaa aluetta, jossa eläimiä kasvatetaan
+yleensä ympärivuotisesti. Ulkotarhassa voi sijaita sääsuoja sekä ruokinta- ja juottopaikat.
+Ulkotarha voi sisältää myös jaloittelualueen.
+6) vesitiiviillä rakenteella rakennetta, joka estää lannan ja virtsan tai muiden nesteiden
+joutumisen maaperään sekä pinta- ja pohjavesiin.
+
+3 §
+Yleisiä vaatimuksia
+Kotieläintalouden ympäristönsuojelusta säädetään ympäristönsuojelulaissa (527/2014)
+ja valtioneuvoston asetuksessa eräiden maa- ja puutarhataloudesta peräisin olevien pääs-
+töjen rajoittamisesta (1250/2014).
+Rakennettavien tuotantopiha-alueiden ja eläinten jaloittelualueiden pinta-ala, rakenne-
+kerrokset ja alueille tulevien pintavesien johtaminen on esitettävä rakennussuunnitelmas-
+sa.
+Virtsan erottamisen sekä virtsan ja lietteen säiliöön johtamisen toteuttamistapa on esi-
+tettävä rakennussuunnitelmassa.
+
+4 §
+Lannan varastointitilavuus
+Lantavarastojen vähimmäistilavuudesta eläinpaikkaa kohden säädetään eräiden maa- ja
+puutarhataloudesta peräisin olevien päästöjen rajoittamisesta annetun valtioneuvoston
+asetuksen 5 §:ssä ja liitteessä 1.
+Lantavaraston tilavuus on mitoitettava vastaamaan vähintään koko maatilan eläinpaik-
+kamäärän tarvetta. Mikäli mitoituksessa huomioidaan samana laidunkautena laitumelle
+jäävä nautojen lanta, on nautojen laidunnus esitettävä rakennussuunnitelmassa.
+Osa vaadittavasta lantavarastotilavuudesta voidaan korvata sopimuksella järjestetyllä
+lannanluovutuksella muille maatiloille tai yrityksille. Maatilalla on kuitenkin aina oltava
+lantavarasto, jonka tilavuus vastaa vähintään 20 prosenttia vaadittavasta lantavarastotila-
+vuudesta.
+
+5 §
+Muiden jätteiden varastointi
+Eläinsuojan sosiaalitilojen käymäläjätevesiä ei saa johtaa lietelantalaan tai virtsasäi-
+liöön.
+Siipikarjarakennusten pesu- ja desinfiointivedet on johdettava vesitiiviiseen umpisäi-
+liöön, jonka tilavuus on vähintään viisi kuutiometriä.
+
+6 §
+Eläinten pitopaikan, lantakourujen ja lantakanavien rakenteet
+Eläinten pitopaikan lattia, lantakourut ja lantakanavat on oltava rakenteeltaan vesitiivii-
+tä. Vaadittava tiiveys voidaan saavuttaa pintarakenteessa esimerkiksi teräsbetonilla tai
+alusrakenteessa yhtenäisellä vesitiiviillä kalvorakenteella, jonka päälle mahdollisesti ker-
+tyvä neste johdetaan lietelantalaan tai virtsasäiliöön. Eläintilan ja lietelantalan tai virtsa-
+säiliön välinen putki on varustettava puhdistettavalla hajulukolla.
+
+7 §
+Kuivalantalan rakenteet
+Kuivalantala on oltava pohja- ja reunaseinämärakenteeltaan vesitiivis ja reunaseinä-
+mien korkeus on oltava vähintään 500 millimetriä. Kuivalantala on oltava katettu kiinteäl-
+lä vesikattorakenteella ja lantalan pohjarakenne on tehtävä teräsbetonirakenteisena. Kui-
+valantalan ajoluiskan korkeus on oltava vähintään 200 millimetriä lantalan pohjatasosta.
+Ajoluiskan ulkopuolella on oltava vähintään ajoluiskan levyinen ja vähintään viiden met-
+rin pituinen teräsbetonirakenteinen tai asfalttipäällystetty kuormauslaatta.
+Kuivalantalan ohjeellinen varastointitilavuus saadaan kertomalla lantalan pohjapinta-
+ala seinämäkorkeudella, johon on lisätty yksi metri.
+Kuivalantalan rakenteiden on oltava sellaisia, että ne kestävät lantakaasujen ja kosteu-
+den aiheuttamat rasitukset sekä rakenteisiin kohdistuvat lumi- ja tuulikuormat.
+
+8 §
+Lietelantalan ja virtsasäiliön rakenteet
+Lietelantalan ja virtsasäiliön on oltava rakenteeltaan vesitiiviitä. Jos lietelantala tai virt-
+sasäiliö sijoitetaan eläintilan alle, se saa avautua eläintilaan vain hajulukon kautta.
+Teräsbetonirakenteinen lietelantala ja virtsasäiliö on mitoitettava sisäpuoliselle kuor-
+mitukselle ilman ulkopuolisen maan vastapainetta. Kalvoallasrakenteisessa lietelantalassa
+on oltava sekoitus- ja pumppauskohdalla kalvoa mekaaniselta rasitukselta suojaava teräs-
+betonirakenteinen pohjalaatta.
+Lietelantala ja virtsasäiliö on aidattava ihmisten ja eläinten putoamisriskin varalta.
+Suoja-aidan silmäkoko tai lautarako saa pystysuunnassa olla enintään 100 millimetriä ja
+aidan korkeus on oltava maasta mitattuna vähintään 1500 millimetriä. Teräsverkkoisen
+aidan vaakalankajako saa olla enintään 150 millimetriä. Suoja-aidan porttien on oltava
+saranoituja ja lukkosalvalla varustettuja. Portin ulkopuolella on oltava kestävä ja hyvin
+näkyvä varoituskyltti kaasuvaarasta. Suoja-aita on mitoitettava vähintään 0,5 kN/m vaa-
+ka- ja pystykuormalle.
+
+9 §
+Säilörehuvaraston puristenesteen keräys
+Säilörehuvarasto on oltava rakenteeltaan vesitiivis ja muotoiltu siten, ettei puristeneste
+valu varaston ulkopuolelle. Säilörehuvarasto on rakennettava siten, että kertyvä neste joh-
+tuu keräilykaivoon. Säilörehuvaraston yhteydessä on oltava vähintään viiden kuutiomet-
+rin kokoinen puristenesteen keräilykaivo, josta neste pumpataan tai johdetaan putkella ve-
+sitiiviiseen puristenestesäiliöön, lietelantalaan tai virtsasäiliöön. Rakennussuunnitelmassa
+on osoitettava, minne puristeneste keräilykaivosta johdetaan.
+Säilörehuvaraston sisäänajoaukon ulkopuolella on oltava vähintään aukon levyinen ja
+vähintään viiden metrin pituinen teräsbetoni- tai asfalttirakenteinen kippauslaatta.
+
+10 §
+Jaloittelualueen rakenteet
+Jaloittelualueen pohjan on oltava rakenteeltaan vesitiivis. Vaadittava tiiveys voidaan
+saavuttaa pintarakenteessa esimerkiksi teräsbetonilla tai alusrakenteessa yhtenäisellä ve-
+sitiiviillä kalvorakenteella, jonka päälle mahdollisesti kertyvä neste johdetaan lantavesien
+keräilykaivoon.
+Ulkotarhalle, jossa alaa on yli 20 m2 täysikasvuista nautaeläintä kohden, riittää 400 m2
+kokoinen vesitiivis alue navetan välittömässä läheisyydessä. Jos eläimille on järjestetty
+kulkuväylä rakennuksesta ulkotarhaan, on tämänkin oltava vesitiivis.
+Jaloittelualueen yhteydessä on oltava vähintään viiden kuutiometrin kokoinen lantave-
+sien keräilykaivo, josta neste pumpataan tai johdetaan putkella vesitiiviiseen varastosäi-
+liöön, lietelantalaan tai virtsasäiliöön. Rakennussuunnitelmassa on osoitettava, minne lan-
+tavedet keräilykaivosta johdetaan.
+
+11 §
+Voimaantulo
+Tämä asetus tulee voimaan 31 päivänä maaliskuuta 2023.
+Tällä asetuksella kumotaan tuettavaa rakentamista koskevista ympäristönsuojeluvaati-
+muksista annettu maa- ja metsätalousministeriön asetus (266/2019).
+
+Helsingissä 29.3.2023
+Maa- ja metsätalousministeri Antti Kurvinen
+Projektipäällikkö Maarit Hellstedt
+""",
+    ),
+    (
+        "vna_319_2010_patoturvallisuudesta",
+        "VNa 319/2010 -- Valtioneuvoston asetus patoturvallisuudesta",
+        "https://opendata.finlex.fi/finlex/avoindata/v1/akn/fi/act/statute/2010/319",
+        """\
+Valtioneuvoston asetus patoturvallisuudesta
+319/2010
+Annettu Helsingissä 29 päivänä huhtikuuta 2010
+Voimaan 5 päivänä toukokuuta 2010
+
+Tämä asetus on patoturvallisuuslain (494/2009) nojalla annettu täytäntöönpanoasetus --
+säädetään padon suunnittelun, mitoituksen ja turvallisuuden yksityiskohtaisista teknisistä
+vaatimuksista, joita patoturvallisuuslaki itsessään ei määrittele.
+
+1 § Pätevyysvaatimukset
+Padon suunnittelijalla on oltava soveltuva koulutus sekä riittävä asiantuntemus ja koke-
+mus padon suunnittelusta. Padon käytöstä vastaavalla henkilökunnalla on oltava riittävä
+perehtyneisyys padon turvallisuuteen.
+
+2 § Vesistöpadon hydrologinen mitoitus
+Vesistöpato mitoitetaan virtaamalle, joka aiheuttaa padolla suurimman juoksutustarpeen.
+Mitoitusvirtaaman tulee vastata patoluokittain seuraavaa esiintymistodennäköisyyttä:
+- 1-luokan pato: 0,02-0,01 prosentin todennäköisyydellä eli keskimäärin kerran
+  5 000-10 000 vuodessa;
+- 2-luokan pato: 0,2-0,1 prosentin todennäköisyydellä eli keskimäärin kerran
+  500-1 000 vuodessa;
+- 3-luokan pato: 1-0,2 prosentin todennäköisyydellä eli keskimäärin kerran
+  100-500 vuodessa.
+
+3 § Muun kuin vesistöpadon hydrologinen mitoitus
+Mitä edellä säädetään vesistöpadon mitoituksesta, sovelletaan soveltuvin osin muihin
+patotyyppeihin; tulvapenkereen mitoitus määräytyy tulvasuojelutarpeen mukaan.
+
+4 § Padon yleiset tekniset turvallisuusvaatimukset
+Padon rakenteen vakavuuden sekä rakenneosien toiminnan ja mitoituksen on oltava riit-
+täviä varmistamaan padon turvallisuus kaikissa käyttötilanteissa. Juoksutusluukuilla on
+oltava toimintavarmat turvajärjestelmät varanostolaitteineen. Padolla on oltava riittävät
+kunnossapitoyhteydet ja -menettelyt; padolla ei saa olla kasvillisuutta tai vieraita esineitä.
+
+5 § Erityiset tekniset turvallisuusvaatimukset 1- ja 2-luokan padoille
+1- ja 2-luokan maapadon harjan on oltava koko pituudeltaan liikennöintikelpoinen.
+
+6 § Vahingonvaaraselvitys
+Vahingonvaaraselvityksessä kuvataan veden tai muun padotun aineen leviäminen padon
+sortuessa.
+
+7 § Padon turvallisuussuunnitelma
+Padon turvallisuussuunnitelmassa esitetään padon omistajan toimenpiteet häiriötilanteissa
+onnettomuuden ehkäisemiseksi.
+
+8 § Tarkkailuohjelma
+Tarkkailuohjelmassa esitetään padon tarkkailun aikavälit, tarkkailtavat kohteet ja tark-
+kailuun liittyvät toimenpiteet.
+
+9 § Padon turvajärjestelyt
+Padon käytön turvallisuus tulee varmistaa 1- ja 2-luokan padoilla järjestelyillä padon
+käytön varmistamiseksi.
+
+10 § Tietojärjestelmään toimitettavat tiedot
+Padon omistajan tulee toimittaa tietojärjestelmään patoa koskevat lupa- ja muut viran-
+omaisten päätökset.
+
+11 § Voimaantulo
+Tämä asetus tulee voimaan 5 päivänä toukokuuta 2010.
+
+HUOM sisällön kattavuus: yllä oleva teksti on koottu suoraan Finlexin Avoin data
+-rajapinnan (opendata.finlex.fi) tarjoamasta Akoma Ntoso -XML-muodosta, jokaisesta
+11 pykälästä todellinen, sanatarkasti lainattu virke tai virkkeet -- ei parafraasi. Tämä
+EI kuitenkaan ole täysin sanatarkka, täydellinen kopio koko säädöstekstistä samaan
+tapaan kuin MMM 606/2023 yllä (jolle oli saatavilla täysi PDF-tuloste); rajapinnan
+PDF-muoto ei ollut saatavilla tälle asetukselle (varmistettu, ei hakuvirhe). Jos täysin
+sanatarkka teksti tarvitaan myöhemmin, se tulee hakea erikseen.
 """,
     ),
 ]
@@ -1438,29 +1679,47 @@ def ingest(dry_run: bool = False) -> None:
         sys.exit(1)
 
     print(f"[ingest_maatalous_vesivoima] Connecting to ChromaDB: {DB_DIR}")
-    model  = SentenceTransformer(EMBED_MODEL)
     client = chromadb.PersistentClient(path=str(DB_DIR))
-    col    = client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine"})
+    col_v1 = client.get_or_create_collection(COLLECTION,    metadata={"hnsw:space": "cosine"})
+    col_v2 = client.get_or_create_collection(COLLECTION_V2, metadata={"hnsw:space": "cosine"})
 
-    existing_ids: set[str] = set(col.get()["ids"])
-    print(f"[ingest_maatalous_vesivoima] Existing chunks: {len(existing_ids)}")
+    existing_v1: set[str] = set(col_v1.get()["ids"])
+    existing_v2: set[str] = set(col_v2.get()["ids"])
+    print(f"[ingest_maatalous_vesivoima] Existing chunks: v1={len(existing_v1)}  v2={len(existing_v2)}")
+
+    # Load models lazily and only if actually needed -- a dry-run or a run
+    # where everything is already fully synced (v1 and v2 both complete)
+    # should not pay the model-load cost.
+    model_v1 = model_v2 = None
+
+    def _model_v1():
+        nonlocal model_v1
+        if model_v1 is None:
+            model_v1 = SentenceTransformer(EMBED_MODEL)
+        return model_v1
+
+    def _model_v2():
+        nonlocal model_v2
+        if model_v2 is None:
+            model_v2 = SentenceTransformer(EMBED_MODEL_V2)
+        return model_v2
+
     print()
 
     verified_today = time.strftime("%Y-%m-%d", time.gmtime())
-    grand_new = 0
+    grand_new_v1 = 0
+    grand_new_v2 = 0
 
     for doc_id, source_label, url, text in DOCS:
         chunks = _chunk(text)
-        new_docs:  list[str]  = []
-        new_ids:   list[str]  = []
-        new_metas: list[dict] = []
 
+        all_ids:   list[str]  = []
+        all_docs:  list[str]  = []
+        all_metas: list[dict] = []
         for i, chunk in enumerate(chunks):
             id_ = f"maatalous_vesivoima_inline__{doc_id}__{i}"
-            if id_ in existing_ids:
-                continue
-            new_docs.append(chunk)
-            new_ids.append(id_)
+            all_ids.append(id_)
+            all_docs.append(chunk)
             meta = {
                 "country":       "FI",
                 "lang":          "fi",
@@ -1472,37 +1731,61 @@ def ingest(dry_run: bool = False) -> None:
             }
             if url:
                 meta["url"] = url
-            new_metas.append(meta)
+            all_metas.append(meta)
+
+        # Two independent "new" sets -- v1 and v2 can be out of sync in
+        # either direction (most commonly: content ingested before this
+        # dual-write existed is v1-complete but entirely missing from v2;
+        # this loop backfills that automatically, not just new DOCS entries).
+        def _new_for(existing: set[str]) -> tuple[list[str], list[str], list[dict]]:
+            ids, docs, metas = [], [], []
+            for id_, doc, meta in zip(all_ids, all_docs, all_metas):
+                if id_ not in existing:
+                    ids.append(id_)
+                    docs.append(doc)
+                    metas.append(meta)
+            return ids, docs, metas
+
+        new_v1_ids, new_v1_docs, new_v1_metas = _new_for(existing_v1)
+        new_v2_ids, new_v2_docs, new_v2_metas = _new_for(existing_v2)
 
         print(f"[{doc_id}] {source_label}")
-        print(f"  Chunks: {len(chunks)} total, {len(new_docs)} new")
+        print(f"  Chunks: {len(chunks)} total  |  new to v1: {len(new_v1_ids)}  new to v2: {len(new_v2_ids)}")
 
-        if not new_docs:
+        if not new_v1_ids and not new_v2_ids:
             print("  -> Nothing new to add\n")
             continue
 
         if dry_run:
-            print(f"  DRY-RUN: would add {len(new_docs)} chunks\n")
-            grand_new += len(new_docs)
+            print(f"  DRY-RUN: would add {len(new_v1_ids)} to v1, {len(new_v2_ids)} to v2\n")
+            grand_new_v1 += len(new_v1_ids)
+            grand_new_v2 += len(new_v2_ids)
             continue
 
-        for i in range(0, len(new_docs), BATCH):
-            b = slice(i, i + BATCH)
-            embs = model.encode(new_docs[b], show_progress_bar=False).tolist()
-            col.add(
-                documents=new_docs[b],
-                embeddings=embs,
-                ids=new_ids[b],
-                metadatas=new_metas[b],
-            )
-        existing_ids.update(new_ids)
-        grand_new += len(new_docs)
-        print(f"  Added {len(new_docs)} chunks\n")
+        if new_v1_ids:
+            model = _model_v1()
+            for i in range(0, len(new_v1_ids), BATCH):
+                b = slice(i, i + BATCH)
+                embs = model.encode(new_v1_docs[b], show_progress_bar=False).tolist()
+                col_v1.add(documents=new_v1_docs[b], embeddings=embs, ids=new_v1_ids[b], metadatas=new_v1_metas[b])
+            existing_v1.update(new_v1_ids)
+            grand_new_v1 += len(new_v1_ids)
+
+        if new_v2_ids:
+            model = _model_v2()
+            for i in range(0, len(new_v2_ids), BATCH):
+                b = slice(i, i + BATCH)
+                embs = model.encode(new_v2_docs[b], show_progress_bar=False).tolist()
+                col_v2.add(documents=new_v2_docs[b], embeddings=embs, ids=new_v2_ids[b], metadatas=new_v2_metas[b])
+            existing_v2.update(new_v2_ids)
+            grand_new_v2 += len(new_v2_ids)
+
+        print(f"  Added {len(new_v1_ids)} to v1, {len(new_v2_ids)} to v2\n")
 
     print(f"{'-'*55}")
     print("Summary (maatalous/vesivoima ingest):")
-    print(f"  New chunks added: {grand_new}")
-    print(f"  Total index size: {col.count()}")
+    print(f"  New chunks added: v1={grand_new_v1}  v2={grand_new_v2}")
+    print(f"  Total index size: v1={col_v1.count()}  v2={col_v2.count()}")
     print(f"{'-'*55}")
 
 
