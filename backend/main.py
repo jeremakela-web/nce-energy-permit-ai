@@ -669,6 +669,16 @@ _ASSETS_DIR = os.path.join(_REPO_DIR, "assets")
 if os.path.isdir(_ASSETS_DIR):
     app.mount("/assets", StaticFiles(directory=_ASSETS_DIR), name="assets")
 
+# New frontend tool UI (Serkov), served from its own repo-root tool/ directory —
+# deliberately separate from backend/static/ so the two frontends never collide.
+# html=True serves tool/index.html automatically for both /tool and /tool/.
+# Mount only if the folder exists so the app still starts without it (mirrors
+# the /assets guard above) and so this is a no-op until that directory's
+# content is actually merged.
+_TOOL_DIR = os.path.join(_REPO_DIR, "tool")
+if os.path.isdir(_TOOL_DIR):
+    app.mount("/tool", StaticFiles(directory=_TOOL_DIR, html=True), name="tool")
+
 MML_API_KEY   = os.getenv("MML_API_KEY", "")
 PORT          = int(os.environ.get("PORT", 8000))
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
