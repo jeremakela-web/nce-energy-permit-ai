@@ -45,32 +45,23 @@ function updateLiveActivity(data) {
     let detail = 'Working on your permit application';
 
 
-    if (data.stage === 'draft') {
-
+    if (data.stage === 'retrieval') {
+        title = 'Retrieving regulatory sources...';
+    
+    } else if (data.stage === 'draft') {
         title = 'Generating regulatory draft...';
-        detail = 'AI is preparing the permit application';
-
-    }
-
-    else if (data.stage === 'proofread') {
-
+    
+    } else if (data.stage === 'proofread') {
         title = 'Proofreading regulatory draft...';
-        detail = 'Checking generated sections and requirements';
-
-    }
-
-    else if (data.stage === 'raqs') {
-
-        title = 'Running quality assessment...';
-        detail = 'Evaluating completeness and regulatory coverage';
-
-    }
-
-    else if (data.stage === 'ready') {
-
-        title = 'Permit application ready';
-        detail = 'Final document has been generated';
-
+    
+    } else if (data.stage === 'raqs_final') {
+        title = 'Running final quality assessment...';
+    
+    } else if (data.stage === 'finalizing') {
+        title = 'Building final PDF...';
+    
+    } else if (data.stage === 'complete') {
+        title = 'Permit application ready.';
     }
 
 
@@ -917,6 +908,7 @@ async function generateApplication() {
 const PROJECT_TYPES = {
 
     wind: 'tuulivoima_maa',
+    windsea: 'offshore_wind',
     solar: 'aurinkovoima',
     bess: 'BESS',
     smr: 'SMR',
@@ -976,10 +968,23 @@ const payload = {
     kohdeviranomainen:
         document.getElementById('kohdeviranomainen').value,
 
+    // lang:
+    //     currentCountry === 'EE'
+    //         ? 'ET'
+    //         : 'EN',
+
     lang:
-        currentCountry === 'EE'
-            ? 'ET'
-            : 'EN',
+        {
+            FI: 'FI',
+            SE: 'SV',
+            DA: 'DA',
+            NO: 'NO',
+            PL: 'PL',
+            DE: 'DE',
+            EE: 'ET',
+            LV: 'LV',
+            LT: 'LT'
+        }[currentCountry] || 'EN',
 
     country:
         currentCountry,
@@ -1414,21 +1419,21 @@ document
 
 
 
-document.getElementById('raqsScore').textContent = '87';
+// document.getElementById('raqsScore').textContent = '87';
 
-document.getElementById('raqsCitations').style.width = '92%';
-document.getElementById('raqsCitationsValue').textContent = '92';
+// document.getElementById('raqsCitations').style.width = '92%';
+// document.getElementById('raqsCitationsValue').textContent = '92';
 
-document.getElementById('raqsCoverage').style.width = '84%';
-document.getElementById('raqsCoverageValue').textContent = '84';
+// document.getElementById('raqsCoverage').style.width = '84%';
+// document.getElementById('raqsCoverageValue').textContent = '84';
 
-document.getElementById('raqsUncertainty').style.width = '91%';
-document.getElementById('raqsUncertaintyValue').textContent = '91';
+// document.getElementById('raqsUncertainty').style.width = '91%';
+// document.getElementById('raqsUncertaintyValue').textContent = '91';
 
-document.getElementById('raqsComprehensiveness').style.width = '83%';
-document.getElementById('raqsComprehensivenessValue').textContent = '83';
+// document.getElementById('raqsComprehensiveness').style.width = '83%';
+// document.getElementById('raqsComprehensivenessValue').textContent = '83';
 
-document.getElementById('raqsReadiness').style.width = '88%';
-document.getElementById('raqsReadinessValue').textContent = '88';
+// document.getElementById('raqsReadiness').style.width = '88%';
+// document.getElementById('raqsReadinessValue').textContent = '88';
 
 

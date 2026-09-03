@@ -72,7 +72,7 @@
             <li role="option" data-lang="fi">FI — Suomi</li>
           </ul>
         </div>
-        <!-- <button class="btn-pill" data-jump="tool" data-i18n="cta.openTool">← Back to site</button> -->
+
         <a href="../index.html" class="btn-pill" data-jump0="tool" data-i18n="cta.openTool">← Back to site</a>
       </div>
     </div>
@@ -105,7 +105,7 @@
 
     <span class="tag" data-i18n="tool.tag">NCE PERMIT AI · v1.44</span>
 
-    <h2 class="serif-h2 light" data-i18n="tool.h2">Generate your <em>permit application</em>.</h2>
+    <h2 class="serif-h2 light" data-i18n="tool.h2.html">Generate your <em>permit application</em>.</h2>
    
 
 
@@ -123,22 +123,23 @@
     </button>
 
     <button class="tp-btn" data-type="solar">
-        <span class="tp-ic">☼</span><span>Solar</span>
+        <span class="tp-ic">☼</span><span data-i18n="tool.t.solar">Solar</span>
     </button>
 
     <button class="tp-btn" data-type="bess">
-        <span class="tp-ic">▤</span><span>BESS</span>
+        <span class="tp-ic">▤</span><span data-i18n="tool.t.bess">BESS</span>
     </button>
 
     <button class="tp-btn" data-type="smr">
-        <span class="tp-ic">⌬</span><span>SMR</span>
+        <span class="tp-ic">⌬</span><span data-i18n="tool.t.smr">SMR</span>
     </button>
 
 
-    <button class="tp-btn tp-more" id="moreTypesBtn">
-        <span class="tp-ic">+</span>
-        <span>More...</span>
-    </button>
+
+<button class="tp-btn tp-more" id="moreTypesBtn">
+    <span class="more-selected" id="moreSelected" data-i18n="tool.more">+ MORE...</span>
+    <small class="more-label" id="moreLabel" data-i18n="tool.moreLabel">MORE</small>
+</button>
 
 </div>
 
@@ -147,53 +148,74 @@
 
 
 
-<div
-class="project-selector"
-id="projectSelector">
+
+<div class="project-selector" id="projectSelector">
 
 
 <div class="selector-head">
 
     <div>
-        <span class="selector-kicker">
+        <span class="selector-kicker" data-i18n="tool.selector.kicker">
             ADDITIONAL PROJECT TYPES
         </span>
 
-        <h3>Select project type</h3>
+        <h3 data-i18n="tool.selector.title">Select project type</h3>
 
-        <p>
+        <p data-i18n="tool.selector.text">
             Choose the asset category for permit generation.
         </p>
     </div>
 
-    <button class="selector-close" id="selectorClose">
+    <button class="selector-close" id="selectorClose" data-i18n="tool.selector.back">
         ← Back
     </button>
-
 </div>
+
+
 
 
 <div class="project-grid">
 
+    <button class="project-option" data-type="windsea">
+        <span class="project-option-code">05</span>
+        <strong data-i18n="tool.project.windsea">Wind — Sea</strong>
+        <span data-i18n="tool.project.windsea.title">Offshore Wind</span>
+    </button>
+
     <button class="project-option" data-type="hydro">
-
-        <strong>Hydro</strong>
-        <span>Hydropower</span>
-
+        <span class="project-option-code">06</span>
+        <strong data-i18n="tool.project.hydro">Hydro</strong>
+        <span data-i18n="tool.project.hydro.title">Hydropower</span>
     </button>
 
     <button class="project-option" data-type="residential">
-
-        <strong>Residential</strong>
-        <span>Residential Building</span>
-
+        <span class="project-option-code">07</span>
+        <strong data-i18n="tool.project.residential">Residential</strong>
+        <span data-i18n="tool.project.residential.title">Housing Development</span>
     </button>
 
     <button class="project-option" data-type="industrial">
+        <span class="project-option-code">08</span>
+        <strong data-i18n="tool.project.industrial">Industrial</strong>
+        <span data-i18n="tool.project.industrial.title">Manufacturing &amp; Processing</span>
+    </button>
 
-        <strong>Industrial</strong>
-        <span>Industrial Building</span>
+    <button class="project-option" data-type="agriculture">
+        <span class="project-option-code">09</span>
+        <strong data-i18n="tool.project.agriculture">Agriculture</strong>
+        <span data-i18n="tool.project.agriculture.title">Farm Infrastructure</span>
+    </button>
 
+    <button class="project-option" data-type="commercial">
+        <span class="project-option-code">10</span>
+        <strong data-i18n="tool.project.commercial">Commercial</strong>
+        <span data-i18n="tool.project.commercial.title">Office &amp; Retail Development</span>
+    </button>
+
+    <button class="project-option" data-type="other">
+        <span class="project-option-code">11</span>
+        <strong data-i18n="tool.project.other">Other Project</strong>
+        <span data-i18n="tool.project.other.title">Custom Development</span>
     </button>
 
 </div>
@@ -202,72 +224,6 @@ id="projectSelector">
 
 
 
-        <!-- FORM -->
-<!-- <form class="tool-form" id="permitForm">
-
-
-<input type="hidden" id="hanke_tyyppi" value="bess">
-
-
-  <div class="form-row">
-      <label>
-          <span>Applicant</span>
-          <input type="text" id="hakija" class=" ">
-      </label>
-
-      <label>
-          <span>Business ID</span>
-          <input type="text" id="y_tunnus">
-      </label>
-  </div>
-
-
-  <div class="form-row">
-      <label>
-          <span>Address</span>
-          <input type="text" id="osoite">
-      </label>
-
-      <label>
-          <span>Property ID</span>
-          <input type="text" id="kunta">
-      </label>
-  </div>
-
-
-  <div class="form-row">
-      <label>
-          <span>Municipality</span>
-          <input type="text" id="osoite">
-      </label>
-
-      <label>
-          <span>Total power (MW)</span>
-          <input type="text" id="kunta">
-      </label>
-  </div>
-
-
-  <label>
-      <span>Location / environmental impacts</span>
-      <input type="text" id="">
-  </label>
-
-
-
-
-  <div class="dyn_forms" id="dynamicFields">
-    dynamicFields...
-  </div>
-
-
-  <button type="submit" class="btn-hero">
-      Generate Permit Application
-  </button>
-
-</form>
-
- -->
 
 
 
@@ -287,12 +243,12 @@ id="projectSelector">
     <div class="form-row">
 
         <label>
-            <span>Applicant</span>
+            <span data-i18n="tool.form.applicant">Applicant</span>
             <input type="text" id="hakija">
         </label>
 
         <label>
-            <span>Business ID</span>
+            <span data-i18n="tool.form.business">Business ID</span>
             <input type="text" id="y_tunnus">
         </label>
 
@@ -302,12 +258,12 @@ id="projectSelector">
     <div class="form-row">
 
         <label>
-            <span>Address</span>
+            <span data-i18n="tool.form.address">Address</span>
             <input type="text" id="osoite">
         </label>
 
         <label>
-            <span>Property ID</span>
+            <span data-i18n="tool.form.property">Property ID</span>
             <input type="text" id="kiinteistotunnus">
         </label>
 
@@ -317,12 +273,12 @@ id="projectSelector">
     <div class="form-row">
 
         <label>
-            <span>Municipality</span>
+            <span data-i18n="tool.form.municipality">Municipality</span>
             <input type="text" id="kunta">
         </label>
 
         <label>
-            <span>Total Power (MW)</span>
+            <span data-i18n="tool.form.power">Total Power (MW)</span>
             <input type="number" step="0.1" id="teho_mw">
         </label>
 
@@ -330,7 +286,7 @@ id="projectSelector">
 
 
     <label>
-        <span>Location / Environmental Impacts</span>
+        <span data-i18n="tool.form.location">Location / Environmental Impacts</span>
         <input type="text" id="sijainti_ymparistovaikutukset">
     </label>
 
@@ -338,16 +294,16 @@ id="projectSelector">
     <div class="form-row">
 
         <label>
-            <span>Capacity (MWh)</span>
+            <span data-i18n="tool.form.capacity">Capacity (MWh)</span>
             <input type="number" step="0.1" id="kapasiteetti_mwh">
         </label>
 
         <label>
-            <span>Project Phase</span>
+            <span data-i18n="tool.form.phase">Project Phase</span>
             <select id="hankkeen_vaihe">
-                <option value="esiselvitys">Pre-study</option>
-                <option value="lupavaihe">Permitting</option>
-                <option value="rakentaminen">Construction</option>
+                <option value="esiselvitys" data-i18n="tool.form.preStudy">Pre-study</option>
+                <option value="lupavaihe" data-i18n="tool.form.permitting">Permitting</option>
+                <option value="rakentaminen" data-i18n="tool.form.construction">Construction</option>
             </select>
         </label>
 
@@ -357,12 +313,12 @@ id="projectSelector">
     <div class="form-row">
 
         <label>
-            <span>Target Authority</span>
+            <span data-i18n="tool.form.authority">Target Authority</span>
             <input type="text" id="kohdeviranomainen">
         </label>
 
         <label>
-            <span>Project ID</span>
+            <span data-i18n="tool.form.projectId">Project ID</span>
             <input type="text" id="hanke_id">
         </label>
 
@@ -372,7 +328,7 @@ id="projectSelector">
     <div class="dyn_forms" id="dynamicFields"></div>
 
 
-    <button type="submit" class="btn-hero">
+    <button type="submit" class="btn-hero" data-i18n="tool.generate">
         Generate Permit Application
     </button>
 
@@ -400,9 +356,6 @@ id="projectSelector">
 
         <div class="project-overlay"></div>
 
-<!--         <div class="project-country">
-            🇫🇮 Finland
-        </div>  -->
 
 <div class="project-country attention111111" id="countrySelector">
 
@@ -420,7 +373,7 @@ id="projectSelector">
 
         <button data-country="FI">🇫🇮 Finland</button>
         <button data-country="SE" class="disabled">🇸🇪 Sweden</button>
-        <button data-country="DK" class="disabled">🇩🇰 Denmark</button>
+        <button data-country="DA" class="disabled">🇩🇰 Denmark</button>
         <button data-country="NO" class="disabled">🇳🇴 Norway</button>
         <button data-country="PL">🇵🇱 Poland</button>
         <button data-country="DE" class="disabled">🇩🇪 Germany</button>
@@ -431,34 +384,7 @@ id="projectSelector">
     </div>
 
 </div>
-<!-- 
-<div class="project-country1 attention1" id="countrySelector">
 
-    <button class="country-btn active" data-country="FI">
-        🇫🇮
-    </button>
-
-    <button class="country-btn" data-country="SE">
-        🇸🇪
-    </button>
-
-    <button class="country-btn" data-country="DK">
-        🇩🇰
-    </button>
-
-    <button class="country-btn" data-country="NO">
-        🇳🇴
-    </button>
-
-    <button class="country-btn" data-country="PL">
-        🇵🇱
-    </button>
-
-    <button class="country-btn" data-country="DE">
-        🇩🇪
-    </button>
-
-</div> -->
 
 
 
@@ -475,9 +401,6 @@ id="projectSelector">
 
             <div class="permit-tags" id="permitTags">
 
-<!--                 <span>Building Permit</span>
-                <span>Grid Connection</span>
-                <span>Chemical Permit</span> -->
 
             </div>
 
@@ -499,49 +422,10 @@ id="projectSelector">
 </aside>
 
 
-<!--     <aside class="permit-right">
-
-        <div class="project-preview">
-
-            <div class="project-image bg-bess"></div>
-
-            <div class="project-info">
-
-                <span class="project-code">01</span>
-
-                <h3>BESS</h3>
-
-                <p>
-                    Battery Energy Storage
-                    · 50–800 MWh
-                </p>
-
-            </div>
-
-            <div class="country-switch">
-
-                <button class="active">🇫🇮</button>
-                <button>🇸🇪</button>
-                <button>🇩🇰</button>
-                <button>🇳🇴</button>
-                <button>🇵🇱</button>
-                <button>🇩🇪</button>
-
-            </div>
-
-            <div class="permit-tags">
-
-                <span>Building Permit</span>
-                <span>Grid Connection</span>
-                <span>Chemical Permit</span>
-
-            </div>
-
-        </div>
-
-    </aside> -->
 
 </div>
+
+
 
 
 
@@ -580,10 +464,10 @@ id="projectSelector">
 
     <div class="generation-head">
         <div>
-            <div class="generation-title">
+            <div class="generation-title" data-i18n="tool.generation.title">
                 AI GENERATION IN PROGRESS
             </div>
-            <div class="generation-subtitle">
+            <div class="generation-subtitle" data-i18n="tool.generation.subtitle">
                 RAG + Claude is analyzing your project and preparing the regulatory draft
             </div>
         </div>
@@ -595,44 +479,44 @@ id="projectSelector">
 
         <div class="generation-step waiting" data-step="1">
             <div class="step-circle">1</div>
-            <strong>Analyze</strong>
-            <small>Understanding project</small>
-            <span>WAITING</span>
+            <strong data-i18n="tool.generation.analyze">Analyze</strong>
+            <small data-i18n="tool.generation.analyze.sub">Understanding project</small>
+            <span data-i18n="tool.generation.waiting">WAITING</span>
         </div>
 
         <div class="generation-step waiting" data-step="2">
             <div class="step-circle">2</div>
-            <strong>Retrieve</strong>
-            <small>Searching regulations</small>
-            <span>WAITING</span>
+            <strong data-i18n="tool.generation.retrieve">Retrieve</strong>
+            <small data-i18n="tool.generation.retrieve.sub">Searching regulations</small>
+            <span data-i18n="tool.generation.waiting">WAITING</span>
         </div>
 
         <div class="generation-step waiting" data-step="3">
             <div class="step-circle">3</div>
-            <strong>Compare</strong>
-            <small>Matching requirements</small>
-            <span>WAITING</span>
+            <strong data-i18n="tool.generation.compare">Compare</strong>
+            <small data-i18n="tool.generation.compare.sub">Matching requirements</small>
+            <span data-i18n="tool.generation.waiting">WAITING</span>
         </div>
 
         <div class="generation-step waiting" data-step="4">
             <div class="step-circle">4</div>
-            <strong>Assess</strong>
-            <small>Risk &amp; impact</small>
-            <span>WAITING</span>
+            <strong data-i18n="tool.generation.assess">Assess</strong>
+            <small data-i18n="tool.generation.assess.sub">Risk &amp; impact</small>
+            <span data-i18n="tool.generation.waiting">WAITING</span>
         </div>
 
         <div class="generation-step waiting" data-step="5">
             <div class="step-circle">5</div>
-            <strong>Recommend</strong>
-            <small>Building draft</small>
-            <span>WAITING</span>
+            <strong data-i18n="tool.generation.recommend">Recommend</strong>
+            <small data-i18n="tool.generation.recommend.sub">Building draft</small>
+            <span data-i18n="tool.generation.waiting">WAITING</span>
         </div>
 
         <div class="generation-step waiting" data-step="6">
             <div class="step-circle">6</div>
-            <strong>Lifecycle</strong>
-            <small>Phase-lock check</small>
-            <span>WAITING</span>
+            <strong data-i18n="tool.generation.lifecycle">Lifecycle</strong>
+            <small data-i18n="tool.generation.lifecycle.sub">Phase-lock check</small>
+            <span data-i18n="tool.generation.waiting">WAITING</span>
         </div>
 
     </div>
@@ -643,14 +527,14 @@ id="projectSelector">
 
     <div class="live-activity">
 
-        <div class="live-title">
+        <div class="live-title" data-i18n="tool.generation.liveActivity">
             LIVE ACTIVITY
         </div>
 
         <div id="liveActivity">
             <div class="live-item">
                 <span class="live-dot"></span>
-                <span>Starting generation...</span>
+                <span data-i18n="tool.generation.starting">Starting generation...</span>
                 <small>—</small>
             </div>
         </div>
@@ -660,23 +544,23 @@ id="projectSelector">
 
     <div class="data-sources">
 
-        <div class="live-title">
+        <div class="live-title" data-i18n="tool.generation.dataSources">
             DATA SOURCES
         </div>
 
         <div class="source-row">
-            <span>Regulatory chunks</span>
+            <span data-i18n="tool.generation.regulatoryChunks">Regulatory chunks</span>
             <strong id="sourceChunks">8446</strong>
         </div>
 
         <div class="source-row">
-            <span>Countries</span>
+            <span data-i18n="tool.generation.countries">Countries</span>
             <strong id="sourceCountries">9</strong>
         </div>
 
         <div class="source-row">
-            <span>EU layer</span>
-            <strong id="sourceEuLayer">active</strong>
+            <span data-i18n="tool.generation.euLayer">EU layer</span>
+            <strong id="sourceEuLayer" data-i18n="tool.generation.active">active</strong>
         </div>
 
     </div>
@@ -686,11 +570,11 @@ id="projectSelector">
 
 
 
-    <div class="generation-status" id="generationStatus">
+    <div class="generation-status" id="generationStatus" data-i18n="tool.generation.status">
         Starting generation...
     </div>
 
-    <div class="generation-job">
+    <div class="generation-job" data-i18n="tool.generation.jobId">
         Job ID: <span id="generationJobId">—</span>
     </div>
 
@@ -724,15 +608,15 @@ id="projectSelector">
 <section class="result-section" id="raqsSection">
 
     <div class="result-section-title">
-        <span>2. RAQS — QUALITY ASSESSMENT</span>
-        <small>5 quality criteria with overall score</small>
+        <span data-i18n="tool.raqs.sectionTitle">2. RAQS — QUALITY ASSESSMENT</span>
+        <small data-i18n="tool.raqs.sectionSubtitle">5 quality criteria with overall score</small>
     </div>
 
     <div class="raqs-card">
 
         <div class="raqs-head">
-            <span>RAQS QUALITY SCORE</span>
-            <span class="raqs-live">LIVE</span>
+            <span data-i18n="tool.raqs.title">RAQS QUALITY SCORE</span>
+            <span class="raqs-live" data-i18n="tool.raqs.live">LIVE</span>
         </div>
 
         <div class="raqs-body">
@@ -745,31 +629,31 @@ id="projectSelector">
             <div class="raqs-bars">
 
                 <div class="raqs-row">
-                    <span>Citations</span>
+                    <span data-i18n="tool.raqs.citations">Citations</span>
                     <i><b id="raqsCitations"></b></i>
                     <em id="raqsCitationsValue">—</em>
                 </div>
 
                 <div class="raqs-row">
-                    <span>Permit Coverage</span>
+                    <span data-i18n="tool.raqs.coverage">Permit Coverage</span>
                     <i><b id="raqsCoverage"></b></i>
                     <em id="raqsCoverageValue">—</em>
                 </div>
 
                 <div class="raqs-row">
-                    <span>Uncertainty</span>
+                    <span data-i18n="tool.raqs.uncertainty">Uncertainty</span>
                     <i><b id="raqsUncertainty"></b></i>
                     <em id="raqsUncertaintyValue">—</em>
                 </div>
 
                 <div class="raqs-row">
-                    <span>Comprehensiveness</span>
+                    <span data-i18n="tool.raqs.comprehensiveness">Comprehensiveness</span>
                     <i><b id="raqsComprehensiveness"></b></i>
                     <em id="raqsComprehensivenessValue">—</em>
                 </div>
 
                 <div class="raqs-row">
-                    <span>Readiness</span>
+                    <span data-i18n="tool.raqs.readiness">Readiness</span>
                     <i><b id="raqsReadiness"></b></i>
                     <em id="raqsReadinessValue">—</em>
                 </div>
@@ -783,8 +667,8 @@ id="projectSelector">
             <span>!</span>
 
             <div>
-                <strong>UNCERTAINTY DETECTED</strong>
-                <small id="raqsWarningText">
+                <strong data-i18n="tool.raqs.warning">UNCERTAINTY DETECTED</strong>
+                <small id="raqsWarningText" data-i18n="tool.raqs.warningText">
                     Expert verification may be required.
                 </small>
             </div>
@@ -803,17 +687,17 @@ id="projectSelector">
 <section class="result-section" id="resultSection">
 
     <div class="result-section-title">
-        <span>3. RESULT &amp; ACTIONS</span>
-        <small>Generated draft + mandatory expert review</small>
+        <span data-i18n="tool.result.sectionTitle">3. RESULT &amp; ACTIONS</span>
+        <small data-i18n="tool.result.sectionSubtitle">Generated draft + mandatory expert review</small>
     </div>
 
     <div class="result-card">
 
         <div class="result-head">
 
-            <span>PERMIT APPLICATION DRAFT</span>
+            <span data-i18n="tool.result.title">PERMIT APPLICATION DRAFT</span>
 
-            <span class="result-review">
+            <span class="result-review" data-i18n="tool.result.review">
                 EXPERT REVIEW
             </span>
 
@@ -827,13 +711,13 @@ id="projectSelector">
 
             <div class="result-file-info">
 
-                <strong>Permit Application Draft</strong>
+                <strong data-i18n="tool.result.fileTitle">Permit Application Draft</strong>
 
                 <span id="resultProject">
                     Wind Power (Onshore) · Finland · 50 MW
                 </span>
 
-                <small id="resultGenerated">
+                <small id="resultGenerated" data-i18n="tool.result.generated">
                     Generated: —
                 </small>
 
@@ -848,15 +732,16 @@ id="projectSelector">
                 class="result-btn result-primary"
                 href="#"
                 target="_blank"
-                download
+                download  data-i18n="tool.result.download"
             >
                 ↓ &nbsp; DOWNLOAD PDF
             </a>
 
-            <button
+            <button 
                 class="result-btn"
                 type="button"
                 id="viewSummary"
+                 data-i18n="tool.result.summary"
             >
                 VIEW SUMMARY &nbsp; ◉
             </button>
@@ -868,9 +753,9 @@ id="projectSelector">
             <span>!</span>
 
             <div>
-                <strong>AI-GENERATED DRAFT</strong>
+                <strong  data-i18n="tool.result.warning">AI-GENERATED DRAFT</strong>
 
-                <p>
+                <p  data-i18n="tool.result.warningText">
                     This document requires expert review
                     before official submission.
                 </p>
@@ -882,6 +767,7 @@ id="projectSelector">
             class="review-btn"
             type="button"
             id="markReviewed"
+             data-i18n="tool.result.markReviewed"
         >
             ✓ &nbsp; MARK AS REVIEWED
         </button>
@@ -901,42 +787,42 @@ id="projectSelector">
 <div class="result-summary" id="resultSummary">
 
     <div class="summary-item">
-        <span>Project type</span>
+        <span data-i18n="tool.f.name">Project type</span>
         <strong id="summaryType">—</strong>
     </div>
 
     <div class="summary-item">
-        <span>Applicant</span>
+        <span data-i18n="tool.form.applicant">Applicant</span>
         <strong id="summaryApplicant">—</strong>
     </div>
 
     <div class="summary-item">
-        <span>Business ID</span>
+        <span data-i18n="tool.form.business">Business ID</span>
         <strong id="summaryBusinessId">—</strong>
     </div>
 
     <div class="summary-item">
-        <span>Property ID</span>
+        <span data-i18n="tool.form.property">Property ID</span>
         <strong id="summaryProperty">—</strong>
     </div>
 
     <div class="summary-item">
-        <span>Municipality</span>
+        <span data-i18n="tool.form.municipality">Municipality</span>
         <strong id="summaryMunicipality">—</strong>
     </div>
 
     <div class="summary-item">
-        <span>Total power</span>
+        <span data-i18n="tool.form.power">Total power</span>
         <strong id="summaryPower">—</strong>
     </div>
 
     <div class="summary-item">
-        <span>Project phase</span>
+        <span data-i18n="tool.form.phase">Project phase</span>
         <strong id="summaryPhase">—</strong>
     </div>
 
     <div class="summary-item">
-        <span>Target authority</span>
+        <span data-i18n="tool.form.authority">Target authority</span>
         <strong id="summaryAuthority">—</strong>
     </div>
 
@@ -994,68 +880,7 @@ id="projectSelector">
 
 
 
-
-
-
-<style>
-  
-/* Контейнер-обертка для полноэкранного видео-фона */
-.tool-video-bg-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: hidden;
-  /* Аппаратное ускорение */
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* Общие стили для обоих видео */
-.tool-bg-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 1.6s ease-in-out; /* Плавность склейки тумана */
-}
-
-/* Состояния активности для кроссфейда */
-.tool-bg-video.vid-active {
-  opacity: 1;
-  z-index: 2;
-}
-
-.tool-bg-video.vid-hidden {
-  opacity: 0;
-  z-index: 1;
-}
-
-/* Мягкий темный оверлей по ТЗ (45%) */
-.tool-video-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 26, 38, 0.45); /* Твой базовый --navy-ink */
-  z-index: 3; /* Ложится поверх обоих видео, но под контент */
-  pointer-events: none;
-}
-
-/* Убедись, что сама карточка и шапка лежат выше видео-фона */
-.tool-header,
-.tool-card {
-  /*position: relative;*/
-  z-index: 10;
-}
-
-</style>
-
+ 
 
 
 <script src="../assets/js/script.js" defer></script>
@@ -1131,7 +956,6 @@ const FLAGS = {
     SE: "🇸🇪",
     NO: "🇳🇴",
     DA: "🇩🇰",
-    DK: "🇩🇰",
     PL: "🇵🇱",
     DE: "🇩🇪",
     EE: "🇪🇪",
@@ -1142,306 +966,692 @@ const FLAGS = {
 
 
 
+
+
+
 const PROJECTS = {
 
   wind: {
     code: "01",
-    name: "Wind",
-    title: "Wind Power (Onshore)",
-    meta: "Onshore Wind · 50–600 MW",
-    imageClass:"bg-windland",
-    description:
-      "Wind Power (onshore) — Land-based wind power project",
+    nameKey: "tool.project.wind",
+    titleKey: "tool.project.wind.title",
+    metaKey: "tool.project.wind.meta",
+    descriptionKey: "tool.project.wind.description",
+    imageClass: "bg-windland",
+
     permits_off: [
       "Construction Permit",
       "Environmental Permit",
       "EIA (≥10 turbines / ≥45 MW)",
       "Zoning Area"
     ],
-    countries:["FI","SE","DA","NO","PL","DE"]
+
+    countries: ["FI","SE","DA","NO","PL","DE"]
   },
+
   solar: {
     code: "02",
-    name: "Solar",
-    title: "Solar Power",
-    meta: "Utility PV · 10–400 MW",
-    imageClass:"bg-solar",
-    description:
-      "Solar panel project",
-    permits_off:[
-      "Construction permit","Environmental permit (large project)"
+    nameKey: "tool.project.solar",
+    titleKey: "tool.project.solar.title",
+    metaKey: "tool.project.solar.meta",
+    descriptionKey: "tool.project.solar.description",
+    imageClass: "bg-solar",
+
+    permits_off: [
+      "Construction permit",
+      "Environmental permit (large project)"
     ],
-    countries:["FI","SE","DA","NO","PL","DE"]
+
+    countries: ["FI","SE","DA","NO","PL","DE"]
   },
 
   bess: {
-
     code: "03",
+    nameKey: "tool.project.bess",
+    titleKey: "tool.project.bess.title",
+    metaKey: "tool.project.bess.meta",
+    descriptionKey: "tool.project.bess.description",
+    imageClass: "bg-bess",
 
-    name: "BESS",
-
-    title: "Battery Energy Storage Project",
-
-    meta: "50–800 MWh",
-
-    imageClass:"bg-bess",
-
-    description:
-      "Battery Energy Storage Project",
-
-    permits_off:[
-
-      "Construction permit","Chemical permit (Tukes)","Grid connection (Fingrid/dist.)"
-
+    permits_off: [
+      "Construction permit",
+      "Chemical permit (Tukes)",
+      "Grid connection (Fingrid/dist.)"
     ],
 
-    countries:["FI","SE","DA","NO","PL","DE"]
-
-  }, 
+    countries: ["FI","SE","DA","NO","PL","DE"]
+  },
 
   smr: {
-
     code: "04",
+    nameKey: "tool.project.smr",
+    titleKey: "tool.project.smr.title",
+    metaKey: "tool.project.smr.meta",
+    descriptionKey: "tool.project.smr.description",
+    imageClass: "bg-smr",
 
-    name: "SMR",
-
-    title: "Small Modular Reactor",
-
-    meta: "50–300 MW",
-
-    imageClass:"bg-smr",
-
-    description:
-      "Small Modular Reactor project (pre-licensing)",
-
-    permits_off:[
-
+    permits_off: [
       "Principle decision (TEM)",
       "Construction licence (STUK)",
       "Operating licence (STUK)",
       "EIA"
-
     ],
 
-    countries:["FI","SE","DA","NO","PL","DE"]
-
+    countries: ["FI","SE","DA","NO","PL","DE"]
   },
 
   windsea: {
-
     code: "05",
+    nameKey: "tool.project.windsea",
+    titleKey: "tool.project.windsea.title",
+    metaKey: "tool.project.windsea.meta",
+    descriptionKey: "tool.project.windsea.description",
+    imageClass: "bg-windsea",
 
-    name: "Wind — Sea",
-
-    title: "Offshore Wind",
-
-    meta: "500 MW–2 GW",
-
-    imageClass:"bg-windsea",
-
-    description:
-      "Offshore wind power project",
-
-    permits_off:[
-
-      "Water permit (Luova)","EIA","Environmental permit","Construction permit (offshore)"
-
+    permits_off: [
+      "Water permit (Luova)",
+      "EIA",
+      "Environmental permit",
+      "Construction permit (offshore)"
     ],
 
-    countries:["FI","SE","DA","NO","PL","DE"]
-
+    countries: ["FI","SE","DA","NO","PL","DE"]
   },
 
   hydro: {
-
     code: "06",
+    nameKey: "tool.project.hydro",
+    titleKey: "tool.project.hydro.title",
+    metaKey: "tool.project.hydro.meta",
+    descriptionKey: "tool.project.hydro.description",
+    imageClass: "bg-hydro",
 
-    name: "Hydro",
-
-    title: "Hydropower",
-
-    meta: "5–60 MW",
-
-    imageClass:"bg-hydro",
-
-    description:
-      "Hydroelectric project",
-
-    permits_off:[
-
-      "Water permit (Luova)","Environmental permit","Construction permit"
-
+    permits_off: [
+      "Water permit (Luova)",
+      "Environmental permit",
+      "Construction permit"
     ],
 
-    countries:["FI","SE","DA","NO","PL","DE"]
-
+    countries: ["FI","SE","DA","NO","PL","DE"]
   },
 
   residential: {
-
     code: "07",
+    nameKey: "tool.project.residential",
+    titleKey: "tool.project.residential.title",
+    metaKey: "tool.project.residential.meta",
+    descriptionKey: "tool.project.residential.description",
+    imageClass: "bg-residential",
 
-    name: "Residential",
-
-    title: "Housing Development",
-
-    meta: "5–6 MW",
-
-    imageClass:"bg-residential",
-
-    description:
-      "Residential Building — permit application",
-
-    permits_off:[
-
+    permits_off: [
       "Construction permit"
-
     ],
 
-    countries:["FI","SE","DA","NO","PL","DE"]
-
+    countries: ["FI","SE","DA","NO","PL","DE"]
   },
 
   industrial: {
-
     code: "08",
+    nameKey: "tool.project.industrial",
+    titleKey: "tool.project.industrial.title",
+    metaKey: "tool.project.industrial.meta",
+    descriptionKey: "tool.project.industrial.description",
+    imageClass: "bg-industrial",
 
-    name: "Industrial",
-
-    title: "Manufacturing & Processing",
-
-    meta: "5–6 MW",
-
-    imageClass:"bg-industrial",
-
-    description:
-      "Industrial Building — permit application",
-
-    permits_off:[
-
+    permits_off: [
       "Construction permit",
-      "Environmental permit (possible)",
-
+      "Environmental permit (possible)"
     ],
 
-    countries:["FI","SE","DA","NO","PL","DE"]
-
+    countries: ["FI","SE","DA","NO","PL","DE"]
   },
 
+  agriculture: {
+    code: "09",
+    nameKey: "tool.project.agriculture",
+    titleKey: "tool.project.agriculture.title",
+    metaKey: "tool.project.agriculture.meta",
+    descriptionKey: "tool.project.agriculture.description",
+    imageClass: "bg-farm",
+
+    permits_off: [
+      "Construction permit",
+      "Environmental permit (possible)"
+    ],
+
+    countries: ["FI","SE","DA","NO","PL","DE"]
+  },
+
+  commercial: {
+    code: "10",
+    nameKey: "tool.project.commercial",
+    titleKey: "tool.project.commercial.title",
+    metaKey: "tool.project.commercial.meta",
+    descriptionKey: "tool.project.commercial.description",
+    imageClass: "bg-commercial",
+
+    permits_off: [
+      "Construction permit",
+      "Environmental permit (possible)"
+    ],
+
+    countries: ["FI","SE","DA","NO","PL","DE"]
+  },
+
+  other: {
+    code: "11",
+    nameKey: "tool.project.other",
+    titleKey: "tool.project.other.title",
+    metaKey: "tool.project.other.meta",
+    descriptionKey: "tool.project.other.description",
+    imageClass: "bg-other",
+
+    permits_off: [
+      "Construction permit",
+      "Environmental permit (possible)"
+    ],
+
+    countries: ["FI","SE","DA","NO","PL","DE"]
+  }
+
 };
+
+
+
+
+
+
+// const PROJECTS = {
+
+//   wind: {
+//     code: "01",
+//     name: "Wind",
+//     title: "Wind Power (Onshore)",
+//     meta: "Onshore Wind · 50–600 MW",
+//     imageClass:"bg-windland",
+//     description:
+//       "Wind Power (onshore) — Land-based wind power project",
+//     permits_off: [
+//       "Construction Permit",
+//       "Environmental Permit",
+//       "EIA (≥10 turbines / ≥45 MW)",
+//       "Zoning Area"
+//     ],
+//     countries:["FI","SE","DA","NO","PL","DE"]
+//   },
+//   solar: {
+//     code: "02",
+//     name: "Solar",
+//     title: "Solar Power",
+//     meta: "Utility PV · 10–400 MW",
+//     imageClass:"bg-solar",
+//     description:
+//       "Solar panel project",
+//     permits_off:[
+//       "Construction permit","Environmental permit (large project)"
+//     ],
+//     countries:["FI","SE","DA","NO","PL","DE"]
+//   },
+
+//   bess: {
+
+//     code: "03",
+
+//     name: "BESS",
+
+//     title: "Battery Energy Storage Project",
+
+//     meta: "50–800 MWh",
+
+//     imageClass:"bg-bess",
+
+//     description:
+//       "Battery Energy Storage Project",
+
+//     permits_off:[
+
+//       "Construction permit","Chemical permit (Tukes)","Grid connection (Fingrid/dist.)"
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   }, 
+
+//   smr: {
+
+//     code: "04",
+
+//     name: "SMR",
+
+//     title: "Small Modular Reactor",
+
+//     meta: "50–300 MW",
+
+//     imageClass:"bg-smr",
+
+//     description:
+//       "Small Modular Reactor project (pre-licensing)",
+
+//     permits_off:[
+
+//       "Principle decision (TEM)",
+//       "Construction licence (STUK)",
+//       "Operating licence (STUK)",
+//       "EIA"
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+//   windsea: {
+
+//     code: "05",
+
+//     name: "Wind — Sea",
+
+//     title: "Offshore Wind",
+
+//     meta: "500 MW–2 GW",
+
+//     imageClass:"bg-windsea",
+
+//     description:
+//       "Offshore wind power project",
+
+//     permits_off:[
+
+//       "Water permit (Luova)","EIA","Environmental permit","Construction permit (offshore)"
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+//   hydro: {
+
+//     code: "06",
+
+//     name: "Hydro",
+
+//     title: "Hydropower",
+
+//     meta: "5–60 MW",
+
+//     imageClass:"bg-hydro",
+
+//     description:
+//       "Hydroelectric project",
+
+//     permits_off:[
+
+//       "Water permit (Luova)","Environmental permit","Construction permit"
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+//   residential: {
+
+//     code: "07",
+
+//     name: "Residential",
+
+//     title: "Housing Development",
+
+//     meta: "5–6 MW",
+
+//     imageClass:"bg-residential",
+
+//     description:
+//       "Residential Building — permit application",
+
+//     permits_off:[
+
+//       "Construction permit"
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+//   industrial: {
+
+//     code: "08",
+
+//     name: "Industrial",
+
+//     title: "Manufacturing & Processing",
+
+//     meta: "5–6 MW",
+
+//     imageClass:"bg-industrial",
+
+//     description:
+//       "Industrial Building — permit application",
+
+//     permits_off:[
+
+//       "Construction permit",
+//       "Environmental permit (possible)",
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+//   agriculture: {
+
+//     code: "08",
+
+//     name: "Agriculture",
+
+//     title: "Farm Infrastructure",
+
+//     meta: "5–6 MW",
+
+//     imageClass:"bg-farm",
+
+//     description:
+//       "Agriculture Building — permit application",
+
+//     permits_off:[
+
+//       "Construction permit",
+//       "Environmental permit (possible)",
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+//   commercial: {
+
+//     code: "08",
+
+//     name: "Commercial",
+
+//     title: "Office & Retail Development",
+
+//     meta: "5–6 MW",
+
+//     imageClass:"bg-commercial",
+
+//     description:
+//       "Commercial Building — permit application",
+
+//     permits_off:[
+
+//       "Construction permit",
+//       "Environmental permit (possible)",
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+//   other: {
+
+//     code: "08",
+
+//     name: "Other Project",
+
+//     title: "Custom Development",
+
+//     meta: "5–6 MW",
+
+//     imageClass:"bg-other",
+
+//     description:
+//       "Custom Development Building — permit application",
+
+//     permits_off:[
+
+//       "Construction permit",
+//       "Environmental permit (possible)",
+
+//     ],
+
+//     countries:["FI","SE","DA","NO","PL","DE"]
+
+//   },
+
+
+// };
 // DATA
 
 
 
 // DYN FIELDS
+// const DYNAMIC_FIELDS = {
+
+//     wind: [
+
+//         {
+//             label:'Total Power (MW)',
+//             id:'power_mw',
+//             type:'number'
+//         },
+
+//         {
+//             label:'Turbine Count',
+//             id:'turbines',
+//             type:'number'
+//         }
+
+//     ],
+
+//     solar: [
+
+//         {
+//             label:'Installed Capacity (MWp)',
+//             id:'capacity_mwp',
+//             type:'number'
+//         },
+
+//         {
+//             label:'Area (ha)',
+//             id:'area_ha',
+//             type:'number'
+//         }
+
+//     ],
+// bess: [
+
+//     {
+//         label:'Power (MW)',
+//         id:'power_mw',
+//         type:'number'
+//     },
+
+//     {
+//         label:'Capacity (MWh)',
+//         id:'capacity_mwh',
+//         type:'number'
+//     },
+
+//     {
+//         label:'Grid Connection',
+//         id:'grid_connection',
+//         type:'select',
+
+//         options:[
+//             '110 kV',
+//             '220 kV',
+//             '400 kV',
+//             'DSO',
+//             'Fingrid'
+//         ]
+//     }
+
+// ],
+
+//     smr: [
+
+//         {
+//             label:'Thermal Power (MW)',
+//             id:'thermal_power',
+//             type:'number'
+//         },
+
+//         {
+//             label:'Reactor Type',
+//             id:'reactor_type',
+//             type:'text'
+//         }
+
+//     ],
+//     hydro: [
+
+
+//         {
+//             label:'Reactor Type',
+//             id:'reactor_type',
+//             type:'text'
+//         }
+
+//     ],
+// residential: [
+
+//         {
+//             label:'Floors',
+//             id:'floor_num',
+//             type:'number'
+//         }
+
+
+
+//     ],
+//     industrial:[
+
+//         {
+//             label:'Intended use',
+//             id:'int_use',
+
+//             type:'select',
+
+//             options:[
+//                 'Factory',
+//                 'Warehouse',
+//                 'Processing Plant',
+//                 'Manufacturing',
+//                 'Other'
+//             ]
+//         },
+
+//         {
+//             label:'Building volume (m³)',
+//             id:'build_volume',
+//             type:'number'
+//         }
+
+//     ],
+
+// };
+
+
+
+
+
 const DYNAMIC_FIELDS = {
 
     wind: [
-
         {
-            label:'Total Power (MW)',
-            id:'power_mw',
-            type:'number'
+            labelKey: 'tool.dynamic.wind.power',
+            id: 'power_mw',
+            type: 'number'
         },
-
         {
-            label:'Turbine Count',
-            id:'turbines',
-            type:'number'
+            labelKey: 'tool.dynamic.wind.turbines',
+            id: 'turbines',
+            type: 'number'
         }
-
     ],
 
     solar: [
-
         {
-            label:'Installed Capacity (MWp)',
-            id:'capacity_mwp',
-            type:'number'
+            labelKey: 'tool.dynamic.solar.capacity',
+            id: 'capacity_mwp',
+            type: 'number'
         },
-
         {
-            label:'Area (ha)',
-            id:'area_ha',
-            type:'number'
+            labelKey: 'tool.dynamic.solar.area',
+            id: 'area_ha',
+            type: 'number'
         }
-
     ],
-bess: [
 
-    {
-        label:'Power (MW)',
-        id:'power_mw',
-        type:'number'
-    },
+    bess: [
+        {
+            labelKey: 'tool.dynamic.bess.power',
+            id: 'power_mw',
+            type: 'number'
+        },
+        {
+            labelKey: 'tool.dynamic.bess.capacity',
+            id: 'capacity_mwh',
+            type: 'number'
+        },
+        {
+            labelKey: 'tool.dynamic.bess.grid',
+            id: 'grid_connection',
+            type: 'select',
 
-    {
-        label:'Capacity (MWh)',
-        id:'capacity_mwh',
-        type:'number'
-    },
-
-    {
-        label:'Grid Connection',
-        id:'grid_connection',
-        type:'select',
-
-        options:[
-            '110 kV',
-            '220 kV',
-            '400 kV',
-            'DSO',
-            'Fingrid'
-        ]
-    }
-
-],
+            options: [
+                '110 kV',
+                '220 kV',
+                '400 kV',
+                'DSO',
+                'Fingrid'
+            ]
+        }
+    ],
 
     smr: [
-
         {
-            label:'Thermal Power (MW)',
-            id:'thermal_power',
-            type:'number'
+            labelKey: 'tool.dynamic.smr.thermalPower',
+            id: 'thermal_power',
+            type: 'number'
         },
-
         {
-            label:'Reactor Type',
-            id:'reactor_type',
-            type:'text'
+            labelKey: 'tool.dynamic.smr.reactorType',
+            id: 'reactor_type',
+            type: 'text'
         }
-
     ],
+
     hydro: [
-
-
         {
-            label:'Reactor Type',
-            id:'reactor_type',
-            type:'text'
+            labelKey: 'tool.dynamic.hydro.reactorType',
+            id: 'reactor_type',
+            type: 'text'
         }
-
     ],
-residential: [
 
+    residential: [
         {
-            label:'Floors',
-            id:'floor_num',
-            type:'number'
+            labelKey: 'tool.dynamic.residential.floors',
+            id: 'floor_num',
+            type: 'number'
         }
-
-
-
     ],
-    industrial:[
 
+    industrial: [
         {
-            label:'Intended use',
-            id:'int_use',
+            labelKey: 'tool.dynamic.industrial.intendedUse',
+            id: 'int_use',
+            type: 'select',
 
-            type:'select',
-
-            options:[
+            options: [
                 'Factory',
                 'Warehouse',
                 'Processing Plant',
@@ -1451,14 +1661,19 @@ residential: [
         },
 
         {
-            label:'Building volume (m³)',
-            id:'build_volume',
-            type:'number'
+            labelKey: 'tool.dynamic.industrial.buildingVolume',
+            id: 'build_volume',
+            type: 'number'
         }
-
-    ],
+    ]
 
 };
+
+
+
+
+
+
 // DYN FIELDS
 
 
@@ -1613,7 +1828,7 @@ const TYPE_MAP = {
     // ENERGY
 
     wind: 'tuulivoima_maa',
-    offshore_wind: 'tuulivoima_meri',
+    windsea: 'tuulivoima_meri',
 
     solar: 'aurinkovoima',
 
@@ -1649,7 +1864,7 @@ const COUNTRY_NAMES = {
 
     FI: 'Finland',
     SE: 'Sweden',
-    DK: 'Denmark',
+    DA: 'Denmark',
     NO: 'Norway',
     PL: 'Poland',
     DE: 'Germany',
@@ -1735,14 +1950,61 @@ function renderProject(type){
 
     if(!p) return;
 
+    const moreButton =
+        document.getElementById('moreTypesBtn');
+
+    const moreSelected =
+        document.getElementById('moreSelected');
+
+    const moreLabel =
+        document.getElementById('moreLabel');
+
+    const mainTypes =
+        ['wind', 'solar', 'bess', 'smr'];
+
+if (!mainTypes.includes(type)) {
+
+    moreButton.classList.add('has-selection');
+
+    moreSelected.textContent =
+        `✓ ${translate(p.nameKey)}`;
+
+    moreLabel.textContent =
+        'MORE';
+
+} else {
+
+    moreButton.classList.remove('has-selection');
+
+    moreSelected.textContent =
+        '+ MORE...';
+
+    moreLabel.textContent =
+        'MORE';
+}
+
+
+    document
+        .querySelectorAll('.project-option')
+        .forEach(card => {
+
+            card.classList.toggle(
+                'active',
+                card.dataset.type === type
+            );
+
+        });
+
+
+
     document.getElementById('projectCode')
         .textContent = p.code;
 
     document.getElementById('projectTitle')
-        .textContent = p.title;
+        .textContent = translate(p.titleKey);
 
     document.getElementById('projectMeta')
-        .textContent = p.meta;
+        .textContent = translate(p.metaKey);
     
     const previewImage =
     document.querySelector('.project-image');
@@ -1895,69 +2157,55 @@ document
 
 function renderDynamicFields(type){
 
-    const fields = 
-        DYNAMIC_FIELDS[type] || [];
+    const fields = DYNAMIC_FIELDS[type] || [];
 
     const container =
         document.getElementById('dynamicFields');
 
-    container.innerHTML =
+    container.innerHTML = fields.map(field => {
 
-        fields.map(field => {
+        let control = '';
 
-            let control = '';
+        if(field.type === 'select'){
 
-            if(field.type === 'select'){
+            control = `
+                <select id="${field.id}">
 
-                control = `
+                    <option value="">
+                        ${translate('tool.dynamic.select')}
+                    </option>
 
-                    <select id="${field.id}">
+                    ${
+                        field.options
+                            .map(option => `
+                                <option value="${option}">
+                                    ${option}
+                                </option>
+                            `)
+                            .join('')
+                    }
 
-                        <option value="">
-                            Select...
-                        </option>
-
-                        ${
-                            field.options
-                                .map(option => `
-                                    <option value="${option}">
-                                        ${option}
-                                    </option>
-                                `)
-                                .join('')
-                        }
-
-                    </select>
-
-                `;
-
-            }else{
-
-                control = `
-
-                    <input
-                        type="${field.type}"
-                        id="${field.id}"
-                    >
-
-                `;
-
-            }
-
-            return `
-
-                <label>
-
-                    <span>${field.label}</span>
-
-                    ${control}
-
-                </label>
-
+                </select>
             `;
 
-        }).join('');
+        } else {
 
+            control = `
+                <input
+                    type="${field.type}"
+                    id="${field.id}"
+                >
+            `;
+        }
+
+        return `
+            <label>
+                <span>${translate(field.labelKey)}</span>
+                ${control}
+            </label>
+        `;
+
+    }).join('');
 }
 
 renderDynamicFields(currentProject);
@@ -1974,6 +2222,14 @@ document
             .classList.toggle('open');
 
     });
+
+
+
+
+
+
+
+
 
 
 
