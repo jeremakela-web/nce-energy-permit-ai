@@ -55,6 +55,22 @@ CHUNK_CHARS = 1500
 OVERLAP     = 200
 BATCH       = 64
 
+# Added 2026-09-03: dual-write to permit_docs_v2. This is the active,
+# regularly-used ingestion path for all six countries (POST /api/admin/ingest)
+# and was writing v1 (MiniLM) only -- invisible to real production retrieval,
+# which has queried permit_docs_v2 (mpnet) exclusively since before this gap
+# was first found in PR #88's 2026-08-17 audit. That audit's own
+# /api/admin/reindex-all-v2 has since caught this file's existing content up
+# to v2 (confirmed via a real collection-source-diff call, 2026-09-03: zero
+# v1-only sources in production right now) -- but that was a one-time manual
+# catch-up, not a standing fix. Without this change, the next real ingest run
+# through this file's actual admin endpoint would silently reopen the same
+# gap for whatever it adds. Matches the dual-write pattern already used by
+# backend/latvia_ingestion.py, lithuania_ingestion.py, poland_ingestion.py,
+# caruna_ingestion.py, and permit_ai/ingest_maatalous_vesivoima.py (PR #77).
+EMBED_MODEL_V2 = "paraphrase-multilingual-mpnet-base-v2"
+COLLECTION_V2  = "permit_docs_v2"
+
 COUNTRY_LANG: dict[str, str] = {
     "SE": "sv",
     "DA": "da",
@@ -108,12 +124,29 @@ def ingest(
         sys.exit(1)
 
     print(f"[ingest] Yhdistetään ChromaDB:hen: {DB_DIR}")
-    model  = SentenceTransformer(EMBED_MODEL)
     client = chromadb.PersistentClient(path=str(DB_DIR))
-    col    = client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine"})
+    col    = client.get_or_create_collection(COLLECTION,    metadata={"hnsw:space": "cosine"})
+    col_v2 = client.get_or_create_collection(COLLECTION_V2, metadata={"hnsw:space": "cosine"})
 
-    existing_ids: set[str] = set(col.get()["ids"])
-    print(f"[ingest] Olemassaolevia chunkkeja: {len(existing_ids)}")
+    # Models loaded lazily -- a dry-run, or a run where v1/v2 are already
+    # fully synced, should not pay the model-load cost.
+    model_v1 = model_v2 = None
+
+    def _model_v1():
+        nonlocal model_v1
+        if model_v1 is None:
+            model_v1 = SentenceTransformer(EMBED_MODEL)
+        return model_v1
+
+    def _model_v2():
+        nonlocal model_v2
+        if model_v2 is None:
+            model_v2 = SentenceTransformer(EMBED_MODEL_V2)
+        return model_v2
+
+    existing_ids:    set[str] = set(col.get()["ids"])
+    existing_ids_v2: set[str] = set(col_v2.get()["ids"])
+    print(f"[ingest] Olemassaolevia chunkkeja: v1={len(existing_ids)}  v2={len(existing_ids_v2)}")
 
     totals: dict[str, int] = {}
 
@@ -151,17 +184,23 @@ def ingest(
         print(f"\n[{country}] Löytyi {n_pdf} PDF:ää, {n_txt} TXT:tä")
         lang = COUNTRY_LANG[country]
 
-        # Poista vanhat chunkit jos --reindex
+        # Poista vanhat chunkit jos --reindex -- mirrored to both collections
+        # so a reindex can't leave v1/v2 out of sync with each other.
         if reindex and not dry_run:
             old = [id_ for id_ in existing_ids if id_.startswith(f"{country}__")]
             if old:
                 col.delete(ids=old)
                 existing_ids -= set(old)
-                print(f"  [reindex] Poistettu {len(old)} vanhaa chunkkia")
+                print(f"  [reindex] Poistettu {len(old)} vanhaa chunkkia (v1)")
+            old_v2 = [id_ for id_ in existing_ids_v2 if id_.startswith(f"{country}__")]
+            if old_v2:
+                col_v2.delete(ids=old_v2)
+                existing_ids_v2 -= set(old_v2)
+                print(f"  [reindex] Poistettu {len(old_v2)} vanhaa chunkkia (v2)")
 
-        new_docs:  list[str]  = []
-        new_ids:   list[str]  = []
-        new_metas: list[dict] = []
+        all_ids:   list[str]  = []
+        all_docs:  list[str]  = []
+        all_metas: list[dict] = []
 
         for fpath, ftype in all_files:
             try:
@@ -170,47 +209,73 @@ def ingest(
                 else:
                     text = fpath.read_text(encoding="utf-8", errors="replace")
                 chunks = _chunk(text)
-                added  = 0
                 for i, chunk in enumerate(chunks):
-                    id_ = _safe_id(country, fpath.stem, i)
-                    if id_ in existing_ids:
-                        continue
-                    new_docs.append(chunk)
-                    new_ids.append(id_)
-                    new_metas.append({
+                    all_ids.append(_safe_id(country, fpath.stem, i))
+                    all_docs.append(chunk)
+                    all_metas.append({
                         "country":         country,
                         "lang":            lang,
                         "source":          fpath.stem,
                         "hanketyyppi_tag": _get_tag(fpath.stem),
                     })
-                    added += 1
-                print(f"  {fpath.name}: {len(chunks)} chunkkia, {added} uutta")
+                print(f"  {fpath.name}: {len(chunks)} chunkkia")
             except Exception as exc:
                 print(f"  VIRHE {fpath.name}: {exc}")
 
-        if not new_docs:
-            print(f"  → Kaikki chunkit jo indeksoitu")
+        # Two independent "new" sets -- v1 and v2 can be out of sync in
+        # either direction. Most commonly: content ingested before this
+        # dual-write existed is v1-complete but missing from v2 (the exact
+        # gap PR #88 found and this change closes for good going forward).
+        def _new_for(existing: set[str]) -> tuple[list[str], list[str], list[dict]]:
+            ids, docs, metas = [], [], []
+            for id_, doc, meta in zip(all_ids, all_docs, all_metas):
+                if id_ not in existing:
+                    ids.append(id_)
+                    docs.append(doc)
+                    metas.append(meta)
+            return ids, docs, metas
+
+        new_ids,    new_docs,    new_metas    = _new_for(existing_ids)
+        new_ids_v2, new_docs_v2, new_metas_v2 = _new_for(existing_ids_v2)
+
+        if not new_ids and not new_ids_v2:
+            print(f"  → Kaikki chunkit jo indeksoitu (v1 ja v2)")
             totals[country] = 0
             continue
 
         if dry_run:
-            print(f"  DRY-RUN: {len(new_docs)} chunkkia lisättäisiin")
-            totals[country] = len(new_docs)
+            print(f"  DRY-RUN: v1: {len(new_ids)} uutta  |  v2: {len(new_ids_v2)} uutta")
+            totals[country] = len(new_ids)
             continue
 
-        print(f"  Lisätään {len(new_docs)} chunkkia ChromaDB:hen...")
-        for i in range(0, len(new_docs), BATCH):
-            b_docs  = new_docs[i : i + BATCH]
-            b_ids   = new_ids[i : i + BATCH]
-            b_metas = new_metas[i : i + BATCH]
-            embs    = model.encode(b_docs, show_progress_bar=False).tolist()
-            col.add(documents=b_docs, embeddings=embs, ids=b_ids, metadatas=b_metas)
-            pct = min(100, (i + len(b_docs)) * 100 // len(new_docs))
-            print(f"  {i + len(b_docs)}/{len(new_docs)} ({pct}%)")
+        if new_ids:
+            print(f"  Lisätään {len(new_ids)} chunkkia -> permit_docs (v1)...")
+            model = _model_v1()
+            for i in range(0, len(new_ids), BATCH):
+                b_docs  = new_docs[i : i + BATCH]
+                b_ids   = new_ids[i : i + BATCH]
+                b_metas = new_metas[i : i + BATCH]
+                embs    = model.encode(b_docs, show_progress_bar=False).tolist()
+                col.add(documents=b_docs, embeddings=embs, ids=b_ids, metadatas=b_metas)
+                pct = min(100, (i + len(b_docs)) * 100 // len(new_ids))
+                print(f"  {i + len(b_docs)}/{len(new_ids)} ({pct}%)")
+            existing_ids.update(new_ids)
 
-        existing_ids.update(new_ids)
-        totals[country] = len(new_docs)
-        print(f"  ✅ {len(new_docs)} chunkkia lisätty ({country})")
+        if new_ids_v2:
+            print(f"  Lisätään {len(new_ids_v2)} chunkkia -> permit_docs_v2 (mpnet)...")
+            model2 = _model_v2()
+            for i in range(0, len(new_ids_v2), BATCH):
+                b_docs  = new_docs_v2[i : i + BATCH]
+                b_ids   = new_ids_v2[i : i + BATCH]
+                b_metas = new_metas_v2[i : i + BATCH]
+                embs    = model2.encode(b_docs, show_progress_bar=False, normalize_embeddings=True).tolist()
+                col_v2.add(documents=b_docs, embeddings=embs, ids=b_ids, metadatas=b_metas)
+                pct = min(100, (i + len(b_docs)) * 100 // len(new_ids_v2))
+                print(f"  {i + len(b_docs)}/{len(new_ids_v2)} ({pct}%)")
+            existing_ids_v2.update(new_ids_v2)
+
+        totals[country] = len(new_ids)
+        print(f"  ✅ v1: {len(new_ids)} chunkkia  |  v2: {len(new_ids_v2)} chunkkia  ({country})")
         # Force WAL checkpoint so data lands in the main DB file before process exits
         _wal_checkpoint(DB_DIR)
 
@@ -226,7 +291,7 @@ def ingest(
         print(f"  {c}: {n} uutta chunkkia")
         grand += n
     print(f"  Yhteensä uutta: {grand}")
-    print(f"  Koko indeksi:   {col.count()} chunkkia")
+    print(f"  Koko indeksi:   v1={col.count()}  v2={col_v2.count()} chunkkia")
     print(f"{'─'*50}")
 
     return totals
